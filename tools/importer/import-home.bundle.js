@@ -268,6 +268,12 @@ var CustomImportScript = (() => {
         "form.signup",
         "form.fr-ftr__signup"
       ]);
+      element.querySelectorAll('a[href="#main"], a.skip-link, a.skip-to-content').forEach((a) => {
+        const text = a.textContent.trim().toLowerCase();
+        if (a.getAttribute("href") === "#main" || text === "skip to content") {
+          (a.closest("p") || a).remove();
+        }
+      });
     }
   }
 
