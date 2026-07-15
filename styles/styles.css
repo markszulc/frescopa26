@@ -297,6 +297,7 @@ main > .section {
 }
 
 main > .section > div {
+  box-sizing: border-box;
   max-width: var(--content);
   margin: auto;
   padding: 0 var(--gutter);

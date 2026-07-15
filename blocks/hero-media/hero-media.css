@@ -63,8 +63,11 @@
   object-fit: cover;
 }
 
-/* Row 2 (content cell): sits above the image */
+/* Row 2 (content cell): sits above the image. border-box so the 1120px
+   max-width includes the gutter, aligning content with the nav/sections
+   (container edges 440–1560, content inset by the 48px gutter). */
 .hero-media.block > div:last-child {
+  box-sizing: border-box;
   position: relative;
   z-index: 1;
   width: 100%;
