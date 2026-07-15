@@ -160,10 +160,13 @@ export default async function decorate(block) {
       cart: '<path d="M6 8h12l-1 11H7L6 8Z"></path><path d="M9 8a3 3 0 0 1 6 0" stroke-linecap="round"></path>',
     };
     navTools.querySelectorAll('a').forEach((link) => {
-      const key = (link.getAttribute('href') || '').replace('#', '').toLowerCase();
+      const label = link.textContent.trim();
+      // match by href fragment (#search) or by the link label (Search)
+      const hrefKey = (link.getAttribute('href') || '').replace(/^#/, '').toLowerCase();
+      const key = toolIcons[hrefKey] ? hrefKey : label.toLowerCase();
       const icon = toolIcons[key];
       if (!icon) return;
-      link.setAttribute('aria-label', link.textContent.trim());
+      link.setAttribute('aria-label', label);
       link.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">${icon}</svg>`;
     });
   }
