@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-featured",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-07-15T06:09:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/blog.html",
+    "originPage": "Journal / blog index",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "featured-article",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "large horizontal card: image (with Featured badge) + category label + heading + description + date/read-time meta + read-more link; whole card is a link",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "single featured/hero article card at the top of a blog or journal index",
+      "large horizontal promo card with image on one side and text (category, heading, meta, link) on the other",
+      "spotlight card with a badge overlay"
+    ],
+    "notSuitableFor": [
+      "multi-item article grids (use cards-article)",
+      "product cards with price and add-to-cart (use cards-product)",
+      "text-only testimonial or feature card grids"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/blog"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T06:09:00.000Z"
+  }
+}

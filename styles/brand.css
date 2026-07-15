@@ -1,0 +1,104 @@
+/*
+ * Frescopa Atelier brand tokens
+ * Extracted from the source site (shared/tokens.css + atelier.css).
+ * These mirror the original custom-property names so block CSS can reuse them.
+ */
+
+:root {
+  /* Brand colors (oklch, matching source) */
+  --burgundy: oklch(34% 0.093 25deg);
+  --burgundy-deep: oklch(27.5% 0.082 26deg);
+  --terracotta: oklch(60.5% 0.116 44deg);
+  --terracotta-deep: oklch(51.5% 0.108 40deg);
+  --amber: oklch(79% 0.128 74deg);
+  --amber-soft: oklch(86.5% 0.083 80deg);
+  --teal: oklch(55% 0.05 205deg);
+  --paper: oklch(97% 0.010 82deg);
+  --paper-2: oklch(94.8% 0.015 78deg);
+  --paper-3: oklch(91.8% 0.020 74deg);
+  --sand: oklch(88.4% 0.025 71deg);
+  --line: oklch(85.5% 0.018 68deg);
+  --ink: oklch(26.2% 0.021 52deg);
+  --ink-soft: oklch(43% 0.022 52deg);
+  --charcoal: oklch(22.2% 0.016 52deg);
+  --charcoal-2: oklch(28.2% 0.020 50deg);
+  --line-dark: oklch(40% 0.020 55deg);
+  --cream: oklch(94.5% 0.016 80deg);
+  --cream-soft: oklch(79.5% 0.021 78deg);
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --accent: var(--terracotta);
+  --focus: var(--terracotta);
+
+  /* EDS-facing aliases */
+  --background-color: var(--paper);
+  --text-color: var(--ink);
+  --link-color: var(--terracotta);
+  --link-hover-color: var(--terracotta-deep);
+
+  /* Fonts */
+  --font-display: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --heading-font-family: "Schibsted Grotesk", system-ui, sans-serif;
+  --body-font-family: "Hanken Grotesk", system-ui, sans-serif;
+
+  /* Type scale (fluid, matching source) */
+  --fs-eyebrow: 0.75rem;
+  --fs-sm: 0.9375rem;
+  --fs-body: 1.0625rem;
+  --fs-body-lg: clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem);
+  --fs-h4: clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem);
+  --fs-h3: clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem);
+  --fs-h2: clamp(2.1rem, 1.45rem + 2.6vw, 3.5rem);
+  --fs-h1: clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem);
+  --fs-display: clamp(3.4rem, 1.1rem + 8.4vw, 8rem);
+
+  /* Heading tier aliases used by EDS default content */
+  --heading-size-xxl: var(--fs-h1);
+  --heading-size-xl: var(--fs-h2);
+  --heading-size-l: var(--fs-h3);
+  --heading-size-m: var(--fs-h4);
+  --heading-size-s: var(--fs-body);
+  --heading-size-xs: var(--fs-sm);
+  --lh-tight: 1.03;
+  --lh-snug: 1.15;
+  --lh-body: 1.62;
+  --tracking-eyebrow: 0.2em;
+  --tracking-tight: -0.02em;
+
+  /* Spacing */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --section-y: clamp(4.5rem, 3rem + 6vw, 9.5rem);
+  --section-padding: clamp(4.5rem, 3rem + 6vw, 9.5rem);
+  --content: 1120px;
+  --content-wide: 1320px;
+  --content-narrow: 760px;
+  --gutter: clamp(1.25rem, 0.4rem + 3vw, 3rem);
+  --nav-height: 72px;
+
+  /* Radii */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%);
+  --shadow-md: 0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%);
+  --shadow-lg: 0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%);
+
+  /* Motion */
+  --ease-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-1: 0.35s;
+  --dur-2: 0.6s;
+  --dur-3: 0.9s;
+}

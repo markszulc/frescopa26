@@ -1,0 +1,147 @@
+/*
+ * Taste Profile block
+ * Two-column feature: editorial copy (left) + interactive flavour-profile
+ * panel (right). Values extracted from the source section.learn on the
+ * Frescopa Atelier site and mapped to brand tokens.
+ */
+
+.taste-profile {
+  display: grid;
+  gap: 2.5rem;
+}
+
+/* --- Copy column --- */
+.taste-profile-copy h2 {
+  margin: 1rem 0 0;
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+.taste-profile-copy h2 + p {
+  margin: 1.2rem 0 0;
+  max-width: 34rem;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* points list */
+.taste-profile-copy ul {
+  list-style: none;
+  margin: 2.2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.taste-profile-copy ul li {
+  margin: 0;
+  padding: 1.1rem 0 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* eyebrow (first paragraph, with leading rule) */
+.taste-profile-copy p:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.taste-profile-copy p:first-child::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background-color: currentcolor;
+}
+
+/* --- Visualization panel --- */
+.taste-profile-viz {
+  align-self: start;
+  padding: 2rem 2rem 1.4rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background-color: var(--paper);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.taste-profile-readout h4 {
+  margin: 0;
+  font-size: var(--fs-h4);
+  font-weight: 800;
+  line-height: var(--lh-snug);
+  color: var(--burgundy);
+}
+
+.taste-profile-viz .taste-profile-readout p {
+  margin: 0.4rem auto 0;
+  max-width: 22rem;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* toggle button group */
+.taste-profile-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+}
+
+.taste-profile-btn {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-1) var(--ease-quint),
+    border-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint);
+}
+
+.taste-profile-btn:hover {
+  border-color: var(--burgundy);
+  color: var(--burgundy);
+}
+
+.taste-profile-btn.is-active {
+  border-color: var(--burgundy);
+  background-color: var(--burgundy);
+  color: var(--cream);
+}
+
+@media (width >= 900px) {
+  .taste-profile {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 5rem;
+  }
+
+  .taste-profile-controls {
+    /* buttons sit just below the card, matching source rhythm */
+    margin-top: 1.2rem;
+  }
+}

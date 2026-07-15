@@ -1,0 +1,10 @@
+{
+  "type": "doc",
+  "sites": {
+    "frescopa26": {
+      "previewOrg": "markszulc",
+      "previewSite": "frescopa26",
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
+    }
+  }
+}

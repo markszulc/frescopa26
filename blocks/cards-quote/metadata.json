@@ -1,0 +1,37 @@
+{
+  "variantName": "cards-quote",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/index.html",
+    "originPage": "Frescopa Atelier homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "compact",
+    "purpose": "testimonial",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "quote text + citation, repeated items without images",
+    "buttonCount": 0,
+    "imageCount": 0
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "side-by-side testimonial/quote cards",
+      "customer voices grids without photos"
+    ],
+    "notSuitableFor": [
+      "cards that require images",
+      "product listings with prices"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}

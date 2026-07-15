@@ -1,0 +1,36 @@
+{
+  "variantName": "mood-calendar",
+  "baseBlock": "mood-calendar",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/index.html",
+    "originPage": "Frescopa Atelier homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "editorial copy + interactive calendar of selectable days updating a brew readout",
+    "buttonCount": 7,
+    "imageCount": 0
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "interactive calendar/day-selector features that update a readout panel"
+    ],
+    "notSuitableFor": [
+      "static side-by-side text layouts (use columns-editorial)",
+      "card grids"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}

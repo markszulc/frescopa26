@@ -1,0 +1,93 @@
+/* cards-event -- weekly event cards. Values extracted from source (cafe.html #whatson). */
+
+.cards-event > ul {
+  list-style: none;
+  margin: 2.4rem 0 0; /* source grid margin-top 38.4px */
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.6rem; /* source gap 25.6px */
+}
+
+@media (width >= 600px) {
+  .cards-event > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .cards-event > ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Card */
+.cards-event > ul > li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* source card gap */
+  padding: 1.4rem 1.5rem; /* source 22.4px 24px */
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg); /* 22px */
+  box-shadow: none;
+}
+
+/* Day label */
+.cards-event .cards-event-day {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.66rem; /* source 10.56px */
+  font-weight: 400;
+  line-height: 1.62;
+  letter-spacing: 0.1em; /* source 1.056px */
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+/* Title */
+.cards-event .cards-event-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem; /* source 20.8px */
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em; /* source -0.416px */
+  color: var(--burgundy);
+}
+
+/* Description */
+.cards-event .cards-event-desc {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.92rem; /* source 14.72px */
+  font-weight: 400;
+  line-height: 1.55; /* source 22.816px / 14.72px */
+  color: var(--ink-soft);
+}
+
+/* Footer: time + price on a top divider, pinned to card bottom */
+.cards-event .cards-event-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto; /* push footer to the bottom of equal-height cards */
+  padding-top: 0.8rem; /* source 12.8px */
+  border-top: 1px solid var(--line);
+}
+
+.cards-event .cards-event-time {
+  font-family: var(--font-body);
+  font-size: 0.66rem; /* source 10.56px */
+  font-weight: 400;
+  letter-spacing: 0.08em; /* source 0.8448px */
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.cards-event .cards-event-price {
+  font-family: var(--font-display);
+  font-size: 1rem; /* source 16px */
+  font-weight: 700;
+  color: var(--ink);
+}

@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-event",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/cafe.html",
+    "originPage": "cafe & showroom page",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "day label + title + description + time/price footer, repeated in a 4-up grid",
+    "buttonCount": 0,
+    "imageCount": 0
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "event/schedule card grids without images",
+      "class or session listings with a day label and a time/price footer",
+      "agenda-style card rows on a light background"
+    ],
+    "notSuitableFor": [
+      "product cards with price/CTA (use cards-product)",
+      "icon feature cards (use cards-reasons)",
+      "photo-led cards"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/cafe"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}

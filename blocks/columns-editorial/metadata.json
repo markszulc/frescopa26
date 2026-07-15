@@ -1,0 +1,37 @@
+{
+  "variantName": "columns-editorial",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/index.html",
+    "originPage": "Frescopa Atelier homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "two-column editorial: text/text or image/text side-by-side",
+    "buttonCount": 0,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "editorial statement + body two-column layouts",
+      "image + copy side-by-side feature sections with a bullet/chip list"
+    ],
+    "notSuitableFor": [
+      "repeating card grids of distinct items",
+      "interactive components"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/index", "/frescopa-atelier/beverages", "/frescopa-atelier/cafe"],
+    "reuseCount": 9,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}

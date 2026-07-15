@@ -1,0 +1,37 @@
+{
+  "variantName": "hero-media",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/index.html",
+    "originPage": "Frescopa Atelier homepage",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "hero",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "background image + eyebrow + heading + lead + CTAs",
+    "buttonCount": 2,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "full-bleed hero banners with background photo and light text",
+      "promotional bands with photo background and a call-to-action",
+      "full-bleed dark promo/CTA bands without a background image (eyebrow + heading + lead + CTA)"
+    ],
+    "notSuitableFor": [
+      "sections requiring multi-column body content"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/index", "/frescopa-atelier/beverages", "/frescopa-atelier/cafe"],
+    "reuseCount": 4,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}

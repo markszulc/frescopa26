@@ -1,0 +1,38 @@
+{
+  "variantName": "store-locator",
+  "baseBlock": "store-locator",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/cafe.html",
+    "originPage": "cafe & showroom page",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "locator",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "search input + region filter buttons + map panel + scrollable list of location cards (name, city, address, chips, hours, directions)",
+    "buttonCount": 5,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "store / cafe / branch locators with search and region filtering",
+      "map + scrollable location list layouts",
+      "any interactive place-finder driven by an authored list of locations"
+    ],
+    "notSuitableFor": [
+      "static short address lists (use default content)",
+      "single featured location callouts (use columns-editorial)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/cafe"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}

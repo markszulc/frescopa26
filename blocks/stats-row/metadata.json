@@ -1,0 +1,38 @@
+{
+  "variantName": "stats-row",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/cafe.html",
+    "originPage": "cafe & showroom page",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "big number + label pairs, repeated in a 4-up row",
+    "buttonCount": 0,
+    "imageCount": 0
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "statistic / metric rows with a large number and a small label",
+      "by-the-numbers strips (counts, cities, states)",
+      "light-background KPI rows"
+    ],
+    "notSuitableFor": [
+      "cards with images or descriptions",
+      "content that reads as prose (use default content)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/cafe"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}
