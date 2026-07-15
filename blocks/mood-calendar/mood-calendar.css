@@ -1,0 +1,184 @@
+/* Block: mood-calendar
+ * Two-column interactive feature: editorial copy + calendar card with a brew readout.
+ * Values extracted from source computed styles, mapped to brand tokens.
+ */
+
+.mood-calendar {
+  display: grid;
+  gap: 2.5rem;
+}
+
+/* --- Copy column --- */
+
+/* lede: paragraph directly after the heading */
+.mood-calendar-copy h2 + p {
+  margin: 1.2rem 0 0;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* eyebrow: first paragraph before the heading */
+.mood-calendar-copy p:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+/* hint line — uppercase terracotta micro-copy (last paragraph) */
+.mood-calendar-copy p:last-child {
+  margin: 1.6rem 0 0;
+  font-size: var(--fs-eyebrow);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--terracotta);
+}
+
+.mood-calendar-copy p:first-child::before {
+  content: "";
+  width: 1.2rem;
+  height: 1px;
+  background-color: var(--terracotta);
+}
+
+.mood-calendar-copy h2 {
+  margin: 1rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--burgundy);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* --- Calendar card --- */
+.mood-calendar-panel {
+  align-self: start;
+  padding: 1.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background-color: var(--paper);
+  box-shadow: var(--shadow-md);
+}
+
+.mood-calendar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.mood-calendar-month {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.mood-calendar-year {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.mood-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+}
+
+.mood-calendar-dow {
+  height: 24px;
+  padding-bottom: 0.4rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.mood-calendar-day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+button.mood-calendar-day {
+  cursor: pointer;
+  transition:
+    background-color var(--dur-2) var(--ease-quint),
+    color var(--dur-2) var(--ease-quint),
+    transform var(--dur-1);
+}
+
+button.mood-calendar-day:hover {
+  background: var(--paper-3);
+  transform: translateY(-1px);
+}
+
+.mood-calendar-muted {
+  color: color-mix(in oklch, var(--ink) 32%, var(--paper));
+}
+
+.mood-calendar-day.is-active {
+  background: var(--terracotta);
+  color: var(--cream);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Brew readout --- */
+.mood-calendar-brew {
+  margin-top: 1.4rem;
+  padding: 1.2rem 1.35rem;
+  border-radius: var(--r-md);
+  background-color: var(--paper-2);
+}
+
+.mood-calendar-tag {
+  display: inline-block;
+  margin-bottom: 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta-deep);
+}
+
+.mood-calendar-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: var(--lh-snug);
+  color: var(--burgundy);
+}
+
+.mood-calendar-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.92rem;
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+@media (width >= 900px) {
+  .mood-calendar {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 5rem;
+  }
+}

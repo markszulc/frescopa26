@@ -1,0 +1,148 @@
+/* Block: columns-editorial
+ * Light two-column editorial layout. Handles text/text, image/text and
+ * text/image arrangements plus an optional chip/bullet list.
+ * Values extracted from source computed styles (frescopa-atelier).
+ */
+
+/* ---- Layout: mobile first (stacked) ---- */
+.columns-editorial > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* image column sits above its text partner on mobile */
+.columns-editorial > div > div {
+  order: 1;
+}
+
+.columns-editorial > div > .columns-editorial-img-col {
+  order: 0;
+}
+
+/* ---- Media / images ---- */
+.columns-editorial img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.columns-editorial > div > .columns-editorial-img-col img {
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+}
+
+/* ---- Eyebrow: a leading paragraph that introduces a heading ---- */
+.columns-editorial > div > div > p:first-child:has(+ h2) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  line-height: 1.62;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.columns-editorial > div > div > p:first-child:has(+ h2)::before {
+  content: "";
+  display: block;
+  width: 1.6em;
+  height: 1px;
+  background-color: var(--terracotta);
+}
+
+/* ---- Statement / heading ---- */
+.columns-editorial h2 {
+  margin: 0.34em 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+/* emphasised fragment of the statement picks up the accent */
+.columns-editorial h2 em {
+  font-style: normal;
+  color: var(--terracotta);
+}
+
+/* ---- Body / lede paragraphs (any p that is not the eyebrow) ---- */
+.columns-editorial > div > div > p:not(:first-child:has(+ h2)) {
+  margin: 0.9em 0 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-lg);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* first body paragraph of a cell has no top spacing to fight */
+.columns-editorial > div > div > p:first-child:not(:has(+ h2)) {
+  margin-top: 0;
+}
+
+/* ---- Inline arrow link ---- */
+.columns-editorial p a:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  margin-top: 0.35em;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--terracotta);
+  text-decoration: none;
+}
+
+.columns-editorial p a:any-link:hover {
+  color: var(--terracotta-deep);
+  text-decoration: none;
+}
+
+/* ---- Feature chips (optional ul list) ---- */
+.columns-editorial ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.columns-editorial ul > li {
+  margin: 0;
+  padding: 0.4em 0.7em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper-2);
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 400;
+  line-height: 1.62;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+}
+
+/* ---- Desktop: two-column grid ---- */
+@media (width >= 900px) {
+  .columns-editorial > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(2.5rem, 1rem + 4vw, 5rem);
+  }
+
+  .columns-editorial > div > div,
+  .columns-editorial > div > .columns-editorial-img-col {
+    order: unset;
+  }
+}

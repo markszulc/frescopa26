@@ -1,0 +1,119 @@
+/* Block: cards-article -- responsive grid of article-post cards */
+
+.cards-article > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem 1.8rem;
+}
+
+/* Each card is a vertical stack: image, category, heading, description, meta */
+.cards-article > ul > li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--terracotta);
+}
+
+/* Image slot -- 3:2 rounded frame with subtle border */
+.cards-article .cards-article-card-image {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--paper-3);
+  line-height: 0;
+}
+
+.cards-article .cards-article-card-image img,
+.cards-article .cards-article-card-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Card text stack */
+.cards-article .cards-article-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.cards-article .cards-article-card-body > * {
+  margin: 0;
+}
+
+/* Category label -- uppercase terracotta eyebrow */
+.cards-article .cards-article-card-category {
+  order: -1;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+/* Heading */
+.cards-article .cards-article-card-body h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+  transition: color var(--dur-1) var(--ease-quint);
+}
+
+/* Description */
+.cards-article .cards-article-card-body p {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* Date / read-time meta line -- uppercase muted */
+.cards-article .cards-article-card-meta {
+  margin-top: 0.15rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Hover -- gentle emphasis on the heading, matching the site link treatment */
+.cards-article > ul > li a:hover,
+.cards-article > ul > li:hover h3 {
+  color: var(--terracotta);
+}
+
+/* Tablet: 2 columns */
+@media (width >= 600px) {
+  .cards-article > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: 3 columns */
+@media (width >= 900px) {
+  .cards-article > ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

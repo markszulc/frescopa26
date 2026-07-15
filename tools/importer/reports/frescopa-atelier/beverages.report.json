@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://markszulc.github.io/frescopa-atelier/beverages.html",
+  "path": "frescopa-atelier/beverages",
+  "timestamp": "2026-07-15T07:24:15.144Z",
+  "title": "",
+  "template": "beverages",
+  "blocks": [
+    "columns-editorial",
+    "columns-editorial",
+    "columns-editorial",
+    "hero-media"
+  ]
+}

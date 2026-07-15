@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-reasons",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/cafe.html",
+    "originPage": "cafe & showroom page",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "icon"
+  },
+  "contentPattern": {
+    "structure": "icon + heading + paragraph, repeated in a 4-up grid",
+    "buttonCount": 0,
+    "imageCount": 4
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "icon feature/benefit card grids",
+      "reasons-to / why-us style card rows without images",
+      "light-background feature grids with an SVG icon per card"
+    ],
+    "notSuitableFor": [
+      "product cards with price/CTA (use cards-product)",
+      "photo cards with large imagery",
+      "testimonial/quote cards (use cards-quote)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/cafe"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}

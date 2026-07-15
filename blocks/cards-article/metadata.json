@@ -1,0 +1,40 @@
+{
+  "variantName": "cards-article",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-07-15T06:09:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/blog.html",
+    "originPage": "Journal / blog index",
+    "blockPosition": "bottom"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "article-grid",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "responsive 3-up grid of article cards; each card: image + category label + heading + description + date/read-time meta; whole card is a link; optional category filter bar above the grid",
+    "buttonCount": 0,
+    "imageCount": 6
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "blog or journal article/post listing grids with images",
+      "news or content-index card grids with category label and date/read-time meta",
+      "image-led card grids where each card links to a detail page",
+      "listings that need an optional category filter bar"
+    ],
+    "notSuitableFor": [
+      "single large featured/hero article card (use cards-featured)",
+      "product cards with price and add-to-cart (use cards-product)",
+      "text-only testimonial, reasons, or event card grids without images"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/blog"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T06:09:00.000Z"
+  }
+}

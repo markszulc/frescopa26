@@ -1,0 +1,18 @@
+{
+  "status": "success",
+  "url": "https://markszulc.github.io/frescopa-atelier/index.html",
+  "path": "frescopa-atelier/index",
+  "timestamp": "2026-07-15T07:08:51.322Z",
+  "title": "Fréscopa Atelier — Every morning, perfected.",
+  "template": "home",
+  "blocks": [
+    "hero-media",
+    "hero-media",
+    "columns-editorial",
+    "columns-editorial",
+    "taste-profile",
+    "mood-calendar",
+    "cards-product",
+    "cards-quote"
+  ]
+}

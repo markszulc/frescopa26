@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "projectType": "doc"
+  },
+  "templates": [
+    {
+      "name": "home",
+      "urls": [
+        "https://markszulc.github.io/frescopa-atelier/index.html"
+      ],
+      "representativeUrl": "https://markszulc.github.io/frescopa-atelier/index.html",
+      "coverageGaps": [],
+      "description": "Homepage with hero, editorial intro sections, interactive taste-profile and calendar features, product recommendation cards, sustainability, testimonials, cafe promo, and CTA.",
+      "blocks": [
+        { "name": "hero-media", "instances": ["section.hero", "section.cafe"] },
+        { "name": "columns-editorial", "instances": ["section.intro", "section.sustain"] },
+        { "name": "taste-profile", "instances": ["section.learn"] },
+        { "name": "mood-calendar", "instances": ["section.mood"] },
+        { "name": "cards-product", "instances": ["section.feed .feed__grid"] },
+        { "name": "cards-quote", "instances": ["section.voices .voices__grid"] }
+      ],
+      "sections": [
+        { "id": "hero", "name": "Hero", "selector": "section.hero", "style": null, "blocks": ["hero-media"], "defaultContent": [] },
+        { "id": "intro", "name": "Intro", "selector": "section.intro", "style": "intro", "blocks": ["columns-editorial"], "defaultContent": [] },
+        { "id": "learn", "name": "Learn", "selector": "section.learn", "style": "learn", "blocks": ["taste-profile"], "defaultContent": [] },
+        { "id": "mood", "name": "Mood", "selector": "section.mood", "style": "mood", "blocks": ["mood-calendar"], "defaultContent": [] },
+        { "id": "feed", "name": "Feed", "selector": "section.feed", "style": "feed", "blocks": ["cards-product"], "defaultContent": ["section.feed .feed__head"] },
+        { "id": "sustain", "name": "Sustain", "selector": "section.sustain", "style": "sustain", "blocks": ["columns-editorial"], "defaultContent": [] },
+        { "id": "voices", "name": "Voices", "selector": "section.voices", "style": "voices", "blocks": ["cards-quote"], "defaultContent": ["section.voices .voices__lead"] },
+        { "id": "cafe", "name": "Cafe", "selector": "section.cafe", "style": null, "blocks": ["hero-media"], "defaultContent": [] },
+        { "id": "cta", "name": "Cta", "selector": "section.cta", "style": "dark", "blocks": [], "defaultContent": ["section.cta .cta__promise", "section.cta .cta__sub", "section.cta .cta__actions"] }
+      ]
+    },
+    {
+      "name": "beverages",
+      "urls": [
+        "https://markszulc.github.io/frescopa-atelier/beverages.html"
+      ],
+      "representativeUrl": "https://markszulc.github.io/frescopa-atelier/beverages.html",
+      "coverageGaps": [],
+      "description": "Beverages category page with intro header, three alternating image/text feature sections (coffee, tea, juice), and a cafe CTA.",
+      "blocks": [
+        { "name": "columns-editorial", "instances": ["#dc-root section:nth-of-type(2)", "#dc-root section:nth-of-type(3)", "#dc-root section:nth-of-type(4)"] },
+        { "name": "hero-media", "instances": ["#dc-root section:nth-of-type(5)"] }
+      ],
+      "sections": [
+        { "id": "intro", "name": "Intro", "selector": "#dc-root section:nth-of-type(1)", "style": null, "blocks": [], "defaultContent": ["#dc-root section:nth-of-type(1) > div"] },
+        { "id": "coffee", "name": "Coffee feature", "selector": "#dc-root section:nth-of-type(2)", "style": null, "blocks": ["columns-editorial"], "defaultContent": [] },
+        { "id": "tea", "name": "Tea feature", "selector": "#dc-root section:nth-of-type(3)", "style": null, "blocks": ["columns-editorial"], "defaultContent": [] },
+        { "id": "juice", "name": "Juice feature", "selector": "#dc-root section:nth-of-type(4)", "style": null, "blocks": ["columns-editorial"], "defaultContent": [] },
+        { "id": "cafe-cta", "name": "Cafe CTA", "selector": "#dc-root section:nth-of-type(5)", "style": "dark", "blocks": ["hero-media"], "defaultContent": [] }
+      ]
+    },
+    {
+      "name": "cafe",
+      "urls": [
+        "https://markszulc.github.io/frescopa-atelier/cafe.html"
+      ],
+      "representativeUrl": "https://markszulc.github.io/frescopa-atelier/cafe.html",
+      "coverageGaps": [],
+      "description": "Cafe & showroom page with hero, reasons cards, three-room feature sections, weekly events cards, locations finder with stats and listings, tour booking form, and CTA.",
+      "blocks": [
+        { "name": "hero-media", "instances": ["#dc-root section:nth-of-type(1)", "#dc-root section:nth-of-type(7)"] },
+        { "name": "cards-reasons", "instances": ["#dc-root section:nth-of-type(2) > div > div"] },
+        { "name": "columns-editorial", "instances": ["#experience > div > div", "#locations article"] },
+        { "name": "cards-event", "instances": ["#whatson > div > div:nth-of-type(2)"] },
+        { "name": "stats-row", "instances": ["#locations > div > div:nth-of-type(1)"] },
+        { "name": "store-locator", "instances": ["#locations > div > div:nth-of-type(2)"] },
+        { "name": "booking-form", "instances": ["#tour"] }
+      ],
+      "sections": [
+        { "id": "hero", "name": "Hero", "selector": "#dc-root section:nth-of-type(1)", "style": null, "blocks": ["hero-media"], "defaultContent": [] },
+        { "id": "reasons", "name": "Reasons", "selector": "#dc-root section:nth-of-type(2)", "style": null, "blocks": ["cards-reasons"], "defaultContent": ["#dc-root section:nth-of-type(2) > div > span", "#dc-root section:nth-of-type(2) > div > h2"] },
+        { "id": "experience", "name": "Experience", "selector": "#experience", "style": null, "blocks": ["columns-editorial"], "defaultContent": ["#experience > div > span", "#experience > div > h2"] },
+        { "id": "whatson", "name": "What's on", "selector": "#whatson", "style": null, "blocks": ["cards-event"], "defaultContent": ["#whatson > div > div:nth-of-type(1)"] },
+        { "id": "locations", "name": "Locations", "selector": "#locations", "style": null, "blocks": ["stats-row", "columns-editorial", "store-locator"], "defaultContent": ["#locations > div > span", "#locations > div > h2", "#locations > div > p"] },
+        { "id": "tour", "name": "Tour booking", "selector": "#tour", "style": null, "blocks": ["booking-form"], "defaultContent": [] },
+        { "id": "cta", "name": "CTA", "selector": "#dc-root section:nth-of-type(7)", "style": "dark", "blocks": ["hero-media"], "defaultContent": [] }
+      ]
+    },
+    {
+      "name": "blog",
+      "urls": [
+        "https://markszulc.github.io/frescopa-atelier/blog.html"
+      ],
+      "representativeUrl": "https://markszulc.github.io/frescopa-atelier/blog.html",
+      "coverageGaps": [],
+      "description": "Journal/blog index with intro header, featured post, category filter, and a grid of article cards.",
+      "blocks": [
+        { "name": "cards-featured", "instances": ["#dc-root section:nth-of-type(2)"] },
+        { "name": "cards-article", "instances": ["#dc-root section:nth-of-type(3) > div > div:nth-of-type(2)"] }
+      ],
+      "sections": [
+        { "id": "intro", "name": "Intro", "selector": "#dc-root section:nth-of-type(1)", "style": "intro", "blocks": [], "defaultContent": ["#dc-root section:nth-of-type(1) > div"] },
+        { "id": "featured", "name": "Featured post", "selector": "#dc-root section:nth-of-type(2)", "style": null, "blocks": ["cards-featured"], "defaultContent": [] },
+        { "id": "grid", "name": "Article grid", "selector": "#dc-root section:nth-of-type(3)", "style": null, "blocks": ["cards-article"], "defaultContent": [] }
+      ]
+    }
+  ]
+}

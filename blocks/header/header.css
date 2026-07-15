@@ -1,6 +1,7 @@
 /* header and nav layout */
 header .nav-wrapper {
-  background-color: var(--background-color);
+  background-color: var(--paper);
+  border-bottom: 1px solid var(--line);
   width: 100%;
   z-index: 2;
   position: fixed;
@@ -15,10 +16,10 @@ header nav {
   align-items: center;
   gap: 0 24px;
   margin: auto;
-  max-width: 1248px;
+  max-width: var(--content-wide);
   height: var(--nav-height);
   padding: 0 24px;
-  font-family: var(--body-font-family);
+  font-family: var(--font-body);
 }
 
 header nav[aria-expanded='true'] {
@@ -149,8 +150,8 @@ header .nav-brand {
 }
 
 header nav .nav-brand img {
-  width: 128px;
-  height: auto;
+  width: auto;
+  height: 26px;
 }
 
 /* sections */
@@ -175,6 +176,18 @@ header nav .nav-sections ul {
 
 header nav .nav-sections ul > li {
   font-weight: 500;
+}
+
+header nav .nav-sections a:any-link {
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--dur-1) var(--ease-quint);
+}
+
+header nav .nav-sections a:hover {
+  color: var(--terracotta);
 }
 
 header nav .nav-sections ul > li > ul {
@@ -269,4 +282,28 @@ header nav .nav-sections ul > li > ul > li {
 /* tools */
 header nav .nav-tools {
   grid-area: tools;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header nav .nav-tools ul {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+header nav .nav-tools a:any-link {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color var(--dur-1) var(--ease-quint);
+}
+
+header nav .nav-tools a:hover {
+  color: var(--terracotta);
 }

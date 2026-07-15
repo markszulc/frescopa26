@@ -1,0 +1,38 @@
+{
+  "variantName": "booking-form",
+  "baseBlock": "booking-form",
+  "version": "1.0.0",
+  "created": "2026-07-15T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://markszulc.github.io/frescopa-atelier/cafe.html",
+    "originPage": "cafe & showroom page",
+    "blockPosition": "bottom"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "form",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "two-column: intro copy + benefits list on the left, multi-field reservation form (select/date/time/guests/name/email/phone/toggle/submit) on the right",
+    "buttonCount": 5,
+    "imageCount": 0
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "appointment / tour / reservation booking sections",
+      "lead-capture forms paired with descriptive copy",
+      "two-column copy + interactive form layouts"
+    ],
+    "notSuitableFor": [
+      "simple contact links (use default content)",
+      "sections without a form"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/frescopa-atelier/cafe"],
+    "reuseCount": 1,
+    "lastUsed": "2026-07-15T00:00:00.000Z"
+  }
+}
