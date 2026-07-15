@@ -38,12 +38,35 @@
 }
 
 .taste-profile-copy ul li {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.3rem 1rem;
   margin: 0;
   padding: 1.1rem 0 0;
   border-top: 1px solid var(--line);
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
   color: var(--ink-soft);
+}
+
+.taste-profile-copy .taste-profile-pt-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.taste-profile-copy .taste-profile-pt-text {
+  color: var(--ink-soft);
+}
+
+@media (width >= 600px) {
+  .taste-profile-copy ul li {
+    grid-template-columns: 0.42fr 1fr;
+    align-items: baseline;
+  }
 }
 
 /* eyebrow (first paragraph, with leading rule) */
@@ -71,7 +94,11 @@
 /* --- Visualization panel --- */
 .taste-profile-viz {
   align-self: start;
-  padding: 2rem 2rem 1.4rem;
+}
+
+/* card that holds the radar chart + readout */
+.taste-profile-frame {
+  padding: 2rem 2rem 1.6rem;
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
   background-color: var(--paper);
@@ -79,8 +106,40 @@
   text-align: center;
 }
 
+/* radar chart */
+.taste-profile-radar {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.taste-profile-radar .tp-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: var(--ink-soft);
+}
+
+.taste-profile-radar .tp-area {
+  transition: none;
+}
+
+.taste-profile-radar .tp-dot {
+  fill: var(--burgundy);
+}
+
+.taste-profile-readout {
+  margin-top: 0.6rem;
+}
+
 .taste-profile-readout h4 {
   margin: 0;
+  font-family: var(--font-display);
   font-size: var(--fs-h4);
   font-weight: 800;
   line-height: var(--lh-snug);
@@ -95,13 +154,13 @@
   color: var(--ink-soft);
 }
 
-/* toggle button group */
+/* toggle button group — sits below the card */
 .taste-profile-controls {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 1.2rem;
+  margin-top: 1.4rem;
 }
 
 .taste-profile-btn {

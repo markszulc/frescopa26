@@ -10,6 +10,7 @@
   --burgundy-deep: oklch(27.5% 0.082 26deg);
   --terracotta: oklch(60.5% 0.116 44deg);
   --terracotta-deep: oklch(51.5% 0.108 40deg);
+  --terracotta-fill: oklch(60.5% 0.116 44deg / 22%);
   --amber: oklch(79% 0.128 74deg);
   --amber-soft: oklch(86.5% 0.083 80deg);
   --teal: oklch(55% 0.05 205deg);
