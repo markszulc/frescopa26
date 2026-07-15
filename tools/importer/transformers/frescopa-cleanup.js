@@ -69,5 +69,15 @@ export default function transform(hookName, element, payload) {
       'form.signup',
       'form.fr-ftr__signup',
     ]);
+
+    // Remove the accessibility "Skip to content" link. It targets the source's
+    // in-page anchor, is part of site chrome (not authorable content), and when
+    // left in the page it renders above the hero and pushes it down.
+    element.querySelectorAll('a[href="#main"], a.skip-link, a.skip-to-content').forEach((a) => {
+      const text = a.textContent.trim().toLowerCase();
+      if (a.getAttribute('href') === '#main' || text === 'skip to content') {
+        (a.closest('p') || a).remove();
+      }
+    });
   }
 }

@@ -307,3 +307,34 @@ header nav .nav-tools a:any-link {
 header nav .nav-tools a:hover {
   color: var(--terracotta);
 }
+
+/* Transparent overlay header when the page leads with a full-bleed hero-media
+   block: collapse the reserved header height so the hero image runs to the very
+   top, float the nav over it, and switch nav content to light colors. */
+body:has(main > .section:first-child .hero-media.block) header {
+  height: 0;
+}
+
+body:has(main > .section:first-child .hero-media.block) header .nav-wrapper {
+  background-color: transparent;
+  border-bottom-color: transparent;
+}
+
+body:has(main > .section:first-child .hero-media.block) header nav .nav-brand img {
+  /* dark logo asset -> render light over the photo */
+  filter: brightness(0) invert(1);
+}
+
+body:has(main > .section:first-child .hero-media.block) header nav .nav-sections a:any-link,
+body:has(main > .section:first-child .hero-media.block) header nav .nav-tools a:any-link {
+  color: var(--cream);
+}
+
+body:has(main > .section:first-child .hero-media.block) header nav .nav-sections a:hover,
+body:has(main > .section:first-child .hero-media.block) header nav .nav-tools a:hover {
+  color: var(--amber);
+}
+
+body:has(main > .section:first-child .hero-media.block) header nav .nav-hamburger button {
+  background-color: transparent;
+}
