@@ -306,15 +306,22 @@ main > .section:first-of-type {
   margin-top: 0;
 }
 
-/* section metadata / background variants */
+/* section metadata / background variants.
+   The source alternates section bands: intro/mood/sustain use the base paper
+   tone (same as body), learn/feed/voices use the slightly darker paper-2. */
+main .section.intro,
+main .section.mood,
+main .section.sustain {
+  background-color: var(--paper);
+  margin: 0;
+}
+
 main .section.light,
 main .section.highlight,
-main .section.intro,
 main .section.feed,
-main .section.sustain,
 main .section.voices,
 main .section.learn,
-main .section.mood {
+main .section.alt {
   background-color: var(--paper-2);
   margin: 0;
 }

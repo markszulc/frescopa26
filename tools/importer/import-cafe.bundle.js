@@ -348,6 +348,12 @@ var CustomImportScript = (() => {
         "form.signup",
         "form.fr-ftr__signup"
       ]);
+      element.querySelectorAll('a[href="#main"], a.skip-link, a.skip-to-content').forEach((a) => {
+        const text = a.textContent.trim().toLowerCase();
+        if (a.getAttribute("href") === "#main" || text === "skip to content") {
+          (a.closest("p") || a).remove();
+        }
+      });
     }
   }
 
@@ -407,9 +413,9 @@ var CustomImportScript = (() => {
     sections: [
       { id: "hero", name: "Hero", selector: "#dc-root section:nth-of-type(1)", style: null, blocks: ["hero-media"], defaultContent: [] },
       { id: "reasons", name: "Reasons", selector: "#dc-root section:nth-of-type(2)", style: null, blocks: ["cards-reasons"], defaultContent: ["#dc-root section:nth-of-type(2) > div > span", "#dc-root section:nth-of-type(2) > div > h2"] },
-      { id: "experience", name: "Experience", selector: "#experience", style: null, blocks: ["columns-editorial"], defaultContent: ["#experience > div > span", "#experience > div > h2"] },
+      { id: "experience", name: "Experience", selector: "#experience", style: "alt", blocks: ["columns-editorial"], defaultContent: ["#experience > div > span", "#experience > div > h2"] },
       { id: "whatson", name: "What's on", selector: "#whatson", style: null, blocks: ["cards-event"], defaultContent: ["#whatson > div > div:nth-of-type(1)"] },
-      { id: "locations", name: "Locations", selector: "#locations", style: null, blocks: ["stats-row", "columns-editorial", "store-locator"], defaultContent: ["#locations > div > span", "#locations > div > h2", "#locations > div > p"] },
+      { id: "locations", name: "Locations", selector: "#locations", style: "alt", blocks: ["stats-row", "columns-editorial", "store-locator"], defaultContent: ["#locations > div > span", "#locations > div > h2", "#locations > div > p"] },
       { id: "tour", name: "Tour booking", selector: "#tour", style: null, blocks: ["booking-form"], defaultContent: [] },
       { id: "cta", name: "CTA", selector: "#dc-root section:nth-of-type(7)", style: "dark", blocks: ["hero-media"], defaultContent: [] }
     ]
