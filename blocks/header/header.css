@@ -295,6 +295,9 @@ header nav .nav-tools ul {
 }
 
 header nav .nav-tools a:any-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 500;
@@ -306,6 +309,12 @@ header nav .nav-tools a:any-link {
 
 header nav .nav-tools a:hover {
   color: var(--terracotta);
+}
+
+header nav .nav-tools a svg {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 /* Transparent overlay header when the page leads with a full-bleed hero-media
