@@ -44,9 +44,9 @@
         { "name": "hero-media", "instances": ["#dc-root section:nth-of-type(5)"] }
       ],
       "sections": [
-        { "id": "intro", "name": "Intro", "selector": "#dc-root section:nth-of-type(1)", "style": null, "blocks": [], "defaultContent": ["#dc-root section:nth-of-type(1) > div"] },
+        { "id": "intro", "name": "Intro", "selector": "#dc-root section:nth-of-type(1)", "style": "alt", "blocks": [], "defaultContent": ["#dc-root section:nth-of-type(1) > div"] },
         { "id": "coffee", "name": "Coffee feature", "selector": "#dc-root section:nth-of-type(2)", "style": null, "blocks": ["columns-editorial"], "defaultContent": [] },
-        { "id": "tea", "name": "Tea feature", "selector": "#dc-root section:nth-of-type(3)", "style": null, "blocks": ["columns-editorial"], "defaultContent": [] },
+        { "id": "tea", "name": "Tea feature", "selector": "#dc-root section:nth-of-type(3)", "style": "alt", "blocks": ["columns-editorial"], "defaultContent": [] },
         { "id": "juice", "name": "Juice feature", "selector": "#dc-root section:nth-of-type(4)", "style": null, "blocks": ["columns-editorial"], "defaultContent": [] },
         { "id": "cafe-cta", "name": "Cafe CTA", "selector": "#dc-root section:nth-of-type(5)", "style": "dark", "blocks": ["hero-media"], "defaultContent": [] }
       ]
@@ -71,9 +71,9 @@
       "sections": [
         { "id": "hero", "name": "Hero", "selector": "#dc-root section:nth-of-type(1)", "style": null, "blocks": ["hero-media"], "defaultContent": [] },
         { "id": "reasons", "name": "Reasons", "selector": "#dc-root section:nth-of-type(2)", "style": null, "blocks": ["cards-reasons"], "defaultContent": ["#dc-root section:nth-of-type(2) > div > span", "#dc-root section:nth-of-type(2) > div > h2"] },
-        { "id": "experience", "name": "Experience", "selector": "#experience", "style": null, "blocks": ["columns-editorial"], "defaultContent": ["#experience > div > span", "#experience > div > h2"] },
+        { "id": "experience", "name": "Experience", "selector": "#experience", "style": "alt", "blocks": ["columns-editorial"], "defaultContent": ["#experience > div > span", "#experience > div > h2"] },
         { "id": "whatson", "name": "What's on", "selector": "#whatson", "style": null, "blocks": ["cards-event"], "defaultContent": ["#whatson > div > div:nth-of-type(1)"] },
-        { "id": "locations", "name": "Locations", "selector": "#locations", "style": null, "blocks": ["stats-row", "columns-editorial", "store-locator"], "defaultContent": ["#locations > div > span", "#locations > div > h2", "#locations > div > p"] },
+        { "id": "locations", "name": "Locations", "selector": "#locations", "style": "alt", "blocks": ["stats-row", "columns-editorial", "store-locator"], "defaultContent": ["#locations > div > span", "#locations > div > h2", "#locations > div > p"] },
         { "id": "tour", "name": "Tour booking", "selector": "#tour", "style": null, "blocks": ["booking-form"], "defaultContent": [] },
         { "id": "cta", "name": "CTA", "selector": "#dc-root section:nth-of-type(7)", "style": "dark", "blocks": ["hero-media"], "defaultContent": [] }
       ]
@@ -91,7 +91,7 @@
         { "name": "cards-article", "instances": ["#dc-root section:nth-of-type(3) > div > div:nth-of-type(2)"] }
       ],
       "sections": [
-        { "id": "intro", "name": "Intro", "selector": "#dc-root section:nth-of-type(1)", "style": "intro", "blocks": [], "defaultContent": ["#dc-root section:nth-of-type(1) > div"] },
+        { "id": "intro", "name": "Intro", "selector": "#dc-root section:nth-of-type(1)", "style": "alt", "blocks": [], "defaultContent": ["#dc-root section:nth-of-type(1) > div"] },
         { "id": "featured", "name": "Featured post", "selector": "#dc-root section:nth-of-type(2)", "style": null, "blocks": ["cards-featured"], "defaultContent": [] },
         { "id": "grid", "name": "Article grid", "selector": "#dc-root section:nth-of-type(3)", "style": null, "blocks": ["cards-article"], "defaultContent": [] }
       ]

@@ -27,9 +27,9 @@ const PAGE_TEMPLATE = {
     { name: 'hero-media', instances: ['#dc-root section:nth-of-type(5)'] },
   ],
   sections: [
-    { id: 'intro', name: 'Intro', selector: '#dc-root section:nth-of-type(1)', style: null, blocks: [], defaultContent: ['#dc-root section:nth-of-type(1) > div'] },
+    { id: 'intro', name: 'Intro', selector: '#dc-root section:nth-of-type(1)', style: 'alt', blocks: [], defaultContent: ['#dc-root section:nth-of-type(1) > div'] },
     { id: 'coffee', name: 'Coffee feature', selector: '#dc-root section:nth-of-type(2)', style: null, blocks: ['columns-editorial'], defaultContent: [] },
-    { id: 'tea', name: 'Tea feature', selector: '#dc-root section:nth-of-type(3)', style: null, blocks: ['columns-editorial'], defaultContent: [] },
+    { id: 'tea', name: 'Tea feature', selector: '#dc-root section:nth-of-type(3)', style: 'alt', blocks: ['columns-editorial'], defaultContent: [] },
     { id: 'juice', name: 'Juice feature', selector: '#dc-root section:nth-of-type(4)', style: null, blocks: ['columns-editorial'], defaultContent: [] },
     { id: 'cafe-cta', name: 'Cafe CTA', selector: '#dc-root section:nth-of-type(5)', style: 'dark', blocks: ['hero-media'], defaultContent: [] },
   ],

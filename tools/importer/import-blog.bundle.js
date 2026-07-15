@@ -132,6 +132,12 @@ var CustomImportScript = (() => {
         "form.signup",
         "form.fr-ftr__signup"
       ]);
+      element.querySelectorAll('a[href="#main"], a.skip-link, a.skip-to-content').forEach((a) => {
+        const text = a.textContent.trim().toLowerCase();
+        if (a.getAttribute("href") === "#main" || text === "skip to content") {
+          (a.closest("p") || a).remove();
+        }
+      });
     }
   }
 
@@ -179,7 +185,7 @@ var CustomImportScript = (() => {
       { name: "cards-article", instances: ["#dc-root section:nth-of-type(3) > div > div:nth-of-type(2)"] }
     ],
     sections: [
-      { id: "intro", name: "Intro", selector: "#dc-root section:nth-of-type(1)", style: "intro", blocks: [], defaultContent: ["#dc-root section:nth-of-type(1) > div"] },
+      { id: "intro", name: "Intro", selector: "#dc-root section:nth-of-type(1)", style: "alt", blocks: [], defaultContent: ["#dc-root section:nth-of-type(1) > div"] },
       { id: "featured", name: "Featured post", selector: "#dc-root section:nth-of-type(2)", style: null, blocks: ["cards-featured"], defaultContent: [] },
       { id: "grid", name: "Article grid", selector: "#dc-root section:nth-of-type(3)", style: null, blocks: ["cards-article"], defaultContent: [] }
     ]
