@@ -64,7 +64,8 @@
 
 @media (width >= 600px) {
   .taste-profile-copy ul li {
-    grid-template-columns: 0.42fr 1fr;
+    grid-template-columns: minmax(120px, 0.4fr) 1fr;
+    column-gap: 2rem;
     align-items: baseline;
   }
 }

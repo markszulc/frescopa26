@@ -202,6 +202,7 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections {
     display: block;
     visibility: visible;
+    flex: 1 1 auto;
     white-space: nowrap;
   }
 
@@ -237,6 +238,7 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections ul {
     display: flex;
+    justify-content: center;
     gap: 24px;
     margin: 0;
   }
@@ -329,9 +331,17 @@ body:has(main > .section:first-child .hero-media.block) header .nav-wrapper {
   border-bottom-color: transparent;
 }
 
+/* Over the hero photo, swap the burgundy wordmark for the light variant
+   (cream text + cream divider line, amber bean) so it reads on the dark image. */
+body:has(main > .section:first-child .hero-media.block) header nav .nav-brand a {
+  display: inline-block;
+  width: 128px;
+  height: 26px;
+  background: url("/icons/frescopa-logo-light.svg") left center / contain no-repeat;
+}
+
 body:has(main > .section:first-child .hero-media.block) header nav .nav-brand img {
-  /* dark logo asset -> render light over the photo */
-  filter: brightness(0) invert(1);
+  opacity: 0;
 }
 
 body:has(main > .section:first-child .hero-media.block) header nav .nav-sections a:any-link,

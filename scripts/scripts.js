@@ -173,6 +173,40 @@ function decorateSectionMetadata(main) {
 }
 
 /**
+ * Adds scroll-triggered fade/rise reveals to section content, matching the
+ * source site. Applied JS-first so content is never hidden without JS, and
+ * disabled when the user prefers reduced motion.
+ * @param {Element} main The main element
+ */
+function decorateScrollReveal(main) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-in');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+  main.querySelectorAll(':scope > .section').forEach((section, sectionIndex) => {
+    // Skip the first (above-the-fold/LCP) section to avoid a load-time flash.
+    if (sectionIndex === 0) return;
+    // Reveal targets: each default-content head child and each block wrapper.
+    const targets = [
+      ...section.querySelectorAll(':scope > .default-content-wrapper > *'),
+      ...section.querySelectorAll(':scope > div[class$="-wrapper"] > .block'),
+    ];
+    targets.forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.setProperty('--reveal-delay', `${Math.min(i * 0.08, 0.32)}s`);
+      observer.observe(el);
+    });
+  });
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -219,6 +253,8 @@ async function loadLazy(doc) {
 
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  decorateScrollReveal(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

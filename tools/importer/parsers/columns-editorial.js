@@ -13,7 +13,20 @@
  * Approach: locate the grid "row" container and map each of its direct child
  * elements to a column cell. Column count derives from the source layout.
  */
-export default function parse(element, { document }) {
+export default function parse(element, { document, url }) {
+  // Normalise relative image sources to absolute so the importer's image-URL
+  // adjustment can resolve them (the dc-runtime emits src="assets/..." which
+  // otherwise gets dropped).
+  if (url) {
+    element.querySelectorAll('img[src]').forEach((img) => {
+      try {
+        img.setAttribute('src', new URL(img.getAttribute('src'), url).href);
+      } catch (e) {
+        /* leave as-is if it cannot be resolved */
+      }
+    });
+  }
+
   // Locate the container whose direct children are the visual columns.
   // Preference order: known grid classes, then a descendant CSS grid, then the
   // element itself when it already is the row (e.g. an article or a bare grid div).

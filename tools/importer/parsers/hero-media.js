@@ -21,13 +21,27 @@ export default function parse(element, { document }) {
 
   // Row 3 content: eyebrow, heading, lead paragraph, CTAs. Query directly from the
   // hero element so nested-container scoping never drops content.
-  const eyebrow = element.querySelector('.eyebrow, [class*="eyebrow"]');
+  // The eyebrow may carry a class (.eyebrow) or be a bare <span> before the heading
+  // (dark CTA sections render it as an unclassed span via the dc-runtime).
   const heading = element.querySelector('h1, h2, h3, .hero__title, [class*="title"]');
-  const leads = Array.from(
-    element.querySelectorAll('p.hero__lead, [class*="lead"]'),
-  );
+  let eyebrow = element.querySelector('.eyebrow, [class*="eyebrow"]');
+  if (!eyebrow && heading) {
+    const prev = heading.previousElementSibling;
+    if (prev && prev.tagName === 'SPAN' && prev.textContent.trim()) eyebrow = prev;
+  }
+
+  // Lead paragraphs: prefer classed leads, else any <p> descendants (dark CTA
+  // sections render the lead as an unclassed <p>). Never re-include the eyebrow.
+  let leads = Array.from(element.querySelectorAll('p.hero__lead, [class*="lead"]'));
+  if (leads.length === 0) {
+    leads = Array.from(element.querySelectorAll('p')).filter((p) => p !== eyebrow);
+  }
+
+  // CTA links: hero actions, generic buttons, or the site's fr-btn buttons.
   const ctaLinks = Array.from(
-    element.querySelectorAll('.hero__actions a, [class*="actions"] a, a.btn, a.button'),
+    element.querySelectorAll(
+      '.hero__actions a, [class*="actions"] a, a.btn, a.button, a.fr-btn, [class*="btn"] a',
+    ),
   );
 
   const cells = [];
