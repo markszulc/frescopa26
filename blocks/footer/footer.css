@@ -19,15 +19,22 @@ footer .footer p {
   margin: 0;
 }
 
-/* brand column */
+/* brand column: the imported asset is the burgundy logo, but the dark footer
+   needs the light variant (cream text + divider, amber bean). Swap it in as a
+   background on the logo's paragraph and hide the colored <img>. */
+footer .footer .footer-brand .default-content-wrapper > p:first-child:has(picture) {
+  width: 147px;
+  height: 30px;
+  background: url("/icons/frescopa-logo-light.svg") left center / contain no-repeat;
+}
+
 footer .footer .footer-brand img {
   width: auto;
   height: 30px;
-
-  /* logo asset is dark; invert to cream on the dark footer */
-  filter: brightness(0) invert(1);
+  opacity: 0;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 footer .footer .footer-brand p {
   margin-top: var(--space-md);
   max-width: 34ch;
@@ -145,6 +152,7 @@ footer .footer .footer-social a:hover {
   color: var(--amber);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 footer .footer .footer-legal > p {
   color: var(--cream-soft);
   font-size: 0.85rem;
