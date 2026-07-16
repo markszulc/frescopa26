@@ -62,6 +62,12 @@ footer .footer {
   visibility: hidden;
 }
 
+/* Give the footer its charcoal ground before the block CSS loads, so the space
+   it reserves while decorating doesn't flash the paper body background. */
+footer {
+  background-color: var(--charcoal);
+}
+
 header .header[data-block-status="loaded"],
 footer .footer[data-block-status="loaded"] {
   visibility: visible;
