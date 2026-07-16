@@ -31,8 +31,9 @@
   background-color: var(--charcoal);
 }
 
-/* Row 1 (image cell) becomes the absolute background layer */
-.hero-media.block > div:first-child {
+/* Row 1 (image cell) becomes the absolute background layer. Scoped away from the
+   no-image variant so single-row CTA instances keep their only div in flow. */
+.hero-media.block:not(.no-image) > div:first-child {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -41,7 +42,7 @@
 }
 
 /* Scrim: darken image for legible light text (matches source triple-gradient) */
-.hero-media.block > div:first-child::after {
+.hero-media.block:not(.no-image) > div:first-child::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -66,6 +67,7 @@
 /* Row 2 (content cell): sits above the image. border-box so the 1120px
    max-width includes the gutter, aligning content with the nav/sections
    (container edges 440–1560, content inset by the 48px gutter). */
+/* stylelint-disable-next-line no-descending-specificity */
 .hero-media.block > div:last-child {
   box-sizing: border-box;
   position: relative;
@@ -76,6 +78,7 @@
   padding: 0 var(--gutter);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .hero-media.block > div:last-child > div {
   display: block;
   max-width: 620px;
@@ -173,15 +176,53 @@
   min-height: 0;
   padding: var(--section-y) 0;
   background-color: var(--charcoal);
-}
-
-.hero-media.block.no-image > div:first-child,
-.hero-media.block.no-image > div:first-child::after {
-  display: none;
+  text-align: center;
 }
 
 .hero-media.block.no-image > div:last-child > div {
   max-width: var(--content-narrow);
+  margin-inline: auto;
+}
+
+/* Center the copy and constrain line lengths in the CTA band. */
+.hero-media.block.no-image :is(p, h1, h2) {
+  max-width: none;
+  margin-inline: auto;
+}
+
+.hero-media.block.no-image p:not(:has(> a:only-child)) {
+  max-width: 42ch;
+}
+
+/* CTA buttons in the dark band: primary is cream with burgundy text. */
+.hero-media.block.no-image p:has(> a:only-child) {
+  justify-content: center;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero-media.block.no-image p:has(> a:only-child) a {
+  background-color: var(--cream);
+  color: var(--burgundy);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero-media.block.no-image p:has(> a:only-child) a:hover {
+  border-color: var(--paper-2);
+  background-color: var(--paper-2);
+  color: var(--burgundy);
+}
+
+/* Secondary CTA stays a ghost/outline button on the dark band. */
+.hero-media.block.no-image p:has(> a:only-child) ~ p:has(> a:only-child) a {
+  border-color: oklch(94.5% 0.016 80deg / 42%);
+  background-color: transparent;
+  color: var(--cream);
+}
+
+.hero-media.block.no-image p:has(> a:only-child) ~ p:has(> a:only-child) a:hover {
+  border-color: var(--cream);
+  background-color: oklch(94.5% 0.016 80deg / 12%);
+  color: var(--cream);
 }
 
 /* Desktop */

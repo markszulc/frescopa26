@@ -42,7 +42,15 @@ var CustomImportScript = (() => {
   });
 
   // tools/importer/parsers/columns-editorial.js
-  function parse(element, { document }) {
+  function parse(element, { document, url }) {
+    if (url) {
+      element.querySelectorAll("img[src]").forEach((img) => {
+        try {
+          img.setAttribute("src", new URL(img.getAttribute("src"), url).href);
+        } catch (e) {
+        }
+      });
+    }
     const namedGrid = element.querySelector(
       '.intro__grid, [class*="__grid"], [class*="grid"]'
     );
@@ -83,13 +91,20 @@ var CustomImportScript = (() => {
     const bgImage = element.querySelector(
       '.hero__media img, [class*="media"] > img, :scope > img'
     );
-    const eyebrow = element.querySelector('.eyebrow, [class*="eyebrow"]');
     const heading = element.querySelector('h1, h2, h3, .hero__title, [class*="title"]');
-    const leads = Array.from(
-      element.querySelectorAll('p.hero__lead, [class*="lead"]')
-    );
+    let eyebrow = element.querySelector('.eyebrow, [class*="eyebrow"]');
+    if (!eyebrow && heading) {
+      const prev = heading.previousElementSibling;
+      if (prev && prev.tagName === "SPAN" && prev.textContent.trim()) eyebrow = prev;
+    }
+    let leads = Array.from(element.querySelectorAll('p.hero__lead, [class*="lead"]'));
+    if (leads.length === 0) {
+      leads = Array.from(element.querySelectorAll("p")).filter((p) => p !== eyebrow);
+    }
     const ctaLinks = Array.from(
-      element.querySelectorAll('.hero__actions a, [class*="actions"] a, a.btn, a.button')
+      element.querySelectorAll(
+        '.hero__actions a, [class*="actions"] a, a.btn, a.button, a.fr-btn, [class*="btn"] a'
+      )
     );
     const cells = [];
     if (bgImage) {

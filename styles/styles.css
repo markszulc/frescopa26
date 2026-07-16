@@ -327,10 +327,45 @@ main .section.alt {
   margin: 0;
 }
 
+/* Scroll-reveal: content fades/rises in as it scrolls into view. Applied
+   JS-first (see decorateScrollReveal), so content stays visible without JS. */
+main .reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity var(--dur-3) var(--ease-expo),
+    transform var(--dur-3) var(--ease-expo);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+main .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 main .section.dark {
+  position: relative;
+  overflow: hidden;
   background-color: var(--charcoal);
   color: var(--cream);
   margin: 0;
+}
+
+/* Amber glow rising from the bottom-centre, matching the source .cta::before */
+main .section.dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 80% at 50% 120%, oklch(79% 0.128 74deg / 20%), transparent 70%);
+  pointer-events: none;
 }
 
 main .section.dark h1,
@@ -345,6 +380,89 @@ main .section.dark p {
 
 main .section.dark a.button:any-link {
   color: var(--amber);
+}
+
+/* Dark CTA band: centered promise + sub-line + two pill buttons.
+   Values extracted from the source .cta section. */
+main .section.dark .default-content-wrapper {
+  position: relative;
+  max-width: var(--content-narrow);
+  margin-inline: auto;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+main .section.dark .default-content-wrapper > p:first-child {
+  margin: 0 auto;
+  max-width: 20ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5.4vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: var(--tracking-tight);
+  color: var(--cream);
+}
+
+main .section.dark .default-content-wrapper > p:first-child em {
+  font-style: normal;
+  font-weight: 800;
+  color: var(--amber);
+}
+
+main .section.dark .default-content-wrapper > p:nth-child(2) {
+  margin: 1.4rem auto 0;
+  max-width: 34ch;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--cream-soft);
+}
+
+main .section.dark .default-content-wrapper > p:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+  margin: 2.3rem 0 0;
+}
+
+main .section.dark .default-content-wrapper > p:last-child a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  padding: 0.85em 1.5em;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  background-color: var(--terracotta);
+  color: var(--cream);
+  transition:
+    background-color var(--dur-1) var(--ease-quint),
+    border-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint);
+}
+
+main .section.dark .default-content-wrapper > p:last-child a:hover {
+  border-color: var(--terracotta-deep);
+  background-color: var(--terracotta-deep);
+  color: var(--cream);
+}
+
+main .section.dark .default-content-wrapper > p:last-child a:last-child {
+  border-color: oklch(94.5% 0.016 80deg / 34%);
+  background-color: transparent;
+  color: var(--cream);
+}
+
+main .section.dark .default-content-wrapper > p:last-child a:last-child:hover {
+  border-color: var(--cream);
+  background-color: oklch(94.5% 0.016 80deg / 12%);
+  color: var(--cream);
 }
 
 /* Feed section head: eyebrow (terracotta rule), heading, and an intro
@@ -390,6 +508,38 @@ main .section.feed .default-content-wrapper > p:last-child {
   color: var(--ink-soft);
 }
 
+/* Page-header intro (category pages): eyebrow, large burgundy heading, lede. */
+main .section.alt .default-content-wrapper > p:first-child {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+main .section.alt .default-content-wrapper > h1 {
+  margin: 0.6rem 0 0;
+  max-width: 14ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.alt .default-content-wrapper > h1 + p {
+  margin: 1rem 0 0;
+  max-width: 52ch;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
 /* Two-column head at desktop: eyebrow + heading left, intro right, bottom-aligned. */
 @media (width >= 900px) {
   main .section.feed .default-content-wrapper {
@@ -411,4 +561,65 @@ main .section.feed .default-content-wrapper > p:last-child {
     margin-top: 0;
     max-width: 34ch;
   }
+}
+
+/* Voices section head: eyebrow + large lead testimonial (default content),
+   styled to match the source. The two smaller quotes are the cards-quote block. */
+main .section.voices .default-content-wrapper > p:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+main .section.voices .default-content-wrapper > p:first-child::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background-color: currentcolor;
+}
+
+main .section.voices .default-content-wrapper > blockquote {
+  margin: 1.4rem 0 0;
+  padding: 0;
+  border: 0;
+  max-width: 900px;
+}
+
+main .section.voices .default-content-wrapper > blockquote > p:first-child {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.85rem, 4.2vw, 3.1rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+main .section.voices .default-content-wrapper > blockquote > p:first-child em {
+  font-style: normal;
+  font-weight: 800;
+  color: var(--terracotta);
+}
+
+main .section.voices .default-content-wrapper > blockquote > p:last-child {
+  margin: 1.1rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+/* separate the two smaller quotes from the lead testimonial (source: ~3.8rem) */
+main .section.voices .cards-quote-wrapper {
+  margin-top: 3.8rem;
 }

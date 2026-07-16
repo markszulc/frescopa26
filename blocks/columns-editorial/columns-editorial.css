@@ -107,6 +107,35 @@
   text-decoration: none;
 }
 
+/* ---- Image+text feature variant (category pages): smaller heading and a
+   pill-button CTA. Scoped to blocks that have both an image column and a CTA
+   link, which distinguishes them from the home intro (link, no image) and the
+   home sustain feature (image, no link). ---- */
+.columns-editorial:has(.columns-editorial-img-col):has(a) h2 {
+  font-size: var(--fs-h3);
+  font-weight: 800;
+}
+
+.columns-editorial:has(.columns-editorial-img-col) p:has(> a) a:any-link {
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  padding: 0.85em 1.5em;
+  font-size: var(--fs-sm);
+  background-color: var(--terracotta);
+  color: var(--cream);
+  transition:
+    background-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint);
+}
+
+.columns-editorial:has(.columns-editorial-img-col) p:has(> a) a:any-link:hover {
+  background-color: var(--terracotta-deep);
+  color: var(--cream);
+}
+
 /* ---- Feature chips (optional ul list) ---- */
 .columns-editorial ul {
   display: flex;
