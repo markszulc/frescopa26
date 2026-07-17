@@ -514,8 +514,10 @@ main .section.feed .default-content-wrapper > p:last-child {
   color: var(--ink-soft);
 }
 
-/* Page-header intro (category pages): eyebrow, large burgundy heading, lede. */
-main .section.alt .default-content-wrapper > p:first-child {
+/* Page-header intro (category + account pages): eyebrow, large burgundy
+   heading, lede. */
+main .section.alt .default-content-wrapper > p:first-child,
+main .section:has(.account-signin) .default-content-wrapper > p:first-child {
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--fs-eyebrow);
@@ -526,7 +528,8 @@ main .section.alt .default-content-wrapper > p:first-child {
   color: var(--terracotta);
 }
 
-main .section.alt .default-content-wrapper > h1 {
+main .section.alt .default-content-wrapper > h1,
+main .section:has(.account-signin) .default-content-wrapper > h1 {
   margin: 0.6rem 0 0;
   max-width: 14ch;
   font-family: var(--font-display);
@@ -537,19 +540,22 @@ main .section.alt .default-content-wrapper > h1 {
   color: var(--burgundy);
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-main .section.alt .default-content-wrapper > h1 + p {
+/* stylelint-disable no-descending-specificity */
+main .section.alt .default-content-wrapper > h1 + p,
+main .section:has(.account-signin) .default-content-wrapper > h1 + p {
   margin: 1rem 0 0;
   max-width: 52ch;
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--ink-soft);
 }
+/* stylelint-enable no-descending-specificity */
 
-/* Machines family head: label eyebrow, burgundy heading, description, and a
-   "how they differ" note — the default content ahead of each cards-machine
-   block. */
-main .section:has(.cards-machine) .default-content-wrapper > p:first-child {
+/* Product-family head (machines + coffee catalogues): label eyebrow, burgundy
+   heading, description, and an optional smaller note — the default content
+   ahead of each cards-machine / cards-coffee block. */
+main .section:has(.cards-machine) .default-content-wrapper > p:first-child,
+main .section:has(.cards-coffee) .default-content-wrapper > p:first-child {
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--fs-eyebrow);
@@ -560,7 +566,8 @@ main .section:has(.cards-machine) .default-content-wrapper > p:first-child {
   color: var(--terracotta);
 }
 
-main .section:has(.cards-machine) .default-content-wrapper > h2 {
+main .section:has(.cards-machine) .default-content-wrapper > h2,
+main .section:has(.cards-coffee) .default-content-wrapper > h2 {
   margin: 0.6rem 0 0;
   font-family: var(--font-display);
   font-size: var(--fs-h3);
@@ -570,8 +577,9 @@ main .section:has(.cards-machine) .default-content-wrapper > h2 {
   color: var(--burgundy);
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-main .section:has(.cards-machine) .default-content-wrapper > h2 + p {
+/* stylelint-disable no-descending-specificity */
+main .section:has(.cards-machine) .default-content-wrapper > h2 + p,
+main .section:has(.cards-coffee) .default-content-wrapper > h2 + p {
   margin: 1rem 0 0;
   max-width: 46ch;
   font-size: var(--fs-body-lg);
@@ -579,9 +587,9 @@ main .section:has(.cards-machine) .default-content-wrapper > h2 + p {
   color: var(--ink-soft);
 }
 
-/* The last paragraph is the "how they differ" note — smaller, muted. */
-/* stylelint-disable-next-line no-descending-specificity */
-main .section:has(.cards-machine) .default-content-wrapper > p:last-child:not(:first-child) {
+/* A trailing note (e.g. "how they differ") — smaller, muted. */
+main .section:has(.cards-machine) .default-content-wrapper > p:last-child:not(:first-child),
+main .section:has(.cards-coffee) .default-content-wrapper > p:last-child:not(:first-child) {
   margin: 1rem 0 0;
   max-width: 46ch;
   font-size: var(--fs-sm);
@@ -589,9 +597,133 @@ main .section:has(.cards-machine) .default-content-wrapper > p:last-child:not(:f
   color: var(--ink-soft);
 }
 
-main .section:has(.cards-machine) .default-content-wrapper {
+main .section:has(.cards-machine) .default-content-wrapper,
+main .section:has(.cards-coffee) .default-content-wrapper {
   margin-bottom: 2.5rem;
 }
+/* stylelint-enable no-descending-specificity */
+
+/* ---- Journal article (long-form editorial) ---- */
+
+/* stylelint-disable no-descending-specificity */
+
+/* Constrain the reading column and centre it; keep media full-width within. */
+main .section:has(.article-byline) .default-content-wrapper {
+  max-width: var(--content-narrow);
+  margin-inline: auto;
+}
+
+main .section:has(.article-byline) .default-content-wrapper > p:first-child {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+main .section:has(.article-byline) .default-content-wrapper > h1 {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+/* The lede: the first paragraph after the h1. */
+main .section:has(.article-byline) .default-content-wrapper > h1 + p {
+  margin: 1.1rem 0 0;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* Body prose */
+main .section:has(.article-byline) .default-content-wrapper > h2 {
+  margin: 2.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+main .section:has(.article-byline) .default-content-wrapper > p {
+  margin: 1.1rem 0 0;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--ink);
+}
+
+/* Drop cap on the opening paragraph (the one right after the hero caption). */
+main .section:has(.article-byline) .default-content-wrapper > p > em:only-child {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* Figures: images render full reading-column width with an italic caption. */
+main .section:has(.article-byline) .default-content-wrapper > p:has(> picture) {
+  margin: 2rem 0 0;
+}
+
+main .section:has(.article-byline) .default-content-wrapper picture img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-lg);
+}
+
+main .section:has(.article-byline) .default-content-wrapper > p:has(> picture) + p em {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: var(--fs-sm);
+  color: var(--ink-soft);
+}
+
+/* Pull-quote */
+main .section:has(.article-byline) .default-content-wrapper > blockquote {
+  margin: 2rem 0 0;
+  padding: 0 0 0 1.4rem;
+  border-left: 3px solid var(--amber);
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  color: var(--burgundy);
+}
+
+/* "The short version" key-points aside */
+main .section:has(.article-byline) .default-content-wrapper .article-keypoints {
+  margin: 2rem 0 0;
+  padding: 1.6rem 1.8rem;
+  border-radius: var(--r-lg);
+  background-color: var(--paper-2);
+}
+
+main .section:has(.article-byline) .default-content-wrapper .article-keypoints > p:first-child {
+  margin: 0 0 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+main .section:has(.article-byline) .default-content-wrapper .article-keypoints ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.5rem;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+/* stylelint-enable no-descending-specificity */
 
 /* Two-column head at desktop: eyebrow + heading left, intro right, bottom-aligned. */
 @media (width >= 900px) {

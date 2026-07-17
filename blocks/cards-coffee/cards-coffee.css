@@ -1,0 +1,175 @@
+/* Block: cards-coffee
+ * Uniform product grid for the Coffee shop catalogue. Each card: placeholder or
+ * photo media (optional "Most loved" badge), category, title, description,
+ * format chips, and a foot with a "from" price + a Choose-options link.
+ * Values extracted from the source coffee page computed styles.
+ */
+
+.cards-coffee .cards-coffee-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.cards-coffee .cards-coffee-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background-color: var(--paper);
+  overflow: hidden;
+}
+
+/* ---- Media ---- */
+.cards-coffee .cards-coffee-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background-color: var(--paper-3);
+}
+
+.cards-coffee .cards-coffee-media picture,
+.cards-coffee .cards-coffee-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cards-coffee .cards-coffee-media-placeholder {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--paper-2), var(--paper-3));
+}
+
+.cards-coffee .cards-coffee-placeholder-label {
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  color: var(--burgundy);
+  text-align: center;
+}
+
+.cards-coffee .cards-coffee-badge {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  padding: 0.3em 0.7em;
+  border-radius: var(--r-pill);
+  background-color: var(--amber-soft);
+  color: var(--terracotta-deep);
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---- Body ---- */
+.cards-coffee .cards-coffee-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 1.4rem;
+}
+
+.cards-coffee .cards-coffee-category {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.cards-coffee .cards-coffee-title {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+.cards-coffee .cards-coffee-title a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cards-coffee .cards-coffee-desc {
+  margin: 0.7rem 0 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* Format chips */
+.cards-coffee .cards-coffee-formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cards-coffee .cards-coffee-formats li {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Foot: price + choose-options link */
+.cards-coffee .cards-coffee-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.2rem;
+}
+
+.cards-coffee .cards-coffee-price {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cards-coffee .cards-coffee-cta:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--terracotta);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.cards-coffee .cards-coffee-cta:hover {
+  color: var(--terracotta-deep);
+}
+
+/* ---- Responsive grid ---- */
+@media (width >= 600px) {
+  .cards-coffee .cards-coffee-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (width >= 900px) {
+  .cards-coffee .cards-coffee-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.8rem;
+  }
+}

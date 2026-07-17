@@ -1,0 +1,58 @@
+.product-jumpnav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.product-jumpnav .product-jumpnav-inner {
+  max-width: var(--content);
+  margin-inline: auto;
+  padding: 0.7rem var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.product-jumpnav .product-jumpnav-intro {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.product-jumpnav .product-jumpnav-hint {
+  font-size: var(--fs-sm);
+  color: var(--ink-soft);
+}
+
+.product-jumpnav .product-jumpnav-label {
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--terracotta);
+}
+
+.product-jumpnav .product-jumpnav-links {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.product-jumpnav .product-jumpnav-links a {
+  font-size: var(--fs-sm);
+  color: var(--ink);
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--r-pill);
+  transition: background 0.2s var(--ease-quint), color 0.2s var(--ease-quint);
+}
+
+.product-jumpnav .product-jumpnav-links a:hover {
+  background: var(--paper-2);
+  color: var(--terracotta);
+}

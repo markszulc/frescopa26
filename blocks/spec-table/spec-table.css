@@ -1,0 +1,109 @@
+.spec-table .spec-table-head {
+  max-width: var(--content-narrow);
+  margin-bottom: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+}
+
+.spec-table .spec-table-head p:first-child {
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--terracotta);
+  margin-bottom: 0.6rem;
+}
+
+.spec-table .spec-table-head h2 {
+  color: var(--burgundy);
+  margin: 0;
+}
+
+.spec-table .spec-table-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+}
+
+@media (width >= 600px) {
+  .spec-table .spec-table-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .spec-table .spec-table-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.spec-table .spec-table-card h3 {
+  font-size: var(--fs-h4);
+  color: var(--burgundy);
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.spec-table .spec-table-card dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+}
+
+.spec-table .spec-table-card dt {
+  font-size: var(--fs-sm);
+  color: var(--ink-soft);
+}
+
+.spec-table .spec-table-card dd {
+  margin: 0 0 0.4rem;
+  font-size: var(--fs-body);
+  color: var(--ink);
+}
+
+.spec-table .spec-table-inbox {
+  margin-top: clamp(2rem, 1rem + 3vw, 3.5rem);
+  padding-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  border-top: 1px solid var(--line);
+}
+
+.spec-table .spec-table-inbox h3 {
+  font-size: var(--fs-h4);
+  color: var(--burgundy);
+  margin: 0 0 1rem;
+}
+
+.spec-table .spec-table-inbox ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+@media (width >= 600px) {
+  .spec-table .spec-table-inbox ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .spec-table .spec-table-inbox ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.spec-table .spec-table-inbox li {
+  position: relative;
+  padding-left: 1.3rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+}
+
+.spec-table .spec-table-inbox li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--terracotta);
+}

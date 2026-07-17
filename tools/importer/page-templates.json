@@ -116,6 +116,60 @@
         { "id": "filter-family", "name": "Filter family", "selector": "#dc-root section:nth-of-type(5)", "style": null, "family": "filter", "blocks": ["cards-machine"], "defaultContent": [] },
         { "id": "cold-brew", "name": "Cold brew family", "selector": "#dc-root section:nth-of-type(6)", "style": "alt", "family": "cold-brew", "blocks": ["cards-machine"], "defaultContent": [] }
       ]
+    },
+    {
+      "name": "coffee",
+      "urls": [
+        "https://markszulc.github.io/frescopa-atelier/coffee.html"
+      ],
+      "representativeUrl": "https://markszulc.github.io/frescopa-atelier/coffee.html",
+      "coverageGaps": [],
+      "description": "Coffee shop catalogue page with intro header + breadcrumb, a category filter bar, and three product-family sections (blends & roasts, single origin, instant) each with a grid of product cards.",
+      "blocks": [
+        { "name": "machine-filter", "instances": ["#dc-root section:nth-of-type(2)"] },
+        { "name": "cards-coffee", "instances": ["#dc-root section:nth-of-type(3)", "#dc-root section:nth-of-type(4)", "#dc-root section:nth-of-type(5)"] }
+      ],
+      "sections": [
+        { "id": "intro", "name": "Intro", "selector": "#dc-root section:nth-of-type(1)", "style": "alt", "blocks": [], "defaultContent": ["#dc-root section:nth-of-type(1) > div"] },
+        { "id": "filter", "name": "Filter bar", "selector": "#dc-root section:nth-of-type(2)", "style": "alt", "blocks": ["machine-filter"], "defaultContent": [] },
+        { "id": "blends", "name": "Blends & roasts", "selector": "#dc-root section:nth-of-type(3)", "style": null, "family": "blends-roasts", "blocks": ["cards-coffee"], "defaultContent": [] },
+        { "id": "single-origin", "name": "Single origin", "selector": "#dc-root section:nth-of-type(4)", "style": "alt", "family": "single-origin", "blocks": ["cards-coffee"], "defaultContent": [] },
+        { "id": "instant", "name": "Instant", "selector": "#dc-root section:nth-of-type(5)", "style": null, "family": "instant", "blocks": ["cards-coffee"], "defaultContent": [] }
+      ]
+    },
+    {
+      "name": "atelier",
+      "urls": [
+        "https://markszulc.github.io/frescopa-atelier/atelier.html"
+      ],
+      "representativeUrl": "https://markszulc.github.io/frescopa-atelier/atelier.html",
+      "coverageGaps": [],
+      "description": "The Atelier product detail page (PDP): hero with gallery + buy panel, sticky jump nav, interactive how-it-works step tabs, a video teaser, a claims accordion, the full specification tables, the flavour-DNA taste-profile radar, owner reviews, an FAQ accordion, purchase bundles, and a 'pairs well with' product row.",
+      "blocks": [
+        { "name": "product-hero", "instances": ["#dc-root section:nth-of-type(1)"] },
+        { "name": "product-jumpnav", "instances": ["#dc-root section:nth-of-type(2)"] },
+        { "name": "steps-tabs", "instances": ["#dc-root section:nth-of-type(3)"] },
+        { "name": "media-video", "instances": ["#dc-root section:nth-of-type(4)"] },
+        { "name": "accordion", "instances": ["#dc-root section:nth-of-type(5)", "#dc-root section:nth-of-type(9)"] },
+        { "name": "spec-table", "instances": ["#dc-root section:nth-of-type(6)"] },
+        { "name": "taste-profile", "instances": ["#dc-root section:nth-of-type(7)"] },
+        { "name": "reviews", "instances": ["#dc-root section:nth-of-type(8)"] },
+        { "name": "bundle-cards", "instances": ["#dc-root section:nth-of-type(10)"] },
+        { "name": "cards-product", "instances": ["#dc-root section:nth-of-type(11)"] }
+      ],
+      "sections": [
+        { "id": "hero", "name": "Hero", "selector": "#dc-root section:nth-of-type(1)", "style": null, "blocks": ["product-hero"], "defaultContent": [] },
+        { "id": "jumpnav", "name": "Jump nav", "selector": "#dc-root section:nth-of-type(2)", "style": "alt", "blocks": ["product-jumpnav"], "defaultContent": [] },
+        { "id": "how", "name": "How it works", "selector": "#dc-root section:nth-of-type(3)", "style": null, "blocks": ["steps-tabs"], "defaultContent": [] },
+        { "id": "video", "name": "Video", "selector": "#dc-root section:nth-of-type(4)", "style": "alt", "blocks": ["media-video"], "defaultContent": [] },
+        { "id": "claims", "name": "Claims", "selector": "#dc-root section:nth-of-type(5)", "style": null, "blocks": ["accordion"], "defaultContent": [] },
+        { "id": "specs", "name": "Specifications", "selector": "#dc-root section:nth-of-type(6)", "style": "alt", "blocks": ["spec-table"], "defaultContent": [] },
+        { "id": "dna", "name": "Flavour DNA", "selector": "#dc-root section:nth-of-type(7)", "style": null, "blocks": ["taste-profile"], "defaultContent": [] },
+        { "id": "reviews", "name": "Reviews", "selector": "#dc-root section:nth-of-type(8)", "style": "alt", "blocks": ["reviews"], "defaultContent": [] },
+        { "id": "faq", "name": "FAQ", "selector": "#dc-root section:nth-of-type(9)", "style": null, "blocks": ["accordion"], "defaultContent": [] },
+        { "id": "bundles", "name": "Bundles", "selector": "#dc-root section:nth-of-type(10)", "style": "alt", "blocks": ["bundle-cards"], "defaultContent": [] },
+        { "id": "pairs", "name": "Pairs well", "selector": "#dc-root section:nth-of-type(11)", "style": null, "blocks": ["cards-product"], "defaultContent": [] }
+      ]
     }
   ]
 }
