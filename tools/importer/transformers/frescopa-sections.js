@@ -57,12 +57,16 @@ export default function transform(hookName, element, payload) {
     const { section, el } = resolved[i];
     if (!el) continue;
 
-    // Section Metadata block (carrying style) as a sibling AFTER the section, so
-    // it stays in the same section region after the parser replaces the section.
-    if (section.style) {
+    // Section Metadata block (carrying style and any extra keys like family) as
+    // a sibling AFTER the section, so it stays in the same section region after
+    // the parser replaces the section.
+    const metaCells = {};
+    if (section.style) metaCells.style = section.style;
+    if (section.family) metaCells.family = section.family;
+    if (Object.keys(metaCells).length) {
       const metaBlock = WebImporter.Blocks.createBlock(doc, {
         name: 'Section Metadata',
-        cells: { style: section.style },
+        cells: metaCells,
       });
       el.after(metaBlock);
     }

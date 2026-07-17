@@ -546,6 +546,53 @@ main .section.alt .default-content-wrapper > h1 + p {
   color: var(--ink-soft);
 }
 
+/* Machines family head: label eyebrow, burgundy heading, description, and a
+   "how they differ" note — the default content ahead of each cards-machine
+   block. */
+main .section:has(.cards-machine) .default-content-wrapper > p:first-child {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+main .section:has(.cards-machine) .default-content-wrapper > h2 {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+main .section:has(.cards-machine) .default-content-wrapper > h2 + p {
+  margin: 1rem 0 0;
+  max-width: 46ch;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* The last paragraph is the "how they differ" note — smaller, muted. */
+/* stylelint-disable-next-line no-descending-specificity */
+main .section:has(.cards-machine) .default-content-wrapper > p:last-child:not(:first-child) {
+  margin: 1rem 0 0;
+  max-width: 46ch;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+main .section:has(.cards-machine) .default-content-wrapper {
+  margin-bottom: 2.5rem;
+}
+
 /* Two-column head at desktop: eyebrow + heading left, intro right, bottom-aligned. */
 @media (width >= 900px) {
   main .section.feed .default-content-wrapper {
@@ -571,6 +618,7 @@ main .section.alt .default-content-wrapper > h1 + p {
 
 /* Voices section head: eyebrow + large lead testimonial (default content),
    styled to match the source. The two smaller quotes are the cards-quote block. */
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.voices .default-content-wrapper > p:first-child {
   display: flex;
   align-items: center;
@@ -599,6 +647,7 @@ main .section.voices .default-content-wrapper > blockquote {
   max-width: 900px;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.voices .default-content-wrapper > blockquote > p:first-child {
   margin: 0;
   font-family: var(--font-display);
@@ -615,6 +664,7 @@ main .section.voices .default-content-wrapper > blockquote > p:first-child em {
   color: var(--terracotta);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.voices .default-content-wrapper > blockquote > p:last-child {
   margin: 1.1rem 0 0;
   font-family: var(--font-body);

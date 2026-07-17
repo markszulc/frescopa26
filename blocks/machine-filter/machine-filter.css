@@ -1,0 +1,43 @@
+/* Block: machine-filter
+ * Pill tab bar that shows/hides product-family sections client-side.
+ * Values extracted from the source machines filter bar.
+ */
+
+.machine-filter .machine-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.machine-filter .machine-filter-tab {
+  padding: 0.5em 1.1em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-1) var(--ease-quint),
+    border-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint);
+}
+
+.machine-filter .machine-filter-tab:hover {
+  border-color: var(--burgundy);
+  color: var(--burgundy);
+}
+
+.machine-filter .machine-filter-tab.is-active {
+  border-color: var(--burgundy);
+  background-color: var(--burgundy);
+  color: var(--cream);
+}
+
+/* Sections filtered out by the tab bar. */
+main .section[data-family].is-filtered-out {
+  display: none;
+}

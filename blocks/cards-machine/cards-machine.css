@@ -1,0 +1,238 @@
+/* Block: cards-machine
+ * Product cards for the Machines catalogue. A large flagship card (image + full
+ * detail) plus compact companion cards grouped under "Also in this family".
+ * Values extracted from the source machines page computed styles.
+ */
+
+.cards-machine {
+  display: grid;
+  gap: 2rem;
+}
+
+/* ---- Shared card shell ---- */
+.cards-machine .cards-machine-card {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background-color: var(--paper);
+  overflow: hidden;
+}
+
+.cards-machine .cards-machine-media {
+  position: relative;
+  margin: 0;
+  background-color: var(--paper-3);
+}
+
+.cards-machine .cards-machine-media picture,
+.cards-machine .cards-machine-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder label box for machines shipped without a photo. */
+.cards-machine .cards-machine-media-placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  background:
+    linear-gradient(135deg, var(--paper-2), var(--paper-3));
+}
+
+.cards-machine .cards-machine-placeholder-label {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+/* "New" badge overlay */
+.cards-machine .cards-machine-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.3em 0.7em;
+  border-radius: var(--r-pill);
+  background-color: var(--burgundy);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---- Body ---- */
+.cards-machine .cards-machine-body {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+}
+
+.cards-machine .cards-machine-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.cards-machine .cards-machine-title {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+.cards-machine .cards-machine-desc {
+  margin: 0.8rem 0 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* Feature list (flagship only) */
+.cards-machine .cards-machine-features {
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.cards-machine .cards-machine-features li {
+  position: relative;
+  margin: 0;
+  padding-left: 1.6em;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+
+.cards-machine .cards-machine-features li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--terracotta);
+  font-weight: 600;
+}
+
+/* Price + CTA foot */
+.cards-machine .cards-machine-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.cards-machine .cards-machine-price {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* ---- Flagship: large two-column card ---- */
+.cards-machine .cards-machine-flagship .cards-machine-title {
+  font-size: var(--fs-h3);
+}
+
+.cards-machine .cards-machine-flagship .cards-machine-body {
+  padding: 2.5rem;
+}
+
+/* ---- Companion group ---- */
+.cards-machine .cards-machine-group-label {
+  display: block;
+  margin: 0 0 1rem;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.cards-machine .cards-machine-companions {
+  margin-top: 2rem;
+}
+
+.cards-machine .cards-machine-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.cards-machine .cards-machine-companion .cards-machine-title {
+  font-size: var(--fs-h4);
+}
+
+.cards-machine .cards-machine-foot .fr-link,
+.cards-machine .cards-machine-companion a {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--terracotta);
+  text-decoration: none;
+}
+
+/* Terracotta pill CTA (flagship) */
+.cards-machine .cards-machine-flagship .cards-machine-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  border-radius: var(--r-pill);
+  padding: 0.85em 1.5em;
+  background-color: var(--terracotta);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--dur-1) var(--ease-quint);
+}
+
+.cards-machine .cards-machine-flagship .cards-machine-foot a:hover {
+  background-color: var(--terracotta-deep);
+}
+
+/* ---- Desktop ---- */
+@media (width >= 900px) {
+  .cards-machine .cards-machine-flagship {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .cards-machine .cards-machine-flagship .cards-machine-media {
+    min-height: 100%;
+  }
+
+  /* A lone companion card lays out horizontally (image left, body right). */
+  .cards-machine .cards-machine-grid[data-count="1"] .cards-machine-companion {
+    display: grid;
+    grid-template-columns: minmax(0, 220px) 1fr;
+    align-items: stretch;
+  }
+
+  .cards-machine .cards-machine-grid[data-count="1"] .cards-machine-media-placeholder {
+    aspect-ratio: auto;
+  }
+
+  /* Multiple companions share a row. */
+  .cards-machine .cards-machine-grid[data-count="2"] {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cards-machine .cards-machine-grid[data-count="3"] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
