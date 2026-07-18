@@ -68,11 +68,14 @@ export default function decorate(block) {
         [label] = m;
         value = m.slice(1).join(' — ');
       }
+      const rowEl = document.createElement('div');
+      rowEl.className = 'spec-table-row';
       const dt = document.createElement('dt');
       dt.textContent = label;
       const dd = document.createElement('dd');
       dd.textContent = value;
-      dl.append(dt, dd);
+      rowEl.append(dt, dd);
+      dl.append(rowEl);
     });
     card.append(dl);
     grid.append(card);
