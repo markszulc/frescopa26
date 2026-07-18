@@ -56,31 +56,44 @@
   color: var(--ink-soft);
 }
 
-/* ---- Bio variant ---- */
+/* ---- Bio variant: an "About the author" card ---- */
 .article-byline.bio {
   margin-top: 2.5rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--line);
+}
+
+.article-byline.bio .article-byline-inner {
+  align-items: flex-start;
+  gap: 1.1rem;
+  padding: 1.4rem 1.6rem;
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
 }
 
 .article-byline.bio .article-byline-avatar {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   align-self: flex-start;
+  border: 1px solid var(--line);
+}
+
+.article-byline.bio .article-byline-avatar-monogram {
+  font-size: 1rem;
 }
 
 .article-byline.bio .article-byline-label {
   font-family: var(--font-body);
   font-size: 0.66rem;
   font-weight: 400;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--terracotta);
 }
 
 .article-byline.bio .article-byline-name {
+  margin-top: 0.3rem;
   font-family: var(--font-display);
-  font-size: var(--fs-h4);
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--burgundy);
 }
