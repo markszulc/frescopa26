@@ -607,8 +607,12 @@ main .section:has(.cards-coffee) .default-content-wrapper {
 
 /* stylelint-disable no-descending-specificity */
 
-/* Constrain the reading column and centre it; keep media full-width within. */
-main .section:has(.article-byline) .default-content-wrapper {
+/* Constrain the reading column and centre it; keep media full-width within.
+   The byline and share blocks share the same narrow column so they line up
+   under the header copy (rather than sitting at the section gutter). */
+main .section:has(.article-byline) .default-content-wrapper,
+main .section:has(.article-byline) .article-byline-wrapper,
+main .section:has(.article-byline) .article-share-wrapper {
   max-width: var(--content-narrow);
   margin-inline: auto;
 }
@@ -621,15 +625,15 @@ main .section:has(.article-byline) .default-content-wrapper > p:first-child {
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: var(--ink-soft);
 }
 
 main .section:has(.article-byline) .default-content-wrapper > h1 {
-  margin: 0.6rem 0 0;
+  margin: 1rem 0 0;
   font-family: var(--font-display);
-  font-size: var(--fs-h1);
+  font-size: clamp(2.4rem, 1.6rem + 3.2vw, 3.8rem);
   font-weight: 800;
-  line-height: var(--lh-tight);
+  line-height: 1.04;
   letter-spacing: var(--tracking-tight);
   color: var(--burgundy);
 }
@@ -637,9 +641,9 @@ main .section:has(.article-byline) .default-content-wrapper > h1 {
 /* The lede: the first paragraph after the h1. */
 main .section:has(.article-byline) .default-content-wrapper > h1 + p {
   margin: 1.1rem 0 0;
-  font-size: var(--fs-body-lg);
-  line-height: var(--lh-body);
-  color: var(--ink-soft);
+  font-size: clamp(1.2rem, 1rem + 0.6vw, 1.4rem);
+  line-height: 1.5;
+  color: var(--ink);
 }
 
 /* Body prose */
