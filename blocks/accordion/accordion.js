@@ -10,7 +10,15 @@
  *     - cell 2: the answer body
  *
  * Renders each item as a native <details>/<summary> so it works without JS.
+ * Items share a `name` so opening one closes the others (single-open, matching
+ * the source). Affirmative "claim" items (not phrased as a question) get a
+ * leading check icon; question items show only the chevron.
  */
+let accordionSeq = 0;
+
+const CHECK_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m5 12 5 5 9-11" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHEVRON_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
 export default function decorate(block) {
   const rows = [...block.children];
   if (!rows.length) return;
@@ -25,6 +33,16 @@ export default function decorate(block) {
     head = h;
   }
 
+  // Claims are affirmative statements and get a check icon; a set where no
+  // summary is phrased as a question is treated as claims.
+  const summaries = rows.map((row) => t(row.children[0]));
+  const isClaims = summaries.length > 0 && !summaries.some((s) => s.endsWith('?'));
+  if (isClaims) block.classList.add('accordion-checks');
+
+  // A shared name makes the native <details> group single-open (exclusive).
+  accordionSeq += 1;
+  const groupName = `accordion-${accordionSeq}`;
+
   const list = document.createElement('div');
   list.className = 'accordion-items';
 
@@ -36,17 +54,30 @@ export default function decorate(block) {
 
     const details = document.createElement('details');
     details.className = 'accordion-item';
+    details.name = groupName;
     if (i === 0) details.open = true;
 
     const summary = document.createElement('summary');
     summary.className = 'accordion-summary';
+
+    const labelWrap = document.createElement('span');
+    labelWrap.className = 'accordion-label';
+    if (isClaims) {
+      const check = document.createElement('span');
+      check.className = 'accordion-check';
+      check.setAttribute('aria-hidden', 'true');
+      check.innerHTML = CHECK_ICON;
+      labelWrap.append(check);
+    }
     const label = document.createElement('span');
     label.textContent = summaryText;
+    labelWrap.append(label);
+
     const chev = document.createElement('span');
     chev.className = 'accordion-chevron';
     chev.setAttribute('aria-hidden', 'true');
-    chev.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    summary.append(label, chev);
+    chev.innerHTML = CHEVRON_ICON;
+    summary.append(labelWrap, chev);
     details.append(summary);
 
     const body = document.createElement('div');

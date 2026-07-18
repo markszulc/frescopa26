@@ -56,17 +56,30 @@
   cursor: pointer;
   list-style: none;
   font-family: var(--heading-font-family);
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--fs-body-lg);
-  color: var(--ink);
+  color: var(--burgundy);
 }
 
 .accordion .accordion-summary::-webkit-details-marker {
   display: none;
 }
 
-.accordion .accordion-summary:hover {
+.accordion .accordion-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.accordion .accordion-check {
+  flex-shrink: 0;
+  display: inline-flex;
   color: var(--terracotta);
+  line-height: 0;
+}
+
+.accordion .accordion-summary:hover .accordion-label {
+  color: var(--terracotta-deep);
 }
 
 .accordion .accordion-chevron {
