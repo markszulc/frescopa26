@@ -35,7 +35,7 @@ const PAGE_TEMPLATE = {
   blocks: [
     { name: 'hero-media', instances: ['#dc-root section:nth-of-type(1)', '#dc-root section:nth-of-type(7)'] },
     { name: 'cards-reasons', instances: ['#dc-root section:nth-of-type(2) > div > div'] },
-    { name: 'columns-editorial', instances: ['#experience > div > div', '#locations article'] },
+    { name: 'columns-editorial', instances: ['#experience > div > div', '#locations > div > article'] },
     { name: 'cards-event', instances: ['#whatson > div > div:nth-of-type(2)'] },
     { name: 'stats-row', instances: ['#locations > div > div:nth-of-type(1)'] },
     { name: 'store-locator', instances: ['#locations > div > div:nth-of-type(2)'] },
