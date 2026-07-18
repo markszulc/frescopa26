@@ -700,32 +700,46 @@ main .section:has(.article-byline) .default-content-wrapper > blockquote {
   color: var(--burgundy);
 }
 
-/* "The short version" key-points aside */
-main .section:has(.article-byline) .default-content-wrapper .article-keypoints {
-  margin: 2rem 0 0;
-  padding: 1.6rem 1.8rem;
-  border-radius: var(--r-lg);
+/* "The short version" key-points box. EDS unwraps the source aside, leaving a
+   label paragraph directly followed by the list; both are the only such pair in
+   the prose, so we tint and round them into one connected card. */
+main .section:has(.article-byline) .default-content-wrapper > p:has(+ ul) {
+  margin: 2.4rem 0 0;
+  padding: 1.6rem 1.8rem 0.9rem;
   background-color: var(--paper-2);
-}
-
-main .section:has(.article-byline) .default-content-wrapper .article-keypoints > p:first-child {
-  margin: 0 0 0.8rem;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--terracotta);
 }
 
-main .section:has(.article-byline) .default-content-wrapper .article-keypoints ul {
+main .section:has(.article-byline) .default-content-wrapper > ul {
   margin: 0;
-  padding-left: 1.1rem;
+  padding: 0 1.8rem 1.6rem 3.2rem;
+  background-color: var(--paper-2);
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  list-style: decimal;
   display: grid;
-  gap: 0.5rem;
-  font-size: var(--fs-sm);
+  gap: 0.55rem;
+  font-size: var(--fs-body);
   line-height: var(--lh-body);
+  color: var(--ink);
+}
+
+main .section:has(.article-byline) .default-content-wrapper > ul li::marker {
   color: var(--ink-soft);
+}
+
+main .section:has(.article-byline) .default-content-wrapper > ul strong {
+  color: var(--burgundy);
+  font-weight: 700;
 }
 /* stylelint-enable no-descending-specificity */
 
