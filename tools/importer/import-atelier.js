@@ -52,9 +52,9 @@ const PAGE_TEMPLATE = {
   ],
   sections: [
     { id: 'hero', name: 'Hero', selector: '#dc-root section:nth-of-type(1)', style: null, blocks: ['product-hero'], defaultContent: [] },
-    { id: 'jumpnav', name: 'Jump nav', selector: '#dc-root section:nth-of-type(2)', style: 'alt', blocks: ['product-jumpnav'], defaultContent: [] },
-    { id: 'how', name: 'How it works', selector: '#dc-root section:nth-of-type(3)', style: null, blocks: ['steps-tabs'], defaultContent: [] },
-    { id: 'video', name: 'Video', selector: '#dc-root section:nth-of-type(4)', style: 'alt', blocks: ['media-video'], defaultContent: [] },
+    { id: 'jumpnav', name: 'Jump nav', selector: '#dc-root section:nth-of-type(2)', style: null, blocks: ['product-jumpnav'], defaultContent: [] },
+    { id: 'how', name: 'How it works', selector: '#dc-root section:nth-of-type(3)', style: 'alt', blocks: ['steps-tabs'], defaultContent: [] },
+    { id: 'video', name: 'Video', selector: '#dc-root section:nth-of-type(4)', style: 'dark', blocks: ['media-video'], defaultContent: [] },
     { id: 'claims', name: 'Claims', selector: '#dc-root section:nth-of-type(5)', style: null, blocks: ['accordion'], defaultContent: [] },
     { id: 'specs', name: 'Specifications', selector: '#dc-root section:nth-of-type(6)', style: 'alt', blocks: ['spec-table'], defaultContent: [] },
     { id: 'dna', name: 'Flavour DNA', selector: '#dc-root section:nth-of-type(7)', style: null, blocks: ['taste-profile'], defaultContent: [] },
