@@ -34,8 +34,9 @@
   object-fit: cover;
 }
 
-/* ---- Eyebrow: a leading paragraph that introduces a heading ---- */
-.columns-editorial > div > div > p:first-child:has(+ h2) {
+/* ---- Eyebrow: a leading paragraph that introduces a heading (h2 or h3) ---- */
+.columns-editorial > div > div > p:first-child:has(+ h2),
+.columns-editorial > div > div > p:first-child:has(+ h3) {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
@@ -49,12 +50,24 @@
   color: var(--terracotta);
 }
 
-.columns-editorial > div > div > p:first-child:has(+ h2)::before {
+.columns-editorial > div > div > p:first-child:has(+ h2)::before,
+.columns-editorial > div > div > p:first-child:has(+ h3)::before {
   content: "";
   display: block;
   width: 1.6em;
   height: 1px;
   background-color: var(--terracotta);
+}
+
+/* Heading tier for image+text feature rows that use an h3 (cafe experience). */
+.columns-editorial h3 {
+  margin: 0.34em 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
 }
 
 /* ---- Statement / heading ---- */
@@ -74,19 +87,19 @@
   color: var(--terracotta);
 }
 
+/* first body paragraph of a cell (not an eyebrow) has no top spacing to fight */
+.columns-editorial > div > div > p:first-child:not(:has(+ h2), :has(+ h3)) {
+  margin-top: 0;
+}
+
 /* ---- Body / lede paragraphs (any p that is not the eyebrow) ---- */
-.columns-editorial > div > div > p:not(:first-child:has(+ h2)) {
+.columns-editorial > div > div > p:not(:first-child:has(+ h2), :first-child:has(+ h3)) {
   margin: 0.9em 0 0;
   font-family: var(--font-body);
   font-size: var(--fs-body-lg);
   font-weight: 400;
   line-height: var(--lh-body);
   color: var(--ink-soft);
-}
-
-/* first body paragraph of a cell has no top spacing to fight */
-.columns-editorial > div > div > p:first-child:not(:has(+ h2)) {
-  margin-top: 0;
 }
 
 /* ---- Inline arrow link ---- */
@@ -116,7 +129,10 @@
   font-weight: 800;
 }
 
-.columns-editorial:has(.columns-editorial-img-col) p:has(> a) a:any-link {
+/* Pill CTA only for feature rows that carry a chip list (beverages category
+   pages). The cafe experience rows have an image + link but no chip list, so
+   they keep the plain terracotta arrow link. */
+.columns-editorial:has(.columns-editorial-img-col):has(ul) p:has(> a) a:any-link {
   align-items: center;
   gap: 0.5em;
   margin-top: 0;
@@ -131,7 +147,7 @@
     color var(--dur-1) var(--ease-quint);
 }
 
-.columns-editorial:has(.columns-editorial-img-col) p:has(> a) a:any-link:hover {
+.columns-editorial:has(.columns-editorial-img-col):has(ul) p:has(> a) a:any-link:hover {
   background-color: var(--terracotta-deep);
   color: var(--cream);
 }
