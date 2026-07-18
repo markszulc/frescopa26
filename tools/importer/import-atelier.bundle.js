@@ -67,20 +67,45 @@ var CustomImportScript = (() => {
       return p;
     };
     const galleryCell = document.createElement("div");
-    const mainImg = element.querySelector("img");
-    if (mainImg) galleryCell.append(pic(mainImg));
     const thumbImgs = [...element.querySelectorAll("button img")];
-    thumbImgs.forEach((img) => {
-      var _a2;
-      const label = ((_a2 = img.closest("button")) == null ? void 0 : _a2.getAttribute("aria-label")) || img.getAttribute("alt") || "";
-      const clone = img.cloneNode(true);
-      clone.setAttribute("alt", label);
-      const p = document.createElement("picture");
-      p.append(clone);
-      galleryCell.append(p);
-    });
+    if (thumbImgs.length) {
+      thumbImgs.forEach((img) => {
+        var _a2;
+        const label = ((_a2 = img.closest("button")) == null ? void 0 : _a2.getAttribute("aria-label")) || img.getAttribute("alt") || "";
+        const clone = img.cloneNode(true);
+        clone.setAttribute("alt", label);
+        const p = document.createElement("picture");
+        p.append(clone);
+        galleryCell.append(p);
+      });
+    } else {
+      const mainImg = element.querySelector("img");
+      if (mainImg) galleryCell.append(pic(mainImg));
+    }
     const buyCell = document.createElement("div");
     const scope = ((_a = element.querySelector("h1")) == null ? void 0 : _a.closest("div")) || element;
+    const crumbNav = element.querySelector("nav");
+    if (crumbNav) {
+      const p = el("p");
+      const parts = [...crumbNav.children].filter((c) => c.tagName === "A" || c.tagName === "SPAN");
+      parts.forEach((c, i) => {
+        const label = t(c);
+        if (!label) return;
+        if (c.tagName === "A" && label !== "/") {
+          const a = el("a", label);
+          a.setAttribute("href", c.getAttribute("href") || "#");
+          p.append(a);
+        } else if (label !== "/") {
+          p.append(document.createTextNode(label));
+        }
+        const next = parts[i + 1];
+        if (next && t(next) && label !== "/" && t(next) !== "/") p.append(document.createTextNode(" / "));
+      });
+      if (!p.textContent.includes("/")) {
+        p.textContent = parts.map(t).filter((x) => x && x !== "/").join(" / ");
+      }
+      if (t(p)) buyCell.append(p);
+    }
     const eyebrow = scope.querySelector("span");
     const h1 = scope.querySelector("h1");
     const ratingA = scope.querySelector('a[href*="review"], a[href="#reviews"]');
@@ -98,16 +123,8 @@ var CustomImportScript = (() => {
     if (priceEl) buyCell.append(el("p", t(priceEl)));
     if (financeEl) buyCell.append(el("p", t(financeEl)));
     buyCell.append(el("p", finishLabelEl ? t(finishLabelEl) : "Finish \u2014 Cream"));
-    if (finishes.length) {
-      const ul = el("ul");
-      finishes.forEach((f) => ul.append(el("li", f)));
-      buyCell.append(ul);
-    }
-    if (trust.length) {
-      const ul = el("ul");
-      trust.forEach((tx) => ul.append(el("li", tx)));
-      buyCell.append(ul);
-    }
+    if (finishes.length) buyCell.append(el("p", `Finishes: ${finishes.join(", ")}`));
+    trust.forEach((tx) => buyCell.append(el("p", tx)));
     const block = WebImporter.Blocks.createBlock(document, {
       name: "product-hero",
       cells: [[galleryCell, buyCell]]
