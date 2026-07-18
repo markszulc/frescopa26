@@ -33,13 +33,19 @@ export default function decorate(block) {
   head.className = 'reviews-head';
   const hcopy = document.createElement('div');
   hcopy.className = 'reviews-head-copy';
-  const hkids = headRow ? [...headRow.children] : [];
+  // The head row is a single cell; its heading/paragraphs live one level deeper.
+  const headCell = headRow ? headRow.firstElementChild : null;
+  const hkids = headCell ? [...headCell.children] : [];
   const paras = hkids.filter((el) => el.tagName === 'P');
   const heading = hkids.find((el) => /^H[1-6]$/.test(el.tagName));
+  const headingIdx = heading ? hkids.indexOf(heading) : 0;
   const ratingVal = paras.find((p) => /^\d(\.\d)?$/.test(t(p)));
-  const ratingNote = paras.find((p) => /verified|owner|review/i.test(t(p)));
-  const eyebrow = paras.find((p) => p !== ratingVal && p !== ratingNote
-    && (!heading || hkids.indexOf(p) < hkids.indexOf(heading)));
+  // Eyebrow: the short label before the heading. The aggregate note is the
+  // "from N verified owners" line after the rating — anchored by position, not
+  // just keyword, since the eyebrow ("What owners say") also contains "owner".
+  const eyebrow = paras.find((p) => hkids.indexOf(p) < headingIdx && t(p));
+  const ratingNote = paras.find((p) => p !== eyebrow && p !== ratingVal
+    && /verified|from \d|owner|review/i.test(t(p)));
 
   if (eyebrow) {
     const e = document.createElement('p');
@@ -77,10 +83,16 @@ export default function decorate(block) {
     const quoteCell = cells[cells.length - 1];
     const ratingCell = cells.length > 1 ? cells[0] : null;
     const n = ratingCell ? parseInt(t(ratingCell), 10) || 5 : 5;
-    const quoteEl = quoteCell.querySelector('blockquote, p');
+    // Attribution is the last paragraph in the cell. The quote is the
+    // blockquote's own text — but the markdown round-trip can merge the trailing
+    // attribution paragraph into the blockquote, so strip it off if present.
+    const bqEl = quoteCell.querySelector('blockquote');
     const attrEl = [...quoteCell.querySelectorAll('p')].pop();
-    const quoteText = t(quoteEl);
-    const attrText = attrEl && t(attrEl) !== quoteText ? t(attrEl) : '';
+    const attrText = attrEl ? t(attrEl) : '';
+    let quoteText = t(bqEl || quoteCell.querySelector('p') || quoteCell);
+    if (attrText && quoteText.endsWith(attrText)) {
+      quoteText = quoteText.slice(0, -attrText.length).trim();
+    }
 
     const fig = document.createElement('figure');
     fig.className = 'reviews-card';
