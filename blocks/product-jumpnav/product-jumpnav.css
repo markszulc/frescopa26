@@ -1,0 +1,60 @@
+/* Thin jump-nav bar. Sits on the section's own background (paper) and is set
+   apart only by hairline top/bottom borders, so it does not interrupt the
+   alternating section colours around it. */
+.product-jumpnav {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.product-jumpnav .product-jumpnav-inner {
+  max-width: var(--content);
+  margin-inline: auto;
+  padding: 1rem var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.product-jumpnav .product-jumpnav-intro {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+
+.product-jumpnav .product-jumpnav-hint {
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: var(--fs-body-lg);
+  color: var(--burgundy);
+}
+
+.product-jumpnav .product-jumpnav-label {
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+}
+
+.product-jumpnav .product-jumpnav-links {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.product-jumpnav .product-jumpnav-links a {
+  font-size: var(--fs-sm);
+  color: var(--ink);
+  text-decoration: none;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  transition: border-color 0.2s var(--ease-quint), color 0.2s var(--ease-quint);
+}
+
+.product-jumpnav .product-jumpnav-links a:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}

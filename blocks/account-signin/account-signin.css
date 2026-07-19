@@ -1,0 +1,60 @@
+/* Block: account-signin
+ * Demo sign-in form: a labelled email field and a terracotta submit button.
+ * Values extracted from the source myatelier page.
+ */
+
+.account-signin .account-signin-form {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 26rem;
+  margin-top: 1.5rem;
+}
+
+.account-signin .account-signin-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.account-signin .account-signin-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 0.7em 1.1em;
+  background-color: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  transition: border-color var(--dur-1) var(--ease-quint);
+}
+
+.account-signin .account-signin-input::placeholder {
+  color: var(--ink-soft);
+}
+
+.account-signin .account-signin-input:focus-visible {
+  border-color: var(--terracotta);
+  outline: none;
+}
+
+.account-signin .account-signin-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  margin-top: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  padding: 0.85em 1.6em;
+  background-color: var(--terracotta);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease-quint);
+}
+
+.account-signin .account-signin-submit:hover {
+  background-color: var(--terracotta-deep);
+}

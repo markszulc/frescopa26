@@ -42,10 +42,21 @@ var CustomImportScript = (() => {
   });
 
   // tools/importer/parsers/hero-media.js
-  function parse(element, { document }) {
-    const bgImage = element.querySelector(
-      '.hero__media img, [class*="media"] > img, :scope > img'
+  function parse(element, { document, url }) {
+    if (url) {
+      element.querySelectorAll("img[src]").forEach((img) => {
+        try {
+          img.setAttribute("src", new URL(img.getAttribute("src"), url).href);
+        } catch (e) {
+        }
+      });
+    }
+    let bgImage = element.querySelector(
+      '.hero__media img, [class*="media"] img, :scope > img'
     );
+    if (!bgImage) {
+      bgImage = [...element.querySelectorAll("img")].find((img) => !/svg|icon|logo/i.test(img.getAttribute("src") || "")) || null;
+    }
     const heading = element.querySelector('h1, h2, h3, .hero__title, [class*="title"]');
     let eyebrow = element.querySelector('.eyebrow, [class*="eyebrow"]');
     if (!eyebrow && heading) {
@@ -109,7 +120,15 @@ var CustomImportScript = (() => {
   }
 
   // tools/importer/parsers/columns-editorial.js
-  function parse3(element, { document }) {
+  function parse3(element, { document, url }) {
+    if (url) {
+      element.querySelectorAll("img[src]").forEach((img) => {
+        try {
+          img.setAttribute("src", new URL(img.getAttribute("src"), url).href);
+        } catch (e) {
+        }
+      });
+    }
     const namedGrid = element.querySelector(
       '.intro__grid, [class*="__grid"], [class*="grid"]'
     );
@@ -379,10 +398,13 @@ var CustomImportScript = (() => {
     for (let i = resolved.length - 1; i >= 0; i -= 1) {
       const { section, el } = resolved[i];
       if (!el) continue;
-      if (section.style) {
+      const metaCells = {};
+      if (section.style) metaCells.style = section.style;
+      if (section.family) metaCells.family = section.family;
+      if (Object.keys(metaCells).length) {
         const metaBlock = WebImporter.Blocks.createBlock(doc, {
           name: "Section Metadata",
-          cells: { style: section.style }
+          cells: metaCells
         });
         el.after(metaBlock);
       }
@@ -411,7 +433,7 @@ var CustomImportScript = (() => {
     blocks: [
       { name: "hero-media", instances: ["#dc-root section:nth-of-type(1)", "#dc-root section:nth-of-type(7)"] },
       { name: "cards-reasons", instances: ["#dc-root section:nth-of-type(2) > div > div"] },
-      { name: "columns-editorial", instances: ["#experience > div > div", "#locations article"] },
+      { name: "columns-editorial", instances: ["#experience > div > div", "#locations > div > article"] },
       { name: "cards-event", instances: ["#whatson > div > div:nth-of-type(2)"] },
       { name: "stats-row", instances: ["#locations > div > div:nth-of-type(1)"] },
       { name: "store-locator", instances: ["#locations > div > div:nth-of-type(2)"] },

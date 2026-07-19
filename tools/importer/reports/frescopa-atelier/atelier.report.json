@@ -1,0 +1,21 @@
+{
+  "status": "success",
+  "url": "https://markszulc.github.io/frescopa-atelier/atelier.html",
+  "path": "frescopa-atelier/atelier",
+  "timestamp": "2026-07-18T08:12:40.058Z",
+  "title": "The Atelier — Fréscopa",
+  "template": "atelier",
+  "blocks": [
+    "product-hero",
+    "product-jumpnav",
+    "steps-tabs",
+    "media-video",
+    "accordion",
+    "accordion",
+    "spec-table",
+    "taste-profile",
+    "reviews",
+    "bundle-cards",
+    "cards-product"
+  ]
+}

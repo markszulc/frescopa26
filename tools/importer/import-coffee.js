@@ -2,13 +2,8 @@
 /* global WebImporter */
 
 // PARSER IMPORTS
-import heroMediaParser from './parsers/hero-media.js';
-import cardsReasonsParser from './parsers/cards-reasons.js';
-import columnsEditorialParser from './parsers/columns-editorial.js';
-import cardsEventParser from './parsers/cards-event.js';
-import statsRowParser from './parsers/stats-row.js';
-import storeLocatorParser from './parsers/store-locator.js';
-import bookingFormParser from './parsers/booking-form.js';
+import machineFilterParser from './parsers/machine-filter.js';
+import cardsCoffeeParser from './parsers/cards-coffee.js';
 
 // TRANSFORMER IMPORTS
 import cleanupTransformer from './transformers/frescopa-cleanup.js';
@@ -16,39 +11,27 @@ import sectionsTransformer from './transformers/frescopa-sections.js';
 
 // PARSER REGISTRY
 const parsers = {
-  'hero-media': heroMediaParser,
-  'cards-reasons': cardsReasonsParser,
-  'columns-editorial': columnsEditorialParser,
-  'cards-event': cardsEventParser,
-  'stats-row': statsRowParser,
-  'store-locator': storeLocatorParser,
-  'booking-form': bookingFormParser,
+  'machine-filter': machineFilterParser,
+  'cards-coffee': cardsCoffeeParser,
 };
 
 // PAGE TEMPLATE CONFIGURATION - Embedded from page-templates.json
 const PAGE_TEMPLATE = {
-  name: 'cafe',
-  description: 'Cafe & showroom page with hero, reasons cards, three-room feature sections, weekly events cards, locations finder with stats and listings, tour booking form, and CTA.',
+  name: 'coffee',
+  description: 'Coffee shop catalogue page with intro header + breadcrumb, a category filter bar, and three product-family sections (blends & roasts, single origin, instant) each with a grid of product cards.',
   urls: [
-    'https://markszulc.github.io/frescopa-atelier/cafe.html',
+    'https://markszulc.github.io/frescopa-atelier/coffee.html',
   ],
   blocks: [
-    { name: 'hero-media', instances: ['#dc-root section:nth-of-type(1)', '#dc-root section:nth-of-type(7)'] },
-    { name: 'cards-reasons', instances: ['#dc-root section:nth-of-type(2) > div > div'] },
-    { name: 'columns-editorial', instances: ['#experience > div > div', '#locations > div > article'] },
-    { name: 'cards-event', instances: ['#whatson > div > div:nth-of-type(2)'] },
-    { name: 'stats-row', instances: ['#locations > div > div:nth-of-type(1)'] },
-    { name: 'store-locator', instances: ['#locations > div > div:nth-of-type(2)'] },
-    { name: 'booking-form', instances: ['#tour'] },
+    { name: 'machine-filter', instances: ['#dc-root section:nth-of-type(2)'] },
+    { name: 'cards-coffee', instances: ['#dc-root section:nth-of-type(3)', '#dc-root section:nth-of-type(4)', '#dc-root section:nth-of-type(5)'] },
   ],
   sections: [
-    { id: 'hero', name: 'Hero', selector: '#dc-root section:nth-of-type(1)', style: null, blocks: ['hero-media'], defaultContent: [] },
-    { id: 'reasons', name: 'Reasons', selector: '#dc-root section:nth-of-type(2)', style: null, blocks: ['cards-reasons'], defaultContent: ['#dc-root section:nth-of-type(2) > div > span', '#dc-root section:nth-of-type(2) > div > h2'] },
-    { id: 'experience', name: 'Experience', selector: '#experience', style: 'alt', blocks: ['columns-editorial'], defaultContent: ['#experience > div > span', '#experience > div > h2'] },
-    { id: 'whatson', name: "What's on", selector: '#whatson', style: null, blocks: ['cards-event'], defaultContent: ['#whatson > div > div:nth-of-type(1)'] },
-    { id: 'locations', name: 'Locations', selector: '#locations', style: 'alt', blocks: ['stats-row', 'columns-editorial', 'store-locator'], defaultContent: ['#locations > div > span', '#locations > div > h2', '#locations > div > p'] },
-    { id: 'tour', name: 'Tour booking', selector: '#tour', style: null, blocks: ['booking-form'], defaultContent: [] },
-    { id: 'cta', name: 'CTA', selector: '#dc-root section:nth-of-type(7)', style: 'dark', blocks: ['hero-media'], defaultContent: [] },
+    { id: 'intro', name: 'Intro', selector: '#dc-root section:nth-of-type(1)', style: 'alt', blocks: [], defaultContent: ['#dc-root section:nth-of-type(1) > div'] },
+    { id: 'filter', name: 'Filter bar', selector: '#dc-root section:nth-of-type(2)', style: 'alt', blocks: ['machine-filter'], defaultContent: [] },
+    { id: 'blends', name: 'Blends & roasts', selector: '#dc-root section:nth-of-type(3)', style: null, family: 'blends-roasts', blocks: ['cards-coffee'], defaultContent: [] },
+    { id: 'single-origin', name: 'Single origin', selector: '#dc-root section:nth-of-type(4)', style: 'alt', family: 'single-origin', blocks: ['cards-coffee'], defaultContent: [] },
+    { id: 'instant', name: 'Instant', selector: '#dc-root section:nth-of-type(5)', style: null, family: 'instant', blocks: ['cards-coffee'], defaultContent: [] },
   ],
 };
 

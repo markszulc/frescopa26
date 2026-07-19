@@ -12,12 +12,26 @@
  * Handles variations: instances with a background image (hero) and dark instances
  * without a background image (cafe promo / CTA).
  */
-export default function parse(element, { document }) {
+export default function parse(element, { document, url }) {
+  // Normalise relative image sources to absolute so the importer can resolve
+  // them (a relative src is otherwise dropped by adjustImageUrls).
+  if (url) {
+    element.querySelectorAll('img[src]').forEach((img) => {
+      try { img.setAttribute('src', new URL(img.getAttribute('src'), url).href); } catch (e) { /* keep */ }
+    });
+  }
+
   // Row 2: background image (optional). The hero__media / dark sections wrap the
   // background asset in a dedicated container; ignore the decorative scroll icon.
-  const bgImage = element.querySelector(
-    '.hero__media img, [class*="media"] > img, :scope > img',
+  // The cafe hero renders the background as a plain <img> anywhere in the
+  // section, so fall back to the first non-icon image found.
+  let bgImage = element.querySelector(
+    '.hero__media img, [class*="media"] img, :scope > img',
   );
+  if (!bgImage) {
+    bgImage = [...element.querySelectorAll('img')]
+      .find((img) => !/svg|icon|logo/i.test(img.getAttribute('src') || '')) || null;
+  }
 
   // Row 3 content: eyebrow, heading, lead paragraph, CTAs. Query directly from the
   // hero element so nested-container scoping never drops content.

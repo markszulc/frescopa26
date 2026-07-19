@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://markszulc.github.io/frescopa-atelier/coffee.html",
+  "path": "frescopa-atelier/coffee",
+  "timestamp": "2026-07-17T12:36:13.251Z",
+  "title": "",
+  "template": "coffee",
+  "blocks": [
+    "machine-filter",
+    "cards-coffee",
+    "cards-coffee",
+    "cards-coffee"
+  ]
+}

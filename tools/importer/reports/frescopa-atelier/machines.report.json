@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "url": "https://markszulc.github.io/frescopa-atelier/machines.html",
+  "path": "frescopa-atelier/machines",
+  "timestamp": "2026-07-17T12:05:35.729Z",
+  "title": "",
+  "template": "machines",
+  "blocks": [
+    "machine-filter",
+    "cards-machine",
+    "cards-machine",
+    "cards-machine",
+    "cards-machine"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://markszulc.github.io/frescopa-atelier/myatelier.html",
+  "path": "frescopa-atelier/myatelier",
+  "timestamp": "2026-07-17T12:45:04.895Z",
+  "title": "",
+  "template": "myatelier",
+  "blocks": [
+    "account-signin"
+  ]
+}
