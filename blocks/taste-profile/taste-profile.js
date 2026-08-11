@@ -146,6 +146,11 @@ export default function decorate(block) {
   copy.className = 'taste-profile-copy';
   while (copyRow.firstElementChild) copy.append(copyRow.firstElementChild);
 
+  // Tag the first paragraph as the eyebrow. querySelector returns the first
+  // <p> in document order at any depth, so this survives DOM restructuring
+  // (unlike a positional p:first-child selector).
+  copy.querySelector('p')?.classList.add('eyebrow');
+
   // Restore the two-column point list: split each "<Label> <description>" item
   // into a terracotta label span + a description span.
   copy.querySelectorAll('ul > li').forEach((item) => {

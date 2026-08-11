@@ -70,8 +70,8 @@
   }
 }
 
-/* eyebrow (first paragraph, with leading rule) */
-.taste-profile-copy p:first-child {
+/* eyebrow (first paragraph, tagged in JS, with leading rule) */
+.taste-profile-copy p.eyebrow {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -85,7 +85,7 @@
   color: var(--terracotta);
 }
 
-.taste-profile-copy p:first-child::before {
+.taste-profile-copy p.eyebrow::before {
   content: "";
   width: 1.75rem;
   height: 1px;
