@@ -76,8 +76,8 @@
   --space-lg: 2.5rem;
   --space-xl: 4rem;
   --space-2xl: 6rem;
-  --section-y: clamp(4.5rem, 3rem + 6vw, 9.5rem);
-  --section-padding: clamp(4.5rem, 3rem + 6vw, 9.5rem);
+  --section-y: 72px;
+  --section-padding: 72px;
   --content: 1120px;
   --content-wide: 1320px;
   --content-narrow: 760px;
