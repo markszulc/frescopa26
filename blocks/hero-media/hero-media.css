@@ -92,8 +92,8 @@
   line-height: var(--lh-body);
 }
 
-/* Eyebrow (first paragraph) */
-.hero-media.block p:first-child {
+/* Eyebrow (first paragraph, tagged in JS) */
+.hero-media.block p.eyebrow {
   margin: 0;
   max-width: none;
   font-family: var(--font-body);

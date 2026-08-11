@@ -8,4 +8,9 @@ export default function decorate(block) {
   if (!block.querySelector(':scope > div:first-child picture')) {
     block.classList.add('no-image');
   }
+
+  // Tag the first paragraph as the eyebrow. querySelector returns the first
+  // <p> in document order at any depth, so this survives DOM restructuring
+  // (unlike a positional p:first-child selector).
+  block.querySelector('p')?.classList.add('eyebrow');
 }
