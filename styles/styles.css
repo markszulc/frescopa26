@@ -412,13 +412,17 @@ main .section.dark .default-content-wrapper p:not(
   color: var(--cream);
 }
 
-main .section.dark .default-content-wrapper > p:first-child em {
+main .section.dark .default-content-wrapper p:not(
+  .default-content-wrapper :is(p, :has(p)) ~ p,
+  .default-content-wrapper :is(p, :has(p)) ~ * p
+) em {
   font-style: normal;
   font-weight: 800;
   color: var(--amber);
 }
 
-main .section.dark .default-content-wrapper > p:nth-child(2) {
+main .section.dark .default-content-wrapper :is(p, :has(p)) ~ p:not(:has(a)),
+main .section.dark .default-content-wrapper :is(p, :has(p)) ~ * p:not(:has(a)) {
   margin: 1.4rem auto 0;
   max-width: 34ch;
   font-family: var(--font-body);
@@ -427,7 +431,7 @@ main .section.dark .default-content-wrapper > p:nth-child(2) {
   color: var(--cream-soft);
 }
 
-main .section.dark .default-content-wrapper > p:last-child {
+main .section.dark .default-content-wrapper p:has(a) {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -435,7 +439,7 @@ main .section.dark .default-content-wrapper > p:last-child {
   margin: 2.3rem 0 0;
 }
 
-main .section.dark .default-content-wrapper > p:last-child a {
+main .section.dark .default-content-wrapper p:has(a) a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -456,19 +460,19 @@ main .section.dark .default-content-wrapper > p:last-child a {
     color var(--dur-1) var(--ease-quint);
 }
 
-main .section.dark .default-content-wrapper > p:last-child a:hover {
+main .section.dark .default-content-wrapper p:has(a) a:hover {
   border-color: var(--terracotta-deep);
   background-color: var(--terracotta-deep);
   color: var(--cream);
 }
 
-main .section.dark .default-content-wrapper > p:last-child a:last-child {
+main .section.dark .default-content-wrapper p:has(a) a:last-child {
   border-color: oklch(94.5% 0.016 80deg / 34%);
   background-color: transparent;
   color: var(--cream);
 }
 
-main .section.dark .default-content-wrapper > p:last-child a:last-child:hover {
+main .section.dark .default-content-wrapper p:has(a) a:last-child:hover {
   border-color: var(--cream);
   background-color: oklch(94.5% 0.016 80deg / 12%);
   color: var(--cream);
