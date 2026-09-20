@@ -398,7 +398,10 @@ main .section.dark .default-content-wrapper {
   text-align: center;
 }
 
-main .section.dark .default-content-wrapper > p:first-child {
+main .section.dark .default-content-wrapper > p:not(
+  .section.dark .default-content-wrapper :is(p, :has(p)) ~ p,
+  .section.dark .default-content-wrapper :is(p, :has(p)) ~ * p
+) {
   margin: 0 auto;
   max-width: 20ch;
   font-family: var(--font-display);
