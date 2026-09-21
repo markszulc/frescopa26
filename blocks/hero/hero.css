@@ -58,6 +58,11 @@
     linear-gradient(oklch(16% 0.02 45deg / 40%) 0%, transparent 18%);
 }
 
+/* Tint variant: flat 50% dark overlay instead of the directional scrim gradient */
+.hero.block.tint:not(.no-image) > div:first-child::after {
+  background: rgba(0, 0, 0, 0.7);
+}
+
 .hero.block picture {
   position: absolute;
   inset: 0;
