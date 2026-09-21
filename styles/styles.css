@@ -484,10 +484,10 @@ main .section.feed .default-content-wrapper {
   margin-bottom: 3.2rem;
 }
 
-main .section.feed .default-content-wrapper > p:first-child {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+main .section.feed .default-content-wrapper > p:first-child,
+main .section.feed .default-content-wrapper :where(
+  .prosemirror-editor:first-child p:first-child
+) {
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--fs-eyebrow);
@@ -498,14 +498,8 @@ main .section.feed .default-content-wrapper > p:first-child {
   color: var(--terracotta);
 }
 
-main .section.feed .default-content-wrapper > p:first-child::before {
-  content: "";
-  width: 1.75rem;
-  height: 1px;
-  background-color: currentcolor;
-}
-
-main .section.feed .default-content-wrapper > h2 {
+main .section.feed .default-content-wrapper > h2,
+main .section.feed .default-content-wrapper :where(.prosemirror-editor h2) {
   margin: 1rem 0 0;
   font-size: var(--fs-h2);
   font-weight: 800;
@@ -514,7 +508,10 @@ main .section.feed .default-content-wrapper > h2 {
   color: var(--burgundy);
 }
 
-main .section.feed .default-content-wrapper > p:last-child {
+main .section.feed .default-content-wrapper > p:last-child,
+main .section.feed .default-content-wrapper :where(
+  .prosemirror-editor:last-child p:last-child
+) {
   margin: 1.2rem 0 0;
   font-size: var(--fs-body-lg);
   line-height: var(--lh-body);
@@ -1044,11 +1041,16 @@ main .section:has(.article-byline) .default-content-wrapper > ul strong {
   }
 
   main .section.feed .default-content-wrapper > p:first-child,
-  main .section.feed .default-content-wrapper > h2 {
+  main .section.feed .default-content-wrapper > h2,
+  main .section.feed .default-content-wrapper > :where(
+    .prosemirror-editor:first-child,
+    .prosemirror-editor:has(h2)
+  ) {
     grid-column: 1;
   }
 
-  main .section.feed .default-content-wrapper > p:last-child {
+  main .section.feed .default-content-wrapper > p:last-child,
+  main .section.feed .default-content-wrapper > :where(.prosemirror-editor:last-child) {
     grid-column: 2;
     grid-row: 1 / span 2;
     align-self: end;
@@ -1119,4 +1121,9 @@ main .section.voices .default-content-wrapper > blockquote > p:last-child {
 /* separate the two smaller quotes from the lead testimonial (source: ~3.8rem) */
 main .section.voices .cards-quote-wrapper {
   margin-top: 3.8rem;
+}
+
+/* Preserve the feed eyebrow color against authoring UI styles loaded after site CSS. */
+main .section.feed .default-content-wrapper .prosemirror-editor:first-child p:first-child {
+  color: var(--terracotta);
 }
