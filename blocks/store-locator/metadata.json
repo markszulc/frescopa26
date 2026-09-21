@@ -27,7 +27,7 @@
     ],
     "notSuitableFor": [
       "static short address lists (use default content)",
-      "single featured location callouts (use columns-editorial)"
+      "single featured location callouts (use columns)"
     ]
   },
   "usage": {

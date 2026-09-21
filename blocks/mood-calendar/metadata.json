@@ -24,7 +24,7 @@
       "interactive calendar/day-selector features that update a readout panel"
     ],
     "notSuitableFor": [
-      "static side-by-side text layouts (use columns-editorial)",
+      "static side-by-side text layouts (use columns)",
       "card grids"
     ]
   },

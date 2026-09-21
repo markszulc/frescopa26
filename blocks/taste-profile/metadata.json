@@ -24,7 +24,7 @@
       "interactive taste/flavour profile features with switchable readouts"
     ],
     "notSuitableFor": [
-      "static side-by-side text layouts (use columns-editorial)",
+      "static side-by-side text layouts (use columns)",
       "card grids"
     ]
   },

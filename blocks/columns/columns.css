@@ -1,12 +1,17 @@
+/* Block: columns
+ * Light two-column editorial layout. Handles text/text, image/text and
+ * text/image arrangements plus an optional chip/bullet list.
+ * Values extracted from source computed styles (frescopa-atelier).
+ */
+
+/* ---- Layout: mobile first (stacked) ---- */
 .columns > div {
   display: flex;
   flex-direction: column;
+  gap: var(--space-lg);
 }
 
-.columns img {
-  width: 100%;
-}
-
+/* image column sits above its text partner on mobile */
 .columns > div > div {
   order: 1;
 }
@@ -15,19 +20,333 @@
   order: 0;
 }
 
-.columns > div > .columns-img-col img {
+/* ---- Media / images ---- */
+.columns img {
   display: block;
+  width: 100%;
+  height: auto;
+}
+
+.columns > div > .columns-img-col img {
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+}
+
+/* ---- Eyebrow: a leading paragraph that introduces a heading (h2 or h3) ---- */
+.columns p:first-child:has(+ :is(h2, h3)),
+.columns .prosemirror-editor:has(+ .prosemirror-editor :is(h2, h3)) p:first-child
+{ 
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  line-height: 1.62;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+
+
+/* Heading tier for image+text feature rows that use an h3 (cafe experience). */
+.columns h3 {
+  margin: 0.34em 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+/* ---- Statement / heading ---- */
+.columns h2 {
+  margin: 0.34em 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+/* emphasised fragment of the statement picks up the accent */
+.columns h2 em {
+  font-style: normal;
+  color: var(--terracotta);
+}
+
+/* first body paragraph of a cell (not an eyebrow) has no top spacing to fight */
+/* stylelint-disable-next-line no-descending-specificity */
+.columns > div > div > p:first-child:not(:has(+ h2), :has(+ h3)) {
+  margin-top: 0;
+}
+
+/* ---- Body / lede paragraphs (any p that is not the eyebrow) ---- */
+/* stylelint-disable-next-line no-descending-specificity */
+.columns > div > div > p:not(:first-child:has(+ h2), :first-child:has(+ h3)) {
+  margin: 0.9em 0 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-lg);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* ---- Inline arrow link ---- */
+.columns p a:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  margin-top: 0.35em;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--terracotta);
+  text-decoration: none;
+}
+
+.columns p a:any-link:hover {
+  color: var(--terracotta-deep);
+  text-decoration: none;
+}
+
+/* ---- Image+text feature variant (category pages): smaller heading and a
+   pill-button CTA. Scoped to blocks that have both an image column and a CTA
+   link, which distinguishes them from the home intro (link, no image) and the
+   home sustain feature (image, no link). ---- */
+.columns:has(.columns-img-col):has(a) h2 {
+  font-size: var(--fs-h3);
+  font-weight: 800;
+}
+
+/* Pill CTA only for feature rows that carry a chip list (beverages category
+   pages). The cafe experience rows have an image + link but no chip list, so
+   they keep the plain terracotta arrow link. */
+.columns:has(.columns-img-col):has(ul) p:has(> a) a:any-link {
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  padding: 0.85em 1.5em;
+  font-size: var(--fs-sm);
+  background-color: var(--terracotta);
+  color: var(--cream);
+  transition:
+    background-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint);
+}
+
+.columns:has(.columns-img-col):has(ul) p:has(> a) a:any-link:hover {
+  background-color: var(--terracotta-deep);
+  color: var(--cream);
+}
+
+/* ---- Feature chips (optional ul list) ---- */
+.columns ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.columns ul > li {
+  margin: 0;
+  padding: 0.4em 0.7em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper-2);
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 400;
+  line-height: 1.62;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+}
+
+/* ---- Desktop: two-column grid ---- */
+@media (width >= 900px) {
+  .columns > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(2.5rem, 1rem + 4vw, 5rem);
+  }
+
+  .columns > div > div,
+  .columns > div > .columns-img-col {
+    order: unset;
+  }
+}
+
+/* ==== Flagship location card ==================================================
+   A single rounded, shadowed card: a dashed image-slot (with badge) on the
+   left and a structured location detail column on the right. Mirrors the
+   source's flagship card. */
+.columns.columns-location {
+  display: grid;
+  grid-template-columns: 1fr;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background-color: var(--paper);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* Left: dashed placeholder slot with a flagship badge */
+.columns-location .columns-location-media {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 220px;
+  padding: 2rem;
+  border-right: 1px dashed color-mix(in oklch, var(--ink) 22%, transparent);
+  background-color: var(--paper-3);
+}
+
+.columns-location .columns-location-badge {
+  position: absolute;
+  top: 1.6rem;
+  left: 1.6rem;
+  padding: 0.3em 0.75em;
+  border-radius: var(--r-pill);
+  background-color: var(--burgundy);
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.columns-location .columns-location-icon {
+  width: 34px;
+  height: 34px;
+  color: color-mix(in oklch, var(--ink) 34%, var(--paper-3));
+}
+
+.columns-location .columns-location-slot-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: color-mix(in oklch, var(--ink) 46%, var(--paper-3));
+}
+
+/* Right: detail column. Explicit block display overrides the generic
+   `.columns > div` flex/grid rules, which would otherwise treat the
+   media and detail divs as columned sub-layouts. */
+.columns-location .columns-location-media,
+.columns-location .columns-location-detail {
+  gap: 0;
+}
+
+.columns-location .columns-location-detail {
+  display: block;
+  padding: clamp(1.6rem, 1rem + 2vw, 2.6rem);
+}
+
+.columns-location .columns-location-eyebrow {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.columns-location .columns-location-detail :is(h2, h3) {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+.columns-location .columns-location-desc {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* Amenity pill tags */
+.columns-location .columns-location-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.columns-location .columns-location-tags > li {
+  margin: 0;
+  padding: 0.35em 0.8em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: transparent;
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Address / hours line, with a divider rule above */
+.columns-location .columns-location-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: var(--ink);
+}
+
+/* Terracotta pill CTA */
+.columns-location .columns-location-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 1.4rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--r-pill);
+  background-color: var(--terracotta);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--cream);
+  text-decoration: none;
+  transition: background-color var(--dur-1) var(--ease-quint);
+}
+
+.columns-location .columns-location-cta:hover {
+  background-color: var(--terracotta-deep);
+  color: var(--cream);
 }
 
 @media (width >= 900px) {
-  .columns > div {
-    align-items: center;
-    flex-direction: unset;
-    gap: 24px;
-  }
-
-  .columns > div > div {
-    flex: 1;
-    order: unset;
+  .columns.columns-location {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
   }
 }
