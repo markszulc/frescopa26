@@ -96,7 +96,10 @@ h1 {
   color: var(--ink);
 }
 
-h2 { font-size: var(--heading-font-size-xl); }
+h2 { 
+  font-size: var(--heading-font-size-xl);
+  margin-top: 0; 
+}
 h3 { font-size: var(--heading-font-size-l); }
 h4 { font-size: var(--heading-font-size-m); }
 h5 { font-size: var(--heading-font-size-s); }
