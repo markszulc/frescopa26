@@ -82,18 +82,23 @@
   line-height: var(--lh-body);
 }
 
-/* Footer (price + CTA)
-   Branch 1 (publish): the block JS merges the last paragraph into a foot element.
-   Branch 2 (editor): in the ProseMirror editor the last paragraph keeps its
-   editable wrapper and never receives the .cards-product-card-foot class, so
-   target the last .prosemirror-editor wrapper in the card body directly. */
-.cards-product .cards-product-card-foot,
-.cards-product .cards-product-card-body .prosemirror-editor:last-child {
+/* Footer (price + CTA) -- published DOM, built by the block JS. */
+.cards-product .cards-product-card-foot {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  margin-top: 0.7rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Fallback for the editor DOM. The block JS builds the footer as a <div> so
+   ProseMirror leaves it intact; but if a footer paragraph is ever left as an
+   editable <p>, it renders as the last .prosemirror-editor wrapper here -- keep
+   at least the footer separator so it still reads as a footer. */
+.cards-product .cards-product-card-body .prosemirror-editor:last-child {
   margin-top: 0.7rem;
   padding-top: 0.9rem;
   border-top: 1px solid var(--line);
