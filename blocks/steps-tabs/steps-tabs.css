@@ -20,10 +20,12 @@
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-.steps-tabs .steps-tabs-head p:last-child {
+.steps-tabs .steps-tabs-head p:last-child,
+.steps-tabs .steps-tabs-head .prosemirror-editor:last-child p:last-child {
   color: var(--ink-soft);
   line-height: var(--lh-body);
   margin: 0;
+
 }
 
 
