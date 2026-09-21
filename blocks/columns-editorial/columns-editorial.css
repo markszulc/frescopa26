@@ -35,10 +35,9 @@
 }
 
 /* ---- Eyebrow: a leading paragraph that introduces a heading (h2 or h3) ---- */
-/* published: p and heading are siblings */
 .columns-editorial p:first-child:has(+ :is(h2, h3)),
-/* editor: wrapper-with-p immediately followed by wrapper-with-heading */
-.columns-editorial :has(p):has(+ :is(:has(h2), :has(h3))) p {
+.columns-editorial .prosemirror-editor:has(+ .prosemirror-editor :is(h2, h3)) p:first-child
+{ 
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
