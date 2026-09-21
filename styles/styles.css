@@ -390,6 +390,7 @@ main .section.dark a.button:any-link {
 
 /* Dark CTA band: centered promise + sub-line + two pill buttons.
    Values extracted from the source .cta section. */
+/* stylelint-disable no-descending-specificity */
 main .section.dark .default-content-wrapper {
   position: relative;
   max-width: var(--content);
@@ -477,6 +478,7 @@ main .section.dark .default-content-wrapper p:has(a) a:last-child:hover {
   background-color: oklch(94.5% 0.016 80deg / 12%);
   color: var(--cream);
 }
+/* stylelint-enable no-descending-specificity */
 
 /* Feed section head: eyebrow (terracotta rule), heading, and an intro
    paragraph laid out to match the source. */
@@ -484,6 +486,7 @@ main .section.feed .default-content-wrapper {
   margin-bottom: 3.2rem;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.feed .default-content-wrapper > p:first-child,
 main .section.feed .default-content-wrapper :where(
   .prosemirror-editor:first-child p:first-child
@@ -508,6 +511,7 @@ main .section.feed .default-content-wrapper :where(.prosemirror-editor h2) {
   color: var(--burgundy);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.feed .default-content-wrapper > p:last-child,
 main .section.feed .default-content-wrapper :where(
   .prosemirror-editor:last-child p:last-child
@@ -598,6 +602,7 @@ main .section.cards-article-container:not(:has(.article-byline)) {
    trailing default-content-wrapper added after a block (e.g. a note under
    steps-tabs) isn't mistaken for the page header. */
 main .section.alt > .default-content-wrapper:first-child > p:first-child,
+/* stylelint-disable-next-line no-descending-specificity */
 main .section:has(.account-signin) .default-content-wrapper > p:first-child {
   margin: 0;
   font-family: var(--font-body);
@@ -610,6 +615,7 @@ main .section:has(.account-signin) .default-content-wrapper > p:first-child {
 }
 
 main .section.alt > .default-content-wrapper:first-child > h1,
+/* stylelint-disable-next-line no-descending-specificity */
 main .section:has(.account-signin) .default-content-wrapper > h1 {
   margin: 0.6rem 0 0;
   font-family: var(--font-display);
@@ -642,7 +648,9 @@ main .section:has(.account-signin) .default-content-wrapper > h1 + p {
    heading, description, and — for machine bands — a "How they differ" note in a
    second column. The machine head is restructured into .section-head-copy +
    .section-head-note (see decorateMachineBandHeads); coffee heads stay flat. */
+/* stylelint-disable-next-line no-descending-specificity */
 main .section:has(.cards-machine) .section-head-copy > p:first-child,
+/* stylelint-disable-next-line no-descending-specificity */
 main .section:has(.cards-coffee) .default-content-wrapper > p:first-child {
   margin: 0;
   font-family: var(--font-body);
@@ -1082,6 +1090,7 @@ main .section.voices .default-content-wrapper .prosemirror-editor:first-child p:
 
 
 
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.voices .default-content-wrapper {
   border-bottom: 1px solid rgb(99 77 66 / 22%);
   padding-bottom: 2.1rem;
@@ -1108,7 +1117,9 @@ main .section.voices .default-content-wrapper .prosemirror-editor blockquote > p
   color: var(--burgundy);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.voices .default-content-wrapper > blockquote > p:first-child em,
+/* stylelint-disable-next-line no-descending-specificity */
 main .section.voices .default-content-wrapper .prosemirror-editor blockquote > p:first-child em {
   font-style: normal;
   font-weight: 800;

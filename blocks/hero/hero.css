@@ -60,7 +60,7 @@
 
 /* Tint variant: flat 50% dark overlay instead of the directional scrim gradient */
 .hero.block.tint:not(.no-image) > div:first-child::after {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgb(0 0 0 / 70%);
 }
 
 .hero.block picture {

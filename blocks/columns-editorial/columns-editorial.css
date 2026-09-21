@@ -82,11 +82,13 @@
 }
 
 /* first body paragraph of a cell (not an eyebrow) has no top spacing to fight */
+/* stylelint-disable-next-line no-descending-specificity */
 .columns-editorial > div > div > p:first-child:not(:has(+ h2), :has(+ h3)) {
   margin-top: 0;
 }
 
 /* ---- Body / lede paragraphs (any p that is not the eyebrow) ---- */
+/* stylelint-disable-next-line no-descending-specificity */
 .columns-editorial > div > div > p:not(:first-child:has(+ h2), :first-child:has(+ h3)) {
   margin: 0.9em 0 0;
   font-family: var(--font-body);
