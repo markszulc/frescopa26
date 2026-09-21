@@ -24,13 +24,6 @@ export default function decorate(block) {
   const eyebrow = head.querySelector('p');
   if (eyebrow && eyebrow.previousElementSibling === null) eyebrow.classList.add('steps-tabs-eyebrow');
 
-  // Tag the lede (last paragraph) the same way, since its DOM depth varies
-  // between the published page and the authoring editor (which wraps each
-  // field in its own .prosemirror-editor). A class survives both.
-  const headParas = head.querySelectorAll('p');
-  const lede = headParas[headParas.length - 1];
-  if (lede && lede !== eyebrow) lede.classList.add('steps-tabs-lede');
-
   const t = (el) => (el ? el.textContent.trim() : '');
 
   const steps = rows.map((row) => {

@@ -4,8 +4,7 @@
 }
 
 .steps-tabs .steps-tabs-eyebrow,
-.steps-tabs .steps-tabs-head > p:first-child,
-.steps-tabs .steps-tabs-head .prosemirror-editor:first-child p:first-child {
+.steps-tabs .steps-tabs-head > p:first-child {
   font-family: var(--font-mono, monospace);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -19,15 +18,11 @@
   margin: 0 0 0.8rem;
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-.steps-tabs .steps-tabs-head p:last-child,
-.steps-tabs .steps-tabs-head .prosemirror-editor:last-child p:last-child,
-.steps-tabs .steps-tabs-lede {
+.steps-tabs .steps-tabs-head p:last-child {
   color: var(--ink-soft);
   line-height: var(--lh-body);
   margin: 0;
 }
-
 
 .steps-tabs .steps-tabs-tabs {
   display: grid;
@@ -145,4 +140,21 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Preserve the eyebrow styling against authoring UI styles loaded after block CSS. */
+.steps-tabs .steps-tabs-head .prosemirror-editor:first-child p:first-child {
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--terracotta);
+  margin-bottom: 0.6rem;
+}
+
+/* Preserve the lede styling against authoring UI styles loaded after block CSS. */
+.steps-tabs .steps-tabs-head .prosemirror-editor:last-child p:last-child {
+  color: var(--ink-soft);
+  line-height: var(--lh-body);
+  margin: 0;
 }
