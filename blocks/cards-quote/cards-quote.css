@@ -25,7 +25,8 @@
 }
 
 /* quote text */
-.cards-quote .cards-quote-card-body p:first-child {
+.cards-quote .cards-quote-card-body > p:first-child,
+.cards-quote .cards-quote-card-body .prosemirror-editor:first-child p {
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.4rem;
@@ -35,7 +36,9 @@
 }
 
 /* citation line (name · city) */
-.cards-quote .cards-quote-card-body p:last-child {
+/* stylelint-disable-next-line no-descending-specificity */
+.cards-quote .cards-quote-card-body > p:last-child,
+.cards-quote .cards-quote-card-body .prosemirror-editor:last-child p {
   margin: 1.1rem 0 0;
   font-family: var(--font-body);
   font-size: 0.76rem;
@@ -47,7 +50,9 @@
 }
 
 /* single-child guard: if a card has only one paragraph, keep it styled as a quote */
-.cards-quote .cards-quote-card-body p:only-child {
+/* stylelint-disable-next-line no-descending-specificity */
+.cards-quote .cards-quote-card-body > p:only-child,
+.cards-quote .cards-quote-card-body .prosemirror-editor:only-child p {
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.4rem;

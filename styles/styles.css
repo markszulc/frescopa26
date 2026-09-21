@@ -1062,7 +1062,8 @@ main .section:has(.article-byline) .default-content-wrapper > ul strong {
 /* Voices section head: eyebrow + large lead testimonial (default content),
    styled to match the source. The two smaller quotes are the cards-quote block. */
 /* stylelint-disable-next-line no-descending-specificity */
-main .section.voices .default-content-wrapper > p:first-child {
+main .section.voices .default-content-wrapper > p:first-child,
+main .section.voices .default-content-wrapper .prosemirror-editor:first-child p:first-child {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -1076,14 +1077,16 @@ main .section.voices .default-content-wrapper > p:first-child {
   color: var(--terracotta);
 }
 
-main .section.voices .default-content-wrapper > p:first-child::before {
+main .section.voices .default-content-wrapper > p:first-child::before,
+main .section.voices .default-content-wrapper .prosemirror-editor:first-child p:first-child::before {
   content: "";
   width: 1.75rem;
   height: 1px;
   background-color: currentcolor;
 }
 
-main .section.voices .default-content-wrapper > blockquote {
+main .section.voices .default-content-wrapper > blockquote,
+main .section.voices .default-content-wrapper .prosemirror-editor blockquote {
   margin: 1.4rem 0 0;
   padding: 0;
   border: 0;
@@ -1091,7 +1094,9 @@ main .section.voices .default-content-wrapper > blockquote {
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-main .section.voices .default-content-wrapper > blockquote > p:first-child {
+main .section.voices .default-content-wrapper > blockquote > p:first-child,
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.voices .default-content-wrapper .prosemirror-editor blockquote > p:first-child {
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.85rem, 4.2vw, 3.1rem);
@@ -1101,14 +1106,17 @@ main .section.voices .default-content-wrapper > blockquote > p:first-child {
   color: var(--burgundy);
 }
 
-main .section.voices .default-content-wrapper > blockquote > p:first-child em {
+main .section.voices .default-content-wrapper > blockquote > p:first-child em,
+main .section.voices .default-content-wrapper .prosemirror-editor blockquote > p:first-child em {
   font-style: normal;
   font-weight: 800;
   color: var(--terracotta);
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-main .section.voices .default-content-wrapper > blockquote > p:last-child {
+main .section.voices .default-content-wrapper > blockquote > p:last-child,
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.voices .default-content-wrapper .prosemirror-editor blockquote > p:last-child {
   margin: 1.1rem 0 0;
   font-family: var(--font-body);
   font-size: 0.76rem;
