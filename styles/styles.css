@@ -594,8 +594,10 @@ main .section.cards-article-container:not(:has(.article-byline)) {
 }
 
 /* Page-header intro (category + account pages): eyebrow, large burgundy
-   heading, lede. */
-main .section.alt .default-content-wrapper > p:first-child,
+   heading, lede. Scoped to the section's leading content wrapper only, so a
+   trailing default-content-wrapper added after a block (e.g. a note under
+   steps-tabs) isn't mistaken for the page header. */
+main .section.alt > .default-content-wrapper:first-child > p:first-child,
 main .section:has(.account-signin) .default-content-wrapper > p:first-child {
   margin: 0;
   font-family: var(--font-body);
@@ -607,7 +609,7 @@ main .section:has(.account-signin) .default-content-wrapper > p:first-child {
   color: var(--terracotta);
 }
 
-main .section.alt .default-content-wrapper > h1,
+main .section.alt > .default-content-wrapper:first-child > h1,
 main .section:has(.account-signin) .default-content-wrapper > h1 {
   margin: 0.6rem 0 0;
   font-family: var(--font-display);
@@ -620,12 +622,13 @@ main .section:has(.account-signin) .default-content-wrapper > h1 {
 
 /* The account-page heading keeps a narrow measure; the catalogue intro heading
    runs full width (one line where it fits), matching the source. */
+/* stylelint-disable-next-line no-descending-specificity */
 main .section:has(.account-signin) .default-content-wrapper > h1 {
   max-width: 14ch;
 }
 
 /* stylelint-disable no-descending-specificity */
-main .section.alt .default-content-wrapper > h1 + p,
+main .section.alt > .default-content-wrapper:first-child > h1 + p,
 main .section:has(.account-signin) .default-content-wrapper > h1 + p {
   margin: 1rem 0 0;
   max-width: 52ch;
