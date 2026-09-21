@@ -371,44 +371,44 @@ header nav .nav-tools a svg {
 /* Transparent overlay header when the page leads with a full-bleed hero-media
    block: collapse the reserved header height so the hero image runs to the very
    top, float the nav over it, and switch nav content to light colors. */
-body:has(main > .section:first-child .hero-media.block) header {
+body:has(main > .section:first-child .hero.block) header {
   height: 0;
 }
 
-body:has(main > .section:first-child .hero-media.block) header .nav-wrapper {
+body:has(main > .section:first-child .hero.block) header .nav-wrapper {
   background-color: transparent;
   border-bottom-color: transparent;
 }
 
 /* Over the hero photo, swap the burgundy wordmark for the light variant
    (cream text + cream divider line, amber bean) so it reads on the dark image. */
-body:has(main > .section:first-child .hero-media.block) header nav .nav-brand a {
+body:has(main > .section:first-child .hero.block) header nav .nav-brand a {
   display: block;
   width: 128px;
   height: 32px;
   background: url("/icons/frescopa-logo-light.svg") left center / contain no-repeat;
 }
 
-body:has(main > .section:first-child .hero-media.block) header nav .nav-brand img {
+body:has(main > .section:first-child .hero.block) header nav .nav-brand img {
   opacity: 0;
 }
 
-body:has(main > .section:first-child .hero-media.block) header nav .nav-sections a:any-link,
-body:has(main > .section:first-child .hero-media.block) header nav .nav-tools a:any-link {
+body:has(main > .section:first-child .hero.block) header nav .nav-sections a:any-link,
+body:has(main > .section:first-child .hero.block) header nav .nav-tools a:any-link {
   color: var(--cream);
 }
 
-body:has(main > .section:first-child .hero-media.block) header nav .nav-sections a:hover,
-body:has(main > .section:first-child .hero-media.block) header nav .nav-tools a:hover {
+body:has(main > .section:first-child .hero.block) header nav .nav-sections a:hover,
+body:has(main > .section:first-child .hero.block) header nav .nav-tools a:hover {
   color: var(--amber);
 }
 
 /* over the dark hero, the current-section link uses the amber accent so it
    stays legible against the photo. */
-body:has(main > .section:first-child .hero-media.block) header nav .nav-sections a[aria-current='page'] {
+body:has(main > .section:first-child .hero.block) header nav .nav-sections a[aria-current='page'] {
   color: var(--amber);
 }
 
-body:has(main > .section:first-child .hero-media.block) header nav .nav-hamburger button {
+body:has(main > .section:first-child .hero.block) header nav .nav-hamburger button {
   background-color: transparent;
 }
