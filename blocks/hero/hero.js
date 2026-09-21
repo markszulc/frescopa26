@@ -1,5 +1,5 @@
 /**
- * loads and decorates the hero-media block
+ * loads and decorates the hero block
  * @param {Element} block The block element
  */
 export default function decorate(block) {
