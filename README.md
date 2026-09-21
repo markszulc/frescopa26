@@ -1,5 +1,5 @@
 # Frescopa 2026
-foo
+for AEM
 
 ## Environments
 - Preview: https://main--{repo}--{owner}.aem.page/
