@@ -142,16 +142,6 @@
   display: block;
 }
 
-/* Trailing note under the steps-tabs block, styled like an eyebrow label. */
-.steps-tabs-container > .default-content-wrapper > p:first-child {
-  font-family: var(--font-mono, monospace);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
-  color: var(--terracotta);
-  margin: 0;
-}
-
 /* Preserve the eyebrow styling against authoring UI styles loaded after block CSS. */
 .steps-tabs .steps-tabs-head .prosemirror-editor:first-child p:first-child {
   font-family: var(--font-mono, monospace);
@@ -166,16 +156,5 @@
 .steps-tabs .steps-tabs-head .prosemirror-editor:last-child p:last-child {
   color: var(--ink-soft);
   line-height: var(--lh-body);
-  margin: 0;
-}
-
-/* Preserve the trailing-note eyebrow styling against authoring UI styles
-   loaded after block CSS. */
-.steps-tabs-container > .default-content-wrapper .prosemirror-editor:first-child p:first-child {
-  font-family: var(--font-mono, monospace);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
-  color: var(--terracotta);
   margin: 0;
 }

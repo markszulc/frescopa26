@@ -1137,3 +1137,39 @@ main .section.voices .cards-quote-wrapper {
 main .section.feed .default-content-wrapper .prosemirror-editor:first-child p:first-child {
   color: var(--terracotta);
 }
+
+/* Generic eyebrow default: the first paragraph of a standalone
+   default-content-wrapper (free text placed outside a block, e.g. a note
+   added after a block within a section) reads as a small eyebrow label,
+   matching the site's other eyebrows. Sections with their own bespoke
+   first-paragraph treatment (dark, feed, voices, cards-coffee bands, article
+   pages) are excluded above and keep their specific styling. */
+/* stylelint-disable-next-line no-descending-specificity */
+main .section:not(.dark, .feed, .voices, :has(.cards-coffee), :has(.article-byline))
+  .default-content-wrapper > p:first-child,
+/* stylelint-disable-next-line no-descending-specificity */
+main .section:not(.dark, .feed, .voices, :has(.cards-coffee), :has(.article-byline))
+  .default-content-wrapper .prosemirror-editor:first-child p:first-child {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+/* Preserve the generic eyebrow default (see above) against authoring UI
+   styles loaded after site CSS. */
+main .section:not(.dark, .feed, .voices, :has(.cards-coffee), :has(.article-byline))
+  .default-content-wrapper .prosemirror-editor:first-child p:first-child {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
