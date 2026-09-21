@@ -31,6 +31,12 @@
   background-color: var(--charcoal);
 }
 
+.hero.block.short {
+  min-height: 0;
+  height: auto;
+  padding: 64px 0;
+}
+
 /* Row 1 (image cell) becomes the absolute background layer. Scoped away from the
    no-image variant so single-row CTA instances keep their only div in flow. */
 .hero.block:not(.no-image) > div:first-child {
