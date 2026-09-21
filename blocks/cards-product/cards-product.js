@@ -32,7 +32,7 @@ export default function decorate(block) {
       }
 
       // Last paragraph holds the price and CTA merged ("£14Add to cart →")
-      const foot = body.querySelector('p:last-of-type');
+      const foot = [...body.querySelectorAll('p')].pop();
       if (foot) {
         const raw = foot.textContent.trim();
         const match = raw.match(/^([^\d]*\d[\d.,]*)(.*)$/);
