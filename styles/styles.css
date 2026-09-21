@@ -1077,12 +1077,11 @@ main .section.voices .default-content-wrapper .prosemirror-editor:first-child p:
   color: var(--terracotta);
 }
 
-main .section.voices .default-content-wrapper > p:first-child::before,
-main .section.voices .default-content-wrapper .prosemirror-editor:first-child p:first-child::before {
-  content: "";
-  width: 1.75rem;
-  height: 1px;
-  background-color: currentcolor;
+
+
+main .section.voices .default-content-wrapper {
+  border-bottom: 1px solid rgb(99 77 66 / 22%);
+  padding-bottom: 2.1rem;
 }
 
 main .section.voices .default-content-wrapper > blockquote,
@@ -1126,9 +1125,9 @@ main .section.voices .default-content-wrapper .prosemirror-editor blockquote > p
   color: var(--terracotta);
 }
 
-/* separate the two smaller quotes from the lead testimonial (source: ~3.8rem) */
+/* separate the two smaller quotes from the lead testimonial */
 main .section.voices .cards-quote-wrapper {
-  margin-top: 3.8rem;
+  margin-top: 2.7rem;
 }
 
 /* Preserve the feed eyebrow color against authoring UI styles loaded after site CSS. */
