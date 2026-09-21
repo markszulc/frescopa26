@@ -1,37 +1,247 @@
-.hero-container .hero-wrapper {
-  max-width: unset;
+/* Block: hero-media -- full-bleed hero / promo band with image + scrim overlay.
+   Values extracted from source computed styles (section.hero on frescopa-atelier). */
+
+/* Full-bleed: escape the section content max-width */
+.hero-wrapper {
+  max-width: none !important;
+  padding: 0 !important;
+}
+
+.section:has(.hero) {
+  padding: 0;
+  margin: 0;
+}
+
+.section:has(.hero) > div {
+  max-width: none;
   padding: 0;
 }
 
-.hero {
+/* Block root: positioning context + clipping for the absolute image/scrim */
+.hero.block {
   position: relative;
-  padding: 40px 24px;
-  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 520px;
+  margin: 0;
+  padding: calc(var(--nav-height) + 2.5rem) 0 3rem;
+  color: var(--cream);
+  background-color: var(--charcoal);
 }
 
-.hero h1 {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--background-color);
-}
-
-.hero picture {
+/* Row 1 (image cell) becomes the absolute background layer. Scoped away from the
+   no-image variant so single-row CTA instances keep their only div in flow. */
+.hero.block:not(.no-image) > div:first-child {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   inset: 0;
-  object-fit: cover;
-  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.hero img {
-  object-fit: cover;
+/* Scrim: darken image for legible light text (matches source triple-gradient) */
+.hero.block:not(.no-image) > div:first-child::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(92deg, oklch(18% 0.02 45deg / 82%) 0%, oklch(18% 0.02 45deg / 50%) 34%, transparent 64%),
+    linear-gradient(0deg, oklch(16% 0.02 45deg / 60%) 0%, transparent 42%),
+    linear-gradient(oklch(16% 0.02 45deg / 40%) 0%, transparent 18%);
+}
+
+.hero.block picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hero.block picture img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
+/* Row 2 (content cell): sits above the image. border-box so the 1120px
+   max-width includes the gutter, aligning content with the nav/sections
+   (container edges 440–1560, content inset by the 48px gutter). */
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block > div:last-child {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block > div:last-child > div {
+  display: block;
+  max-width: 620px;
+}
+
+/* Lead paragraph(s) */
+.hero.block p {
+  margin: 1.3rem 0 0;
+  max-width: 40ch;
+  color: var(--cream);
+  line-height: var(--lh-body);
+}
+
+/* Eyebrow: the first paragraph, including when the editor wraps each field. */
+.hero.block p.eyebrow,
+.hero.block :where(p:not(
+  .hero.block :is(p, :has(p)) ~ p,
+  .hero.block :is(p, :has(p)) ~ * p
+)) {
+  margin: 0;
+  max-width: none;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  line-height: 1.62;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+/* Heading */
+.hero.block h1,
+.hero.block h2 {
+  margin: 1.1rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--cream);
+}
+
+.hero.block h1 {
+  font-size: var(--fs-h1);
+}
+
+.hero.block h2 {
+  font-size: var(--fs-h2);
+}
+
+/* CTA links: paragraphs that hold a single link render as a button row */
+.hero.block p:has(> a:only-child) {
+  display: inline-flex;
+  max-width: none;
+  margin: 2rem 0.9rem 0 0;
+}
+
+.hero.block p:has(> a:only-child) a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  padding: 0.85em 1.5em;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  background-color: var(--terracotta);
+  color: var(--cream);
+  transition:
+    background-color var(--dur-1) var(--ease-quint),
+    border-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint);
+}
+
+.hero.block p:has(> a:only-child) a:hover {
+  border-color: var(--terracotta-deep);
+  background-color: var(--terracotta-deep);
+  color: var(--cream);
+}
+
+/* Secondary CTA (later buttons) -- ghost/outline on the photo */
+.hero.block p:has(> a:only-child) ~ p:has(> a:only-child) a {
+  border-color: oklch(94.5% 0.016 80deg / 42%);
+  background-color: transparent;
+  color: var(--cream);
+}
+
+.hero.block p:has(> a:only-child) ~ p:has(> a:only-child) a:hover {
+  border-color: var(--cream);
+  background-color: oklch(94.5% 0.016 80deg / 12%);
+  color: var(--cream);
+}
+
+/* Image-less variant: dark CTA band, no scrim needed */
+.hero.block.no-image {
+  min-height: 0;
+  padding: var(--section-y) 0;
+  background-color: var(--charcoal);
+  text-align: center;
+}
+
+.hero.block.no-image > div:last-child > div {
+  max-width: var(--content-narrow);
+  margin-inline: auto;
+}
+
+/* Center the copy and constrain line lengths in the CTA band. */
+.hero.block.no-image :is(p, h1, h2) {
+  max-width: none;
+  margin-inline: auto;
+}
+
+.hero.block.no-image p:not(:has(> a:only-child)) {
+  max-width: 42ch;
+}
+
+/* CTA buttons in the dark band: primary is cream with burgundy text. */
+.hero.block.no-image p:has(> a:only-child) {
+  justify-content: center;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block.no-image p:has(> a:only-child) a {
+  background-color: var(--cream);
+  color: var(--burgundy);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block.no-image p:has(> a:only-child) a:hover {
+  border-color: var(--paper-2);
+  background-color: var(--paper-2);
+  color: var(--burgundy);
+}
+
+/* Secondary CTA stays a ghost/outline button on the dark band. */
+.hero.block.no-image p:has(> a:only-child) ~ p:has(> a:only-child) a {
+  border-color: oklch(94.5% 0.016 80deg / 42%);
+  background-color: transparent;
+  color: var(--cream);
+}
+
+.hero.block.no-image p:has(> a:only-child) ~ p:has(> a:only-child) a:hover {
+  border-color: var(--cream);
+  background-color: oklch(94.5% 0.016 80deg / 12%);
+  color: var(--cream);
+}
+
+/* Desktop */
 @media (width >= 900px) {
-  .hero {
-    padding: 40px 32px;
+  .hero.block {
+    min-height: 828px;
+    padding: calc(var(--nav-height) + 6rem) 0 3.4rem;
   }
+
+  .hero.block > div:last-child {
+    padding: 0 48px;
+  }
+}
+
+/* Preserve the eyebrow color against authoring UI styles loaded after block CSS. */
+.hero.block .prosemirror-editor:first-child p:first-child {
+  color: var(--amber);
 }
