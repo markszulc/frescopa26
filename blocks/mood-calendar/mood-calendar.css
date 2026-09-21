@@ -19,10 +19,10 @@
 }
 
 /* eyebrow: first paragraph before the heading */
-.mood-calendar-copy p:first-child {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.mood-calendar-copy :where(p:not(
+  .mood-calendar-copy :is(p, :has(p)) ~ p,
+  .mood-calendar-copy :is(p, :has(p)) ~ * p
+)) {
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--fs-eyebrow);
@@ -33,7 +33,8 @@
 }
 
 /* hint line — uppercase terracotta micro-copy (last paragraph) */
-.mood-calendar-copy p:last-child {
+.mood-calendar-copy > div > p:last-child,
+.mood-calendar-copy .prosemirror-editor:last-child p:last-child {
   margin: 1.6rem 0 0;
   font-size: var(--fs-eyebrow);
   font-weight: 400;
@@ -41,13 +42,6 @@
   text-transform: uppercase;
   line-height: 1.4;
   color: var(--terracotta);
-}
-
-.mood-calendar-copy p:first-child::before {
-  content: "";
-  width: 1.2rem;
-  height: 1px;
-  background-color: var(--terracotta);
 }
 
 .mood-calendar-copy h2 {
@@ -181,4 +175,9 @@ button.mood-calendar-day:hover {
     align-items: center;
     gap: 5rem;
   }
+}
+
+/* Preserve the eyebrow color against authoring UI styles loaded after block CSS. */
+.mood-calendar-copy .prosemirror-editor:first-child p:first-child {
+  color: var(--terracotta);
 }
