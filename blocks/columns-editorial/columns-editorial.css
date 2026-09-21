@@ -35,8 +35,10 @@
 }
 
 /* ---- Eyebrow: a leading paragraph that introduces a heading (h2 or h3) ---- */
-.columns-editorial > div > div > p:first-child:has(+ h2),
-.columns-editorial > div > div > p:first-child:has(+ h3) {
+/* published: p and heading are siblings */
+.columns-editorial p:first-child:has(+ :is(h2, h3)),
+/* editor: wrapper-with-p immediately followed by wrapper-with-heading */
+.columns-editorial :has(p):has(+ :is(:has(h2), :has(h3))) p {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
@@ -50,14 +52,7 @@
   color: var(--terracotta);
 }
 
-.columns-editorial > div > div > p:first-child:has(+ h2)::before,
-.columns-editorial > div > div > p:first-child:has(+ h3)::before {
-  content: "";
-  display: block;
-  width: 1.6em;
-  height: 1px;
-  background-color: var(--terracotta);
-}
+
 
 /* Heading tier for image+text feature rows that use an h3 (cafe experience). */
 .columns-editorial h3 {
