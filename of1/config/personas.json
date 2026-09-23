@@ -1,0 +1,98 @@
+[
+  {
+    "id": "busy-home-coffee-lover",
+    "name": "Busy Home Coffee Lover",
+    "description": "Time-pressed professionals who want café-quality coffee without effort or expertise. Values automation, consistency, and convenience.",
+    "keywords": ["automatic", "easy", "convenient", "smart", "ai", "bean to cup", "busy", "professional", "morning routine", "hands off", "effortless", "learns taste"],
+    "priorities": ["automation", "consistency", "quality", "time-saving", "convenience"],
+    "recommendedProducts": ["atelier", "atelier-mini", "morning-blend"],
+    "intentProfile": {
+      "explore": 0.3,
+      "research": 0.7,
+      "compare": 0.5,
+      "purchase": 0.8,
+      "deals": 0.2,
+      "support": 0.3
+    }
+  },
+  {
+    "id": "ritual-minded-enthusiast",
+    "name": "Ritual-Minded Enthusiast",
+    "description": "Coffee and tea connoisseurs who value the craft and process. Wants hands-on control, premium beans, and the experience of being their own barista.",
+    "keywords": ["manual", "craft", "artisan", "barista", "hands on", "espresso", "ritual", "control", "specialty", "single origin", "pour over", "technique"],
+    "priorities": ["quality", "control", "craftsmanship", "experience", "learning"],
+    "recommendedProducts": ["barista", "slow-pour", "single-origin-ethiopian", "espresso-blend"],
+    "intentProfile": {
+      "explore": 0.5,
+      "research": 0.9,
+      "compare": 0.8,
+      "purchase": 0.4,
+      "deals": 0.1,
+      "support": 0.2
+    }
+  },
+  {
+    "id": "budget-conscious-student",
+    "name": "Budget-Conscious Student",
+    "description": "Students and young professionals who want great coffee without the barista price tag. Values affordability, simplicity, and reliable results.",
+    "keywords": ["affordable", "cheap", "budget", "simple", "student", "beginner", "entry level", "under 500", "everyday", "reliable", "easy to use"],
+    "priorities": ["price", "simplicity", "reliability", "value"],
+    "recommendedProducts": ["everyday", "carafe", "morning-blend"],
+    "intentProfile": {
+      "explore": 0.6,
+      "research": 0.4,
+      "compare": 0.7,
+      "purchase": 0.5,
+      "deals": 0.9,
+      "support": 0.3
+    }
+  },
+  {
+    "id": "tea-enthusiast",
+    "name": "Tea Enthusiast",
+    "description": "Dedicated tea drinkers who appreciate quality loose leaf and tea bags. Values variety, flavor profiles, and traditional brewing.",
+    "keywords": ["tea", "loose leaf", "green tea", "black tea", "herbal", "sencha", "darjeeling", "english breakfast", "tea lover", "caffeine free", "traditional"],
+    "priorities": ["variety", "quality", "authenticity", "flavor"],
+    "recommendedProducts": ["atelier", "english-breakfast-tea", "green-sencha-tea", "darjeeling-first-flush-tea"],
+    "intentProfile": {
+      "explore": 0.7,
+      "research": 0.6,
+      "compare": 0.5,
+      "purchase": 0.4,
+      "deals": 0.3,
+      "support": 0.2
+    }
+  },
+  {
+    "id": "health-conscious-beverage-explorer",
+    "name": "Health-Conscious Beverage Explorer",
+    "description": "Health-focused individuals exploring cold-pressed juices and diverse beverage options. Values nutrition, natural ingredients, and variety beyond coffee.",
+    "keywords": ["juice", "cold pressed", "healthy", "no sugar", "natural", "fresh", "green juice", "antioxidants", "wellness", "organic", "nutrition"],
+    "priorities": ["health", "natural ingredients", "variety", "freshness"],
+    "recommendedProducts": ["green-revival-juice", "beetroot-berry-juice", "cold-pressed-orange-juice"],
+    "intentProfile": {
+      "explore": 0.8,
+      "research": 0.5,
+      "compare": 0.4,
+      "purchase": 0.3,
+      "deals": 0.4,
+      "support": 0.2
+    }
+  },
+  {
+    "id": "sustainability-focused-buyer",
+    "name": "Sustainability-Focused Buyer",
+    "description": "Environmentally conscious consumers who prioritize compostable options, plastic-free packaging, and sustainable practices in their purchases.",
+    "keywords": ["sustainable", "eco friendly", "compostable", "plastic free", "environment", "green", "ethical", "waste free", "recyclable", "carbon neutral", "sustainable coffee"],
+    "priorities": ["sustainability", "environmental impact", "compostable packaging", "quality"],
+    "recommendedProducts": ["atelier", "atelier-mini", "morning-blend"],
+    "intentProfile": {
+      "explore": 0.4,
+      "research": 0.8,
+      "compare": 0.6,
+      "purchase": 0.6,
+      "deals": 0.2,
+      "support": 0.3
+    }
+  }
+]

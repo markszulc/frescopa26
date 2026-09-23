@@ -1,0 +1,344 @@
+[
+  {
+    "url": "https://of1--frescopa26--markszulc.aem.page/",
+    "title": "Fr\u00e9scopa - Every morning, perfected",
+    "blocks": [
+      {
+        "tag": "h1",
+        "text": "Meet your coffee agent"
+      },
+      {
+        "tag": "p",
+        "text": "The Fr\u00e9scopa Atelier learns what you love, softens or sharpens to match your mood, and reorders beans before you run out. Barista craft, kept warm by a little intelligence."
+      },
+      {
+        "tag": "h2",
+        "text": "It reads the room. And the calendar."
+      },
+      {
+        "tag": "p",
+        "text": "Whether it's a 9am seminar or a 2am essay crunch, the Atelier senses time, reads your calendar, even checks the weather\u2014so every cup is dialed to the moment."
+      },
+      {
+        "tag": "h2",
+        "text": "Built for sustainability"
+      },
+      {
+        "tag": "p",
+        "text": "Compostable pods. Plastic-free refills. Self-reordering when you're low. Grounds go to the garden, not the landfill."
+      },
+      {
+        "tag": "h2",
+        "text": "Every Atelier begins at the Fr\u00e9scopa Caf\u00e9"
+      },
+      {
+        "tag": "p",
+        "text": "Pull a shot on the machine before you buy it. Sample our seasonal blends. Find a caf\u00e9 near you."
+      }
+    ]
+  },
+  {
+    "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+    "title": "Machines - Fr\u00e9scopa",
+    "blocks": [
+      {
+        "tag": "h1",
+        "text": "Machines"
+      },
+      {
+        "tag": "h2",
+        "text": "Bean-to-cup"
+      },
+      {
+        "tag": "h3",
+        "text": "The Atelier"
+      },
+      {
+        "tag": "p",
+        "text": "Learns your taste cup by cup, no dialing-in. Automatically reorders beans. $2,199."
+      },
+      {
+        "tag": "h3",
+        "text": "The Atelier Mini"
+      },
+      {
+        "tag": "p",
+        "text": "Same intelligent features, compact design. Perfect for smaller kitchens. $799."
+      },
+      {
+        "tag": "h2",
+        "text": "Espresso"
+      },
+      {
+        "tag": "h3",
+        "text": "The Barista"
+      },
+      {
+        "tag": "p",
+        "text": "A hands-on machine for the morning ritualist. Full manual control. $899."
+      },
+      {
+        "tag": "h3",
+        "text": "The Everyday"
+      },
+      {
+        "tag": "p",
+        "text": "Honest espresso, every single morning. Simplified operation. $499."
+      },
+      {
+        "tag": "h2",
+        "text": "Filter"
+      },
+      {
+        "tag": "h3",
+        "text": "The Slow Pour"
+      },
+      {
+        "tag": "p",
+        "text": "Even saturation and gentle timing for consistent filter coffee. $279."
+      },
+      {
+        "tag": "h2",
+        "text": "Cold brew"
+      },
+      {
+        "tag": "h3",
+        "text": "The Carafe"
+      },
+      {
+        "tag": "p",
+        "text": "Overnight steeping produces smooth, low-acid cold brew. $179."
+      }
+    ]
+  },
+  {
+    "url": "https://of1--frescopa26--markszulc.aem.page/machines/atelier",
+    "title": "The Atelier - Fr\u00e9scopa",
+    "blocks": [
+      {
+        "tag": "h1",
+        "text": "The Atelier"
+      },
+      {
+        "tag": "p",
+        "text": "AI-enabled bean-to-cup coffee machine. $2,199 or $184/month."
+      },
+      {
+        "tag": "h2",
+        "text": "Learns your taste"
+      },
+      {
+        "tag": "p",
+        "text": "Adapts to individual taste preferences over approximately 7 days. Supports up to 6 household member profiles. Creates personalized 'flavour DNA' per user."
+      },
+      {
+        "tag": "h2",
+        "text": "Smart sensing"
+      },
+      {
+        "tag": "p",
+        "text": "Ring of sensors monitors every extraction. Reads grind size, water flow, cup strength, and group head temperature. Whisper-quiet grinding at 58 dB."
+      },
+      {
+        "tag": "h2",
+        "text": "Contextual intelligence"
+      },
+      {
+        "tag": "p",
+        "text": "Analyzes time of day, calendar events, weather, and household activity. Automatically warms up before alarms. Adjusts brewing parameters based on morning type."
+      },
+      {
+        "tag": "h2",
+        "text": "Specifications"
+      },
+      {
+        "tag": "p",
+        "text": "Dimensions: 32 \u00d7 24 \u00d7 41 cm. Weight: 9.8 kg. Materials: Anodised aluminium with oak trim. Water tank: 1.8 L. Bean hopper: 250 g. Pump pressure: 15 bar."
+      },
+      {
+        "tag": "p",
+        "text": "Connectivity: Wi-Fi 2.4/5 GHz, Bluetooth 5.0. Compatible with iOS 15+ and Android 10+. Energy rating: A+."
+      },
+      {
+        "tag": "h2",
+        "text": "Customer reviews"
+      },
+      {
+        "tag": "p",
+        "text": "Rated 4.8/5 from 214 verified owners."
+      },
+      {
+        "tag": "p",
+        "text": "\"It simply knew what I wanted, before I did. The first machine I've owned that got better the longer I had it.\" \u2014 Priya M., London"
+      },
+      {
+        "tag": "p",
+        "text": "\"I was sceptical at the price. Then it started reordering beans before I noticed, and warming up before my alarm.\" \u2014 Daniel R., Bristol"
+      },
+      {
+        "tag": "p",
+        "text": "\"Every person in our house gets their own cup, exactly right, without touching a single dial.\" \u2014 Sana K., Leeds"
+      }
+    ]
+  },
+  {
+    "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+    "title": "Beverages - Fr\u00e9scopa",
+    "blocks": [
+      {
+        "tag": "h1",
+        "text": "Beverages"
+      },
+      {
+        "tag": "h2",
+        "text": "Coffee"
+      },
+      {
+        "tag": "p",
+        "text": "House blends built for consistency, traceable single origins. Ground, whole bean, or pods. 10 blends available from $10."
+      },
+      {
+        "tag": "h3",
+        "text": "Morning Blend"
+      },
+      {
+        "tag": "p",
+        "text": "Balanced profile perfect for everyday morning drinking. $10."
+      },
+      {
+        "tag": "h3",
+        "text": "Single Origin Ethiopian"
+      },
+      {
+        "tag": "p",
+        "text": "Bright, floral notes characteristic of Ethiopian coffee. $10."
+      },
+      {
+        "tag": "h3",
+        "text": "Espresso Blend"
+      },
+      {
+        "tag": "p",
+        "text": "Rich, concentrated flavor perfect for espresso drinks. $10."
+      },
+      {
+        "tag": "h2",
+        "text": "Tea"
+      },
+      {
+        "tag": "p",
+        "text": "Eight blends across black, green and herbal. Loose or bag formats. 10 blends available from $9."
+      },
+      {
+        "tag": "h3",
+        "text": "English Breakfast"
+      },
+      {
+        "tag": "p",
+        "text": "Classic black tea blend for morning drinking. $9."
+      },
+      {
+        "tag": "h3",
+        "text": "Green Sencha"
+      },
+      {
+        "tag": "p",
+        "text": "Japanese green tea with grassy, umami notes. $9."
+      },
+      {
+        "tag": "h3",
+        "text": "Darjeeling First Flush"
+      },
+      {
+        "tag": "p",
+        "text": "Premium spring-harvested tea with delicate floral character. $9."
+      },
+      {
+        "tag": "h2",
+        "text": "Cold-pressed juice"
+      },
+      {
+        "tag": "p",
+        "text": "Cold-pressed singles and blends, plus concentrates. No added sugar. 25 pressings available from $5.50."
+      },
+      {
+        "tag": "h3",
+        "text": "Orange"
+      },
+      {
+        "tag": "p",
+        "text": "Fresh cold-pressed orange juice. $5.50."
+      },
+      {
+        "tag": "h3",
+        "text": "Green Revival"
+      },
+      {
+        "tag": "p",
+        "text": "Green juice blend with vegetables and fruits. $5.50."
+      },
+      {
+        "tag": "h3",
+        "text": "Beetroot & Berry"
+      },
+      {
+        "tag": "p",
+        "text": "Beetroot combined with mixed berries. $5.50."
+      }
+    ]
+  },
+  {
+    "url": "https://of1--frescopa26--markszulc.aem.page/cafe",
+    "title": "Caf\u00e9s - Fr\u00e9scopa",
+    "blocks": [
+      {
+        "tag": "h1",
+        "text": "Find a Fr\u00e9scopa Caf\u00e9"
+      },
+      {
+        "tag": "p",
+        "text": "1,200+ caf\u00e9s across 190 cities in 48 states, with 12 flagship showrooms."
+      },
+      {
+        "tag": "h2",
+        "text": "What to expect"
+      },
+      {
+        "tag": "p",
+        "text": "Taste bar with espresso, slow-pour coffee, loose-leaf tea, and cold-pressed juice. Hands-on showroom where you can pull shots on the Atelier. Workshop table with classes including origins cuppings, latte-art labs, and home brewing instruction."
+      },
+      {
+        "tag": "p",
+        "text": "No purchase, no pressure. Experience the space without obligation to buy."
+      },
+      {
+        "tag": "h2",
+        "text": "Featured locations"
+      },
+      {
+        "tag": "h3",
+        "text": "SoHo, New York (Flagship)"
+      },
+      {
+        "tag": "p",
+        "text": "112 Greene Street. Full taste bar, complete showroom, dedicated workshop space."
+      },
+      {
+        "tag": "h3",
+        "text": "Chicago (West Loop)"
+      },
+      {
+        "tag": "p",
+        "text": "905 W Fulton Market. Caf\u00e9, showroom, workshops."
+      },
+      {
+        "tag": "h3",
+        "text": "Los Angeles (Arts District)"
+      },
+      {
+        "tag": "p",
+        "text": "720 E 3rd St. Caf\u00e9, showroom, workshops."
+      }
+    ]
+  }
+]
