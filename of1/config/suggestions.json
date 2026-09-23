@@ -1,0 +1,67 @@
+{
+  "title": "Find Your Perfect Pour",
+  "subtitle": "From morning rituals to leisurely brews, discover what suits you best",
+  "placeholder": "What would you like to make today?",
+  "suggestions": [
+    {
+      "type": "comparison",
+      "label": "Compare The Atelier vs The Barista",
+      "query": "Compare The Atelier and The Barista coffee makers"
+    },
+    {
+      "type": "deep-dive",
+      "label": "Tell me about The Atelier",
+      "query": "Tell me everything about The Atelier coffee maker"
+    },
+    {
+      "type": "recommendation",
+      "label": "Best machine for morning rituals",
+      "query": "Best coffee maker for someone who values morning rituals"
+    },
+    {
+      "type": "budget",
+      "label": "Machines under £300",
+      "query": "Show me coffee makers under £300"
+    },
+    {
+      "type": "discovery",
+      "label": "Show me all coffee makers",
+      "query": "What coffee makers do you have available?"
+    },
+    {
+      "type": "comparison",
+      "label": "Ethiopian vs Espresso Blend",
+      "query": "Compare Single Origin Ethiopian Coffee and Espresso Blend Coffee"
+    },
+    {
+      "type": "recommendation",
+      "label": "Best tea for daily rituals",
+      "query": "Best tea for someone who enjoys a daily brewing ritual"
+    },
+    {
+      "type": "deep-dive",
+      "label": "About Single Origin Ethiopian",
+      "query": "Tell me about Single Origin Ethiopian Coffee"
+    },
+    {
+      "type": "budget",
+      "label": "Coffee under £15",
+      "query": "Show me coffee varieties under £15"
+    },
+    {
+      "type": "discovery",
+      "label": "Show me fresh juices",
+      "query": "What cold-pressed juices do you offer?"
+    },
+    {
+      "type": "recommendation",
+      "label": "Best sustainable options",
+      "query": "Best coffee makers and products for someone who values sustainability"
+    },
+    {
+      "type": "comparison",
+      "label": "The Everyday vs The Slow Pour",
+      "query": "Compare The Everyday and The Slow Pour coffee makers"
+    }
+  ]
+}
