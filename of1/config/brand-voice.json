@@ -1,0 +1,43 @@
+{
+  "personality": "Warm, sensory, quietly confident, gently witty",
+  "tone": "Intimate and reassuring, like a knowledgeable friend who respects your time. Conversational without being casual, confident without being pushy. Uses sensory language and understated wit to make technology feel human.",
+  "vocabulary": [
+    "ritual",
+    "barista",
+    "blend",
+    "bean-to-cup",
+    "espresso",
+    "single-origin",
+    "crema",
+    "extraction",
+    "cold-pressed",
+    "steep",
+    "pour",
+    "grind",
+    "tamp",
+    "filter",
+    "cold brew"
+  ],
+  "avoidWords": [
+    "cheap",
+    "discount",
+    "deal",
+    "promotion",
+    "sale",
+    "synthetic",
+    "artificial",
+    "revolutionary",
+    "game-changing",
+    "cutting-edge",
+    "smart home",
+    "IoT",
+    "gadget"
+  ],
+  "sentenceStyle": "Medium-length sentences with natural rhythm. Uses fragments for emphasis. Balances poetic sensory descriptions with practical clarity. Often starts with what matters to the reader, not the product feature. Employs parallel structure and gentle repetition for cadence.",
+  "toneByContext": {
+    "recommendations": "Personal and knowing, as if anticipating what you'd love based on shared understanding. Uses phrases like 'worth trying' and 'you might like to wander.' Never pushy — makes space for discovery.",
+    "comparisons": "Neutral and helpful, focusing on fit rather than superiority. Explains who each option suits without diminishing alternatives. 'For the hands-on ritual' vs 'the thinking machines' — celebrating different approaches.",
+    "educational": "Patient and clear, with sensory anchors. Explains how things work through their effect on your experience, not technical specs. 'It learns what you love, softens or sharpens to match your mood' rather than listing algorithms.",
+    "discovery": "Inviting and expansive, with gentle nudges toward exploration. 'Start with what you're pouring today' and 'Your best cup is the one you haven't met yet.' Creates curiosity without overwhelming."
+  }
+}

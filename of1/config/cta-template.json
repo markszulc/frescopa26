@@ -1,0 +1,13 @@
+{
+  "html": "<div style=\"background-color: #211914; padding: 4rem 2rem; text-align: center; margin: 0; border-radius: 0;\"><h2 style=\"color: #f3ece1; font-family: 'Schibsted Grotesk', system-ui, sans-serif; font-size: clamp(1.8rem, 1.3rem + 2vw, 2.8rem); font-weight: 800; margin: 0 0 1rem 0; line-height: 1.15; letter-spacing: -0.02em;\">{{title}}</h2><p style=\"color: #c4bbad; font-family: 'Hanken Grotesk', system-ui, sans-serif; font-size: 1.125rem; margin: 0 auto 2rem auto; max-width: 600px; line-height: 1.62;\">{{description}}</p><a href=\"{{href}}\" style=\"display: inline-block; background-color: #ba6945; color: #f3ece1; font-family: 'Schibsted Grotesk', system-ui, sans-serif; font-size: 1rem; font-weight: 800; padding: 12px 22px; border-radius: 999px; text-decoration: none; text-transform: none; transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);\">{{buttonText}}</a></div>",
+  "slots": [
+    "title",
+    "description",
+    "buttonText"
+  ],
+  "fallback": {
+    "title": "Find Your Perfect Morning Brew",
+    "description": "Discover handcrafted coffee, tea, and the intelligent machines that make every morning effortless.",
+    "buttonText": "Explore Machines →"
+  }
+}
