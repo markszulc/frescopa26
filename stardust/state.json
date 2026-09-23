@@ -1,0 +1,71 @@
+{
+  "_provenance": {
+    "writtenBy": "stardust:extract",
+    "writtenAt": "2026-09-23T14:25:13Z",
+    "stardustVersion": "0.25.0"
+  },
+  "site": {
+    "originUrl": "https://of1--frescopa26--markszulc.aem.page",
+    "extractedAt": "2026-09-23T14:25:13Z",
+    "pageCap": 3,
+    "totalDiscovered": 6,
+    "crawled": 3
+  },
+  "direction": null,
+  "pages": [
+    {
+      "slug": "index",
+      "url": "https://of1--frescopa26--markszulc.aem.page/",
+      "title": "Fréscopa Atelier - Every morning, perfected.",
+      "type": null,
+      "status": "extracted",
+      "history": [
+        {
+          "status": "extracted",
+          "at": "2026-09-23T14:17:33.899Z"
+        }
+      ],
+      "stale": false,
+      "staleReason": null,
+      "currentStatePath": "stardust/current/pages/index.json",
+      "prototypePath": null,
+      "migratedPath": null
+    },
+    {
+      "slug": "machines",
+      "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+      "title": "Made in the workshop.",
+      "type": null,
+      "status": "extracted",
+      "history": [
+        {
+          "status": "extracted",
+          "at": "2026-09-23T14:17:34.287Z"
+        }
+      ],
+      "stale": false,
+      "staleReason": null,
+      "currentStatePath": "stardust/current/pages/machines.json",
+      "prototypePath": null,
+      "migratedPath": null
+    },
+    {
+      "slug": "beverages",
+      "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+      "title": "Three ways to fill a cup.",
+      "type": null,
+      "status": "extracted",
+      "history": [
+        {
+          "status": "extracted",
+          "at": "2026-09-23T14:17:34.287Z"
+        }
+      ],
+      "stale": false,
+      "staleReason": null,
+      "currentStatePath": "stardust/current/pages/beverages.json",
+      "prototypePath": null,
+      "migratedPath": null
+    }
+  ]
+}

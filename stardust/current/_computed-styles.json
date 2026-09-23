@@ -1,0 +1,4347 @@
+{
+  "_provenance": {
+    "writtenBy": "stardust:extract",
+    "writtenAt": "2026-09-23T14:18:33.617Z",
+    "script": "style-census.mjs",
+    "readArtifacts": [
+      "https://of1--frescopa26--markszulc.aem.page/beverages",
+      "https://of1--frescopa26--markszulc.aem.page/",
+      "https://of1--frescopa26--markszulc.aem.page/machines"
+    ],
+    "widths": [
+      1440
+    ],
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "synthesizedInputs": [],
+    "failed": []
+  },
+  "pages": {
+    "https://of1--frescopa26--markszulc.aem.page/beverages": {
+      "1440": {
+        "title": "Three ways to fill a cup.",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "elements": {
+          "total": 195,
+          "visible": 161
+        },
+        "occluders": [],
+        "headings": [
+          {
+            "tag": "h1",
+            "text": "Three ways to fill a cup.",
+            "selector": "#three-ways-to-fill-a-cup",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "800",
+            "lineHeight": "46.144px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Roasted for your ritual",
+            "selector": "#roasted-for-your-ritual",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "700",
+            "lineHeight": "51.52px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "A quieter kind of cup",
+            "selector": "#a-quieter-kind-of-cup",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "700",
+            "lineHeight": "51.52px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Bottled bright",
+            "selector": "#bottled-bright",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "700",
+            "lineHeight": "51.52px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Taste the whole range at a café.",
+            "selector": "main > div:nth-of-type(5) > div > div > div > div > h2",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "800",
+            "lineHeight": "46.144px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.945 0.016 80)"
+          },
+          {
+            "tag": "h3",
+            "text": "Shop",
+            "selector": "#shop",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          },
+          {
+            "tag": "h3",
+            "text": "Company",
+            "selector": "#company",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          },
+          {
+            "tag": "h3",
+            "text": "Support",
+            "selector": "#support",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          }
+        ],
+        "text": [
+          {
+            "tag": "p",
+            "text": "Coffee, tea, and cold-pressed juice — e…",
+            "selector": "main > div:nth-of-type(1) > div > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "House blends built for consistency, tra…",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Morning Blend Single Origin Ethiopian E…",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(4)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Shop all coffee→ From $10 · 10 blends",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(5)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Eight blends across black, green and he…",
+            "selector": "main > div:nth-of-type(3) > div > div > div > div:nth-of-type(1) > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "English Breakfast Green Sencha Darjeeli…",
+            "selector": "main > div:nth-of-type(3) > div > div > div > div:nth-of-type(1) > p:nth-of-type(4)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Shop all tea→ From $9 · 10 blends",
+            "selector": "main > div:nth-of-type(3) > div > div > div > div:nth-of-type(1) > p:nth-of-type(5)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Cold-pressed singles and blends, plus c…",
+            "selector": "main > div:nth-of-type(4) > div > div > div > div:nth-of-type(2) > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Orange Green Revival Beetroot & Berry",
+            "selector": "main > div:nth-of-type(4) > div > div > div > div:nth-of-type(2) > p:nth-of-type(4)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Shop all juice→ From $5.50 · 25 pressin…",
+            "selector": "main > div:nth-of-type(4) > div > div > div > div:nth-of-type(2) > p:nth-of-type(5)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Sit at the bar and work through coffee,…",
+            "selector": "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.945 0.016 80)"
+          }
+        ],
+        "buttons": [
+          {
+            "text": "Find a café→",
+            "selector": "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(3) > a",
+            "count": 1,
+            "backgroundColor": "oklch(0.945 0.016 80)",
+            "color": "oklch(0.34 0.093 25)",
+            "borderRadius": "999px",
+            "padding": "12.75px 22.5px",
+            "border": "1px solid rgba(0, 0, 0, 0)",
+            "borderColor": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "textTransform": "none",
+            "letterSpacing": "normal",
+            "hover": {
+              "backgroundColor": "oklch(0.948 0.015 78)",
+              "color": "oklch(0.34 0.093 25)",
+              "borderColor": "oklch(0.948 0.015 78)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          },
+          {
+            "text": "Sign up",
+            "selector": "footer > div > div > div:nth-of-type(1) > form > div > button",
+            "count": 1,
+            "backgroundColor": "oklch(0.605 0.116 44)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "10.5px 19.5px",
+            "border": "1px solid oklch(0.605 0.116 44)",
+            "borderColor": "oklch(0.605 0.116 44)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "textTransform": "none",
+            "letterSpacing": "0.15px",
+            "hover": {
+              "backgroundColor": "oklch(0.515 0.108 40)",
+              "color": "oklch(0.945 0.016 80)",
+              "borderColor": "oklch(0.515 0.108 40)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          }
+        ],
+        "links": [
+          {
+            "text": "Shop all coffee→",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(5) > a",
+            "count": 3,
+            "color": "oklch(0.605 0.116 44)",
+            "textDecoration": "none",
+            "fontWeight": "400",
+            "hover": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "color": "oklch(0.515 0.108 40)",
+              "borderColor": "oklch(0.515 0.108 40)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          }
+        ],
+        "surfaces": [
+          {
+            "matched": "header",
+            "selector": "header",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 72
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "nav",
+            "selector": "#nav",
+            "rect": {
+              "x": 160,
+              "y": 0,
+              "w": 1120,
+              "h": 72
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px 48px",
+            "maxWidth": "1120px",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main",
+            "selector": "main",
+            "rect": {
+              "x": 0,
+              "y": 72,
+              "w": 1440,
+              "h": 3710
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "footer",
+            "selector": "footer",
+            "rect": {
+              "x": 0,
+              "y": 3782,
+              "w": 1440,
+              "h": 462
+            },
+            "backgroundColor": "oklch(0.222 0.016 52)",
+            "color": "oklch(0.945 0.016 80)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(1)",
+            "rect": {
+              "x": 0,
+              "y": 72,
+              "w": 1440,
+              "h": 289
+            },
+            "backgroundColor": "oklch(0.948 0.015 78)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "67.2px 0px 48px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(2)",
+            "rect": {
+              "x": 0,
+              "y": 361,
+              "w": 1440,
+              "h": 1004
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(3)",
+            "rect": {
+              "x": 0,
+              "y": 1365,
+              "w": 1440,
+              "h": 1004
+            },
+            "backgroundColor": "oklch(0.948 0.015 78)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(4)",
+            "rect": {
+              "x": 0,
+              "y": 2369,
+              "w": 1440,
+              "h": 1004
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          }
+        ],
+        "radii": [
+          {
+            "value": "999px",
+            "count": 3,
+            "area": 21931,
+            "sources": [
+              "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(3) > a",
+              "#footer-email",
+              "footer > div > div > div:nth-of-type(1) > form > div > button"
+            ]
+          },
+          {
+            "value": "50%",
+            "count": 3,
+            "area": 4800,
+            "sources": [
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(2) > a",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(3) > a"
+            ]
+          }
+        ],
+        "shadows": [],
+        "gradients": [],
+        "bgColors": [
+          {
+            "value": "oklch(0.222 0.016 52)",
+            "count": 3,
+            "area": 1842075,
+            "sources": [
+              "main > div:nth-of-type(5)",
+              "main > div:nth-of-type(5) > div > div",
+              "footer"
+            ]
+          },
+          {
+            "value": "oklch(0.97 0.01 82)",
+            "count": 2,
+            "area": 6216210,
+            "sources": [
+              "body",
+              "header > div > div"
+            ]
+          },
+          {
+            "value": "oklch(0.948 0.015 78)",
+            "count": 2,
+            "area": 1861831,
+            "sources": [
+              "main > div:nth-of-type(1)",
+              "main > div:nth-of-type(3)"
+            ]
+          },
+          {
+            "value": "oklch(0.945 0.016 80)",
+            "count": 1,
+            "area": 6229,
+            "sources": [
+              "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(3) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 1,
+            "area": 4320,
+            "sources": [
+              "footer > div > div > div:nth-of-type(1) > form > div > button"
+            ]
+          }
+        ],
+        "textColors": [
+          {
+            "value": "oklch(0.43 0.022 52)",
+            "count": 16,
+            "sources": [
+              "main > div:nth-of-type(1) > div > p:nth-of-type(2)",
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(1)",
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "oklch(0.795 0.021 78)",
+            "count": 14,
+            "sources": [
+              "footer > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+              "footer > div > div > div:nth-of-type(2) > div > ul > li:nth-of-type(1) > a",
+              "footer > div > div > div:nth-of-type(2) > div > ul > li:nth-of-type(2) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.34 0.093 25)",
+            "count": 5,
+            "sources": [
+              "#three-ways-to-fill-a-cup",
+              "#roasted-for-your-ritual",
+              "#a-quieter-kind-of-cup"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 5,
+            "sources": [
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(3) > p > a",
+              "main > div:nth-of-type(1) > div > p:nth-of-type(1)",
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(5) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.945 0.016 80)",
+            "count": 5,
+            "sources": [
+              "main > div:nth-of-type(5) > div > div > div > div > h2",
+              "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(2)",
+              "footer > div > div > div:nth-of-type(1) > form > label"
+            ]
+          },
+          {
+            "value": "oklch(0.262 0.021 52)",
+            "count": 4,
+            "sources": [
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(1) > p > a",
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(2) > p > a",
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(4) > p > a"
+            ]
+          },
+          {
+            "value": "oklch(0.79 0.128 74)",
+            "count": 4,
+            "sources": [
+              "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(1)",
+              "#shop",
+              "#company"
+            ]
+          }
+        ],
+        "borderColors": [
+          {
+            "value": "oklch(0.4 0.02 55)",
+            "count": 5,
+            "sources": [
+              "#footer-email",
+              "footer > div > div > div:nth-of-type(5)",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 1,
+            "sources": [
+              "footer > div > div > div:nth-of-type(1) > form > div > button"
+            ]
+          },
+          {
+            "value": "oklch(0.855 0.018 68)",
+            "count": 1,
+            "sources": [
+              "header > div > div"
+            ]
+          }
+        ],
+        "customProps": {
+          "--burgundy": {
+            "declared": "oklch(34% 0.093 25deg)",
+            "computed": "oklch(34% 0.093 25deg)"
+          },
+          "--burgundy-deep": {
+            "declared": "oklch(27.5% 0.082 26deg)",
+            "computed": "oklch(27.5% 0.082 26deg)"
+          },
+          "--terracotta": {
+            "declared": "oklch(60.5% 0.116 44deg)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--terracotta-deep": {
+            "declared": "oklch(51.5% 0.108 40deg)",
+            "computed": "oklch(51.5% 0.108 40deg)"
+          },
+          "--terracotta-fill": {
+            "declared": "oklch(60.5% 0.116 44deg / 22%)",
+            "computed": "oklch(60.5% 0.116 44deg / 22%)"
+          },
+          "--amber": {
+            "declared": "oklch(79% 0.128 74deg)",
+            "computed": "oklch(79% 0.128 74deg)"
+          },
+          "--amber-soft": {
+            "declared": "oklch(86.5% 0.083 80deg)",
+            "computed": "oklch(86.5% 0.083 80deg)"
+          },
+          "--teal": {
+            "declared": "oklch(55% 0.05 205deg)",
+            "computed": "oklch(55% 0.05 205deg)"
+          },
+          "--paper": {
+            "declared": "oklch(97% 0.010 82deg)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--paper-2": {
+            "declared": "oklch(94.8% 0.015 78deg)",
+            "computed": "oklch(94.8% 0.015 78deg)"
+          },
+          "--paper-3": {
+            "declared": "oklch(91.8% 0.020 74deg)",
+            "computed": "oklch(91.8% 0.020 74deg)"
+          },
+          "--sand": {
+            "declared": "oklch(88.4% 0.025 71deg)",
+            "computed": "oklch(88.4% 0.025 71deg)"
+          },
+          "--line": {
+            "declared": "oklch(85.5% 0.018 68deg)",
+            "computed": "oklch(85.5% 0.018 68deg)"
+          },
+          "--ink": {
+            "declared": "oklch(26.2% 0.021 52deg)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--ink-soft": {
+            "declared": "oklch(43% 0.022 52deg)",
+            "computed": "oklch(43% 0.022 52deg)"
+          },
+          "--charcoal": {
+            "declared": "oklch(22.2% 0.016 52deg)",
+            "computed": "oklch(22.2% 0.016 52deg)"
+          },
+          "--charcoal-2": {
+            "declared": "oklch(28.2% 0.020 50deg)",
+            "computed": "oklch(28.2% 0.020 50deg)"
+          },
+          "--line-dark": {
+            "declared": "oklch(40% 0.020 55deg)",
+            "computed": "oklch(40% 0.020 55deg)"
+          },
+          "--cream": {
+            "declared": "oklch(94.5% 0.016 80deg)",
+            "computed": "oklch(94.5% 0.016 80deg)"
+          },
+          "--cream-soft": {
+            "declared": "oklch(79.5% 0.021 78deg)",
+            "computed": "oklch(79.5% 0.021 78deg)"
+          },
+          "--bg": {
+            "declared": "var(--paper)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--fg": {
+            "declared": "var(--ink)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--accent": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--focus": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--background-color": {
+            "declared": "var(--paper)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--text-color": {
+            "declared": "var(--ink)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--link-color": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--link-hover-color": {
+            "declared": "var(--terracotta-deep)",
+            "computed": "oklch(51.5% 0.108 40deg)"
+          },
+          "--font-display": {
+            "declared": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "computed": "\"Schibsted Grotesk\", system-ui, sans-serif"
+          },
+          "--font-body": {
+            "declared": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "computed": "\"Hanken Grotesk\", system-ui, sans-serif"
+          },
+          "--heading-font-family": {
+            "declared": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "computed": "\"Schibsted Grotesk\", system-ui, sans-serif"
+          },
+          "--body-font-family": {
+            "declared": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "computed": "\"Hanken Grotesk\", system-ui, sans-serif"
+          },
+          "--fs-eyebrow": {
+            "declared": "0.75rem",
+            "computed": "0.75rem"
+          },
+          "--fs-sm": {
+            "declared": "0.9375rem",
+            "computed": "0.9375rem"
+          },
+          "--fs-body": {
+            "declared": "1.0625rem",
+            "computed": "1.0625rem"
+          },
+          "--fs-body-lg": {
+            "declared": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+            "computed": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)"
+          },
+          "--fs-h4": {
+            "declared": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--fs-h3": {
+            "declared": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--fs-h2": {
+            "declared": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--fs-h1": {
+            "declared": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--fs-display": {
+            "declared": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)",
+            "computed": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)"
+          },
+          "--heading-size-xxl": {
+            "declared": "var(--fs-h1)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--heading-size-xl": {
+            "declared": "var(--fs-h2)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--heading-size-l": {
+            "declared": "var(--fs-h3)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--heading-size-m": {
+            "declared": "var(--fs-h4)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--heading-size-s": {
+            "declared": "var(--fs-body)",
+            "computed": "1.0625rem"
+          },
+          "--heading-size-xs": {
+            "declared": "var(--fs-sm)",
+            "computed": "0.9375rem"
+          },
+          "--lh-tight": {
+            "declared": "1.03",
+            "computed": "1.03"
+          },
+          "--lh-snug": {
+            "declared": "1.15",
+            "computed": "1.15"
+          },
+          "--lh-body": {
+            "declared": "1.62",
+            "computed": "1.62"
+          },
+          "--tracking-eyebrow": {
+            "declared": "0.2em",
+            "computed": "0.2em"
+          },
+          "--tracking-tight": {
+            "declared": "-0.02em",
+            "computed": "-0.02em"
+          },
+          "--space-3xs": {
+            "declared": "0.25rem",
+            "computed": "0.25rem"
+          },
+          "--space-2xs": {
+            "declared": "0.5rem",
+            "computed": "0.5rem"
+          },
+          "--space-xs": {
+            "declared": "0.75rem",
+            "computed": "0.75rem"
+          },
+          "--space-sm": {
+            "declared": "1rem",
+            "computed": "1rem"
+          },
+          "--space-md": {
+            "declared": "1.5rem",
+            "computed": "1.5rem"
+          },
+          "--space-lg": {
+            "declared": "2.5rem",
+            "computed": "2.5rem"
+          },
+          "--space-xl": {
+            "declared": "4rem",
+            "computed": "4rem"
+          },
+          "--space-2xl": {
+            "declared": "6rem",
+            "computed": "6rem"
+          },
+          "--section-y": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--section-padding": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--content": {
+            "declared": "1120px",
+            "computed": "1120px"
+          },
+          "--content-wide": {
+            "declared": "1320px",
+            "computed": "1320px"
+          },
+          "--content-narrow": {
+            "declared": "760px",
+            "computed": "760px"
+          },
+          "--gutter": {
+            "declared": "clamp(1.25rem, 0.4rem + 3vw, 3rem)",
+            "computed": "clamp(1.25rem, 0.4rem + 3vw, 3rem)"
+          },
+          "--nav-height": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--r-sm": {
+            "declared": "8px",
+            "computed": "8px"
+          },
+          "--r-md": {
+            "declared": "14px",
+            "computed": "14px"
+          },
+          "--r-lg": {
+            "declared": "22px",
+            "computed": "22px"
+          },
+          "--r-xl": {
+            "declared": "32px",
+            "computed": "32px"
+          },
+          "--r-pill": {
+            "declared": "999px",
+            "computed": "999px"
+          },
+          "--shadow-sm": {
+            "declared": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+            "computed": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)"
+          },
+          "--shadow-md": {
+            "declared": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+            "computed": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)"
+          },
+          "--shadow-lg": {
+            "declared": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)",
+            "computed": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)"
+          },
+          "--ease-quint": {
+            "declared": "cubic-bezier(0.22, 1, 0.36, 1)",
+            "computed": "cubic-bezier(0.22, 1, 0.36, 1)"
+          },
+          "--ease-expo": {
+            "declared": "cubic-bezier(0.16, 1, 0.3, 1)",
+            "computed": "cubic-bezier(0.16, 1, 0.3, 1)"
+          },
+          "--dur-1": {
+            "declared": "0.35s",
+            "computed": "0.35s"
+          },
+          "--dur-2": {
+            "declared": "0.6s",
+            "computed": "0.6s"
+          },
+          "--dur-3": {
+            "declared": "0.9s",
+            "computed": "0.9s"
+          },
+          "--light-color": {
+            "declared": "var(--paper-2)",
+            "computed": "oklch(94.8% 0.015 78deg)"
+          },
+          "--dark-color": {
+            "declared": "var(--charcoal)",
+            "computed": "oklch(22.2% 0.016 52deg)"
+          },
+          "--body-font-size-m": {
+            "declared": "1.0625rem",
+            "computed": "1.0625rem"
+          },
+          "--body-font-size-s": {
+            "declared": "0.9375rem",
+            "computed": "0.9375rem"
+          },
+          "--body-font-size-xs": {
+            "declared": "0.8125rem",
+            "computed": "0.8125rem"
+          },
+          "--heading-font-size-xxl": {
+            "declared": "var(--fs-h1)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--heading-font-size-xl": {
+            "declared": "var(--fs-h2)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--heading-font-size-l": {
+            "declared": "var(--fs-h3)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--heading-font-size-m": {
+            "declared": "var(--fs-h4)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--heading-font-size-s": {
+            "declared": "var(--fs-body-lg)",
+            "computed": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)"
+          },
+          "--heading-font-size-xs": {
+            "declared": "var(--fs-body)",
+            "computed": "1.0625rem"
+          }
+        },
+        "fonts": [
+          {
+            "family": "Hanken Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "800",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "800",
+            "style": "normal",
+            "status": "loaded"
+          }
+        ],
+        "logoCandidates": [
+          {
+            "tag": "img",
+            "selector": "#nav > div:nth-of-type(2) > div > p > a > picture > img",
+            "src": "https://of1--frescopa26--markszulc.aem.page/fragments/media_1edd2a689a1bf64571235eec46bc97c0200c9bff3.svg?width=2000&format=webply&optimize=medium",
+            "inlineSvg": false,
+            "alt": "Fréscopa",
+            "ariaLabel": null,
+            "class": "",
+            "id": null,
+            "href": "/",
+            "inHomeLink": true,
+            "rect": {
+              "x": 208,
+              "y": 20,
+              "w": 118,
+              "h": 32
+            }
+          }
+        ],
+        "iconFont": null,
+        "consent": {
+          "dismissed": null
+        },
+        "finalUrl": "https://of1--frescopa26--markszulc.aem.page/beverages"
+      }
+    },
+    "https://of1--frescopa26--markszulc.aem.page/": {
+      "1440": {
+        "title": "Fréscopa Atelier - Every morning, perfected.",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "elements": {
+          "total": 337,
+          "visible": 290
+        },
+        "occluders": [],
+        "headings": [
+          {
+            "tag": "h1",
+            "text": "Every morning,perfected???",
+            "selector": "#every-morningperfected",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "86.4px",
+            "fontWeight": "800",
+            "lineHeight": "88.992px",
+            "letterSpacing": "-1.728px",
+            "textTransform": "none",
+            "color": "oklch(0.945 0.016 80)"
+          },
+          {
+            "tag": "h2",
+            "text": "Great coffee, without the barista price…",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(1) > h2",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "700",
+            "lineHeight": "51.52px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Your taste, drawn one cup at a time.",
+            "selector": "#your-taste-drawn-one-cup-at-a-time",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "800",
+            "lineHeight": "46.144px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h4",
+            "text": "The weekday cup",
+            "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div > h4",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "25.6px",
+            "fontWeight": "800",
+            "lineHeight": "29.44px",
+            "letterSpacing": "-0.512px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "It reads the room. And the calendar.",
+            "selector": "#it-reads-the-room-and-the-calendar",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "800",
+            "lineHeight": "51.52px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h4",
+            "text": "Extra shot, no fuss",
+            "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > h4",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "25.6px",
+            "fontWeight": "800",
+            "lineHeight": "29.44px",
+            "letterSpacing": "-0.512px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "New favourites, found for you.",
+            "selector": "#new-favourites-found-for-you",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "800",
+            "lineHeight": "46.144px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "The house pour",
+            "selector": "#the-house-pour",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "24px",
+            "fontWeight": "700",
+            "lineHeight": "27.6px",
+            "letterSpacing": "-0.48px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "Honeybush & orange peel",
+            "selector": "#honeybush--orange-peel",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "24px",
+            "fontWeight": "700",
+            "lineHeight": "27.6px",
+            "letterSpacing": "-0.48px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "Cold-pressed citrus",
+            "selector": "#cold-pressed-citrus",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "24px",
+            "fontWeight": "700",
+            "lineHeight": "27.6px",
+            "letterSpacing": "-0.48px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Nothing wasted, right down to the groun…",
+            "selector": "#nothing-wasted-right-down-to-the-grounds",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "700",
+            "lineHeight": "51.52px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Every Atelier begins at the Fréscopa Ca…",
+            "selector": "main > div:nth-of-type(8) > div > div > div:nth-of-type(2) > div > h2",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "800",
+            "lineHeight": "46.144px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.945 0.016 80)"
+          },
+          {
+            "tag": "h3",
+            "text": "Shop",
+            "selector": "#shop",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          },
+          {
+            "tag": "h3",
+            "text": "Company",
+            "selector": "#company",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          },
+          {
+            "tag": "h3",
+            "text": "Support",
+            "selector": "#support",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          }
+        ],
+        "text": [
+          {
+            "tag": "p",
+            "text": "The first Fréscopa machine with a feel …",
+            "selector": "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.945 0.016 80)"
+          },
+          {
+            "tag": "p",
+            "text": "Meet your coffee agent →",
+            "selector": "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(3)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.945 0.016 80)"
+          },
+          {
+            "tag": "p",
+            "text": "Fuel, meet a machine that gets it",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(1) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "12px",
+            "fontWeight": "500",
+            "lineHeight": "19.44px",
+            "letterSpacing": "2.4px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.605 0.116 44)"
+          },
+          {
+            "tag": "p",
+            "text": "Over a semester of early lectures and l…",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(1)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "21px",
+            "fontWeight": "400",
+            "lineHeight": "34.02px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Every cup teaches the Atelier a little …",
+            "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "21px",
+            "fontWeight": "400",
+            "lineHeight": "34.02px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Brisk and a little bolder. Enough to me…",
+            "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "400",
+            "lineHeight": "24.3px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "A packed Monday, an early flight, a slo…",
+            "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "21px",
+            "fontWeight": "400",
+            "lineHeight": "34.02px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Tap a day to see what it would pour.",
+            "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(1) > div > p:nth-of-type(3)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "12px",
+            "fontWeight": "400",
+            "lineHeight": "16.8px",
+            "letterSpacing": "0.72px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.605 0.116 44)"
+          },
+          {
+            "tag": "p",
+            "text": "A full day ahead, so a bolder, quicker …",
+            "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "14.72px",
+            "fontWeight": "400",
+            "lineHeight": "23.8464px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "A short list worth trying, drawn from w…",
+            "selector": "main > div:nth-of-type(5) > div:nth-of-type(1) > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "21px",
+            "fontWeight": "400",
+            "lineHeight": "34.02px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "li",
+            "text": "Coffee The house pour Our everyday blen…",
+            "selector": "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(1)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.262 0.021 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Our everyday blend, coaxed a little rou…",
+            "selector": "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(1) > div:nth-of-type(2) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15.04px",
+            "fontWeight": "400",
+            "lineHeight": "24.3648px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          }
+        ],
+        "buttons": [
+          {
+            "text": "Meet your coffee agent →",
+            "selector": "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(3) > a",
+            "count": 3,
+            "backgroundColor": "oklch(0.605 0.116 44)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "12.75px 22.5px",
+            "border": "1px solid rgba(0, 0, 0, 0)",
+            "borderColor": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "textTransform": "none",
+            "letterSpacing": "normal",
+            "hover": {
+              "backgroundColor": "oklch(0.515 0.108 40)",
+              "color": "oklch(0.945 0.016 80)",
+              "borderColor": "oklch(0.515 0.108 40)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          },
+          {
+            "text": "Weekday",
+            "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(1)",
+            "count": 1,
+            "backgroundColor": "oklch(0.34 0.093 25)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "7.2px 12.8px",
+            "border": "1px solid oklch(0.34 0.093 25)",
+            "borderColor": "oklch(0.34 0.093 25)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.84px",
+            "fontWeight": "400",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.7104px",
+            "hover": {
+              "backgroundColor": "oklch(0.34 0.093 25)",
+              "color": "oklch(0.945 0.016 80)",
+              "borderColor": "oklch(0.34 0.093 25)",
+              "boxShadow": "none",
+              "changed": false
+            }
+          },
+          {
+            "text": "Slow Sunday",
+            "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(2)",
+            "count": 2,
+            "backgroundColor": "oklch(0.97 0.01 82)",
+            "color": "oklch(0.43 0.022 52)",
+            "borderRadius": "999px",
+            "padding": "7.2px 12.8px",
+            "border": "1px solid oklch(0.855 0.018 68)",
+            "borderColor": "oklch(0.855 0.018 68)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.84px",
+            "fontWeight": "400",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.7104px",
+            "hover": {
+              "backgroundColor": "oklch(0.97 0.01 82)",
+              "color": "oklch(0.34 0.093 25)",
+              "borderColor": "oklch(0.34 0.093 25)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          },
+          {
+            "text": "Order the Atelier",
+            "selector": "main > div:nth-of-type(9) > div > p:nth-of-type(3) > a:nth-of-type(2)",
+            "count": 1,
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "12.75px 22.5px",
+            "border": "1px solid oklch(0.945 0.016 80 / 0.34)",
+            "borderColor": "oklch(0.945 0.016 80 / 0.34)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "textTransform": "none",
+            "letterSpacing": "normal",
+            "hover": {
+              "backgroundColor": "oklch(0.945 0.016 80 / 0.12)",
+              "color": "oklch(0.945 0.016 80)",
+              "borderColor": "oklch(0.945 0.016 80)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          },
+          {
+            "text": "Sign up",
+            "selector": "footer > div > div > div:nth-of-type(1) > form > div > button",
+            "count": 1,
+            "backgroundColor": "oklch(0.605 0.116 44)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "10.5px 19.5px",
+            "border": "1px solid oklch(0.605 0.116 44)",
+            "borderColor": "oklch(0.605 0.116 44)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "textTransform": "none",
+            "letterSpacing": "0.15px",
+            "hover": null
+          }
+        ],
+        "links": [
+          {
+            "text": "See how it learns →",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(2) > a",
+            "count": 4,
+            "color": "oklch(0.605 0.116 44)",
+            "textDecoration": "none",
+            "fontWeight": "600",
+            "hover": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "color": "oklch(0.515 0.108 40)",
+              "borderColor": "oklch(0.515 0.108 40)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          }
+        ],
+        "surfaces": [
+          {
+            "matched": "nav",
+            "selector": "#nav",
+            "rect": {
+              "x": 160,
+              "y": 0,
+              "w": 1120,
+              "h": 72
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px 48px",
+            "maxWidth": "1120px",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main",
+            "selector": "main",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 5599
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "footer",
+            "selector": "footer",
+            "rect": {
+              "x": 0,
+              "y": 5599,
+              "w": 1440,
+              "h": 462
+            },
+            "backgroundColor": "oklch(0.222 0.016 52)",
+            "color": "oklch(0.945 0.016 80)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(1)",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1050
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(2)",
+            "rect": {
+              "x": 0,
+              "y": 1050,
+              "w": 1440,
+              "h": 421
+            },
+            "backgroundColor": "oklch(0.97 0.01 82)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(3)",
+            "rect": {
+              "x": 0,
+              "y": 1471,
+              "w": 1440,
+              "h": 758
+            },
+            "backgroundColor": "oklch(0.948 0.015 78)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(4)",
+            "rect": {
+              "x": 0,
+              "y": 2230,
+              "w": 1440,
+              "h": 497
+            },
+            "backgroundColor": "oklch(0.97 0.01 82)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          }
+        ],
+        "radii": [
+          {
+            "value": "999px",
+            "count": 16,
+            "area": 87178,
+            "sources": [
+              "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(3) > a",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(1)",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "11px",
+            "count": 6,
+            "area": 14868,
+            "sources": [
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > button:nth-of-type(1)",
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > span:nth-of-type(8)",
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > button:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "32px",
+            "count": 3,
+            "area": 603492,
+            "sources": [
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2)",
+              "main > div:nth-of-type(6) > div > div > div > div:nth-of-type(1) > picture > img"
+            ]
+          },
+          {
+            "value": "22px",
+            "count": 3,
+            "area": 472142,
+            "sources": [
+              "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(1)",
+              "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(2)",
+              "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(3)"
+            ]
+          },
+          {
+            "value": "50%",
+            "count": 3,
+            "area": 4800,
+            "sources": [
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(2) > a",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(3) > a"
+            ]
+          },
+          {
+            "value": "14px",
+            "count": 1,
+            "area": 49903,
+            "sources": [
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(2)"
+            ]
+          }
+        ],
+        "shadows": [
+          {
+            "value": "oklch(0.3 0.03 50 / 0.07) 0px 4px 14px 0px, oklch(0.3 0.03 50 / 0.08) 0px 14px 34px 0px",
+            "count": 3,
+            "sources": [
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2)",
+              "main > div:nth-of-type(6) > div > div > div > div:nth-of-type(1) > picture > img"
+            ]
+          },
+          {
+            "value": "oklch(0.3 0.03 50 / 0.06) 0px 1px 2px 0px, oklch(0.3 0.03 50 / 0.05) 0px 2px 8px 0px",
+            "count": 1,
+            "sources": [
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > button:nth-of-type(1)"
+            ]
+          }
+        ],
+        "gradients": [],
+        "bgColors": [
+          {
+            "value": "oklch(0.97 0.01 82)",
+            "count": 11,
+            "area": 11730663,
+            "sources": [
+              "body",
+              "main > div:nth-of-type(2)",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+            ]
+          },
+          {
+            "value": "oklch(0.948 0.015 78)",
+            "count": 8,
+            "area": 3240371,
+            "sources": [
+              "main > div:nth-of-type(3)",
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(2)",
+              "main > div:nth-of-type(5)"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 5,
+            "area": 36575,
+            "sources": [
+              "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(3) > a",
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > button:nth-of-type(1)",
+              "main > div:nth-of-type(8) > div > div > div:nth-of-type(2) > div > p:nth-of-type(3) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.222 0.016 52)",
+            "count": 4,
+            "area": 3456856,
+            "sources": [
+              "main > div:nth-of-type(1) > div > div",
+              "main > div:nth-of-type(8) > div > div",
+              "main > div:nth-of-type(9)"
+            ]
+          },
+          {
+            "value": "oklch(0.97 0.01 82 / 0.92)",
+            "count": 3,
+            "area": 3873,
+            "sources": [
+              "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(1) > div:nth-of-type(1) > span",
+              "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(2) > div:nth-of-type(1) > span",
+              "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(3) > div:nth-of-type(1) > span"
+            ]
+          },
+          {
+            "value": "oklch(0.34 0.093 25)",
+            "count": 1,
+            "area": 3078,
+            "sources": [
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(1)"
+            ]
+          }
+        ],
+        "textColors": [
+          {
+            "value": "oklch(0.43 0.022 52)",
+            "count": 20,
+            "sources": [
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(1)",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div > p"
+            ]
+          },
+          {
+            "value": "oklch(0.34 0.093 25)",
+            "count": 19,
+            "sources": [
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(1) > h2",
+              "#your-taste-drawn-one-cup-at-a-time",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div > h4"
+            ]
+          },
+          {
+            "value": "oklch(0.945 0.016 80)",
+            "count": 19,
+            "sources": [
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(1) > p > a",
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(2) > p > a",
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(3) > p > a"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 16,
+            "sources": [
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(1) > p",
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(1) > h2 > em",
+              "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(2) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.795 0.021 78)",
+            "count": 15,
+            "sources": [
+              "main > div:nth-of-type(9) > div > p:nth-of-type(2)",
+              "footer > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+              "footer > div > div > div:nth-of-type(2) > div > ul > li:nth-of-type(1) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.262 0.021 52)",
+            "count": 14,
+            "sources": [
+              "div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > svg > g:nth-of-type(2) > text:nth-of-type(1)",
+              "div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > svg > g:nth-of-type(2) > text:nth-of-type(2)",
+              "div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > svg > g:nth-of-type(2) > text:nth-of-type(3)"
+            ]
+          },
+          {
+            "value": "oklch(0.79 0.128 74)",
+            "count": 6,
+            "sources": [
+              "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(1)",
+              "main > div:nth-of-type(8) > div > div > div:nth-of-type(2) > div > p:nth-of-type(1)",
+              "main > div:nth-of-type(9) > div > p:nth-of-type(1) > em"
+            ]
+          },
+          {
+            "value": "oklch(0.74344 0.01352 72.4)",
+            "count": 2,
+            "sources": [
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > span:nth-of-type(8)",
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > span:nth-of-type(9)"
+            ]
+          },
+          {
+            "value": "oklch(0.515 0.108 40)",
+            "count": 1,
+            "sources": [
+              "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > span"
+            ]
+          }
+        ],
+        "borderColors": [
+          {
+            "value": "oklch(0.855 0.018 68)",
+            "count": 14,
+            "sources": [
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(2)",
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(3)"
+            ]
+          },
+          {
+            "value": "oklch(0.4 0.02 55)",
+            "count": 5,
+            "sources": [
+              "#footer-email",
+              "footer > div > div > div:nth-of-type(5)",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.34 0.093 25)",
+            "count": 1,
+            "sources": [
+              "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(1)"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 1,
+            "sources": [
+              "footer > div > div > div:nth-of-type(1) > form > div > button"
+            ]
+          },
+          {
+            "value": "oklch(0.945 0.016 80 / 0.34)",
+            "count": 1,
+            "sources": [
+              "main > div:nth-of-type(9) > div > p:nth-of-type(3) > a:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "rgba(99, 77, 66, 0.22)",
+            "count": 1,
+            "sources": [
+              "main > div:nth-of-type(7) > div:nth-of-type(1)"
+            ]
+          }
+        ],
+        "customProps": {
+          "--burgundy": {
+            "declared": "oklch(34% 0.093 25deg)",
+            "computed": "oklch(34% 0.093 25deg)"
+          },
+          "--burgundy-deep": {
+            "declared": "oklch(27.5% 0.082 26deg)",
+            "computed": "oklch(27.5% 0.082 26deg)"
+          },
+          "--terracotta": {
+            "declared": "oklch(60.5% 0.116 44deg)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--terracotta-deep": {
+            "declared": "oklch(51.5% 0.108 40deg)",
+            "computed": "oklch(51.5% 0.108 40deg)"
+          },
+          "--terracotta-fill": {
+            "declared": "oklch(60.5% 0.116 44deg / 22%)",
+            "computed": "oklch(60.5% 0.116 44deg / 22%)"
+          },
+          "--amber": {
+            "declared": "oklch(79% 0.128 74deg)",
+            "computed": "oklch(79% 0.128 74deg)"
+          },
+          "--amber-soft": {
+            "declared": "oklch(86.5% 0.083 80deg)",
+            "computed": "oklch(86.5% 0.083 80deg)"
+          },
+          "--teal": {
+            "declared": "oklch(55% 0.05 205deg)",
+            "computed": "oklch(55% 0.05 205deg)"
+          },
+          "--paper": {
+            "declared": "oklch(97% 0.010 82deg)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--paper-2": {
+            "declared": "oklch(94.8% 0.015 78deg)",
+            "computed": "oklch(94.8% 0.015 78deg)"
+          },
+          "--paper-3": {
+            "declared": "oklch(91.8% 0.020 74deg)",
+            "computed": "oklch(91.8% 0.020 74deg)"
+          },
+          "--sand": {
+            "declared": "oklch(88.4% 0.025 71deg)",
+            "computed": "oklch(88.4% 0.025 71deg)"
+          },
+          "--line": {
+            "declared": "oklch(85.5% 0.018 68deg)",
+            "computed": "oklch(85.5% 0.018 68deg)"
+          },
+          "--ink": {
+            "declared": "oklch(26.2% 0.021 52deg)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--ink-soft": {
+            "declared": "oklch(43% 0.022 52deg)",
+            "computed": "oklch(43% 0.022 52deg)"
+          },
+          "--charcoal": {
+            "declared": "oklch(22.2% 0.016 52deg)",
+            "computed": "oklch(22.2% 0.016 52deg)"
+          },
+          "--charcoal-2": {
+            "declared": "oklch(28.2% 0.020 50deg)",
+            "computed": "oklch(28.2% 0.020 50deg)"
+          },
+          "--line-dark": {
+            "declared": "oklch(40% 0.020 55deg)",
+            "computed": "oklch(40% 0.020 55deg)"
+          },
+          "--cream": {
+            "declared": "oklch(94.5% 0.016 80deg)",
+            "computed": "oklch(94.5% 0.016 80deg)"
+          },
+          "--cream-soft": {
+            "declared": "oklch(79.5% 0.021 78deg)",
+            "computed": "oklch(79.5% 0.021 78deg)"
+          },
+          "--bg": {
+            "declared": "var(--paper)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--fg": {
+            "declared": "var(--ink)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--accent": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--focus": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--background-color": {
+            "declared": "var(--paper)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--text-color": {
+            "declared": "var(--ink)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--link-color": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--link-hover-color": {
+            "declared": "var(--terracotta-deep)",
+            "computed": "oklch(51.5% 0.108 40deg)"
+          },
+          "--font-display": {
+            "declared": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "computed": "\"Schibsted Grotesk\", system-ui, sans-serif"
+          },
+          "--font-body": {
+            "declared": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "computed": "\"Hanken Grotesk\", system-ui, sans-serif"
+          },
+          "--heading-font-family": {
+            "declared": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "computed": "\"Schibsted Grotesk\", system-ui, sans-serif"
+          },
+          "--body-font-family": {
+            "declared": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "computed": "\"Hanken Grotesk\", system-ui, sans-serif"
+          },
+          "--fs-eyebrow": {
+            "declared": "0.75rem",
+            "computed": "0.75rem"
+          },
+          "--fs-sm": {
+            "declared": "0.9375rem",
+            "computed": "0.9375rem"
+          },
+          "--fs-body": {
+            "declared": "1.0625rem",
+            "computed": "1.0625rem"
+          },
+          "--fs-body-lg": {
+            "declared": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+            "computed": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)"
+          },
+          "--fs-h4": {
+            "declared": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--fs-h3": {
+            "declared": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--fs-h2": {
+            "declared": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--fs-h1": {
+            "declared": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--fs-display": {
+            "declared": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)",
+            "computed": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)"
+          },
+          "--heading-size-xxl": {
+            "declared": "var(--fs-h1)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--heading-size-xl": {
+            "declared": "var(--fs-h2)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--heading-size-l": {
+            "declared": "var(--fs-h3)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--heading-size-m": {
+            "declared": "var(--fs-h4)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--heading-size-s": {
+            "declared": "var(--fs-body)",
+            "computed": "1.0625rem"
+          },
+          "--heading-size-xs": {
+            "declared": "var(--fs-sm)",
+            "computed": "0.9375rem"
+          },
+          "--lh-tight": {
+            "declared": "1.03",
+            "computed": "1.03"
+          },
+          "--lh-snug": {
+            "declared": "1.15",
+            "computed": "1.15"
+          },
+          "--lh-body": {
+            "declared": "1.62",
+            "computed": "1.62"
+          },
+          "--tracking-eyebrow": {
+            "declared": "0.2em",
+            "computed": "0.2em"
+          },
+          "--tracking-tight": {
+            "declared": "-0.02em",
+            "computed": "-0.02em"
+          },
+          "--space-3xs": {
+            "declared": "0.25rem",
+            "computed": "0.25rem"
+          },
+          "--space-2xs": {
+            "declared": "0.5rem",
+            "computed": "0.5rem"
+          },
+          "--space-xs": {
+            "declared": "0.75rem",
+            "computed": "0.75rem"
+          },
+          "--space-sm": {
+            "declared": "1rem",
+            "computed": "1rem"
+          },
+          "--space-md": {
+            "declared": "1.5rem",
+            "computed": "1.5rem"
+          },
+          "--space-lg": {
+            "declared": "2.5rem",
+            "computed": "2.5rem"
+          },
+          "--space-xl": {
+            "declared": "4rem",
+            "computed": "4rem"
+          },
+          "--space-2xl": {
+            "declared": "6rem",
+            "computed": "6rem"
+          },
+          "--section-y": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--section-padding": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--content": {
+            "declared": "1120px",
+            "computed": "1120px"
+          },
+          "--content-wide": {
+            "declared": "1320px",
+            "computed": "1320px"
+          },
+          "--content-narrow": {
+            "declared": "760px",
+            "computed": "760px"
+          },
+          "--gutter": {
+            "declared": "clamp(1.25rem, 0.4rem + 3vw, 3rem)",
+            "computed": "clamp(1.25rem, 0.4rem + 3vw, 3rem)"
+          },
+          "--nav-height": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--r-sm": {
+            "declared": "8px",
+            "computed": "8px"
+          },
+          "--r-md": {
+            "declared": "14px",
+            "computed": "14px"
+          },
+          "--r-lg": {
+            "declared": "22px",
+            "computed": "22px"
+          },
+          "--r-xl": {
+            "declared": "32px",
+            "computed": "32px"
+          },
+          "--r-pill": {
+            "declared": "999px",
+            "computed": "999px"
+          },
+          "--shadow-sm": {
+            "declared": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+            "computed": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)"
+          },
+          "--shadow-md": {
+            "declared": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+            "computed": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)"
+          },
+          "--shadow-lg": {
+            "declared": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)",
+            "computed": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)"
+          },
+          "--ease-quint": {
+            "declared": "cubic-bezier(0.22, 1, 0.36, 1)",
+            "computed": "cubic-bezier(0.22, 1, 0.36, 1)"
+          },
+          "--ease-expo": {
+            "declared": "cubic-bezier(0.16, 1, 0.3, 1)",
+            "computed": "cubic-bezier(0.16, 1, 0.3, 1)"
+          },
+          "--dur-1": {
+            "declared": "0.35s",
+            "computed": "0.35s"
+          },
+          "--dur-2": {
+            "declared": "0.6s",
+            "computed": "0.6s"
+          },
+          "--dur-3": {
+            "declared": "0.9s",
+            "computed": "0.9s"
+          },
+          "--light-color": {
+            "declared": "var(--paper-2)",
+            "computed": "oklch(94.8% 0.015 78deg)"
+          },
+          "--dark-color": {
+            "declared": "var(--charcoal)",
+            "computed": "oklch(22.2% 0.016 52deg)"
+          },
+          "--body-font-size-m": {
+            "declared": "1.0625rem",
+            "computed": "1.0625rem"
+          },
+          "--body-font-size-s": {
+            "declared": "0.9375rem",
+            "computed": "0.9375rem"
+          },
+          "--body-font-size-xs": {
+            "declared": "0.8125rem",
+            "computed": "0.8125rem"
+          },
+          "--heading-font-size-xxl": {
+            "declared": "var(--fs-h1)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--heading-font-size-xl": {
+            "declared": "var(--fs-h2)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--heading-font-size-l": {
+            "declared": "var(--fs-h3)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--heading-font-size-m": {
+            "declared": "var(--fs-h4)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--heading-font-size-s": {
+            "declared": "var(--fs-body-lg)",
+            "computed": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)"
+          },
+          "--heading-font-size-xs": {
+            "declared": "var(--fs-body)",
+            "computed": "1.0625rem"
+          }
+        },
+        "fonts": [
+          {
+            "family": "Hanken Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "800",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "800",
+            "style": "normal",
+            "status": "loaded"
+          }
+        ],
+        "logoCandidates": [],
+        "iconFont": null,
+        "consent": {
+          "dismissed": null
+        },
+        "finalUrl": "https://of1--frescopa26--markszulc.aem.page/"
+      }
+    },
+    "https://of1--frescopa26--markszulc.aem.page/machines": {
+      "1440": {
+        "title": "Made in the workshop.",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "elements": {
+          "total": 285,
+          "visible": 241
+        },
+        "occluders": [],
+        "headings": [
+          {
+            "tag": "h1",
+            "text": "Made in the workshop.",
+            "selector": "#made-in-the-workshop",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "44.8px",
+            "fontWeight": "800",
+            "lineHeight": "46.144px",
+            "letterSpacing": "-0.896px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "The thinking machines",
+            "selector": "#the-thinking-machines",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "36.8px",
+            "fontWeight": "800",
+            "lineHeight": "37.904px",
+            "letterSpacing": "-0.736px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "The Atelier",
+            "selector": "#the-atelier",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "36.8px",
+            "fontWeight": "800",
+            "lineHeight": "42.32px",
+            "letterSpacing": "-0.736px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "The Atelier Mini",
+            "selector": "#the-atelier-mini",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "25.6px",
+            "fontWeight": "800",
+            "lineHeight": "29.44px",
+            "letterSpacing": "-0.512px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "For the hands-on ritual",
+            "selector": "#for-the-hands-on-ritual",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "36.8px",
+            "fontWeight": "800",
+            "lineHeight": "37.904px",
+            "letterSpacing": "-0.736px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "The Barista",
+            "selector": "#the-barista",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "25.6px",
+            "fontWeight": "800",
+            "lineHeight": "29.44px",
+            "letterSpacing": "-0.512px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "The Everyday",
+            "selector": "#the-everyday",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "25.6px",
+            "fontWeight": "800",
+            "lineHeight": "29.44px",
+            "letterSpacing": "-0.512px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Slow and even",
+            "selector": "#slow-and-even",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "36.8px",
+            "fontWeight": "800",
+            "lineHeight": "37.904px",
+            "letterSpacing": "-0.736px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "The Slow Pour",
+            "selector": "#the-slow-pour",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "25.6px",
+            "fontWeight": "800",
+            "lineHeight": "29.44px",
+            "letterSpacing": "-0.512px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h2",
+            "text": "Ready by morning",
+            "selector": "#ready-by-morning",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "36.8px",
+            "fontWeight": "800",
+            "lineHeight": "37.904px",
+            "letterSpacing": "-0.736px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "The Carafe",
+            "selector": "#the-carafe",
+            "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "fontSize": "25.6px",
+            "fontWeight": "800",
+            "lineHeight": "29.44px",
+            "letterSpacing": "-0.512px",
+            "textTransform": "none",
+            "color": "oklch(0.34 0.093 25)"
+          },
+          {
+            "tag": "h3",
+            "text": "Shop",
+            "selector": "#shop",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          },
+          {
+            "tag": "h3",
+            "text": "Company",
+            "selector": "#company",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          },
+          {
+            "tag": "h3",
+            "text": "Support",
+            "selector": "#support",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px",
+            "fontWeight": "500",
+            "lineHeight": "13.248px",
+            "letterSpacing": "1.6128px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.79 0.128 74)"
+          }
+        ],
+        "text": [
+          {
+            "tag": "p",
+            "text": "Four families of machine, each tuned by…",
+            "selector": "main > div:nth-of-type(1) > div > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Bean-to-cup · Premium",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "12px",
+            "fontWeight": "500",
+            "lineHeight": "19.2px",
+            "letterSpacing": "2.4px",
+            "textTransform": "uppercase",
+            "color": "oklch(0.605 0.116 44)"
+          },
+          {
+            "tag": "p",
+            "text": "Whole beans in, a finished cup out — mi…",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "21px",
+            "fontWeight": "400",
+            "lineHeight": "34.02px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "The Atelier learns and adapts on its ow…",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "26.35px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.262 0.021 52)"
+          },
+          {
+            "tag": "p",
+            "text": "It senses what you like, builds a taste…",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "li",
+            "text": "Learns your taste cup by cup, no dialin…",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > ul > li:nth-of-type(1)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "19.55px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.262 0.021 52)"
+          },
+          {
+            "tag": "li",
+            "text": "Reads your calendar and mood to pace th…",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > ul > li:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "19.55px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.262 0.021 52)"
+          },
+          {
+            "tag": "li",
+            "text": "Reorders beans before you run out",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > ul > li:nth-of-type(3)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "19.55px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.262 0.021 52)"
+          },
+          {
+            "tag": "p",
+            "text": "The same clever heart, sized for smalle…",
+            "selector": "div:nth-of-type(3) > div:nth-of-type(2) > div > div > div > article > div:nth-of-type(2) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "Grind, tamp, pull. Machines for people …",
+            "selector": "main > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2)",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "21px",
+            "fontWeight": "400",
+            "lineHeight": "34.02px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          },
+          {
+            "tag": "p",
+            "text": "The Barista gives you full manual contr…",
+            "selector": "main > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "26.35px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.262 0.021 52)"
+          },
+          {
+            "tag": "p",
+            "text": "A hands-on machine for the morning ritu…",
+            "selector": "div:nth-of-type(4) > div:nth-of-type(2) > div > div > div > article:nth-of-type(1) > div:nth-of-type(2) > p",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "lineHeight": "27.54px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "oklch(0.43 0.022 52)"
+          }
+        ],
+        "buttons": [
+          {
+            "text": "All machines",
+            "selector": "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(1)",
+            "count": 1,
+            "backgroundColor": "oklch(0.34 0.093 25)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "7.2px 15.84px",
+            "border": "1px solid oklch(0.34 0.093 25)",
+            "borderColor": "oklch(0.34 0.093 25)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "14.4px",
+            "fontWeight": "500",
+            "textTransform": "none",
+            "letterSpacing": "normal",
+            "hover": {
+              "backgroundColor": "oklch(0.34 0.093 25)",
+              "color": "oklch(0.945 0.016 80)",
+              "borderColor": "oklch(0.34 0.093 25)",
+              "boxShadow": "none",
+              "changed": false
+            }
+          },
+          {
+            "text": "Bean-to-cup",
+            "selector": "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(2)",
+            "count": 4,
+            "backgroundColor": "oklch(0.97 0.01 82)",
+            "color": "oklch(0.43 0.022 52)",
+            "borderRadius": "999px",
+            "padding": "7.2px 15.84px",
+            "border": "1px solid oklch(0.855 0.018 68)",
+            "borderColor": "oklch(0.855 0.018 68)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "14.4px",
+            "fontWeight": "500",
+            "textTransform": "none",
+            "letterSpacing": "normal",
+            "hover": {
+              "backgroundColor": "oklch(0.97 0.01 82)",
+              "color": "oklch(0.34 0.093 25)",
+              "borderColor": "oklch(0.34 0.093 25)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          },
+          {
+            "text": "View the Atelier →",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > div > a",
+            "count": 1,
+            "backgroundColor": "oklch(0.605 0.116 44)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "12.75px 22.5px",
+            "border": "0px none oklch(0.945 0.016 80)",
+            "borderColor": "oklch(0.945 0.016 80)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "textTransform": "none",
+            "letterSpacing": "normal",
+            "hover": {
+              "backgroundColor": "oklch(0.515 0.108 40)",
+              "color": "oklch(0.945 0.016 80)",
+              "borderColor": "oklch(0.945 0.016 80)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          },
+          {
+            "text": "Sign up",
+            "selector": "footer > div > div > div:nth-of-type(1) > form > div > button",
+            "count": 1,
+            "backgroundColor": "oklch(0.605 0.116 44)",
+            "color": "oklch(0.945 0.016 80)",
+            "borderRadius": "999px",
+            "padding": "10.5px 19.5px",
+            "border": "1px solid oklch(0.605 0.116 44)",
+            "borderColor": "oklch(0.605 0.116 44)",
+            "boxShadow": "none",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "textTransform": "none",
+            "letterSpacing": "0.15px",
+            "hover": {
+              "backgroundColor": "oklch(0.515 0.108 40)",
+              "color": "oklch(0.945 0.016 80)",
+              "borderColor": "oklch(0.515 0.108 40)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          }
+        ],
+        "links": [
+          {
+            "text": "Home",
+            "selector": "nav > a",
+            "count": 1,
+            "color": "oklch(0.43 0.022 52)",
+            "textDecoration": "none",
+            "fontWeight": "500",
+            "hover": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "color": "oklch(0.605 0.116 44)",
+              "borderColor": "oklch(0.605 0.116 44)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          },
+          {
+            "text": "Join the list→",
+            "selector": "div:nth-of-type(2) > div > div > div > article > div:nth-of-type(2) > div > a",
+            "count": 5,
+            "color": "oklch(0.605 0.116 44)",
+            "textDecoration": "none",
+            "fontWeight": "600",
+            "hover": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "color": "oklch(0.605 0.116 44)",
+              "borderColor": "oklch(0.605 0.116 44)",
+              "boxShadow": "none",
+              "changed": true
+            }
+          }
+        ],
+        "surfaces": [
+          {
+            "matched": "header",
+            "selector": "header",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 72
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "nav",
+            "selector": "#nav",
+            "rect": {
+              "x": 160,
+              "y": 0,
+              "w": 1120,
+              "h": 72
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px 48px",
+            "maxWidth": "1120px",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "nav",
+            "selector": "nav",
+            "rect": {
+              "x": 208,
+              "y": 139,
+              "w": 1024,
+              "h": 19
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.43 0.022 52)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "11.52px"
+          },
+          {
+            "matched": "main",
+            "selector": "main",
+            "rect": {
+              "x": 0,
+              "y": 72,
+              "w": 1440,
+              "h": 3631
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "footer",
+            "selector": "footer",
+            "rect": {
+              "x": 0,
+              "y": 3703,
+              "w": 1440,
+              "h": 462
+            },
+            "backgroundColor": "oklch(0.222 0.016 52)",
+            "color": "oklch(0.945 0.016 80)",
+            "padding": "0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "15px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(1)",
+            "rect": {
+              "x": 0,
+              "y": 72,
+              "w": 1440,
+              "h": 288
+            },
+            "backgroundColor": "oklch(0.948 0.015 78)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "67.2px 0px 48px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(2)",
+            "rect": {
+              "x": 0,
+              "y": 360,
+              "w": 1440,
+              "h": 67
+            },
+            "backgroundColor": "oklch(0.97 0.01 82)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "16px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "sticky",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(3)",
+            "rect": {
+              "x": 0,
+              "y": 427,
+              "w": 1440,
+              "h": 1134
+            },
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          },
+          {
+            "matched": "main > *",
+            "selector": "main > div:nth-of-type(4)",
+            "rect": {
+              "x": 0,
+              "y": 1561,
+              "w": 1440,
+              "h": 918
+            },
+            "backgroundColor": "oklch(0.948 0.015 78)",
+            "color": "oklch(0.262 0.021 52)",
+            "padding": "72px 0px",
+            "maxWidth": "none",
+            "borderRadius": "0px",
+            "boxShadow": "none",
+            "position": "static",
+            "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "fontSize": "17px"
+          }
+        ],
+        "radii": [
+          {
+            "value": "999px",
+            "count": 9,
+            "area": 41586,
+            "sources": [
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(1)",
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(2)",
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(3)"
+            ]
+          },
+          {
+            "value": "32px",
+            "count": 6,
+            "area": 1595286,
+            "sources": [
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article",
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > div > div > article",
+              "main > div:nth-of-type(4) > div:nth-of-type(2) > div > div > div > article:nth-of-type(1)"
+            ]
+          },
+          {
+            "value": "50%",
+            "count": 3,
+            "area": 4800,
+            "sources": [
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(2) > a",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(3) > a"
+            ]
+          }
+        ],
+        "shadows": [
+          {
+            "value": "oklch(0.3 0.03 50 / 0.07) 0px 4px 14px 0px, oklch(0.3 0.03 50 / 0.08) 0px 14px 34px 0px",
+            "count": 6,
+            "sources": [
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article",
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > div > div > article",
+              "main > div:nth-of-type(4) > div:nth-of-type(2) > div > div > div > article:nth-of-type(1)"
+            ]
+          }
+        ],
+        "gradients": [],
+        "bgColors": [
+          {
+            "value": "oklch(0.97 0.01 82)",
+            "count": 13,
+            "area": 7806004,
+            "sources": [
+              "body",
+              "header > div > div",
+              "main > div:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "oklch(0.918 0.02 74)",
+            "count": 6,
+            "area": 628518,
+            "sources": [
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(1)",
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > div > div > article > div:nth-of-type(1)",
+              "main > div:nth-of-type(4) > div:nth-of-type(2) > div > div > div > article:nth-of-type(1) > div:nth-of-type(1)"
+            ]
+          },
+          {
+            "value": "oklch(0.948 0.015 78)",
+            "count": 3,
+            "area": 2617943,
+            "sources": [
+              "main > div:nth-of-type(1)",
+              "main > div:nth-of-type(4)",
+              "main > div:nth-of-type(6)"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 2,
+            "area": 12780,
+            "sources": [
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > div > a",
+              "footer > div > div > div:nth-of-type(1) > form > div > button"
+            ]
+          },
+          {
+            "value": "oklch(0.34 0.093 25)",
+            "count": 2,
+            "area": 4871,
+            "sources": [
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(1)",
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(1) > span"
+            ]
+          },
+          {
+            "value": "oklch(0.222 0.016 52)",
+            "count": 1,
+            "area": 664695,
+            "sources": [
+              "footer"
+            ]
+          }
+        ],
+        "textColors": [
+          {
+            "value": "oklch(0.43 0.022 52)",
+            "count": 21,
+            "sources": [
+              "nav > a",
+              "main > div:nth-of-type(1) > div > p",
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "oklch(0.262 0.021 52)",
+            "count": 18,
+            "sources": [
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(1) > p > a",
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(3) > p > a",
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(4) > p > a"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 16,
+            "sources": [
+              "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(2) > p > a",
+              "main > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1)",
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > span"
+            ]
+          },
+          {
+            "value": "oklch(0.795 0.021 78)",
+            "count": 14,
+            "sources": [
+              "footer > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+              "footer > div > div > div:nth-of-type(2) > div > ul > li:nth-of-type(1) > a",
+              "footer > div > div > div:nth-of-type(2) > div > ul > li:nth-of-type(2) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.34 0.093 25)",
+            "count": 11,
+            "sources": [
+              "#made-in-the-workshop",
+              "#the-thinking-machines",
+              "#the-atelier"
+            ]
+          },
+          {
+            "value": "oklch(0.945 0.016 80)",
+            "count": 6,
+            "sources": [
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(1)",
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(1) > span",
+              "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > div > a"
+            ]
+          },
+          {
+            "value": "oklch(0.79 0.128 74)",
+            "count": 3,
+            "sources": [
+              "#shop",
+              "#company",
+              "#support"
+            ]
+          }
+        ],
+        "borderColors": [
+          {
+            "value": "oklch(0.855 0.018 68)",
+            "count": 16,
+            "sources": [
+              "header > div > div",
+              "main > div:nth-of-type(2)",
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "oklch(0.4 0.02 55)",
+            "count": 5,
+            "sources": [
+              "#footer-email",
+              "footer > div > div > div:nth-of-type(5)",
+              "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a"
+            ]
+          },
+          {
+            "value": "oklch(0.79 0.128 74)",
+            "count": 4,
+            "sources": [
+              "main > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)",
+              "main > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+              "main > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(2)"
+            ]
+          },
+          {
+            "value": "oklch(0.34 0.093 25)",
+            "count": 1,
+            "sources": [
+              "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(1)"
+            ]
+          },
+          {
+            "value": "oklch(0.605 0.116 44)",
+            "count": 1,
+            "sources": [
+              "footer > div > div > div:nth-of-type(1) > form > div > button"
+            ]
+          }
+        ],
+        "customProps": {
+          "--burgundy": {
+            "declared": "oklch(34% 0.093 25deg)",
+            "computed": "oklch(34% 0.093 25deg)"
+          },
+          "--burgundy-deep": {
+            "declared": "oklch(27.5% 0.082 26deg)",
+            "computed": "oklch(27.5% 0.082 26deg)"
+          },
+          "--terracotta": {
+            "declared": "oklch(60.5% 0.116 44deg)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--terracotta-deep": {
+            "declared": "oklch(51.5% 0.108 40deg)",
+            "computed": "oklch(51.5% 0.108 40deg)"
+          },
+          "--terracotta-fill": {
+            "declared": "oklch(60.5% 0.116 44deg / 22%)",
+            "computed": "oklch(60.5% 0.116 44deg / 22%)"
+          },
+          "--amber": {
+            "declared": "oklch(79% 0.128 74deg)",
+            "computed": "oklch(79% 0.128 74deg)"
+          },
+          "--amber-soft": {
+            "declared": "oklch(86.5% 0.083 80deg)",
+            "computed": "oklch(86.5% 0.083 80deg)"
+          },
+          "--teal": {
+            "declared": "oklch(55% 0.05 205deg)",
+            "computed": "oklch(55% 0.05 205deg)"
+          },
+          "--paper": {
+            "declared": "oklch(97% 0.010 82deg)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--paper-2": {
+            "declared": "oklch(94.8% 0.015 78deg)",
+            "computed": "oklch(94.8% 0.015 78deg)"
+          },
+          "--paper-3": {
+            "declared": "oklch(91.8% 0.020 74deg)",
+            "computed": "oklch(91.8% 0.020 74deg)"
+          },
+          "--sand": {
+            "declared": "oklch(88.4% 0.025 71deg)",
+            "computed": "oklch(88.4% 0.025 71deg)"
+          },
+          "--line": {
+            "declared": "oklch(85.5% 0.018 68deg)",
+            "computed": "oklch(85.5% 0.018 68deg)"
+          },
+          "--ink": {
+            "declared": "oklch(26.2% 0.021 52deg)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--ink-soft": {
+            "declared": "oklch(43% 0.022 52deg)",
+            "computed": "oklch(43% 0.022 52deg)"
+          },
+          "--charcoal": {
+            "declared": "oklch(22.2% 0.016 52deg)",
+            "computed": "oklch(22.2% 0.016 52deg)"
+          },
+          "--charcoal-2": {
+            "declared": "oklch(28.2% 0.020 50deg)",
+            "computed": "oklch(28.2% 0.020 50deg)"
+          },
+          "--line-dark": {
+            "declared": "oklch(40% 0.020 55deg)",
+            "computed": "oklch(40% 0.020 55deg)"
+          },
+          "--cream": {
+            "declared": "oklch(94.5% 0.016 80deg)",
+            "computed": "oklch(94.5% 0.016 80deg)"
+          },
+          "--cream-soft": {
+            "declared": "oklch(79.5% 0.021 78deg)",
+            "computed": "oklch(79.5% 0.021 78deg)"
+          },
+          "--bg": {
+            "declared": "var(--paper)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--fg": {
+            "declared": "var(--ink)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--accent": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--focus": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--background-color": {
+            "declared": "var(--paper)",
+            "computed": "oklch(97% 0.010 82deg)"
+          },
+          "--text-color": {
+            "declared": "var(--ink)",
+            "computed": "oklch(26.2% 0.021 52deg)"
+          },
+          "--link-color": {
+            "declared": "var(--terracotta)",
+            "computed": "oklch(60.5% 0.116 44deg)"
+          },
+          "--link-hover-color": {
+            "declared": "var(--terracotta-deep)",
+            "computed": "oklch(51.5% 0.108 40deg)"
+          },
+          "--font-display": {
+            "declared": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "computed": "\"Schibsted Grotesk\", system-ui, sans-serif"
+          },
+          "--font-body": {
+            "declared": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "computed": "\"Hanken Grotesk\", system-ui, sans-serif"
+          },
+          "--heading-font-family": {
+            "declared": "\"Schibsted Grotesk\", system-ui, sans-serif",
+            "computed": "\"Schibsted Grotesk\", system-ui, sans-serif"
+          },
+          "--body-font-family": {
+            "declared": "\"Hanken Grotesk\", system-ui, sans-serif",
+            "computed": "\"Hanken Grotesk\", system-ui, sans-serif"
+          },
+          "--fs-eyebrow": {
+            "declared": "0.75rem",
+            "computed": "0.75rem"
+          },
+          "--fs-sm": {
+            "declared": "0.9375rem",
+            "computed": "0.9375rem"
+          },
+          "--fs-body": {
+            "declared": "1.0625rem",
+            "computed": "1.0625rem"
+          },
+          "--fs-body-lg": {
+            "declared": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+            "computed": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)"
+          },
+          "--fs-h4": {
+            "declared": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--fs-h3": {
+            "declared": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--fs-h2": {
+            "declared": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--fs-h1": {
+            "declared": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--fs-display": {
+            "declared": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)",
+            "computed": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)"
+          },
+          "--heading-size-xxl": {
+            "declared": "var(--fs-h1)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--heading-size-xl": {
+            "declared": "var(--fs-h2)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--heading-size-l": {
+            "declared": "var(--fs-h3)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--heading-size-m": {
+            "declared": "var(--fs-h4)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--heading-size-s": {
+            "declared": "var(--fs-body)",
+            "computed": "1.0625rem"
+          },
+          "--heading-size-xs": {
+            "declared": "var(--fs-sm)",
+            "computed": "0.9375rem"
+          },
+          "--lh-tight": {
+            "declared": "1.03",
+            "computed": "1.03"
+          },
+          "--lh-snug": {
+            "declared": "1.15",
+            "computed": "1.15"
+          },
+          "--lh-body": {
+            "declared": "1.62",
+            "computed": "1.62"
+          },
+          "--tracking-eyebrow": {
+            "declared": "0.2em",
+            "computed": "0.2em"
+          },
+          "--tracking-tight": {
+            "declared": "-0.02em",
+            "computed": "-0.02em"
+          },
+          "--space-3xs": {
+            "declared": "0.25rem",
+            "computed": "0.25rem"
+          },
+          "--space-2xs": {
+            "declared": "0.5rem",
+            "computed": "0.5rem"
+          },
+          "--space-xs": {
+            "declared": "0.75rem",
+            "computed": "0.75rem"
+          },
+          "--space-sm": {
+            "declared": "1rem",
+            "computed": "1rem"
+          },
+          "--space-md": {
+            "declared": "1.5rem",
+            "computed": "1.5rem"
+          },
+          "--space-lg": {
+            "declared": "2.5rem",
+            "computed": "2.5rem"
+          },
+          "--space-xl": {
+            "declared": "4rem",
+            "computed": "4rem"
+          },
+          "--space-2xl": {
+            "declared": "6rem",
+            "computed": "6rem"
+          },
+          "--section-y": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--section-padding": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--content": {
+            "declared": "1120px",
+            "computed": "1120px"
+          },
+          "--content-wide": {
+            "declared": "1320px",
+            "computed": "1320px"
+          },
+          "--content-narrow": {
+            "declared": "760px",
+            "computed": "760px"
+          },
+          "--gutter": {
+            "declared": "clamp(1.25rem, 0.4rem + 3vw, 3rem)",
+            "computed": "clamp(1.25rem, 0.4rem + 3vw, 3rem)"
+          },
+          "--nav-height": {
+            "declared": "72px",
+            "computed": "72px"
+          },
+          "--r-sm": {
+            "declared": "8px",
+            "computed": "8px"
+          },
+          "--r-md": {
+            "declared": "14px",
+            "computed": "14px"
+          },
+          "--r-lg": {
+            "declared": "22px",
+            "computed": "22px"
+          },
+          "--r-xl": {
+            "declared": "32px",
+            "computed": "32px"
+          },
+          "--r-pill": {
+            "declared": "999px",
+            "computed": "999px"
+          },
+          "--shadow-sm": {
+            "declared": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+            "computed": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)"
+          },
+          "--shadow-md": {
+            "declared": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+            "computed": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)"
+          },
+          "--shadow-lg": {
+            "declared": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)",
+            "computed": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)"
+          },
+          "--ease-quint": {
+            "declared": "cubic-bezier(0.22, 1, 0.36, 1)",
+            "computed": "cubic-bezier(0.22, 1, 0.36, 1)"
+          },
+          "--ease-expo": {
+            "declared": "cubic-bezier(0.16, 1, 0.3, 1)",
+            "computed": "cubic-bezier(0.16, 1, 0.3, 1)"
+          },
+          "--dur-1": {
+            "declared": "0.35s",
+            "computed": "0.35s"
+          },
+          "--dur-2": {
+            "declared": "0.6s",
+            "computed": "0.6s"
+          },
+          "--dur-3": {
+            "declared": "0.9s",
+            "computed": "0.9s"
+          },
+          "--light-color": {
+            "declared": "var(--paper-2)",
+            "computed": "oklch(94.8% 0.015 78deg)"
+          },
+          "--dark-color": {
+            "declared": "var(--charcoal)",
+            "computed": "oklch(22.2% 0.016 52deg)"
+          },
+          "--body-font-size-m": {
+            "declared": "1.0625rem",
+            "computed": "1.0625rem"
+          },
+          "--body-font-size-s": {
+            "declared": "0.9375rem",
+            "computed": "0.9375rem"
+          },
+          "--body-font-size-xs": {
+            "declared": "0.8125rem",
+            "computed": "0.8125rem"
+          },
+          "--heading-font-size-xxl": {
+            "declared": "var(--fs-h1)",
+            "computed": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)"
+          },
+          "--heading-font-size-xl": {
+            "declared": "var(--fs-h2)",
+            "computed": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)"
+          },
+          "--heading-font-size-l": {
+            "declared": "var(--fs-h3)",
+            "computed": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)"
+          },
+          "--heading-font-size-m": {
+            "declared": "var(--fs-h4)",
+            "computed": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)"
+          },
+          "--heading-font-size-s": {
+            "declared": "var(--fs-body-lg)",
+            "computed": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)"
+          },
+          "--heading-font-size-xs": {
+            "declared": "var(--fs-body)",
+            "computed": "1.0625rem"
+          }
+        },
+        "fonts": [
+          {
+            "family": "Hanken Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Hanken Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "800",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Schibsted Grotesk",
+            "weight": "800",
+            "style": "normal",
+            "status": "loaded"
+          }
+        ],
+        "logoCandidates": [
+          {
+            "tag": "img",
+            "selector": "#nav > div:nth-of-type(2) > div > p > a > picture > img",
+            "src": "https://of1--frescopa26--markszulc.aem.page/fragments/media_1edd2a689a1bf64571235eec46bc97c0200c9bff3.svg?width=2000&format=webply&optimize=medium",
+            "inlineSvg": false,
+            "alt": "Fréscopa",
+            "ariaLabel": null,
+            "class": "",
+            "id": null,
+            "href": "/",
+            "inHomeLink": true,
+            "rect": {
+              "x": 208,
+              "y": 20,
+              "w": 118,
+              "h": 32
+            }
+          }
+        ],
+        "iconFont": null,
+        "consent": {
+          "dismissed": null
+        },
+        "finalUrl": "https://of1--frescopa26--markszulc.aem.page/machines"
+      }
+    }
+  },
+  "aggregate": {
+    "counts": {
+      "pages": 3,
+      "widths": [
+        1440
+      ],
+      "measurements": 3
+    },
+    "colors": [
+      {
+        "hex": "#634d4238",
+        "values": [
+          "rgba(99, 77, 66, 0.22)"
+        ],
+        "weight": 1,
+        "by": {
+          "border": 1
+        },
+        "roles": [
+          "border"
+        ],
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/",
+            "selector": "main > div:nth-of-type(7) > div:nth-of-type(1)",
+            "prop": "border"
+          }
+        ]
+      }
+    ],
+    "type": {
+      "families": [
+        {
+          "family": "Hanken Grotesk",
+          "count": 61,
+          "headings": 9,
+          "text": 35,
+          "buttons": 17
+        },
+        {
+          "family": "Schibsted Grotesk",
+          "count": 28,
+          "headings": 28,
+          "text": 0,
+          "buttons": 0
+        }
+      ],
+      "headingFamily": "Schibsted Grotesk",
+      "bodyFamily": "Hanken Grotesk",
+      "sizes": [
+        {
+          "px": 86.4,
+          "count": 1,
+          "headings": 1,
+          "text": 0,
+          "buttons": 0
+        },
+        {
+          "px": 44.8,
+          "count": 12,
+          "headings": 12,
+          "text": 0,
+          "buttons": 0
+        },
+        {
+          "px": 36.8,
+          "count": 5,
+          "headings": 5,
+          "text": 0,
+          "buttons": 0
+        },
+        {
+          "px": 25.6,
+          "count": 7,
+          "headings": 7,
+          "text": 0,
+          "buttons": 0
+        },
+        {
+          "px": 24,
+          "count": 3,
+          "headings": 3,
+          "text": 0,
+          "buttons": 0
+        },
+        {
+          "px": 21,
+          "count": 6,
+          "headings": 0,
+          "text": 6,
+          "buttons": 0
+        },
+        {
+          "px": 17,
+          "count": 23,
+          "headings": 0,
+          "text": 23,
+          "buttons": 0
+        },
+        {
+          "px": 15.04,
+          "count": 1,
+          "headings": 0,
+          "text": 1,
+          "buttons": 0
+        },
+        {
+          "px": 15,
+          "count": 10,
+          "headings": 0,
+          "text": 1,
+          "buttons": 9
+        },
+        {
+          "px": 14.72,
+          "count": 1,
+          "headings": 0,
+          "text": 1,
+          "buttons": 0
+        },
+        {
+          "px": 14.4,
+          "count": 5,
+          "headings": 0,
+          "text": 0,
+          "buttons": 5
+        },
+        {
+          "px": 12,
+          "count": 3,
+          "headings": 0,
+          "text": 3,
+          "buttons": 0
+        },
+        {
+          "px": 11.84,
+          "count": 3,
+          "headings": 0,
+          "text": 0,
+          "buttons": 3
+        },
+        {
+          "px": 11.52,
+          "count": 9,
+          "headings": 9,
+          "text": 0,
+          "buttons": 0
+        }
+      ],
+      "weights": [
+        {
+          "weight": "400",
+          "count": 36,
+          "headings": 0,
+          "text": 33,
+          "buttons": 3
+        },
+        {
+          "weight": "800",
+          "count": 20,
+          "headings": 20,
+          "text": 0,
+          "buttons": 0
+        },
+        {
+          "weight": "500",
+          "count": 16,
+          "headings": 9,
+          "text": 2,
+          "buttons": 5
+        },
+        {
+          "weight": "600",
+          "count": 9,
+          "headings": 0,
+          "text": 0,
+          "buttons": 9
+        },
+        {
+          "weight": "700",
+          "count": 8,
+          "headings": 8,
+          "text": 0,
+          "buttons": 0
+        }
+      ],
+      "levels": {
+        "h1": {
+          "fontSize": 86.4,
+          "fontWeight": "800",
+          "count": 1,
+          "score": 172.8
+        },
+        "h2": {
+          "fontSize": 44.8,
+          "fontWeight": "800",
+          "count": 5,
+          "score": 200.35
+        },
+        "h3": {
+          "fontSize": 25.6,
+          "fontWeight": "800",
+          "count": 5,
+          "score": 114.49
+        },
+        "h4": {
+          "fontSize": 25.6,
+          "fontWeight": "800",
+          "count": 2,
+          "score": 72.41
+        }
+      }
+    },
+    "motifs": {
+      "radius": {
+        "mode": "32px",
+        "areaMode": "32px",
+        "pill": "999px",
+        "values": [
+          {
+            "value": "999px",
+            "count": 28,
+            "area": 150695,
+            "sources": [
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(3) > a"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(1)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(2)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+                "selector": "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(3) > a"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+                "selector": "#footer-email"
+              }
+            ]
+          },
+          {
+            "value": "32px",
+            "count": 9,
+            "area": 2198778,
+            "sources": [
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(6) > div > div > div > div:nth-of-type(1) > picture > img"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+                "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+                "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > div > div > article"
+              }
+            ]
+          },
+          {
+            "value": "50%",
+            "count": 9,
+            "area": 14400,
+            "sources": [
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(2) > a"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(3) > a"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+                "selector": "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(1) > a"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+                "selector": "footer > div > div > div:nth-of-type(5) > ul > li:nth-of-type(2) > a"
+              }
+            ]
+          },
+          {
+            "value": "11px",
+            "count": 6,
+            "area": 14868,
+            "sources": [
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > button:nth-of-type(1)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > span:nth-of-type(8)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > button:nth-of-type(2)"
+              }
+            ]
+          },
+          {
+            "value": "22px",
+            "count": 3,
+            "area": 472142,
+            "sources": [
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(1)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(2)"
+              },
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(3)"
+              }
+            ]
+          },
+          {
+            "value": "14px",
+            "count": 1,
+            "area": 49903,
+            "sources": [
+              {
+                "url": "https://of1--frescopa26--markszulc.aem.page/",
+                "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(2)"
+              }
+            ]
+          }
+        ]
+      },
+      "shadows": [
+        {
+          "value": "oklch(0.3 0.03 50 / 0.07) 0px 4px 14px 0px, oklch(0.3 0.03 50 / 0.08) 0px 14px 34px 0px",
+          "count": 9,
+          "sources": [
+            {
+              "url": "https://of1--frescopa26--markszulc.aem.page/",
+              "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+            },
+            {
+              "url": "https://of1--frescopa26--markszulc.aem.page/",
+              "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2)"
+            },
+            {
+              "url": "https://of1--frescopa26--markszulc.aem.page/",
+              "selector": "main > div:nth-of-type(6) > div > div > div > div:nth-of-type(1) > picture > img"
+            },
+            {
+              "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+              "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article"
+            },
+            {
+              "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+              "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > div > div > article"
+            }
+          ]
+        },
+        {
+          "value": "oklch(0.3 0.03 50 / 0.06) 0px 1px 2px 0px, oklch(0.3 0.03 50 / 0.05) 0px 2px 8px 0px",
+          "count": 1,
+          "sources": [
+            {
+              "url": "https://of1--frescopa26--markszulc.aem.page/",
+              "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > button:nth-of-type(1)"
+            }
+          ]
+        }
+      ],
+      "gradients": []
+    },
+    "hover": [
+      {
+        "kind": "button",
+        "from": {
+          "backgroundColor": "oklch(0.605 0.116 44)",
+          "borderColor": "oklch(0.605 0.116 44)"
+        },
+        "to": {
+          "backgroundColor": "oklch(0.515 0.108 40)",
+          "borderColor": "oklch(0.515 0.108 40)"
+        },
+        "count": 2,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+            "selector": "footer > div > div > div:nth-of-type(1) > form > div > button"
+          },
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+            "selector": "footer > div > div > div:nth-of-type(1) > form > div > button"
+          }
+        ]
+      },
+      {
+        "kind": "button",
+        "from": {
+          "color": "oklch(0.43 0.022 52)",
+          "borderColor": "oklch(0.855 0.018 68)"
+        },
+        "to": {
+          "color": "oklch(0.34 0.093 25)",
+          "borderColor": "oklch(0.34 0.093 25)"
+        },
+        "count": 2,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/",
+            "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(2)"
+          },
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+            "selector": "main > div:nth-of-type(2) > div > div > div > button:nth-of-type(2)"
+          }
+        ]
+      },
+      {
+        "kind": "link",
+        "from": {
+          "color": "oklch(0.605 0.116 44)"
+        },
+        "to": {
+          "color": "oklch(0.515 0.108 40)"
+        },
+        "count": 2,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(2) > a"
+          },
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+            "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(5) > a"
+          }
+        ]
+      },
+      {
+        "kind": "button",
+        "from": {
+          "backgroundColor": "oklch(0.605 0.116 44)",
+          "borderColor": "rgba(0, 0, 0, 0)"
+        },
+        "to": {
+          "backgroundColor": "oklch(0.515 0.108 40)",
+          "borderColor": "oklch(0.515 0.108 40)"
+        },
+        "count": 1,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/",
+            "selector": "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(3) > a"
+          }
+        ]
+      },
+      {
+        "kind": "button",
+        "from": {
+          "backgroundColor": "oklch(0.605 0.116 44)"
+        },
+        "to": {
+          "backgroundColor": "oklch(0.515 0.108 40)"
+        },
+        "count": 1,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+            "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(2) > div > a"
+          }
+        ]
+      },
+      {
+        "kind": "button",
+        "from": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "borderColor": "oklch(0.945 0.016 80 / 0.34)"
+        },
+        "to": {
+          "backgroundColor": "oklch(0.945 0.016 80 / 0.12)",
+          "borderColor": "oklch(0.945 0.016 80)"
+        },
+        "count": 1,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/",
+            "selector": "main > div:nth-of-type(9) > div > p:nth-of-type(3) > a:nth-of-type(2)"
+          }
+        ]
+      },
+      {
+        "kind": "button",
+        "from": {
+          "backgroundColor": "oklch(0.945 0.016 80)",
+          "borderColor": "rgba(0, 0, 0, 0)"
+        },
+        "to": {
+          "backgroundColor": "oklch(0.948 0.015 78)",
+          "borderColor": "oklch(0.948 0.015 78)"
+        },
+        "count": 1,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+            "selector": "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(3) > a"
+          }
+        ]
+      },
+      {
+        "kind": "link",
+        "from": {
+          "color": "oklch(0.43 0.022 52)"
+        },
+        "to": {
+          "color": "oklch(0.605 0.116 44)"
+        },
+        "count": 1,
+        "sources": [
+          {
+            "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+            "selector": "nav > a"
+          }
+        ]
+      }
+    ],
+    "logo": {
+      "source": "none",
+      "url": null,
+      "selector": null
+    },
+    "iconFont": null
+  }
+}
