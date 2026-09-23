@@ -1,0 +1,170 @@
+/* Comparison Grid - general-purpose side-by-side comparison block */
+
+.comparison-grid {
+  --grid-gap: var(--spacing-md, 1.5rem);
+  --card-bg: var(--color-paper, #f8f5ee);
+  --border-color: var(--color-line, #d8cdc3);
+  --label-color: var(--color-burgundy, #5f201e);
+  --text-color: var(--color-ink, #2d221b);
+  --text-soft: var(--color-ink-soft, #5a4d45);
+  --accent-color: var(--color-terracotta, #ba6945);
+
+  max-width: var(--layout-content, 1120px);
+  margin: 0 auto;
+  padding: 0 var(--layout-gutter, clamp(1.25rem, 0.4rem + 3vw, 3rem));
+}
+
+.comparison-grid-table {
+  display: grid;
+  gap: 0;
+  background: var(--card-bg);
+  border-radius: var(--rounded-lg, 22px);
+  overflow: hidden;
+  box-shadow: var(--shadow-md, 0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%));
+}
+
+/* Header row */
+.comparison-grid-header {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0;
+  background: var(--label-color);
+  color: var(--color-cream, #f3ece1);
+  font-family: var(--ff-heading, "Schibsted Grotesk", system-ui, sans-serif);
+  font-weight: 800;
+  font-size: 1.125rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.comparison-grid-header > div {
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.comparison-grid-header-label {
+  background: var(--label-color);
+  opacity: 0.4;
+}
+
+.comparison-grid-header-item {
+  background: var(--label-color);
+}
+
+/* Attribute rows */
+.comparison-grid-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comparison-grid-row:last-child {
+  border-bottom: none;
+}
+
+.comparison-grid-row > div {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Label column (attribute names) */
+.comparison-grid-label {
+  background: var(--color-paper-2, #f3ede3);
+  font-family: var(--ff-heading, "Schibsted Grotesk", system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--label-color);
+  text-align: left;
+  justify-content: flex-start;
+  border-right: 1px solid var(--border-color);
+}
+
+/* Value columns */
+.comparison-grid-value {
+  font-family: var(--ff-body, "Hanken Grotesk", system-ui, sans-serif);
+  font-size: 1rem;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.comparison-grid-value strong,
+.comparison-grid-value b {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.comparison-grid-value picture {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.comparison-grid-value img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--rounded-sm, 8px);
+}
+
+.comparison-grid-value a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.comparison-grid-value a:hover {
+  color: var(--color-terracotta-deep, #9a4f35);
+  text-decoration: underline;
+}
+
+/* Simple variant - no header row, just attribute rows */
+.comparison-grid.simple .comparison-grid-header {
+  display: none;
+}
+
+/* Responsive: stack columns on mobile */
+@media (max-width: 599px) {
+  .comparison-grid-header,
+  .comparison-grid-row {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-grid-label {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+    justify-content: center;
+    background: var(--label-color);
+    color: var(--color-cream, #f3ece1);
+    font-weight: 800;
+  }
+
+  .comparison-grid-header-label {
+    display: none;
+  }
+
+  .comparison-grid-row {
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .comparison-grid-row:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 600px) and (max-width: 899px) {
+  .comparison-grid-header,
+  .comparison-grid-row {
+    grid-template-columns: minmax(120px, 1fr) repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  .comparison-grid-header > div,
+  .comparison-grid-row > div {
+    padding: 0.875rem 0.75rem;
+    font-size: 0.9375rem;
+  }
+}
