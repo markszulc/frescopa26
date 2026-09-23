@@ -1,0 +1,501 @@
+/* ============================================================
+   OF1 Generative Block — Fréscopa ("The Morning Kitchen Table")
+
+   Styles the OF1 block's OWN UI only: search landing (eyebrow, title,
+   input, chips), loading skeleton, follow-up suggestion controls, and the
+   entrance animation on each generated section. Generated-section
+   internals are styled by each block's own stylesheet.
+
+   All values resolve to the canonical OKLCH tokens in styles/brand.css.
+   ============================================================ */
+
+/* ─── Brand Token Mapping ─── */
+
+.of1,
+.generated-section,
+.generative-suggestions,
+.generative-breadcrumb {
+  --primary: var(--terracotta);
+  --primary-hover: var(--terracotta-deep);
+  --heading: var(--burgundy);
+  --text: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --on-primary: var(--cream);
+  --surface: var(--paper);
+  --surface-muted: var(--paper-2);
+  --surface-strong: var(--paper-3);
+  --surface-dark: var(--charcoal);
+  --accent: var(--terracotta);
+  --border: var(--line);
+  --radius: var(--r-sm);
+  --radius-card: var(--r-xl);
+  --radius-pill: var(--r-pill);
+  --font-heading: var(--font-display);
+  --font-mono: "SF Mono", "Fira Code", monospace;
+  --shadow-card: var(--shadow-sm);
+  --shadow-lift: var(--shadow-md);
+  --transition: var(--dur-1) var(--ease-quint);
+}
+
+/* ─── Container & Layout ─── */
+
+.section.of1-container {
+  padding: 0;
+}
+
+.section.of1-container .of1-wrapper {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.of1 {
+  font-family: var(--font-body);
+  color: var(--text);
+}
+
+/* ─── Search Landing UI ─── */
+
+.of1 .of1-search-ui {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--nav-height, 72px));
+  padding: var(--space-xl) var(--gutter) var(--space-lg);
+  background:
+    radial-gradient(120% 70% at 50% 0%, var(--paper-2) 0%, transparent 60%),
+    radial-gradient(60% 50% at 85% 100%, var(--terracotta-fill) 0%, transparent 70%),
+    var(--surface);
+  text-align: center;
+  overflow: hidden;
+}
+
+.of1 .of1-search-ui::before {
+  content: "Ask Fréscopa";
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.of1 .of1-search-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: var(--content-narrow);
+}
+
+.of1 .of1-title {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  color: var(--heading);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  margin: 0 auto var(--space-sm);
+  max-width: 18ch;
+  width: 100%;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.of1 .of1-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+  margin: 0 auto var(--space-lg);
+  max-width: 52ch;
+  line-height: var(--lh-body);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+/* ─── Input & Submit ─── */
+
+.of1 .of1-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.of1 .of1-input {
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 18px 64px 18px 26px;
+  line-height: 1.4;
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.of1 .of1-input::placeholder {
+  color: var(--cream-soft);
+}
+
+.of1 .of1-input:hover {
+  border-color: var(--sand);
+}
+
+.of1 .of1-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--terracotta-fill), var(--shadow-lift);
+}
+
+.of1 .of1-submit {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.of1 .of1-submit svg {
+  stroke: currentcolor;
+}
+
+.of1 .of1-submit:hover {
+  background: var(--primary-hover);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.of1 .of1-submit:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ─── Quick Suggestion Chips ─── */
+
+.of1 .of1-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2xs);
+  margin-top: var(--space-md);
+  max-width: 720px;
+}
+
+.of1 .of1-chip {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.of1 .of1-chip:hover {
+  background: var(--surface-muted);
+  border-color: var(--primary);
+  color: var(--heading);
+}
+
+.of1 .of1-chip:active,
+.of1 .of1-chip[aria-pressed="true"] {
+  background: var(--heading);
+  border-color: var(--heading);
+  color: var(--on-primary);
+}
+
+.of1 .of1-chip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ─── Loading Skeleton ─── */
+
+.of1 .of1-skeleton-wrap {
+  padding: var(--space-lg) var(--gutter);
+  max-width: var(--content);
+  margin: 0 auto;
+}
+
+.of1 .of1-skeleton {
+  background:
+    linear-gradient(100deg, transparent 20%, var(--paper) 50%, transparent 80%) 0 0 / 200% 100%,
+    var(--surface-strong);
+  border-radius: var(--radius-card);
+  animation: of1-shimmer 1.6s var(--ease-quint) infinite;
+}
+
+.of1 .of1-skeleton-hero {
+  width: 100%;
+  height: 220px;
+  border-radius: var(--radius-card);
+  margin-bottom: var(--space-lg);
+}
+
+.of1 .of1-skeleton-heading {
+  width: 60%;
+  height: 32px;
+  border-radius: var(--r-md);
+  margin-bottom: var(--space-sm);
+}
+
+.of1 .of1-skeleton-text {
+  width: 90%;
+  height: 16px;
+  border-radius: var(--r-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.of1 .of1-skeleton-text.short {
+  width: 45%;
+}
+
+.of1 .of1-skeleton-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.of1 .of1-skeleton-card {
+  height: 220px;
+  border-radius: var(--radius-card);
+}
+
+@keyframes of1-shimmer {
+  0% { background-position: 150% 0, 0 0; }
+  100% { background-position: -50% 0, 0 0; }
+}
+
+/* ─── Generated Sections (container + fade-in only) ─── */
+
+.generated-section {
+  animation: of1-fade-in var(--dur-2) var(--ease-expo) both;
+}
+
+@keyframes of1-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Follow-up Suggestions ─── */
+
+.generative-suggestions {
+  padding: var(--space-xl) var(--gutter);
+  text-align: center;
+  background: var(--surface-muted);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-body);
+  color: var(--text);
+}
+
+.generative-suggestions.dimmed {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.generative-suggestions .suggestion-input-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.generative-suggestions .suggestions-header {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.generative-suggestions .suggestion-custom {
+  position: relative;
+  width: 640px;
+  max-width: 100%;
+}
+
+.generative-suggestions .suggestion-input {
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 16px 60px 16px 24px;
+  line-height: 1.4;
+  outline: none;
+  background: var(--surface);
+  color: var(--text);
+  appearance: none;
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.generative-suggestions .suggestion-input::placeholder {
+  color: var(--cream-soft);
+}
+
+.generative-suggestions .suggestion-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--terracotta-fill);
+}
+
+.generative-suggestions .suggestion-submit {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primary);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.generative-suggestions .suggestion-submit:hover {
+  background: var(--primary-hover);
+}
+
+.generative-suggestions .suggestion-submit:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.generative-suggestions .suggestion-submit svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--on-primary);
+}
+
+.generative-suggestions .suggestions-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  justify-content: center;
+  align-items: center;
+  max-width: 820px;
+}
+
+.generative-suggestions .suggestion-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.generative-suggestions .suggestion-btn:hover {
+  background: var(--surface);
+  border-color: var(--primary);
+  color: var(--heading);
+}
+
+.generative-suggestions .suggestion-btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.generative-suggestions .suggestion-restart {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color var(--transition);
+}
+
+.generative-suggestions .suggestion-restart:hover {
+  color: var(--heading);
+}
+
+/* ─── Responsive ─── */
+
+@media (width >= 600px) {
+  .of1 .of1-skeleton-hero {
+    height: 280px;
+  }
+
+  .of1 .of1-skeleton-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .of1 .of1-search-ui {
+    padding: var(--space-2xl) var(--gutter) var(--space-xl);
+  }
+
+  .of1 .of1-title {
+    font-size: var(--fs-h1);
+  }
+
+  .of1 .of1-subtitle {
+    font-size: var(--fs-body-lg);
+  }
+
+  .of1 .of1-skeleton-hero {
+    height: 360px;
+  }
+
+  .of1 .of1-skeleton-card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .of1 .of1-skeleton,
+  .generated-section {
+    animation: none;
+  }
+}

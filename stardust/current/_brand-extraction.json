@@ -1,0 +1,992 @@
+{
+  "_provenance": {
+    "writtenBy": "stardust:extract",
+    "writtenAt": "2026-09-23T14:23:19.109Z",
+    "origin": "https://of1--frescopa26--markszulc.aem.page",
+    "pages": [
+      "https://of1--frescopa26--markszulc.aem.page/",
+      "https://of1--frescopa26--markszulc.aem.page/machines",
+      "https://of1--frescopa26--markszulc.aem.page/beverages"
+    ],
+    "sources": [
+      "_computed-styles.json",
+      "pages/*.json",
+      "styles/brand.css (deployed :root tokens)"
+    ],
+    "notes": [
+      "Census colour aggregate resolved only one entry (oklch values); palette mapped from per-page census measurements to the deployed brand.css tokens.",
+      "Unmatched measured colours: oklch(0.74344 0.01352 72.4)"
+    ]
+  },
+  "origins": [
+    {
+      "origin": "https://of1--frescopa26--markszulc.aem.page",
+      "role": "primary",
+      "pages": 3
+    }
+  ],
+  "site": {
+    "name": "Fréscopa",
+    "title": "Fréscopa Atelier - Every morning, perfected."
+  },
+  "logo": {
+    "source": "header img (fragment nav)",
+    "file": "assets/logo.svg",
+    "format": "svg",
+    "intrinsic": "1391×378",
+    "url": "https://of1--frescopa26--markszulc.aem.page/fragments/media_1edd2a689a1bf64571235eec46bc97c0200c9bff3.svg",
+    "sourceSelector": "header .nav-brand img",
+    "alt": "Fréscopa",
+    "variantsCaptured": [
+      "dark-on-light (header)"
+    ],
+    "variantsNotCaptured": [
+      "light-on-dark (footer uses icons/frescopa-logo-light.svg — present in repo)"
+    ]
+  },
+  "favicon": {
+    "file": "assets/favicon.ico",
+    "url": "https://of1--frescopa26--markszulc.aem.page/favicon.ico"
+  },
+  "palette": [
+    {
+      "value": "#5a4d45",
+      "canonical": "oklch(43% 0.022 52deg)",
+      "token": "--ink-soft",
+      "role": "text-secondary",
+      "occurrences": 63,
+      "usedAs": [
+        "text"
+      ],
+      "topPages": [
+        "/machines",
+        "/",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "main > div:nth-of-type(1) > div > p:nth-of-type(2)",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(2) > p:nth-of-type(1)",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "nav > a",
+          "prop": "text"
+        }
+      ]
+    },
+    {
+      "value": "#ba6945",
+      "canonical": "oklch(60.5% 0.116 44deg)",
+      "token": "--terracotta",
+      "role": "accent",
+      "occurrences": 55,
+      "usedAs": [
+        "background",
+        "text",
+        "border"
+      ],
+      "topPages": [
+        "/",
+        "/machines",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "footer > div > div > div:nth-of-type(1) > form > div > button",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(3) > p > a",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "footer > div > div > div:nth-of-type(1) > form > div > button",
+          "prop": "border"
+        }
+      ]
+    },
+    {
+      "value": "#5f201e",
+      "canonical": "oklch(34% 0.093 25deg)",
+      "token": "--burgundy",
+      "role": "primary",
+      "occurrences": 43,
+      "usedAs": [
+        "text",
+        "background",
+        "border"
+      ],
+      "topPages": [
+        "/",
+        "/machines",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "#three-ways-to-fill-a-cup",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > button:nth-of-type(1)",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(2) > div > div > div > div:nth-of-type(1) > h2",
+          "prop": "text"
+        }
+      ]
+    },
+    {
+      "value": "#f3ece1",
+      "canonical": "oklch(94.5% 0.016 80deg)",
+      "token": "--cream",
+      "role": "text-on-dark",
+      "occurrences": 43,
+      "usedAs": [
+        "background",
+        "text",
+        "border"
+      ],
+      "topPages": [
+        "/",
+        "/machines",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(3) > a",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "main > div:nth-of-type(5) > div > div > div > div > h2",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(1) > p > a",
+          "prop": "text"
+        }
+      ]
+    },
+    {
+      "value": "#c4bbad",
+      "canonical": "oklch(79.5% 0.021 78deg)",
+      "token": "--cream-soft",
+      "role": "text-on-dark-muted",
+      "occurrences": 43,
+      "usedAs": [
+        "text"
+      ],
+      "topPages": [
+        "/",
+        "/beverages",
+        "/machines"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "footer > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(9) > div > p:nth-of-type(2)",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "footer > div > div > div:nth-of-type(1) > div > p:nth-of-type(2)",
+          "prop": "text"
+        }
+      ]
+    },
+    {
+      "value": "#2d221b",
+      "canonical": "oklch(26.2% 0.021 52deg)",
+      "token": "--ink",
+      "role": "text-primary",
+      "occurrences": 36,
+      "usedAs": [
+        "text"
+      ],
+      "topPages": [
+        "/machines",
+        "/",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(1) > p > a",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > svg > g:nth-of-type(2) > text:nth-of-type(1)",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "#nav > div:nth-of-type(3) > div > ul > li:nth-of-type(1) > p > a",
+          "prop": "text"
+        }
+      ]
+    },
+    {
+      "value": "#f8f5ee",
+      "canonical": "oklch(97% 0.010 82deg)",
+      "token": "--paper",
+      "role": "background",
+      "occurrences": 35,
+      "usedAs": [
+        "background"
+      ],
+      "topPages": [
+        "/",
+        "/machines",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "body",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "body",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(5) > div:nth-of-type(2) > div > ul > li:nth-of-type(1) > div:nth-of-type(1) > span",
+          "prop": "background"
+        }
+      ]
+    },
+    {
+      "value": "#d8cdc3",
+      "canonical": "oklch(85.5% 0.018 68deg)",
+      "token": "--line",
+      "role": "border",
+      "occurrences": 31,
+      "usedAs": [
+        "border"
+      ],
+      "topPages": [
+        "/machines",
+        "/",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "header > div > div",
+          "prop": "border"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(3) > div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+          "prop": "border"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "header > div > div",
+          "prop": "border"
+        }
+      ]
+    },
+    {
+      "value": "#ebad54",
+      "canonical": "oklch(79% 0.128 74deg)",
+      "token": "--amber",
+      "role": "highlight",
+      "occurrences": 17,
+      "usedAs": [
+        "text",
+        "border"
+      ],
+      "topPages": [
+        "/machines",
+        "/",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "main > div:nth-of-type(5) > div > div > div > div > p:nth-of-type(1)",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(1) > div > div > div:nth-of-type(2) > div > p:nth-of-type(1)",
+          "prop": "text"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "#shop",
+          "prop": "text"
+        }
+      ]
+    },
+    {
+      "value": "#51453e",
+      "canonical": "oklch(40% 0.020 55deg)",
+      "token": "--line-dark",
+      "role": "border-dark",
+      "occurrences": 15,
+      "usedAs": [
+        "border"
+      ],
+      "topPages": [
+        "/beverages",
+        "/",
+        "/machines"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "#footer-email",
+          "prop": "border"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "#footer-email",
+          "prop": "border"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "#footer-email",
+          "prop": "border"
+        }
+      ]
+    },
+    {
+      "value": "#f3ede3",
+      "canonical": "oklch(94.8% 0.015 78deg)",
+      "token": "--paper-2",
+      "role": "surface",
+      "occurrences": 13,
+      "usedAs": [
+        "background"
+      ],
+      "topPages": [
+        "/",
+        "/machines",
+        "/beverages"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "main > div:nth-of-type(1)",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(3)",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "main > div:nth-of-type(1)",
+          "prop": "background"
+        }
+      ]
+    },
+    {
+      "value": "#211914",
+      "canonical": "oklch(22.2% 0.016 52deg)",
+      "token": "--charcoal",
+      "role": "surface-dark",
+      "occurrences": 8,
+      "usedAs": [
+        "background"
+      ],
+      "topPages": [
+        "/",
+        "/beverages",
+        "/machines"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+          "selector": "main > div:nth-of-type(5)",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(1) > div > div",
+          "prop": "background"
+        },
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "footer",
+          "prop": "background"
+        }
+      ]
+    },
+    {
+      "value": "#ece2d6",
+      "canonical": "oklch(91.8% 0.020 74deg)",
+      "token": "--paper-3",
+      "role": "surface-alt",
+      "occurrences": 6,
+      "usedAs": [
+        "background"
+      ],
+      "topPages": [
+        "/machines"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/machines",
+          "selector": "main > div:nth-of-type(3) > div:nth-of-type(2) > div > article > div:nth-of-type(1)",
+          "prop": "background"
+        }
+      ]
+    },
+    {
+      "value": "#9a4f35",
+      "canonical": "oklch(51.5% 0.108 40deg)",
+      "token": "--terracotta-deep",
+      "role": "accent-hover",
+      "occurrences": 1,
+      "usedAs": [
+        "text"
+      ],
+      "topPages": [
+        "/"
+      ],
+      "sources": [
+        {
+          "url": "https://of1--frescopa26--markszulc.aem.page/",
+          "selector": "main > div:nth-of-type(4) > div > div > div:nth-of-type(2) > div:nth-of-type(2) > span",
+          "prop": "text"
+        }
+      ]
+    },
+    {
+      "value": "#481311",
+      "canonical": "oklch(27.5% 0.082 26deg)",
+      "token": "--burgundy-deep",
+      "role": "primary-dark",
+      "occurrences": 0,
+      "usedAs": [],
+      "topPages": [],
+      "sources": []
+    },
+    {
+      "value": "#f0cd94",
+      "canonical": "oklch(86.5% 0.083 80deg)",
+      "token": "--amber-soft",
+      "role": "highlight-soft",
+      "occurrences": 0,
+      "usedAs": [],
+      "topPages": [],
+      "sources": []
+    },
+    {
+      "value": "#4d7a7f",
+      "canonical": "oklch(55% 0.05 205deg)",
+      "token": "--teal",
+      "role": "secondary",
+      "occurrences": 0,
+      "usedAs": [],
+      "topPages": [],
+      "sources": []
+    },
+    {
+      "value": "#e4d6c7",
+      "canonical": "oklch(88.4% 0.025 71deg)",
+      "token": "--sand",
+      "role": "surface-deep",
+      "occurrences": 0,
+      "usedAs": [],
+      "topPages": [],
+      "sources": []
+    },
+    {
+      "value": "#322721",
+      "canonical": "oklch(28.2% 0.020 50deg)",
+      "token": "--charcoal-2",
+      "role": "surface-dark-alt",
+      "occurrences": 0,
+      "usedAs": [],
+      "topPages": [],
+      "sources": []
+    }
+  ],
+  "type": {
+    "headingFamily": {
+      "name": "Schibsted Grotesk",
+      "stack": "\"Schibsted Grotesk\", system-ui, sans-serif",
+      "weights": [
+        700,
+        800
+      ],
+      "source": "styles/brand.css --font-display"
+    },
+    "bodyFamily": {
+      "name": "Hanken Grotesk",
+      "stack": "\"Hanken Grotesk\", system-ui, sans-serif",
+      "weights": [
+        400,
+        500,
+        600,
+        700
+      ],
+      "source": "styles/brand.css --font-body"
+    },
+    "files": [
+      {
+        "file": "/fonts/Jqz55SSPQuCQF3t8uOwiUL-taUTtap9GayojdSFO.woff2",
+        "licensing": "OFL (Google Fonts, self-hosted)"
+      },
+      {
+        "file": "/fonts/Jqz55SSPQuCQF3t8uOwiUL-taUTtap9IayojdSFOd1I.woff2",
+        "licensing": "OFL (Google Fonts, self-hosted)"
+      },
+      {
+        "file": "/fonts/ieVn2YZDLWuGJpnzaiwFXS9tYtpQ59CxCis4UvI.woff2",
+        "licensing": "OFL (Google Fonts, self-hosted)"
+      },
+      {
+        "file": "/fonts/ieVn2YZDLWuGJpnzaiwFXS9tYtpS59CxCis4UvI.woff2",
+        "licensing": "OFL (Google Fonts, self-hosted)"
+      },
+      {
+        "file": "/fonts/ieVn2YZDLWuGJpnzaiwFXS9tYtpT59CxCis4UvI.woff2",
+        "licensing": "OFL (Google Fonts, self-hosted)"
+      },
+      {
+        "file": "/fonts/ieVn2YZDLWuGJpnzaiwFXS9tYtpd59CxCis4.woff2",
+        "licensing": "OFL (Google Fonts, self-hosted)"
+      }
+    ],
+    "levels": {
+      "h1": {
+        "fontSize": 86.4,
+        "fontWeight": "800",
+        "count": 1,
+        "score": 172.8
+      },
+      "h2": {
+        "fontSize": 44.8,
+        "fontWeight": "800",
+        "count": 5,
+        "score": 200.35
+      },
+      "h3": {
+        "fontSize": 25.6,
+        "fontWeight": "800",
+        "count": 5,
+        "score": 114.49
+      },
+      "h4": {
+        "fontSize": 25.6,
+        "fontWeight": "800",
+        "count": 2,
+        "score": 72.41
+      }
+    },
+    "fluidScale": {
+      "fs-eyebrow": "0.75rem",
+      "fs-sm": "0.9375rem",
+      "fs-body": "1.0625rem",
+      "fs-body-lg": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+      "fs-h4": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+      "fs-h3": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+      "fs-h2": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+      "fs-h1": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+      "fs-display": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)"
+    },
+    "lineHeights": {
+      "tight": "1.03",
+      "snug": "1.15",
+      "body": "1.62"
+    },
+    "tracking": {
+      "eyebrow": "0.2em",
+      "tight": "-0.02em"
+    },
+    "scaleAudit": {
+      "kind": "ad-hoc",
+      "sizesPx": [
+        11.52,
+        24,
+        25.6,
+        36.8,
+        44.8,
+        86.4
+      ],
+      "ratios": [
+        2.083,
+        1.067,
+        1.437,
+        1.217,
+        1.929
+      ],
+      "note": "Headings use fluid clamp() tokens (--fs-h1..h4); measured at 1440px."
+    }
+  },
+  "motifs": {
+    "borderRadius": {
+      "mode": "32px",
+      "pill": "999px",
+      "occurrences": [
+        {
+          "value": "999px",
+          "count": 28
+        },
+        {
+          "value": "32px",
+          "count": 9
+        },
+        {
+          "value": "50%",
+          "count": 9
+        },
+        {
+          "value": "11px",
+          "count": 6
+        },
+        {
+          "value": "22px",
+          "count": 3
+        },
+        {
+          "value": "14px",
+          "count": 1
+        }
+      ],
+      "tokens": {
+        "sm": "8px",
+        "md": "14px",
+        "lg": "22px",
+        "xl": "32px",
+        "pill": "999px"
+      }
+    },
+    "shadows": [
+      {
+        "value": "oklch(0.3 0.03 50 / 0.07) 0px 4px 14px 0px, oklch(0.3 0.03 50 / 0.08) 0px 14px 34px 0px",
+        "count": 9
+      },
+      {
+        "value": "oklch(0.3 0.03 50 / 0.06) 0px 1px 2px 0px, oklch(0.3 0.03 50 / 0.05) 0px 2px 8px 0px",
+        "count": 1
+      }
+    ],
+    "shadowTokens": {
+      "sm": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+      "md": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+      "lg": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)"
+    },
+    "gradients": [],
+    "patterns": [
+      "eyebrow-label (uppercase, 0.2em tracking, terracotta)",
+      "pill-cta (terracotta fill, 999px)",
+      "ghost-pill chip",
+      "rounded-card (32px, shadow-md)",
+      "product-card with price + text link",
+      "full-bleed photo hero with dark overlay",
+      "dark charcoal CTA band",
+      "pull-quote testimonial"
+    ]
+  },
+  "spacing": {
+    "baseUnit": "0.25rem (4px)",
+    "scale": {
+      "space-3xs": "0.25rem",
+      "space-2xs": "0.5rem",
+      "space-xs": "0.75rem",
+      "space-sm": "1rem",
+      "space-md": "1.5rem",
+      "space-lg": "2.5rem",
+      "space-xl": "4rem",
+      "space-2xl": "6rem"
+    },
+    "sectionY": "72px",
+    "content": "1120px",
+    "contentWide": "1320px",
+    "gutter": "clamp(1.25rem, 0.4rem + 3vw, 3rem)"
+  },
+  "motion": {
+    "easeQuint": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "easeExpo": "cubic-bezier(0.16, 1, 0.3, 1)",
+    "dur": [
+      "0.35s",
+      "0.6s",
+      "0.9s"
+    ]
+  },
+  "voice": {
+    "heroHeadline": "Every morning, perfected???",
+    "heroHeadlineNote": "Live H1 renders \"perfected???\"; og:title and <title> say \"Every morning, perfected.\" — authored copy anomaly.",
+    "tagline": "The first Fréscopa coffee machine with a feel for your mornings. It learns your taste, matches your mood, and takes care of the rest.",
+    "firstParagraph": "The first Fréscopa machine with a feel for your mornings. It learns what you love, softens or sharpens to match your mood, and quietly takes care of the rest. Barista craft, kept warm by a little intelligence.",
+    "heroImage": "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+    "heroMedium": null,
+    "ctaSamples": [
+      "Join the list→",
+      "Add to cart →",
+      "Meet your coffee agent →"
+    ]
+  },
+  "voiceTable": {
+    "ctaFrequency": [
+      {
+        "label": "Join the list→",
+        "count": 5,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "Add to cart →",
+        "count": 3,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "Meet your coffee agent →",
+        "count": 2,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "See how it learns →",
+        "count": 1,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "Weekday",
+        "count": 1,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "Slow Sunday",
+        "count": 1,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "After dinner",
+        "count": 1,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "Find a café near you →",
+        "count": 1,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "Order the Atelier",
+        "count": 1,
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "label": "Home",
+        "count": 1,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "All machines",
+        "count": 1,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "Bean-to-cup",
+        "count": 1,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "Espresso",
+        "count": 1,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "Filter",
+        "count": 1,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "Cold brew",
+        "count": 1,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "View the Atelier →",
+        "count": 1,
+        "pages": [
+          "machines"
+        ]
+      },
+      {
+        "label": "Shop all coffee→",
+        "count": 1,
+        "pages": [
+          "beverages"
+        ]
+      },
+      {
+        "label": "Shop all tea→",
+        "count": 1,
+        "pages": [
+          "beverages"
+        ]
+      },
+      {
+        "label": "Shop all juice→",
+        "count": 1,
+        "pages": [
+          "beverages"
+        ]
+      },
+      {
+        "label": "Find a café→",
+        "count": 1,
+        "pages": [
+          "beverages"
+        ]
+      }
+    ],
+    "headingFrequency": [
+      {
+        "text": "Shop",
+        "pages": 3
+      },
+      {
+        "text": "Company",
+        "pages": 3
+      },
+      {
+        "text": "Support",
+        "pages": 3
+      }
+    ],
+    "toneMetrics": {
+      "headingsUppercasePercent": 0,
+      "distinctHeadings": 31,
+      "distinctCtaLabels": 20
+    },
+    "toneGuess": "warm, sensory, quietly confident"
+  },
+  "register": {
+    "guess": "brand",
+    "basis": "Marketing/commerce site: photo heroes, product listings with prices, narrative copy."
+  },
+  "systemComponents": [
+    {
+      "kind": "header",
+      "occurrences": 3,
+      "headingSequence": [],
+      "ctaLabels": [
+        "The Atelier",
+        "Machines",
+        "Beverages",
+        "Café",
+        "Journal"
+      ]
+    },
+    {
+      "kind": "footer",
+      "occurrences": 3,
+      "headingSequence": [
+        "Shop",
+        "Company",
+        "Support"
+      ],
+      "ctaLabels": [
+        "Sign up"
+      ]
+    }
+  ],
+  "crossPromo": {
+    "detected": false
+  },
+  "iconFont": null,
+  "media": {
+    "images": 21,
+    "contentImages": 15,
+    "emptyAlt": 15,
+    "cssBackgrounds": 0
+  },
+  "tensions": [
+    {
+      "id": "T-scale",
+      "badge": "observed",
+      "title": "Type scale is ad-hoc",
+      "body": "12 → 24 → 26 → 37 → 45 → 86 px at 1440, no consistent ratio (fluid clamp() tokens). Direct will need to decide whether the target adopts a modular scale.",
+      "source": "_brand-extraction.json § type.scaleAudit"
+    },
+    {
+      "id": "T-logo-variants",
+      "badge": "observed",
+      "title": "Only one logo variant captured",
+      "body": "Header SVG (dark on light) only. The repo also ships icons/frescopa-logo-light.svg for dark surfaces; direct should confirm the variant set.",
+      "source": "_brand-extraction.json § logo"
+    },
+    {
+      "id": "T-color-imbalance",
+      "badge": "cross-page",
+      "title": "Multiple palette colours used in only one context",
+      "body": "text-on-dark-muted #c4bbad (text only), background #f8f5ee (background only), surface #f3ede3 (background only), surface-dark #211914 (background only), surface-alt #ece2d6 (background only), accent-hover #9a4f35 (text only). Direct will need to decide: drop, expand, or keep as accent.",
+      "source": "_brand-extraction.json § palette[].usedAs"
+    },
+    {
+      "id": "T-img-alt-empty",
+      "badge": "cross-page",
+      "title": "100% of content images carry empty alt text",
+      "body": "15 of 15 photos (index, machines, beverages). Accessibility issue and a content-sourcing decision for direct.",
+      "source": "pages/*.json § media.imgs[].alt"
+    },
+    {
+      "id": "T-hero-copy",
+      "badge": "inferred",
+      "title": "Hero headline differs from page title",
+      "body": "Rendered H1 reads \"Every morning, perfected???\" while <title>/og:title read \"Every morning, perfected.\" Likely an authoring slip on the live index page.",
+      "source": "pages/index.json § headings, og"
+    }
+  ]
+}

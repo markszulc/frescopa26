@@ -1,0 +1,490 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-23T14:23:19.109Z",
+  "title": "Design System: Fréscopa (current state)",
+  "name": "Fréscopa",
+  "description": "Warm mornings, made effortless — coffee, tea, cold-pressed juice and the machines that make them sing.",
+  "source": {
+    "origin": "https://of1--frescopa26--markszulc.aem.page",
+    "writtenBy": "stardust:extract",
+    "canonicalTokens": "styles/brand.css :root (oklch)"
+  },
+  "colors": {
+    "burgundy": "#5f201e",
+    "burgundy-deep": "#481311",
+    "terracotta": "#ba6945",
+    "terracotta-deep": "#9a4f35",
+    "amber": "#ebad54",
+    "amber-soft": "#f0cd94",
+    "teal": "#4d7a7f",
+    "paper": "#f8f5ee",
+    "paper-2": "#f3ede3",
+    "paper-3": "#ece2d6",
+    "sand": "#e4d6c7",
+    "line": "#d8cdc3",
+    "ink": "#2d221b",
+    "ink-soft": "#5a4d45",
+    "charcoal": "#211914",
+    "charcoal-2": "#322721",
+    "line-dark": "#51453e",
+    "cream": "#f3ece1",
+    "cream-soft": "#c4bbad"
+  },
+  "typography": {
+    "heading": {
+      "family": "\"Schibsted Grotesk\", system-ui, sans-serif",
+      "weight": "800",
+      "style": "normal"
+    },
+    "body": {
+      "family": "\"Hanken Grotesk\", system-ui, sans-serif",
+      "weight": "400",
+      "style": "normal"
+    },
+    "display": {
+      "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+      "fontSize": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+      "fontWeight": 800,
+      "lineHeight": "1.03",
+      "letterSpacing": "-0.02em"
+    },
+    "h2": {
+      "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+      "fontSize": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+      "fontWeight": 800,
+      "lineHeight": "1.15",
+      "letterSpacing": "-0.02em"
+    },
+    "h3": {
+      "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+      "fontSize": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+      "fontWeight": 800,
+      "lineHeight": "1.15"
+    },
+    "h4": {
+      "fontFamily": "\"Schibsted Grotesk\", system-ui, sans-serif",
+      "fontSize": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+      "fontWeight": 800,
+      "lineHeight": "1.15"
+    },
+    "body-lg": {
+      "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+      "fontSize": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+      "fontWeight": 400,
+      "lineHeight": "1.62"
+    },
+    "body-md": {
+      "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+      "fontSize": "1.0625rem",
+      "fontWeight": 400,
+      "lineHeight": "1.62"
+    },
+    "eyebrow": {
+      "fontFamily": "\"Hanken Grotesk\", system-ui, sans-serif",
+      "fontSize": "0.75rem",
+      "fontWeight": 600,
+      "letterSpacing": "0.2em"
+    }
+  },
+  "rounded": {
+    "sm": "8px",
+    "md": "14px",
+    "lg": "22px",
+    "xl": "32px",
+    "pill": "999px"
+  },
+  "shapes": {
+    "button": {
+      "borderRadius": "999px"
+    },
+    "chip": {
+      "borderRadius": "999px"
+    },
+    "card": {
+      "borderRadius": "32px"
+    },
+    "card-sm": {
+      "borderRadius": "22px"
+    },
+    "input": {
+      "borderRadius": "999px"
+    },
+    "tag": {
+      "borderRadius": "8px"
+    }
+  },
+  "spacing": {
+    "3xs": "0.25rem",
+    "2xs": "0.5rem",
+    "xs": "0.75rem",
+    "sm": "1rem",
+    "md": "1.5rem",
+    "lg": "2.5rem",
+    "xl": "4rem",
+    "2xl": "6rem"
+  },
+  "components": {
+    "button-primary": {
+      "backgroundColor": "{colors.terracotta}",
+      "textColor": "{colors.cream}",
+      "rounded": "{rounded.pill}",
+      "padding": "12px 22px"
+    },
+    "button-primary-hover": {
+      "backgroundColor": "{colors.terracotta-deep}"
+    },
+    "button-ghost": {
+      "textColor": "{colors.ink-soft}",
+      "rounded": "{rounded.pill}",
+      "padding": "8px 16px"
+    },
+    "button-ghost-hover": {
+      "textColor": "{colors.burgundy}"
+    },
+    "button-on-dark": {
+      "backgroundColor": "{colors.cream}",
+      "textColor": "{colors.burgundy}",
+      "rounded": "{rounded.pill}"
+    },
+    "card": {
+      "backgroundColor": "{colors.paper}",
+      "rounded": "{rounded.xl}",
+      "padding": "24px"
+    },
+    "chip": {
+      "textColor": "{colors.ink-soft}",
+      "rounded": "{rounded.pill}",
+      "padding": "6px 14px"
+    },
+    "chip-active": {
+      "backgroundColor": "{colors.burgundy}",
+      "textColor": "{colors.cream}"
+    },
+    "section-dark": {
+      "backgroundColor": "{colors.charcoal}",
+      "textColor": "{colors.cream}"
+    }
+  },
+  "extensions": {
+    "colorMeta": {
+      "burgundy": {
+        "role": "primary",
+        "canonical": "oklch(34% 0.093 25deg)",
+        "displayName": "Burgundy"
+      },
+      "burgundy-deep": {
+        "role": "primary-dark",
+        "canonical": "oklch(27.5% 0.082 26deg)",
+        "displayName": "Burgundy Deep"
+      },
+      "terracotta": {
+        "role": "accent",
+        "canonical": "oklch(60.5% 0.116 44deg)",
+        "displayName": "Terracotta"
+      },
+      "terracotta-deep": {
+        "role": "accent-hover",
+        "canonical": "oklch(51.5% 0.108 40deg)",
+        "displayName": "Terracotta Deep"
+      },
+      "amber": {
+        "role": "highlight",
+        "canonical": "oklch(79% 0.128 74deg)",
+        "displayName": "Amber"
+      },
+      "amber-soft": {
+        "role": "highlight-soft",
+        "canonical": "oklch(86.5% 0.083 80deg)",
+        "displayName": "Amber Soft"
+      },
+      "teal": {
+        "role": "secondary",
+        "canonical": "oklch(55% 0.05 205deg)",
+        "displayName": "Teal"
+      },
+      "paper": {
+        "role": "background",
+        "canonical": "oklch(97% 0.010 82deg)",
+        "displayName": "Paper"
+      },
+      "paper-2": {
+        "role": "surface",
+        "canonical": "oklch(94.8% 0.015 78deg)",
+        "displayName": "Paper 2"
+      },
+      "paper-3": {
+        "role": "surface-alt",
+        "canonical": "oklch(91.8% 0.020 74deg)",
+        "displayName": "Paper 3"
+      },
+      "sand": {
+        "role": "surface-deep",
+        "canonical": "oklch(88.4% 0.025 71deg)",
+        "displayName": "Sand"
+      },
+      "line": {
+        "role": "border",
+        "canonical": "oklch(85.5% 0.018 68deg)",
+        "displayName": "Line"
+      },
+      "ink": {
+        "role": "text-primary",
+        "canonical": "oklch(26.2% 0.021 52deg)",
+        "displayName": "Ink"
+      },
+      "ink-soft": {
+        "role": "text-secondary",
+        "canonical": "oklch(43% 0.022 52deg)",
+        "displayName": "Ink Soft"
+      },
+      "charcoal": {
+        "role": "surface-dark",
+        "canonical": "oklch(22.2% 0.016 52deg)",
+        "displayName": "Charcoal"
+      },
+      "charcoal-2": {
+        "role": "surface-dark-alt",
+        "canonical": "oklch(28.2% 0.020 50deg)",
+        "displayName": "Charcoal 2"
+      },
+      "line-dark": {
+        "role": "border-dark",
+        "canonical": "oklch(40% 0.020 55deg)",
+        "displayName": "Line Dark"
+      },
+      "cream": {
+        "role": "text-on-dark",
+        "canonical": "oklch(94.5% 0.016 80deg)",
+        "displayName": "Cream"
+      },
+      "cream-soft": {
+        "role": "text-on-dark-muted",
+        "canonical": "oklch(79.5% 0.021 78deg)",
+        "displayName": "Cream Soft"
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-sm",
+        "value": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+        "purpose": "Resting lift on small UI."
+      },
+      {
+        "name": "shadow-md",
+        "value": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+        "purpose": "Cards and product tiles (most-used, 9× across pages)."
+      },
+      {
+        "name": "shadow-lg",
+        "value": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)",
+        "purpose": "Hero/feature panels."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-quint",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Default UI easing."
+      },
+      {
+        "name": "ease-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Reveal / entrance."
+      },
+      {
+        "name": "durations",
+        "value": "0.35s / 0.6s / 0.9s",
+        "purpose": "Short / medium / long."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tablet",
+        "value": "600px"
+      },
+      {
+        "name": "desktop",
+        "value": "900px"
+      },
+      {
+        "name": "wide",
+        "value": "1200px"
+      }
+    ],
+    "layout": {
+      "content": "1120px",
+      "contentWide": "1320px",
+      "contentNarrow": "760px",
+      "gutter": "clamp(1.25rem, 0.4rem + 3vw, 3rem)",
+      "sectionY": "72px",
+      "navHeight": "72px"
+    },
+    "motifs": {
+      "borderRadius": {
+        "mode": "32px",
+        "pill": "999px",
+        "occurrences": [
+          {
+            "value": "999px",
+            "count": 28
+          },
+          {
+            "value": "32px",
+            "count": 9
+          },
+          {
+            "value": "50%",
+            "count": 9
+          },
+          {
+            "value": "11px",
+            "count": 6
+          },
+          {
+            "value": "22px",
+            "count": 3
+          },
+          {
+            "value": "14px",
+            "count": 1
+          }
+        ],
+        "tokens": {
+          "sm": "8px",
+          "md": "14px",
+          "lg": "22px",
+          "xl": "32px",
+          "pill": "999px"
+        }
+      },
+      "shadows": [
+        {
+          "value": "oklch(0.3 0.03 50 / 0.07) 0px 4px 14px 0px, oklch(0.3 0.03 50 / 0.08) 0px 14px 34px 0px",
+          "count": 9
+        },
+        {
+          "value": "oklch(0.3 0.03 50 / 0.06) 0px 1px 2px 0px, oklch(0.3 0.03 50 / 0.05) 0px 2px 8px 0px",
+          "count": 1
+        }
+      ],
+      "shadowTokens": {
+        "sm": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+        "md": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+        "lg": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)"
+      },
+      "gradients": [],
+      "patterns": [
+        "eyebrow-label (uppercase, 0.2em tracking, terracotta)",
+        "pill-cta (terracotta fill, 999px)",
+        "ghost-pill chip",
+        "rounded-card (32px, shadow-md)",
+        "product-card with price + text link",
+        "full-bleed photo hero with dark overlay",
+        "dark charcoal CTA band",
+        "pull-quote testimonial"
+      ]
+    },
+    "voice": {
+      "heroHeadline": "Every morning, perfected???",
+      "heroHeadlineNote": "Live H1 renders \"perfected???\"; og:title and <title> say \"Every morning, perfected.\" — authored copy anomaly.",
+      "tagline": "The first Fréscopa coffee machine with a feel for your mornings. It learns your taste, matches your mood, and takes care of the rest.",
+      "firstParagraph": "The first Fréscopa machine with a feel for your mornings. It learns what you love, softens or sharpens to match your mood, and quietly takes care of the rest. Barista craft, kept warm by a little intelligence.",
+      "heroImage": "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+      "heroMedium": null,
+      "ctaSamples": [
+        "Join the list→",
+        "Add to cart →",
+        "Meet your coffee agent →"
+      ]
+    },
+    "componentStyle": [
+      "eyebrow-label (uppercase, 0.2em tracking, terracotta)",
+      "pill-cta (terracotta fill, 999px)",
+      "ghost-pill chip",
+      "rounded-card (32px, shadow-md)",
+      "product-card with price + text link",
+      "full-bleed photo hero with dark overlay",
+      "dark charcoal CTA band",
+      "pull-quote testimonial"
+    ],
+    "systemComponents": [
+      {
+        "kind": "header",
+        "occurrences": 3,
+        "headingSequence": [],
+        "ctaLabels": [
+          "The Atelier",
+          "Machines",
+          "Beverages",
+          "Café",
+          "Journal"
+        ]
+      },
+      {
+        "kind": "footer",
+        "occurrences": 3,
+        "headingSequence": [
+          "Shop",
+          "Company",
+          "Support"
+        ],
+        "ctaLabels": [
+          "Sign up"
+        ]
+      }
+    ],
+    "scaleAudit": {
+      "kind": "ad-hoc",
+      "sizesPx": [
+        11.52,
+        24,
+        25.6,
+        36.8,
+        44.8,
+        86.4
+      ],
+      "ratios": [
+        2.083,
+        1.067,
+        1.437,
+        1.217,
+        1.929
+      ],
+      "note": "Headings use fluid clamp() tokens (--fs-h1..h4); measured at 1440px."
+    },
+    "fonts": {
+      "heading": "Schibsted Grotesk (OFL, self-hosted /fonts)",
+      "body": "Hanken Grotesk (OFL, self-hosted /fonts)",
+      "substitutions": "none — both are open fonts; fallback system-ui, sans-serif"
+    }
+  },
+  "narrative": {
+    "northStar": "The Morning Kitchen Table",
+    "keyCharacteristics": [
+      "Warm paper grounds with burgundy display type",
+      "Terracotta pill CTAs as the single action colour",
+      "Heavy (800) grotesk headlines, tight tracking",
+      "Soft 32px cards with low, warm shadows",
+      "Photography-led: sunlit kitchens, steam, wood and stone",
+      "Charcoal bands for moments of emphasis"
+    ],
+    "overview": "Fréscopa reads like a sunlit kitchen at 8am: warm paper grounds, heavy burgundy grotesk headlines, and photography of steam, wood and stone. One action colour (terracotta), one display voice (Schibsted Grotesk 800), a small set of soft rounded containers; charcoal bands for emphasis.",
+    "rules": [
+      {
+        "name": "The One Action Rule",
+        "body": "Terracotta is the only filled-button colour on light grounds; on dark bands the primary button inverts to cream with burgundy text.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do pair every section headline with an uppercase terracotta eyebrow.",
+      "Do keep headlines burgundy on light grounds and cream on charcoal.",
+      "Do let photography carry warmth; keep UI chrome quiet."
+    ],
+    "donts": [
+      "Don't introduce a second filled-button colour on light grounds.",
+      "Don't use sharp corners; everything is pill or ≥14px.",
+      "Don't use cool greys; neutrals are warm (hue 50–82)."
+    ]
+  }
+}

@@ -1,0 +1,696 @@
+[
+  {
+    "id": "atelier",
+    "type": "product",
+    "title": "The Atelier",
+    "description": "AI-enabled bean-to-cup coffee machine that learns your taste cup by cup, reads your calendar, and reorders beans automatically.",
+    "keywords": [
+      "atelier",
+      "bean to cup",
+      "ai coffee",
+      "smart coffee maker",
+      "automatic",
+      "flagship",
+      "premium",
+      "learns taste",
+      "calendar aware"
+    ],
+    "facts": [
+      "Price: $2,199 (or $184/month for 12 months).",
+      "Category: Bean-to-cup coffee machine.",
+      "Learns your taste preferences over approximately 7 days and creates personalized 'flavour DNA' per user.",
+      "Supports up to 6 household member profiles.",
+      "Analyzes time of day, calendar events, weather, and household activity to adjust brewing.",
+      "Automatically warms up before your alarm goes off.",
+      "Automatically reorders beans before you run low.",
+      "Ring of sensors monitors every extraction (grind size, water flow, cup strength, temperature).",
+      "Whisper-quiet grinding at 58 dB.",
+      "Automatic milk steaming via motorized wand.",
+      "Self-rinsing after each cup.",
+      "Auto-shutoff after 20 minutes idle.",
+      "Dimensions: 32 \u00d7 24 \u00d7 41 cm, Weight: 9.8 kg.",
+      "Materials: Anodised aluminium with oak trim.",
+      "Available in Cream, Charcoal, and Terracotta finishes.",
+      "Water tank: 1.8 L (removable), Bean hopper: 250 g.",
+      "Pump pressure: 15 bar.",
+      "Drink options: Espresso, filter, long black, cappuccino, latte, tea.",
+      "Connectivity: Wi-Fi 2.4/5 GHz, Bluetooth 5.0.",
+      "Compatible with iOS 15+ and Android 10+.",
+      "Energy rating: A+.",
+      "Includes compostable pod option and plastic-free packaging.",
+      "Rated 4.8/5 from 214 verified owners.",
+      "Free delivery within 3\u20135 days with professional setup.",
+      "30-night trial with free returns.",
+      "2-year warranty (parts and labour)."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg"
+    ],
+    "persona": "busy-home-coffee-lover"
+  },
+  {
+    "id": "atelier-mini",
+    "type": "product",
+    "title": "The Atelier Mini",
+    "description": "Compact version of the Atelier with the same intelligent features for smaller kitchens.",
+    "keywords": [
+      "atelier mini",
+      "compact",
+      "small",
+      "bean to cup",
+      "ai coffee",
+      "apartment",
+      "space saving"
+    ],
+    "facts": [
+      "Price: $799.",
+      "Category: Bean-to-cup coffee machine.",
+      "Same intelligent learning features as the Atelier in a compact design.",
+      "Perfect for smaller kitchens and apartments.",
+      "Learns individual taste preferences and adjusts brewing automatically.",
+      "Space-efficient footprint with full bean-to-cup capability.",
+      "Currently available via waitlist."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg"
+    ],
+    "persona": "busy-home-coffee-lover"
+  },
+  {
+    "id": "barista",
+    "type": "product",
+    "title": "The Barista",
+    "description": "Hands-on espresso machine for the morning ritualist who wants full manual control.",
+    "keywords": [
+      "barista",
+      "espresso",
+      "manual",
+      "hands on",
+      "ritual",
+      "control",
+      "craft"
+    ],
+    "facts": [
+      "Price: $899.",
+      "Category: Espresso machine.",
+      "A hands-on machine for the morning ritualist.",
+      "Full manual control for those who want to be the barista.",
+      "Perfect for ritual-minded enthusiasts who want to dial in their shots.",
+      "Designed for those who value the craft and process of making espresso.",
+      "Currently available via waitlist."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg"
+    ],
+    "persona": "ritual-minded-enthusiast"
+  },
+  {
+    "id": "everyday",
+    "type": "product",
+    "title": "The Everyday",
+    "description": "Simplified espresso machine delivering honest espresso every single morning.",
+    "keywords": [
+      "everyday",
+      "espresso",
+      "simple",
+      "affordable",
+      "consistent",
+      "reliable",
+      "budget"
+    ],
+    "facts": [
+      "Price: $499.",
+      "Category: Espresso machine.",
+      "Honest espresso, every single morning.",
+      "Simplified operation for consistent results.",
+      "Great for students and young professionals on a budget.",
+      "No complicated dials or settings to master.",
+      "Reliable daily espresso without the learning curve.",
+      "Currently available via waitlist."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg"
+    ],
+    "persona": "budget-conscious-student"
+  },
+  {
+    "id": "slow-pour",
+    "type": "product",
+    "title": "The Slow Pour",
+    "description": "Filter coffee machine with even saturation and gentle timing for consistent results.",
+    "keywords": [
+      "slow pour",
+      "filter",
+      "drip",
+      "pour over",
+      "gentle",
+      "consistent",
+      "clean"
+    ],
+    "facts": [
+      "Price: $279.",
+      "Category: Filter coffee machine.",
+      "Even saturation and gentle timing for consistent results.",
+      "Perfect for those who prefer clean, nuanced filter coffee.",
+      "Automated pour-over technique for repeatable quality.",
+      "Great for single-origin coffee appreciation.",
+      "Currently available via waitlist."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg"
+    ],
+    "persona": "ritual-minded-enthusiast"
+  },
+  {
+    "id": "carafe",
+    "type": "product",
+    "title": "The Carafe",
+    "description": "Overnight cold brew steeping system producing smooth, low-acid coffee ready from the fridge.",
+    "keywords": [
+      "carafe",
+      "cold brew",
+      "overnight",
+      "smooth",
+      "low acid",
+      "fridge",
+      "summer"
+    ],
+    "facts": [
+      "Price: $179.",
+      "Category: Cold brew system.",
+      "Overnight steeping produces smooth, low-acid cold brew.",
+      "Ready from the fridge whenever you need it.",
+      "Perfect for hot weather and iced coffee lovers.",
+      "Most affordable entry point to the Fr\u00e9scopa family.",
+      "Simple setup with consistent results.",
+      "Currently available via waitlist."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_1ae7b300835f4da72460fc57fdcfd83341890a158.jpg"
+    ],
+    "persona": "budget-conscious-student"
+  },
+  {
+    "id": "morning-blend",
+    "type": "product",
+    "title": "Morning Blend Coffee",
+    "description": "House blend built for consistency and balanced morning drinking.",
+    "keywords": [
+      "morning blend",
+      "coffee",
+      "beans",
+      "balanced",
+      "everyday",
+      "house blend"
+    ],
+    "facts": [
+      "Price: Starting at $10.",
+      "Category: Coffee (whole bean, ground, or pods).",
+      "House blend built for consistency.",
+      "Balanced profile perfect for everyday morning drinking.",
+      "Available in ground, whole bean, or compostable pods.",
+      "Part of 10 coffee blends in the Fr\u00e9scopa range."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg"
+    ],
+    "persona": "busy-home-coffee-lover"
+  },
+  {
+    "id": "single-origin-ethiopian",
+    "type": "product",
+    "title": "Single Origin Ethiopian Coffee",
+    "description": "Traceable single origin coffee from Ethiopia with bright, floral notes.",
+    "keywords": [
+      "ethiopian",
+      "single origin",
+      "coffee",
+      "specialty",
+      "traceable",
+      "floral",
+      "bright"
+    ],
+    "facts": [
+      "Price: Starting at $10.",
+      "Category: Coffee (whole bean, ground, or pods).",
+      "Traceable single origin from Ethiopia.",
+      "Bright, floral notes characteristic of Ethiopian coffee.",
+      "Available in ground, whole bean, or compostable pods.",
+      "Part of 10 coffee blends in the Fr\u00e9scopa range."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg?width=750&format=jpg&optimize=medium",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg?width=750&format=jpg&optimize=medium",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg?width=750&format=jpg&optimize=medium",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg?width=750&format=jpg&optimize=medium"
+    ],
+    "persona": "ritual-minded-enthusiast"
+  },
+  {
+    "id": "espresso-blend",
+    "type": "product",
+    "title": "Espresso Blend Coffee",
+    "description": "House espresso blend optimized for crema and body.",
+    "keywords": [
+      "espresso",
+      "blend",
+      "coffee",
+      "crema",
+      "strong",
+      "concentrated"
+    ],
+    "facts": [
+      "Price: Starting at $10.",
+      "Category: Coffee (whole bean, ground, or pods).",
+      "House espresso blend optimized for crema and body.",
+      "Rich, concentrated flavor perfect for espresso drinks.",
+      "Available in ground, whole bean, or compostable pods.",
+      "Part of 10 coffee blends in the Fr\u00e9scopa range."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg"
+    ],
+    "persona": "ritual-minded-enthusiast"
+  },
+  {
+    "id": "english-breakfast-tea",
+    "type": "product",
+    "title": "English Breakfast Tea",
+    "description": "Classic black tea blend for morning drinking.",
+    "keywords": [
+      "english breakfast",
+      "tea",
+      "black tea",
+      "morning",
+      "classic"
+    ],
+    "facts": [
+      "Price: Starting at $9.",
+      "Category: Tea (loose or bags).",
+      "Classic black tea blend for morning drinking.",
+      "Available in loose leaf or tea bags.",
+      "Part of 10 tea blends across black, green, and herbal varieties."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_1ae7b300835f4da72460fc57fdcfd83341890a158.jpg"
+    ],
+    "persona": "tea-enthusiast"
+  },
+  {
+    "id": "green-sencha-tea",
+    "type": "product",
+    "title": "Green Sencha Tea",
+    "description": "Japanese green tea with grassy, umami notes.",
+    "keywords": [
+      "sencha",
+      "green tea",
+      "japanese",
+      "umami",
+      "light"
+    ],
+    "facts": [
+      "Price: Starting at $9.",
+      "Category: Tea (loose or bags).",
+      "Japanese green tea with grassy, umami notes.",
+      "Available in loose leaf or tea bags.",
+      "Part of 10 tea blends across black, green, and herbal varieties."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_1ae7b300835f4da72460fc57fdcfd83341890a158.jpg"
+    ],
+    "persona": "tea-enthusiast"
+  },
+  {
+    "id": "darjeeling-first-flush-tea",
+    "type": "product",
+    "title": "Darjeeling First Flush Tea",
+    "description": "Premium spring-harvested tea with delicate floral character.",
+    "keywords": [
+      "darjeeling",
+      "first flush",
+      "tea",
+      "premium",
+      "floral",
+      "spring"
+    ],
+    "facts": [
+      "Price: Starting at $9.",
+      "Category: Tea (loose or bags).",
+      "Premium spring-harvested tea with delicate floral character.",
+      "Available in loose leaf or tea bags.",
+      "Part of 10 tea blends across black, green, and herbal varieties."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_1ae7b300835f4da72460fc57fdcfd83341890a158.jpg"
+    ],
+    "persona": "tea-enthusiast"
+  },
+  {
+    "id": "cold-pressed-orange-juice",
+    "type": "product",
+    "title": "Cold-Pressed Orange Juice",
+    "description": "Fresh cold-pressed orange juice with no added sugar.",
+    "keywords": [
+      "orange juice",
+      "cold pressed",
+      "fresh",
+      "citrus",
+      "no sugar"
+    ],
+    "facts": [
+      "Price: Starting at $5.50.",
+      "Category: Cold-pressed juice.",
+      "Cold-pressed orange juice with no added sugar.",
+      "Part of 25 juice pressings including singles and blends."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg"
+    ],
+    "persona": "health-conscious-beverage-explorer"
+  },
+  {
+    "id": "green-revival-juice",
+    "type": "product",
+    "title": "Green Revival Juice",
+    "description": "Cold-pressed green juice blend with vegetables and fruits.",
+    "keywords": [
+      "green juice",
+      "cold pressed",
+      "vegetables",
+      "healthy",
+      "detox"
+    ],
+    "facts": [
+      "Price: Starting at $5.50.",
+      "Category: Cold-pressed juice.",
+      "Cold-pressed green juice blend with vegetables and fruits.",
+      "No added sugar.",
+      "Part of 25 juice pressings including singles and blends."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg"
+    ],
+    "persona": "health-conscious-beverage-explorer"
+  },
+  {
+    "id": "beetroot-berry-juice",
+    "type": "product",
+    "title": "Beetroot & Berry Juice",
+    "description": "Cold-pressed juice combining beetroot with mixed berries.",
+    "keywords": [
+      "beetroot",
+      "berry",
+      "cold pressed",
+      "antioxidants",
+      "energizing"
+    ],
+    "facts": [
+      "Price: Starting at $5.50.",
+      "Category: Cold-pressed juice.",
+      "Cold-pressed juice combining beetroot with mixed berries.",
+      "No added sugar.",
+      "Part of 25 juice pressings including singles and blends."
+    ],
+    "images": [
+      "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg",
+      "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg"
+    ],
+    "persona": "health-conscious-beverage-explorer"
+  },
+  {
+    "id": "taste-profile-learning",
+    "type": "feature",
+    "title": "Taste Profile Learning",
+    "description": "AI technology that learns individual preferences and creates personalized flavor DNA.",
+    "keywords": [
+      "ai",
+      "learning",
+      "personalization",
+      "taste",
+      "preferences",
+      "adaptive"
+    ],
+    "facts": [
+      "The Atelier learns your taste preferences over approximately 7 days.",
+      "Creates personalized 'flavour DNA' for each user.",
+      "Supports up to 6 household member profiles.",
+      "Tracks strength, temperature, and milk preferences automatically.",
+      "Gets better the longer you use it."
+    ],
+    "images": []
+  },
+  {
+    "id": "contextual-intelligence",
+    "type": "feature",
+    "title": "Contextual Intelligence",
+    "description": "Smart sensing that analyzes time, calendar, weather, and activity to optimize brewing.",
+    "keywords": [
+      "smart",
+      "calendar",
+      "context aware",
+      "automatic",
+      "weather",
+      "time"
+    ],
+    "facts": [
+      "Analyzes time of day, calendar events, weather, and household activity.",
+      "Automatically warms up before your alarm goes off.",
+      "Adjusts brewing parameters based on morning type (rushed vs. leisurely).",
+      "Anticipates your needs before you do.",
+      "Integrates with your daily routine seamlessly."
+    ],
+    "images": []
+  },
+  {
+    "id": "automatic-reordering",
+    "type": "feature",
+    "title": "Automatic Bean Reordering",
+    "description": "Self-reordering system that orders fresh beans before you run low.",
+    "keywords": [
+      "automatic",
+      "reordering",
+      "beans",
+      "convenience",
+      "never run out"
+    ],
+    "facts": [
+      "Automatically reorders beans before you run low.",
+      "You'll never run out of fresh beans.",
+      "Removes the friction from maintaining supply.",
+      "Part of the complete Atelier experience."
+    ],
+    "images": []
+  },
+  {
+    "id": "compostable-sustainability",
+    "type": "feature",
+    "title": "Compostable & Sustainable",
+    "description": "Environmental commitment with compostable pods and plastic-free packaging.",
+    "keywords": [
+      "sustainability",
+      "compostable",
+      "eco friendly",
+      "plastic free",
+      "environment"
+    ],
+    "facts": [
+      "Compostable pod option available.",
+      "Coffee grounds eject to compostable drawer.",
+      "Plastic-free packaging throughout.",
+      "Grounds can go directly to your garden.",
+      "Energy rating: A+."
+    ],
+    "images": []
+  },
+  {
+    "id": "how-long-to-learn",
+    "type": "faq",
+    "title": "How long does it take the Atelier to learn my taste?",
+    "description": "The Atelier adapts to your preferences over approximately 7 days of regular use.",
+    "keywords": [
+      "learning time",
+      "how long",
+      "adaptation",
+      "setup"
+    ],
+    "facts": [
+      "The Atelier learns your taste preferences over approximately 7 days.",
+      "It tracks your strength, temperature, and milk preferences with each cup.",
+      "The machine gets better the longer you use it.",
+      "Supports up to 6 household member profiles, each learning independently."
+    ],
+    "images": []
+  },
+  {
+    "id": "what-drinks-can-it-make",
+    "type": "faq",
+    "title": "What drinks can the Atelier make?",
+    "description": "The Atelier makes espresso, filter, long black, cappuccino, latte, and tea.",
+    "keywords": [
+      "drinks",
+      "beverages",
+      "what can it make",
+      "capabilities"
+    ],
+    "facts": [
+      "The Atelier can make: espresso, filter, long black, cappuccino, latte, and tea.",
+      "Automatic milk steaming via motorized wand for milk-based drinks.",
+      "Bean-to-cup operation for fresh grinding every time.",
+      "1.8 L water tank and 250 g bean hopper capacity."
+    ],
+    "images": []
+  },
+  {
+    "id": "what-if-i-dont-like-it",
+    "type": "faq",
+    "title": "What if I don't like it?",
+    "description": "30-night trial with free returns if the Atelier isn't right for you.",
+    "keywords": [
+      "returns",
+      "trial",
+      "money back",
+      "guarantee"
+    ],
+    "facts": [
+      "30-night trial period with free returns.",
+      "If the Atelier isn't right for you, return it at no cost.",
+      "2-year warranty covers parts and labour.",
+      "Free delivery within 3\u20135 days with professional setup included."
+    ],
+    "images": []
+  },
+  {
+    "id": "how-much-counter-space",
+    "type": "faq",
+    "title": "How much counter space does it need?",
+    "description": "The Atelier measures 32 \u00d7 24 \u00d7 41 cm and weighs 9.8 kg.",
+    "keywords": [
+      "size",
+      "dimensions",
+      "space",
+      "footprint",
+      "counter"
+    ],
+    "facts": [
+      "The Atelier dimensions: 32 \u00d7 24 \u00d7 41 cm (width \u00d7 depth \u00d7 height).",
+      "Weight: 9.8 kg.",
+      "Compact enough for most kitchen counters.",
+      "The Atelier Mini offers an even smaller footprint for tight spaces."
+    ],
+    "images": []
+  },
+  {
+    "id": "is-it-loud",
+    "type": "faq",
+    "title": "Is the Atelier loud?",
+    "description": "Whisper-quiet grinding at 58 dB, quieter than normal conversation.",
+    "keywords": [
+      "noise",
+      "loud",
+      "quiet",
+      "sound",
+      "grinding"
+    ],
+    "facts": [
+      "Whisper-quiet grinding at 58 dB.",
+      "58 dB is quieter than normal conversation (around 60 dB).",
+      "Won't disturb others in the morning.",
+      "Designed for peaceful morning routines."
+    ],
+    "images": []
+  },
+  {
+    "id": "testimonial-priya-m",
+    "type": "testimonial",
+    "title": "Priya M., London",
+    "description": "Customer review after 3 months of using the Atelier.",
+    "keywords": [
+      "review",
+      "testimonial",
+      "customer",
+      "experience"
+    ],
+    "facts": [
+      "\"It simply knew what I wanted, before I did. The first machine I've owned that got better the longer I had it.\"",
+      "\u2014 Priya M., London (3 months)"
+    ],
+    "images": []
+  },
+  {
+    "id": "testimonial-daniel-r",
+    "type": "testimonial",
+    "title": "Daniel R., Bristol",
+    "description": "Customer review after 5 months of using the Atelier.",
+    "keywords": [
+      "review",
+      "testimonial",
+      "customer",
+      "experience",
+      "skeptical"
+    ],
+    "facts": [
+      "\"I was sceptical at the price. Then it started reordering beans before I noticed, and warming up before my alarm.\"",
+      "\u2014 Daniel R., Bristol (5 months)"
+    ],
+    "images": []
+  },
+  {
+    "id": "testimonial-sana-k",
+    "type": "testimonial",
+    "title": "Sana K., Leeds",
+    "description": "Customer review after 2 months of using the Atelier with family.",
+    "keywords": [
+      "review",
+      "testimonial",
+      "customer",
+      "family",
+      "multiple users"
+    ],
+    "facts": [
+      "\"Every person in our house gets their own cup, exactly right, without touching a single dial.\"",
+      "\u2014 Sana K., Leeds (2 months)"
+    ],
+    "images": []
+  }
+]

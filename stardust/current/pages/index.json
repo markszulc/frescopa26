@@ -1,0 +1,438 @@
+{
+  "_provenance": {
+    "renderedBy": "playwright",
+    "fetchedAt": "2026-09-23T14:17:33.899Z",
+    "waitMode": "medium",
+    "waitMs": 2500,
+    "httpStatus": 200
+  },
+  "slug": "index",
+  "url": "https://of1--frescopa26--markszulc.aem.page/",
+  "renderedBy": "playwright",
+  "fetchedAt": "2026-09-23T14:17:33.899Z",
+  "finalUrl": "https://of1--frescopa26--markszulc.aem.page/",
+  "title": "Fréscopa Atelier - Every morning, perfected.",
+  "description": "The first Fréscopa coffee machine with a feel for your mornings. It learns your taste, matches your mood, and takes care of the rest.",
+  "og": {
+    "title": "Fréscopa Atelier - Every morning, perfected.",
+    "description": "The first Fréscopa coffee machine with a feel for your mornings. It learns your taste, matches your mood, and takes care of the rest.",
+    "image": "https://of1--frescopa26--markszulc.aem.page/media_1ae2ed094f652c5b8f7138de68e3266c75a8e16f1.png?width=1200&format=pjpg&optimize=medium",
+    "type": null
+  },
+  "headings": [
+    {
+      "tag": "h1",
+      "text": "Every morning,perfected???"
+    },
+    {
+      "tag": "h2",
+      "text": "Great coffee, without the barista price tag."
+    },
+    {
+      "tag": "h2",
+      "text": "Your taste, drawn one cup at a time."
+    },
+    {
+      "tag": "h4",
+      "text": "The weekday cup"
+    },
+    {
+      "tag": "h2",
+      "text": "It reads the room. And the calendar."
+    },
+    {
+      "tag": "h4",
+      "text": "Extra shot, no fuss"
+    },
+    {
+      "tag": "h2",
+      "text": "New favourites, found for you."
+    },
+    {
+      "tag": "h3",
+      "text": "The house pour"
+    },
+    {
+      "tag": "h3",
+      "text": "Honeybush & orange peel"
+    },
+    {
+      "tag": "h3",
+      "text": "Cold-pressed citrus"
+    },
+    {
+      "tag": "h2",
+      "text": "Nothing wasted, right down to the grounds."
+    },
+    {
+      "tag": "h2",
+      "text": "Every Atelier begins at the Fréscopa Café."
+    },
+    {
+      "tag": "h3",
+      "text": "Shop"
+    },
+    {
+      "tag": "h3",
+      "text": "Company"
+    },
+    {
+      "tag": "h3",
+      "text": "Support"
+    }
+  ],
+  "body": [
+    "Meet the Atelier",
+    "The first Fréscopa machine with a feel for your mornings. It learns what you love, softens or sharpens to match your mood, and quietly takes care of the rest. Barista craft, kept warm by a little intelligence.",
+    "Meet your coffee agent →",
+    "Fuel, meet a machine that gets it",
+    "Over a semester of early lectures and late-night study sessions, the Atelier learns exactly how you take your coffee — then makes it that way without you lifting a finger. No app to set up, no dials to learn. Just a cup that fits your day, whether that's a 9am seminar or a 2am essay crunch.",
+    "See how it learns →",
+    "How it learns you",
+    "Every cup teaches the Atelier a little more: how strong, how sweet, how you like your mornings to feel. We call the picture it builds your flavour DNA. Watch it shift as the day, and your mood, changes.",
+    "Brisk and a little bolder. Enough to meet the day, never so much it rushes you.",
+    "Mood-aware brewing",
+    "A packed Monday, an early flight, a slow Sunday with nowhere to be. The Atelier looks at what's ahead and adjusts, so the cup in your hand always suits the morning you're actually having.",
+    "Tap a day to see what it would pour.",
+    "A full day ahead, so a bolder, quicker cup to meet it.",
+    "This week, for you",
+    "A short list worth trying, drawn from what you already love and where you might like to wander. Coffee, tea, and cold-pressed juice, all in the same trusted hands.",
+    "Coffee The house pour Our everyday blend, coaxed a little rounder for the season. The one you'll reach for on autopilot. $14Add to cart →",
+    "Our everyday blend, coaxed a little rounder for the season. The one you'll reach for on autopilot.",
+    "Tea Honeybush & orange peel Caffeine-free, and quietly sweet. Made for the afternoons that ask you to slow down a little. $11Add to cart →",
+    "Caffeine-free, and quietly sweet. Made for the afternoons that ask you to slow down a little.",
+    "Juice Cold-pressed citrus Three oranges, one grapefruit, and a whisper of ginger. Bright enough to wake a room. $8Add to cart →",
+    "Three oranges, one grapefruit, and a whisper of ginger. Bright enough to wake a room.",
+    "Kind by design",
+    "The Atelier keeps an eye on your beans and reorders before you run low, in packaging that returns to the earth as easily as it arrived. It even bags the spent grounds, ready for the garden.",
+    "Compostable pods",
+    "Plastic-free refills",
+    "Reorders itself",
+    "Grounds for your garden",
+    "From kitchens like yours",
+    "“It worked out that my Monday needs more than my Sunday. I never taught it that. It simply knew.” Mara · Lisbon",
+    "“It worked out that my Monday needs more than my Sunday. I never taught it that. It simply knew.”",
+    "Mara · Lisbon",
+    "“The first machine I've owned that feels less like a gadget and more like a habit.” Devon · Melbourne",
+    "“The first machine I've owned that feels less like a gadget and more like a habit.”",
+    "Devon · Melbourne",
+    "“I haven't run out of beans since it arrived. A small thing that quietly changed my week.” Priya · Bristol",
+    "“I haven't run out of beans since it arrived. A small thing that quietly changed my week.”",
+    "Priya · Bristol",
+    "Come say hello",
+    "Part shop, part studio, part living room. Pull up a stool, taste a few blends, and let one of ours show you what your mornings could feel like.",
+    "Find a café near you →",
+    "Your best cup is the one you haven't met yet.",
+    "Bring the Atelier home, and let tomorrow's coffee introduce itself.",
+    "Meet your coffee agent → Order the Atelier"
+  ],
+  "codeBlocks": [],
+  "ctas": [
+    {
+      "label": "The Atelier",
+      "href": "/machines/atelier"
+    },
+    {
+      "label": "Machines",
+      "href": "/machines"
+    },
+    {
+      "label": "Beverages",
+      "href": "/beverages"
+    },
+    {
+      "label": "Café",
+      "href": "/cafe"
+    },
+    {
+      "label": "Journal",
+      "href": "/blog"
+    },
+    {
+      "label": "Meet your coffee agent →",
+      "href": "/machines/atelier"
+    },
+    {
+      "label": "See how it learns →",
+      "href": "/machines/atelier"
+    },
+    {
+      "label": "Weekday",
+      "href": null
+    },
+    {
+      "label": "Slow Sunday",
+      "href": null
+    },
+    {
+      "label": "After dinner",
+      "href": null
+    },
+    {
+      "label": "2",
+      "href": null
+    },
+    {
+      "label": "4",
+      "href": null
+    },
+    {
+      "label": "6",
+      "href": null
+    },
+    {
+      "label": "7",
+      "href": null
+    },
+    {
+      "label": "Add to cart →",
+      "href": "#"
+    },
+    {
+      "label": "Add to cart →",
+      "href": "#"
+    },
+    {
+      "label": "Add to cart →",
+      "href": "#"
+    },
+    {
+      "label": "Find a café near you →",
+      "href": "/cafe"
+    },
+    {
+      "label": "Meet your coffee agent →",
+      "href": "/machines/atelier"
+    },
+    {
+      "label": "Order the Atelier",
+      "href": "/machines/atelier"
+    },
+    {
+      "label": "Sign up",
+      "href": null
+    },
+    {
+      "label": "Coffee",
+      "href": "/"
+    },
+    {
+      "label": "Tea",
+      "href": "/"
+    },
+    {
+      "label": "Cold-pressed juice",
+      "href": "/"
+    },
+    {
+      "label": "Machines",
+      "href": "/"
+    },
+    {
+      "label": "Accessories",
+      "href": "/"
+    },
+    {
+      "label": "Our story",
+      "href": "/"
+    },
+    {
+      "label": "Sustainability",
+      "href": "/"
+    },
+    {
+      "label": "Fréscopa Café",
+      "href": "/"
+    },
+    {
+      "label": "Careers",
+      "href": "/"
+    },
+    {
+      "label": "Contact us",
+      "href": "/"
+    },
+    {
+      "label": "Delivery & returns",
+      "href": "/"
+    },
+    {
+      "label": "Register your Atelier",
+      "href": "/"
+    },
+    {
+      "label": "Help centre",
+      "href": "/"
+    }
+  ],
+  "links": [
+    "https://of1--frescopa26--markszulc.aem.page/",
+    "https://of1--frescopa26--markszulc.aem.page/machines/atelier",
+    "https://of1--frescopa26--markszulc.aem.page/machines",
+    "https://of1--frescopa26--markszulc.aem.page/beverages",
+    "https://of1--frescopa26--markszulc.aem.page/cafe",
+    "https://of1--frescopa26--markszulc.aem.page/blog",
+    "https://of1--frescopa26--markszulc.aem.page/#"
+  ],
+  "media": {
+    "imgs": [
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/fragments/media_1edd2a689a1bf64571235eec46bc97c0200c9bff3.svg?width=2000&format=webply&optimize=medium",
+        "alt": "Fréscopa",
+        "w": 1391,
+        "h": 378
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg?width=2000&format=webply&optimize=medium",
+        "alt": "",
+        "w": 1408,
+        "h": 768
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg?width=750&format=webply&optimize=medium",
+        "alt": "",
+        "w": 750,
+        "h": 409
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg?width=750&format=webply&optimize=medium",
+        "alt": "",
+        "w": 750,
+        "h": 409
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg?width=750&format=webply&optimize=medium",
+        "alt": "",
+        "w": 750,
+        "h": 409
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_14dda38183367f1ef5f700eaf66d1a13a59bdd756.jpg?width=2000&format=webply&optimize=medium",
+        "alt": "",
+        "w": 1408,
+        "h": 768
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_1ae7b300835f4da72460fc57fdcfd83341890a158.jpg?width=2000&format=webply&optimize=medium",
+        "alt": "",
+        "w": 1408,
+        "h": 768
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/fragments/media_1edd2a689a1bf64571235eec46bc97c0200c9bff3.svg?width=2000&format=webply&optimize=medium",
+        "alt": "Fréscopa",
+        "w": 1391,
+        "h": 378
+      }
+    ],
+    "allImgCount": 8,
+    "cssBackgrounds": [],
+    "modals": [],
+    "videos": [],
+    "iframes": []
+  },
+  "customProps": {
+    "--burgundy": "oklch(34% 0.093 25deg)",
+    "--burgundy-deep": "oklch(27.5% 0.082 26deg)",
+    "--terracotta": "oklch(60.5% 0.116 44deg)",
+    "--terracotta-deep": "oklch(51.5% 0.108 40deg)",
+    "--terracotta-fill": "oklch(60.5% 0.116 44deg / 22%)",
+    "--amber": "oklch(79% 0.128 74deg)",
+    "--amber-soft": "oklch(86.5% 0.083 80deg)",
+    "--teal": "oklch(55% 0.05 205deg)",
+    "--paper": "oklch(97% 0.010 82deg)",
+    "--paper-2": "oklch(94.8% 0.015 78deg)",
+    "--paper-3": "oklch(91.8% 0.020 74deg)",
+    "--sand": "oklch(88.4% 0.025 71deg)",
+    "--line": "oklch(85.5% 0.018 68deg)",
+    "--ink": "oklch(26.2% 0.021 52deg)",
+    "--ink-soft": "oklch(43% 0.022 52deg)",
+    "--charcoal": "oklch(22.2% 0.016 52deg)",
+    "--charcoal-2": "oklch(28.2% 0.020 50deg)",
+    "--line-dark": "oklch(40% 0.020 55deg)",
+    "--cream": "oklch(94.5% 0.016 80deg)",
+    "--cream-soft": "oklch(79.5% 0.021 78deg)",
+    "--bg": "oklch(97% 0.010 82deg)",
+    "--fg": "oklch(26.2% 0.021 52deg)",
+    "--accent": "oklch(60.5% 0.116 44deg)",
+    "--focus": "oklch(60.5% 0.116 44deg)",
+    "--background-color": "oklch(97% 0.010 82deg)",
+    "--text-color": "oklch(26.2% 0.021 52deg)",
+    "--link-color": "oklch(60.5% 0.116 44deg)",
+    "--link-hover-color": "oklch(51.5% 0.108 40deg)",
+    "--font-display": "\"Schibsted Grotesk\", system-ui, sans-serif",
+    "--font-body": "\"Hanken Grotesk\", system-ui, sans-serif",
+    "--heading-font-family": "\"Schibsted Grotesk\", system-ui, sans-serif",
+    "--body-font-family": "\"Hanken Grotesk\", system-ui, sans-serif",
+    "--fs-eyebrow": "0.75rem",
+    "--fs-sm": "0.9375rem",
+    "--fs-body": "1.0625rem",
+    "--fs-body-lg": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+    "--fs-h4": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+    "--fs-h3": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+    "--fs-h2": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+    "--fs-h1": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+    "--fs-display": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)",
+    "--heading-size-xxl": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+    "--heading-size-xl": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+    "--heading-size-l": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+    "--heading-size-m": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+    "--heading-size-s": "1.0625rem",
+    "--heading-size-xs": "0.9375rem",
+    "--lh-tight": "1.03",
+    "--lh-snug": "1.15",
+    "--lh-body": "1.62",
+    "--tracking-eyebrow": "0.2em",
+    "--tracking-tight": "-0.02em",
+    "--space-3xs": "0.25rem",
+    "--space-2xs": "0.5rem",
+    "--space-xs": "0.75rem",
+    "--space-sm": "1rem",
+    "--space-md": "1.5rem",
+    "--space-lg": "2.5rem",
+    "--space-xl": "4rem",
+    "--space-2xl": "6rem",
+    "--section-y": "72px",
+    "--section-padding": "72px",
+    "--content": "1120px",
+    "--content-wide": "1320px",
+    "--content-narrow": "760px",
+    "--gutter": "clamp(1.25rem, 0.4rem + 3vw, 3rem)",
+    "--nav-height": "72px",
+    "--r-sm": "8px",
+    "--r-md": "14px",
+    "--r-lg": "22px",
+    "--r-xl": "32px",
+    "--r-pill": "999px",
+    "--shadow-sm": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+    "--shadow-md": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+    "--shadow-lg": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)",
+    "--ease-quint": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "--ease-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+    "--dur-1": "0.35s",
+    "--dur-2": "0.6s",
+    "--dur-3": "0.9s",
+    "--light-color": "oklch(94.8% 0.015 78deg)",
+    "--dark-color": "oklch(22.2% 0.016 52deg)",
+    "--body-font-size-m": "1.0625rem",
+    "--body-font-size-s": "0.9375rem",
+    "--body-font-size-xs": "0.8125rem",
+    "--heading-font-size-xxl": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+    "--heading-font-size-xl": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+    "--heading-font-size-l": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+    "--heading-font-size-m": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+    "--heading-font-size-s": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+    "--heading-font-size-xs": "1.0625rem"
+  },
+  "_signals": {
+    "filteredInterstitials": 0,
+    "distinctHeadings": 15,
+    "mainTextLen": 3146,
+    "realImageCount": 8,
+    "trackingOnlyMedia": false,
+    "spaShellSuspect": false,
+    "screenshotMode": "fullPage"
+  },
+  "screenshot": "assets/screenshots/index.png",
+  "renderedHtml": "pages/index.html"
+}

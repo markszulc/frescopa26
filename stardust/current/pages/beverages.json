@@ -1,0 +1,326 @@
+{
+  "_provenance": {
+    "renderedBy": "playwright",
+    "fetchedAt": "2026-09-23T14:17:34.287Z",
+    "waitMode": "medium",
+    "waitMs": 2500,
+    "httpStatus": 200
+  },
+  "slug": "beverages",
+  "url": "https://of1--frescopa26--markszulc.aem.page/beverages",
+  "renderedBy": "playwright",
+  "fetchedAt": "2026-09-23T14:17:34.287Z",
+  "finalUrl": "https://of1--frescopa26--markszulc.aem.page/beverages",
+  "title": "Three ways to fill a cup.",
+  "description": "Coffee, tea, and cold-pressed juice — each sourced carefully, made in small batches, and built for a particular kind of morning. Start with what you're ...",
+  "og": {
+    "title": "Three ways to fill a cup.",
+    "description": "Coffee, tea, and cold-pressed juice — each sourced carefully, made in small batches, and built for a particular kind of morning. Start with what you're ...",
+    "image": "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg?width=1200&format=pjpg&optimize=medium",
+    "type": null
+  },
+  "headings": [
+    {
+      "tag": "h1",
+      "text": "Three ways to fill a cup."
+    },
+    {
+      "tag": "h2",
+      "text": "Roasted for your ritual"
+    },
+    {
+      "tag": "h2",
+      "text": "A quieter kind of cup"
+    },
+    {
+      "tag": "h2",
+      "text": "Bottled bright"
+    },
+    {
+      "tag": "h2",
+      "text": "Taste the whole range at a café."
+    },
+    {
+      "tag": "h3",
+      "text": "Shop"
+    },
+    {
+      "tag": "h3",
+      "text": "Company"
+    },
+    {
+      "tag": "h3",
+      "text": "Support"
+    }
+  ],
+  "body": [
+    "Beverages",
+    "Coffee, tea, and cold-pressed juice — each sourced carefully, made in small batches, and built for a particular kind of morning. Start with what you're pouring today.",
+    "Coffee",
+    "House blends built for consistency, traceable single origins for the days you want to taste a place, and premium instant for when you're in a hurry. Ground, whole bean, or pods.",
+    "Worth starting with",
+    "Morning Blend Single Origin Ethiopian Espresso Blend",
+    "Shop all coffee→ From $10 · 10 blends",
+    "Tea",
+    "Eight blends across black, green and herbal, plus a small reserve of rare leaf. Loose or in bags, in three sizes — chosen for the slow afternoon hour.",
+    "Worth starting with",
+    "English Breakfast Green Sencha Darjeeling First Flush",
+    "Shop all tea→ From $9 · 10 blends",
+    "Cold-press juice",
+    "Cold-pressed singles and blends, plus concentrates to mix your own. No added sugar, nothing from concentrate — just fruit and veg, pressed slow and kept cold.",
+    "Worth starting with",
+    "Orange Green Revival Beetroot & Berry",
+    "Shop all juice→ From $5.50 · 25 pressings",
+    "Can't decide?",
+    "Sit at the bar and work through coffee, tea and juice with our team. It's the fastest way to find your everyday cup.",
+    "Find a café→"
+  ],
+  "codeBlocks": [],
+  "ctas": [
+    {
+      "label": "The Atelier",
+      "href": "/machines/atelier"
+    },
+    {
+      "label": "Machines",
+      "href": "/machines"
+    },
+    {
+      "label": "Beverages",
+      "href": "/beverages"
+    },
+    {
+      "label": "Café",
+      "href": "/cafe"
+    },
+    {
+      "label": "Journal",
+      "href": "/blog"
+    },
+    {
+      "label": "Shop all coffee→",
+      "href": "/coffee"
+    },
+    {
+      "label": "Shop all tea→",
+      "href": "/"
+    },
+    {
+      "label": "Shop all juice→",
+      "href": "/"
+    },
+    {
+      "label": "Find a café→",
+      "href": "/cafe"
+    },
+    {
+      "label": "Sign up",
+      "href": null
+    },
+    {
+      "label": "Coffee",
+      "href": "/"
+    },
+    {
+      "label": "Tea",
+      "href": "/"
+    },
+    {
+      "label": "Cold-pressed juice",
+      "href": "/"
+    },
+    {
+      "label": "Machines",
+      "href": "/"
+    },
+    {
+      "label": "Accessories",
+      "href": "/"
+    },
+    {
+      "label": "Our story",
+      "href": "/"
+    },
+    {
+      "label": "Sustainability",
+      "href": "/"
+    },
+    {
+      "label": "Fréscopa Café",
+      "href": "/"
+    },
+    {
+      "label": "Careers",
+      "href": "/"
+    },
+    {
+      "label": "Contact us",
+      "href": "/"
+    },
+    {
+      "label": "Delivery & returns",
+      "href": "/"
+    },
+    {
+      "label": "Register your Atelier",
+      "href": "/"
+    },
+    {
+      "label": "Help centre",
+      "href": "/"
+    }
+  ],
+  "links": [
+    "https://of1--frescopa26--markszulc.aem.page/",
+    "https://of1--frescopa26--markszulc.aem.page/machines/atelier",
+    "https://of1--frescopa26--markszulc.aem.page/machines",
+    "https://of1--frescopa26--markszulc.aem.page/beverages",
+    "https://of1--frescopa26--markszulc.aem.page/cafe",
+    "https://of1--frescopa26--markszulc.aem.page/blog",
+    "https://of1--frescopa26--markszulc.aem.page/coffee",
+    "https://of1--frescopa26--markszulc.aem.page/beverages#"
+  ],
+  "media": {
+    "imgs": [
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/fragments/media_1edd2a689a1bf64571235eec46bc97c0200c9bff3.svg?width=2000&format=webply&optimize=medium",
+        "alt": "Fréscopa",
+        "w": 1391,
+        "h": 378
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_132718180b6190179a138b13595a42c32f51665ed.jpg?width=2000&format=webply&optimize=medium",
+        "alt": "",
+        "w": 1408,
+        "h": 768
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg?width=2000&format=webply&optimize=medium",
+        "alt": "",
+        "w": 1408,
+        "h": 768
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/media_11963a4969e9d029a1613bfbdb474e23808af40db.jpg?width=2000&format=webply&optimize=medium",
+        "alt": "",
+        "w": 1408,
+        "h": 768
+      },
+      {
+        "src": "https://of1--frescopa26--markszulc.aem.page/fragments/media_1edd2a689a1bf64571235eec46bc97c0200c9bff3.svg?width=2000&format=webply&optimize=medium",
+        "alt": "Fréscopa",
+        "w": 1391,
+        "h": 378
+      }
+    ],
+    "allImgCount": 5,
+    "cssBackgrounds": [],
+    "modals": [],
+    "videos": [],
+    "iframes": []
+  },
+  "customProps": {
+    "--burgundy": "oklch(34% 0.093 25deg)",
+    "--burgundy-deep": "oklch(27.5% 0.082 26deg)",
+    "--terracotta": "oklch(60.5% 0.116 44deg)",
+    "--terracotta-deep": "oklch(51.5% 0.108 40deg)",
+    "--terracotta-fill": "oklch(60.5% 0.116 44deg / 22%)",
+    "--amber": "oklch(79% 0.128 74deg)",
+    "--amber-soft": "oklch(86.5% 0.083 80deg)",
+    "--teal": "oklch(55% 0.05 205deg)",
+    "--paper": "oklch(97% 0.010 82deg)",
+    "--paper-2": "oklch(94.8% 0.015 78deg)",
+    "--paper-3": "oklch(91.8% 0.020 74deg)",
+    "--sand": "oklch(88.4% 0.025 71deg)",
+    "--line": "oklch(85.5% 0.018 68deg)",
+    "--ink": "oklch(26.2% 0.021 52deg)",
+    "--ink-soft": "oklch(43% 0.022 52deg)",
+    "--charcoal": "oklch(22.2% 0.016 52deg)",
+    "--charcoal-2": "oklch(28.2% 0.020 50deg)",
+    "--line-dark": "oklch(40% 0.020 55deg)",
+    "--cream": "oklch(94.5% 0.016 80deg)",
+    "--cream-soft": "oklch(79.5% 0.021 78deg)",
+    "--bg": "oklch(97% 0.010 82deg)",
+    "--fg": "oklch(26.2% 0.021 52deg)",
+    "--accent": "oklch(60.5% 0.116 44deg)",
+    "--focus": "oklch(60.5% 0.116 44deg)",
+    "--background-color": "oklch(97% 0.010 82deg)",
+    "--text-color": "oklch(26.2% 0.021 52deg)",
+    "--link-color": "oklch(60.5% 0.116 44deg)",
+    "--link-hover-color": "oklch(51.5% 0.108 40deg)",
+    "--font-display": "\"Schibsted Grotesk\", system-ui, sans-serif",
+    "--font-body": "\"Hanken Grotesk\", system-ui, sans-serif",
+    "--heading-font-family": "\"Schibsted Grotesk\", system-ui, sans-serif",
+    "--body-font-family": "\"Hanken Grotesk\", system-ui, sans-serif",
+    "--fs-eyebrow": "0.75rem",
+    "--fs-sm": "0.9375rem",
+    "--fs-body": "1.0625rem",
+    "--fs-body-lg": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+    "--fs-h4": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+    "--fs-h3": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+    "--fs-h2": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+    "--fs-h1": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+    "--fs-display": "clamp(3.4rem, 1.1rem + 8.4vw, 8rem)",
+    "--heading-size-xxl": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+    "--heading-size-xl": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+    "--heading-size-l": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+    "--heading-size-m": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+    "--heading-size-s": "1.0625rem",
+    "--heading-size-xs": "0.9375rem",
+    "--lh-tight": "1.03",
+    "--lh-snug": "1.15",
+    "--lh-body": "1.62",
+    "--tracking-eyebrow": "0.2em",
+    "--tracking-tight": "-0.02em",
+    "--space-3xs": "0.25rem",
+    "--space-2xs": "0.5rem",
+    "--space-xs": "0.75rem",
+    "--space-sm": "1rem",
+    "--space-md": "1.5rem",
+    "--space-lg": "2.5rem",
+    "--space-xl": "4rem",
+    "--space-2xl": "6rem",
+    "--section-y": "72px",
+    "--section-padding": "72px",
+    "--content": "1120px",
+    "--content-wide": "1320px",
+    "--content-narrow": "760px",
+    "--gutter": "clamp(1.25rem, 0.4rem + 3vw, 3rem)",
+    "--nav-height": "72px",
+    "--r-sm": "8px",
+    "--r-md": "14px",
+    "--r-lg": "22px",
+    "--r-xl": "32px",
+    "--r-pill": "999px",
+    "--shadow-sm": "0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%)",
+    "--shadow-md": "0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%)",
+    "--shadow-lg": "0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%)",
+    "--ease-quint": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "--ease-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+    "--dur-1": "0.35s",
+    "--dur-2": "0.6s",
+    "--dur-3": "0.9s",
+    "--light-color": "oklch(94.8% 0.015 78deg)",
+    "--dark-color": "oklch(22.2% 0.016 52deg)",
+    "--body-font-size-m": "1.0625rem",
+    "--body-font-size-s": "0.9375rem",
+    "--body-font-size-xs": "0.8125rem",
+    "--heading-font-size-xxl": "clamp(2.9rem, 1.7rem + 4.6vw, 5.4rem)",
+    "--heading-font-size-xl": "clamp(1.8rem, 1.3rem + 2vw, 2.8rem)",
+    "--heading-font-size-l": "clamp(1.6rem, 1.25rem + 1.4vw, 2.3rem)",
+    "--heading-font-size-m": "clamp(1.25rem, 1.08rem + 0.7vw, 1.6rem)",
+    "--heading-font-size-s": "clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem)",
+    "--heading-font-size-xs": "1.0625rem"
+  },
+  "_signals": {
+    "filteredInterstitials": 0,
+    "distinctHeadings": 8,
+    "mainTextLen": 1273,
+    "realImageCount": 5,
+    "trackingOnlyMedia": false,
+    "spaShellSuspect": false,
+    "screenshotMode": "fullPage"
+  },
+  "screenshot": "assets/screenshots/beverages.png",
+  "renderedHtml": "pages/beverages.html"
+}

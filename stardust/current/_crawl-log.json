@@ -1,0 +1,36 @@
+{
+  "discovery": {
+    "fetchTechnique": "headless",
+    "count": 3,
+    "concurrency": 3
+  },
+  "consent": {
+    "method": "auto"
+  },
+  "favicon": {
+    "url": "https://of1--frescopa26--markszulc.aem.page/favicon.ico",
+    "file": "assets/favicon.ico"
+  },
+  "crawl": {
+    "failures": []
+  },
+  "visionCheck": [
+    {
+      "slug": "index",
+      "verdict": "ok",
+      "notes": "Full-bleed photo hero (machine in kitchen), real product photography, logo visible; hero H1 renders \"perfected???\" (authored)."
+    },
+    {
+      "slug": "machines",
+      "verdict": "ok",
+      "notes": "Product cards with real machine photos; cssBackgrounds [] consistent with <img>-based imagery."
+    },
+    {
+      "slug": "beverages",
+      "verdict": "ok",
+      "notes": "Three large lifestyle photos (coffee, tea, juice); no overlay, no bot wall."
+    }
+  ],
+  "siblingCandidates": [],
+  "userChoice": "cap 3: /, /machines, /beverages (of1-extract-design)"
+}
