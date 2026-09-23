@@ -1,0 +1,13 @@
+{
+  "domain": "main--frescopa26--markszulc.aem.live",
+  "owner": "markszulc",
+  "repo": "frescopa26",
+  "branch": "of1",
+  "knowledgeMode": "da-document",
+  "contentIngestion": {
+    "enabled": true,
+    "includePaths": ["/of1/knowledge/**"],
+    "maxChunkTokens": 400,
+    "contentTopK": 4
+  }
+}
