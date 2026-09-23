@@ -3,6 +3,7 @@ indices:
   of1-knowledge:
     include:
       - '/of1/knowledge/**'
+      - '/templates/**'
     target: /query-index.json
     properties:
       title:
