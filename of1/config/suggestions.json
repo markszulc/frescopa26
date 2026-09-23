@@ -20,8 +20,8 @@
     },
     {
       "type": "budget",
-      "label": "Machines under £300",
-      "query": "Show me coffee makers under £300"
+      "label": "Machines under $300",
+      "query": "Show me coffee makers under $300"
     },
     {
       "type": "discovery",
@@ -45,8 +45,8 @@
     },
     {
       "type": "budget",
-      "label": "Coffee under £15",
-      "query": "Show me coffee varieties under £15"
+      "label": "Coffee under $15",
+      "query": "Show me coffee varieties under $15"
     },
     {
       "type": "discovery",
