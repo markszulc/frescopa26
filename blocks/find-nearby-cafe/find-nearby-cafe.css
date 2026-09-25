@@ -1,0 +1,540 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+main .find-nearby-cafe {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 8px;
+  max-width: 780px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+main .find-nearby-cafe h1,
+main .find-nearby-cafe h2,
+main .find-nearby-cafe h3,
+main .find-nearby-cafe [class*="name"],
+main .find-nearby-cafe [class*="heading"] {
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Required for correct iframe sizing — AEM section margins inflate shadow body */
+main > div,
+main > .section,
+main > .section:first-of-type {
+  margin: 0;
+}
+main > .section > div {
+  max-width: none;
+  padding: 0;
+}
+body {
+  overflow: auto;
+}
+
+/* ---------- no-results fallback ----------
+   Reached ONLY when a host run returns zero stores — never the opening view. */
+
+main .find-nearby-cafe-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+main .find-nearby-cafe-form-card {
+  max-width: 400px;
+  width: 100%;
+  background: #f3ede3;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+main .find-nearby-cafe-pin {
+  font-size: 28px;
+  opacity: 0.7;
+  color: #2d221b;
+  margin-bottom: 8px;
+  display: block;
+}
+
+main .find-nearby-cafe-heading {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2d221b;
+  margin: 0 0 4px 0;
+}
+
+main .find-nearby-cafe-hint {
+  font-size: 13px;
+  color: #2d221b;
+  opacity: 0.7;
+  margin: 0 0 12px 0;
+}
+
+main .find-nearby-cafe-input {
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: none;
+  box-sizing: border-box;
+  outline: none;
+  color: #333;
+}
+
+main .find-nearby-cafe-search-btn {
+  background: #9a4f35;
+  color: #f2ece1;
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .find-nearby-cafe-search-btn:hover,
+main .find-nearby-cafe-search-btn:focus-visible {
+  background: #7d3d26;
+}
+
+/* ---------- results: compact side map + synchronized card row ---------- */
+
+main .find-nearby-cafe-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 12px;
+  padding: 4px;
+}
+
+main .find-nearby-cafe-map {
+  flex: 0 0 232px;
+  min-width: 0;
+  min-height: 240px;
+  border-radius: 12px;
+}
+
+main .find-nearby-cafe-side {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+main .find-nearby-cafe-row-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+main .find-nearby-cafe-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 12px;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+main .find-nearby-cafe-row::-webkit-scrollbar {
+  display: none;
+}
+
+main .find-nearby-cafe-fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48px;
+  height: 100%;
+  pointer-events: none;
+}
+
+main .find-nearby-cafe-store-card {
+  background: #f3ede3;
+  border-radius: 12px;
+  padding: 14px;
+  color: #2d221b;
+  flex: 1 1 240px;
+  min-width: 240px;
+  max-width: 280px;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+  cursor: pointer;
+  border-top: 2px solid transparent;
+  transition: border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+main .find-nearby-cafe-store-card.is-selected {
+  border-top-color: #ba6945;
+}
+
+main .find-nearby-cafe-store-card:focus-visible {
+  outline: 3px solid #ba6945;
+  outline-offset: -3px;
+}
+
+main .find-nearby-cafe-store-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+main .find-nearby-cafe-store-pin {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+main .find-nearby-cafe-store-type {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fbe6c4;
+}
+
+main .find-nearby-cafe-store-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1.15;
+}
+
+main .find-nearby-cafe-store-addr {
+  font-size: 12px;
+  opacity: 0.78;
+  margin-bottom: 4px;
+}
+
+main .find-nearby-cafe-store-dist {
+  font-size: 12px;
+  color: #e79d78;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+main .find-nearby-cafe-store-hours {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-bottom: 8px;
+}
+
+main .find-nearby-cafe-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+main .find-nearby-cafe-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: inherit;
+  white-space: nowrap;
+}
+
+main .find-nearby-cafe-badge.is-tour {
+  background: rgba(216,162,79,0.1);
+  border-color: rgba(216,162,79,0.55);
+  color: #ffffff;
+}
+
+main .find-nearby-cafe-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+main .find-nearby-cafe-btn {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #9a4f35;
+  color: #f2ece1;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .find-nearby-cafe-btn:hover,
+main .find-nearby-cafe-btn:focus-visible {
+  background: #7d3d26;
+}
+
+main .find-nearby-cafe-btn.is-secondary {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.28);
+  color: inherit;
+}
+
+main .find-nearby-cafe-btn.is-secondary:hover,
+main .find-nearby-cafe-btn.is-secondary:focus-visible {
+  background: rgba(255,255,255,0.12);
+}
+
+/* ── Map engine ───────────────────────────────────────────────────────────── */
+
+main .find-nearby-cafe-map {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #2a2a2a;
+  color: #2d221b;
+}
+
+main .find-nearby-cafe-map.is-fallback {
+  background: #f3ede3;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+main .find-nearby-cafe-map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0.75;
+  z-index: 1;
+}
+
+main .find-nearby-cafe-map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 50% 42%, #ba694542, transparent 62%),
+    linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 100% 100%, 29px 29px, 29px 29px;
+  pointer-events: none;
+}
+
+main .find-nearby-cafe-map-anchor {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+main .find-nearby-cafe-map-pin {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  padding: 0;
+  border: 2px solid rgba(255,255,255,0.55);
+  border-radius: 50%;
+  background: #9a4f35;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  z-index: 2;
+}
+
+main .find-nearby-cafe-map-pin:hover {
+  transform: scale(1.12);
+}
+
+main .find-nearby-cafe-map-pin.is-active {
+  border-color: #fff;
+  transform: scale(1.18);
+  z-index: 1000;
+}
+
+main .find-nearby-cafe-map-pin-num {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+main .find-nearby-cafe-map-label {
+  position: relative;
+  display: inline-block;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  padding: 5px 11px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: #1b1b1b;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, transform 0.12s;
+}
+
+main .find-nearby-cafe-map-label::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 0 0 2px 0;
+}
+
+main .find-nearby-cafe-map-label:hover {
+  transform: translate(-50%, calc(-100% - 8px)) scale(1.06);
+}
+
+main .find-nearby-cafe-map-label.is-active {
+  background: #ba6945;
+  color: #111;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+main .find-nearby-cafe-map-pin:focus-visible,
+main .find-nearby-cafe-map-label:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ── Inlined critical Leaflet layout CSS ──────────────────────────────────── */
+main .find-nearby-cafe .leaflet-pane,
+main .find-nearby-cafe .leaflet-tile,
+main .find-nearby-cafe .leaflet-marker-icon,
+main .find-nearby-cafe .leaflet-marker-shadow,
+main .find-nearby-cafe .leaflet-tile-container,
+main .find-nearby-cafe .leaflet-pane > svg,
+main .find-nearby-cafe .leaflet-pane > canvas,
+main .find-nearby-cafe .leaflet-zoom-box,
+main .find-nearby-cafe .leaflet-image-layer,
+main .find-nearby-cafe .leaflet-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+main .find-nearby-cafe .leaflet-container {
+  overflow: hidden;
+  font-family: inherit;
+  background: #2a2a2a;
+}
+
+main .find-nearby-cafe .leaflet-tile,
+main .find-nearby-cafe .leaflet-marker-icon,
+main .find-nearby-cafe .leaflet-marker-shadow {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+main .find-nearby-cafe .leaflet-tile { filter: inherit; visibility: hidden; }
+main .find-nearby-cafe .leaflet-tile-loaded { visibility: inherit; }
+main .find-nearby-cafe .leaflet-zoom-animated { transform-origin: 0 0; }
+main .find-nearby-cafe .leaflet-pane { z-index: 400; }
+main .find-nearby-cafe .leaflet-tile-pane { z-index: 200; }
+main .find-nearby-cafe .leaflet-overlay-pane { z-index: 400; }
+main .find-nearby-cafe .leaflet-shadow-pane { z-index: 500; }
+main .find-nearby-cafe .leaflet-marker-pane { z-index: 600; }
+main .find-nearby-cafe .leaflet-tooltip-pane { z-index: 650; }
+main .find-nearby-cafe .leaflet-popup-pane { z-index: 700; }
+main .find-nearby-cafe .leaflet-control { z-index: 800; position: relative; float: left; clear: both; pointer-events: auto; }
+
+main .find-nearby-cafe .leaflet-top,
+main .find-nearby-cafe .leaflet-bottom {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+main .find-nearby-cafe .leaflet-top { top: 0; }
+main .find-nearby-cafe .leaflet-bottom { bottom: 0; }
+main .find-nearby-cafe .leaflet-left { left: 0; }
+main .find-nearby-cafe .leaflet-right { right: 0; }
+main .find-nearby-cafe .leaflet-right .leaflet-control { float: right; }
+
+main .find-nearby-cafe .leaflet-tile {
+  max-width: none !important;
+  width: 256px !important;
+  height: 256px !important;
+}
+
+main .find-nearby-cafe .leaflet-pane img,
+main .find-nearby-cafe .leaflet-marker-icon,
+main .find-nearby-cafe .leaflet-image-layer,
+main .find-nearby-cafe .leaflet-container img {
+  max-width: none;
+}
+
+main .find-nearby-cafe .leaflet-tile {
+  filter: brightness(0.72) contrast(1.12);
+}
+
+main .find-nearby-cafe .leaflet-bar a {
+  background: #333;
+  color: #f4f4f4;
+  border-bottom-color: rgba(255,255,255,0.14);
+}
+
+main .find-nearby-cafe .leaflet-bar a:hover { background: #444; }
+
+main .find-nearby-cafe .leaflet-control-attribution {
+  background: rgba(20,20,20,0.72) !important;
+  color: #b8c2cc !important;
+  font-size: 8px !important;
+  line-height: 1.35 !important;
+  padding: 0 4px !important;
+}
+
+main .find-nearby-cafe .leaflet-control-attribution a { color: #8fb8ff !important; }
+
+main .find-nearby-cafe-map-marker {
+  background: transparent;
+  border: none;
+}
+
+@media (width <= 560px) {
+  main .find-nearby-cafe-layout {
+    flex-direction: column;
+  }
+
+  main .find-nearby-cafe-map {
+    flex: none;
+    min-height: 140px;
+  }
+}
+
+/* Dark mode — keep outer widget transparent; leave palette-darkened cards intact */
+@media (prefers-color-scheme: dark) {
+  main .find-nearby-cafe { background: transparent; }
+}
+body.dark main .find-nearby-cafe { background: transparent; }
