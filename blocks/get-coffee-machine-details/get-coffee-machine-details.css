@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+/* Required for correct iframe sizing — AEM section margins inflate shadow body */
+main > div,
+main > .section,
+main > .section:first-of-type {
+  margin: 0;
+}
+main > .section > div {
+  max-width: none;
+  padding: 0;
+}
+body {
+  overflow: auto;
+}
+
+main .get-coffee-machine-details {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 8px;
+  max-width: 780px;
+  box-sizing: border-box;
+  background: transparent;
+  color: #2d221b;
+}
+
+main .get-coffee-machine-details h1,
+main .get-coffee-machine-details h2,
+main .get-coffee-machine-details h3,
+main .get-coffee-machine-details [class*="title"] {
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+main .get-coffee-machine-details-card {
+  display: flex;
+  flex-direction: row;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f3ede3;
+}
+
+main .get-coffee-machine-details-image-panel {
+  flex: 0 0 260px;
+  align-self: stretch;
+  overflow: hidden;
+  background: #e7ddce;
+  position: relative;
+}
+
+main .get-coffee-machine-details-image-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+main .get-coffee-machine-details-image-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+}
+
+main .get-coffee-machine-details-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 10px;
+  background: #f3ede3;
+  color: #2d221b;
+  box-sizing: border-box;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+main .get-coffee-machine-details-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+main .get-coffee-machine-details-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.05;
+  margin: 0;
+  color: #9a4f35;
+}
+
+main .get-coffee-machine-details-avail {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: rgba(186, 105, 69, 0.14);
+  color: #8a4028;
+}
+
+main .get-coffee-machine-details-avail.is-waitlist {
+  background: rgba(216, 162, 79, 0.2);
+  color: #6f5010;
+}
+
+main .get-coffee-machine-details-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+main .get-coffee-machine-details-badge {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: rgba(45, 34, 27, 0.08);
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: #2d221b;
+}
+
+main .get-coffee-machine-details-price {
+  font-size: 17px;
+  font-weight: 700;
+  color: #2d221b;
+}
+
+main .get-coffee-machine-details-description {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.82;
+  margin: 0;
+}
+
+main .get-coffee-machine-details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+main .get-coffee-machine-details-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  opacity: 0.55;
+}
+
+main .get-coffee-machine-details-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+main .get-coffee-machine-details-chip {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(45, 34, 27, 0.18);
+  color: #2d221b;
+}
+
+main .get-coffee-machine-details-features {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+main .get-coffee-machine-details-features li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+main .get-coffee-machine-details-features li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ba6945;
+}
+
+main .get-coffee-machine-details-cta {
+  margin-top: auto;
+  padding: 12px 16px;
+  width: 100%;
+  background: #9a4f35;
+  color: #f2ece1;
+  border: none;
+  border-radius: 999px;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .get-coffee-machine-details-cta:hover,
+main .get-coffee-machine-details-cta:focus-visible {
+  background: #7d3d2a;
+  outline: none;
+}
+
+main .get-coffee-machine-details-cta:focus-visible {
+  box-shadow: 0 0 0 2px #ba6945;
+}
+
+main .get-coffee-machine-details-empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+@media (max-width: 560px) {
+  main .get-coffee-machine-details-card {
+    flex-direction: column;
+  }
+  main .get-coffee-machine-details-image-panel {
+    flex: 0 0 180px;
+  }
+  main .get-coffee-machine-details-content {
+    max-height: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  main .get-coffee-machine-details { color: #f3ede3; }
+  main .get-coffee-machine-details-card { background: #2a201a; }
+  main .get-coffee-machine-details-content { background: #2a201a; color: #f3ede3; }
+  main .get-coffee-machine-details-title { color: #e8a985; }
+  main .get-coffee-machine-details-price { color: #f3ede3; }
+  main .get-coffee-machine-details-badge { background: rgba(243, 237, 227, 0.12); color: #f3ede3; }
+  main .get-coffee-machine-details-chip { border-color: rgba(243, 237, 227, 0.28); color: #f3ede3; }
+  main .get-coffee-machine-details-avail { background: rgba(232, 169, 133, 0.2); color: #f0c3aa; }
+  main .get-coffee-machine-details-avail.is-waitlist { background: rgba(216, 162, 79, 0.24); color: #e6c583; }
+}
+
+body.dark main .get-coffee-machine-details { color: #f3ede3; }
+body.dark main .get-coffee-machine-details-card { background: #2a201a; }
+body.dark main .get-coffee-machine-details-content { background: #2a201a; color: #f3ede3; }
+body.dark main .get-coffee-machine-details-title { color: #e8a985; }
+body.dark main .get-coffee-machine-details-price { color: #f3ede3; }
+body.dark main .get-coffee-machine-details-badge { background: rgba(243, 237, 227, 0.12); color: #f3ede3; }
+body.dark main .get-coffee-machine-details-chip { border-color: rgba(243, 237, 227, 0.28); color: #f3ede3; }
+body.dark main .get-coffee-machine-details-avail { background: rgba(232, 169, 133, 0.2); color: #f0c3aa; }
+body.dark main .get-coffee-machine-details-avail.is-waitlist { background: rgba(216, 162, 79, 0.24); color: #e6c583; }
