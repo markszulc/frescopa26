@@ -1,0 +1,541 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+main .find-frescopa-cafe {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 8px;
+  max-width: 780px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* ---------- no-results fallback ----------
+   Reached ONLY when a host run returns zero stores — never the opening view. */
+
+main .find-frescopa-cafe-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+main .find-frescopa-cafe-form-card {
+  max-width: 400px;
+  width: 100%;
+  background: #f3ede3;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+main .find-frescopa-cafe-pin {
+  font-size: 28px;
+  opacity: 0.7;
+  color: #2d221b;
+  margin-bottom: 8px;
+  display: block;
+}
+
+main .find-frescopa-cafe-heading {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2d221b;
+  margin: 0 0 4px 0;
+}
+
+main .find-frescopa-cafe-hint {
+  font-size: 13px;
+  color: #2d221b;
+  opacity: 0.7;
+  margin: 0 0 12px 0;
+}
+
+main .find-frescopa-cafe-input {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: none;
+  box-sizing: border-box;
+  outline: none;
+  color: #333;
+}
+
+main .find-frescopa-cafe-search-btn {
+  background: #9a4f35;
+  color: #f3ede3;
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .find-frescopa-cafe-search-btn:hover,
+main .find-frescopa-cafe-search-btn:focus-visible {
+  background: #7d3f2a;
+}
+
+/* ---------- results: compact side map + synchronized card row ---------- */
+
+main .find-frescopa-cafe-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 12px;
+  padding: 4px;
+}
+
+main .find-frescopa-cafe-map {
+  flex: 0 0 232px;
+  min-width: 0;
+  min-height: 240px;
+  border-radius: 12px;
+}
+
+main .find-frescopa-cafe-side {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+main .find-frescopa-cafe-row-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+main .find-frescopa-cafe-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 12px;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+main .find-frescopa-cafe-row::-webkit-scrollbar {
+  display: none;
+}
+
+main .find-frescopa-cafe-fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48px;
+  height: 100%;
+  pointer-events: none;
+}
+
+main .find-frescopa-cafe-store-card {
+  background: #f3ede3;
+  border-radius: 12px;
+  padding: 14px;
+  color: #2d221b;
+  flex: 1 1 240px;
+  min-width: 240px;
+  max-width: 268px;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+  cursor: pointer;
+  border-top: 2px solid transparent;
+  transition: border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+main .find-frescopa-cafe-store-card.is-selected {
+  border-top-color: #ba6945;
+}
+
+main .find-frescopa-cafe-store-card:focus-visible {
+  outline: 3px solid #ba6945;
+  outline-offset: -3px;
+}
+
+main .find-frescopa-cafe-store-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+main .find-frescopa-cafe-store-pin {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+main .find-frescopa-cafe-store-titles {
+  min-width: 0;
+}
+
+main .find-frescopa-cafe-store-name {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+main .find-frescopa-cafe-store-city {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+main .find-frescopa-cafe-store-addr {
+  font-size: 12px;
+  opacity: 0.78;
+}
+
+main .find-frescopa-cafe-store-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+  opacity: 0.72;
+}
+
+main .find-frescopa-cafe-store-dist {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+main .find-frescopa-cafe-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+main .find-frescopa-cafe-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #fff;
+  white-space: nowrap;
+}
+
+main .find-frescopa-cafe-badge.is-accent {
+  background: #9a4f35;
+  border-color: #9a4f35;
+  color: #fff;
+}
+
+main .find-frescopa-cafe-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+main .find-frescopa-cafe-cta {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+}
+
+main .find-frescopa-cafe-cta-primary {
+  background: #9a4f35;
+  color: #fff;
+}
+
+main .find-frescopa-cafe-cta-primary:hover,
+main .find-frescopa-cafe-cta-primary:focus-visible {
+  background: #7d3f2a;
+}
+
+main .find-frescopa-cafe-cta-secondary {
+  background: transparent;
+  color: #f3ede3;
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+main .find-frescopa-cafe-cta-secondary:hover,
+main .find-frescopa-cafe-cta-secondary:focus-visible {
+  background: rgba(255,255,255,0.12);
+}
+
+/* ── Map engine ───────────────────────────────── */
+
+main .find-frescopa-cafe-map {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #2a2a2a;
+  color: #2d221b;
+}
+
+main .find-frescopa-cafe-map.is-fallback {
+  background: #f3ede3;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+main .find-frescopa-cafe-map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0.75;
+  z-index: 1;
+  color: #f3ede3;
+}
+
+main .find-frescopa-cafe-map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 50% 42%, #ba694542, transparent 62%),
+    linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 100% 100%, 29px 29px, 29px 29px;
+  pointer-events: none;
+}
+
+main .find-frescopa-cafe-map-anchor {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+main .find-frescopa-cafe-map-pin {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  padding: 0;
+  border: 2px solid rgba(255,255,255,0.55);
+  border-radius: 50%;
+  background: #9a4f35;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  z-index: 2;
+}
+
+main .find-frescopa-cafe-map-pin:hover {
+  transform: scale(1.12);
+}
+
+main .find-frescopa-cafe-map-pin.is-active {
+  border-color: #fff;
+  transform: scale(1.18);
+  z-index: 1000;
+}
+
+main .find-frescopa-cafe-map-pin-num {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+main .find-frescopa-cafe-map-label {
+  position: relative;
+  display: inline-block;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  padding: 5px 11px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: #1b1b1b;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, transform 0.12s;
+}
+
+main .find-frescopa-cafe-map-label::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 0 0 2px 0;
+}
+
+main .find-frescopa-cafe-map-label:hover {
+  transform: translate(-50%, calc(-100% - 8px)) scale(1.06);
+}
+
+main .find-frescopa-cafe-map-label.is-active {
+  background: #9a4f35;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+main .find-frescopa-cafe-map-pin:focus-visible,
+main .find-frescopa-cafe-map-label:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ── Inlined critical Leaflet layout CSS ────────────────────── */
+main .find-frescopa-cafe .leaflet-pane,
+main .find-frescopa-cafe .leaflet-tile,
+main .find-frescopa-cafe .leaflet-marker-icon,
+main .find-frescopa-cafe .leaflet-marker-shadow,
+main .find-frescopa-cafe .leaflet-tile-container,
+main .find-frescopa-cafe .leaflet-pane > svg,
+main .find-frescopa-cafe .leaflet-pane > canvas,
+main .find-frescopa-cafe .leaflet-zoom-box,
+main .find-frescopa-cafe .leaflet-image-layer,
+main .find-frescopa-cafe .leaflet-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+main .find-frescopa-cafe .leaflet-container {
+  overflow: hidden;
+  font-family: inherit;
+  background: #2a2a2a;
+}
+
+main .find-frescopa-cafe .leaflet-tile,
+main .find-frescopa-cafe .leaflet-marker-icon,
+main .find-frescopa-cafe .leaflet-marker-shadow {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+main .find-frescopa-cafe .leaflet-tile { filter: inherit; visibility: hidden; }
+main .find-frescopa-cafe .leaflet-tile-loaded { visibility: inherit; }
+main .find-frescopa-cafe .leaflet-zoom-animated { transform-origin: 0 0; }
+main .find-frescopa-cafe .leaflet-pane { z-index: 400; }
+main .find-frescopa-cafe .leaflet-tile-pane { z-index: 200; }
+main .find-frescopa-cafe .leaflet-overlay-pane { z-index: 400; }
+main .find-frescopa-cafe .leaflet-shadow-pane { z-index: 500; }
+main .find-frescopa-cafe .leaflet-marker-pane { z-index: 600; }
+main .find-frescopa-cafe .leaflet-tooltip-pane { z-index: 650; }
+main .find-frescopa-cafe .leaflet-popup-pane { z-index: 700; }
+main .find-frescopa-cafe .leaflet-control { z-index: 800; position: relative; float: left; clear: both; pointer-events: auto; }
+
+main .find-frescopa-cafe .leaflet-top,
+main .find-frescopa-cafe .leaflet-bottom {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+main .find-frescopa-cafe .leaflet-top { top: 0; }
+main .find-frescopa-cafe .leaflet-bottom { bottom: 0; }
+main .find-frescopa-cafe .leaflet-left { left: 0; }
+main .find-frescopa-cafe .leaflet-right { right: 0; }
+main .find-frescopa-cafe .leaflet-right .leaflet-control { float: right; }
+
+main .find-frescopa-cafe .leaflet-tile {
+  max-width: none !important;
+  width: 256px !important;
+  height: 256px !important;
+}
+
+main .find-frescopa-cafe .leaflet-pane img,
+main .find-frescopa-cafe .leaflet-marker-icon,
+main .find-frescopa-cafe .leaflet-image-layer,
+main .find-frescopa-cafe .leaflet-container img {
+  max-width: none;
+}
+
+main .find-frescopa-cafe .leaflet-tile {
+  filter: brightness(0.72) contrast(1.12);
+}
+
+main .find-frescopa-cafe .leaflet-bar a {
+  background: #333;
+  color: #f4f4f4;
+  border-bottom-color: rgba(255,255,255,0.14);
+}
+
+main .find-frescopa-cafe .leaflet-bar a:hover { background: #444; }
+
+main .find-frescopa-cafe .leaflet-control-attribution {
+  background: rgba(20,20,20,0.72) !important;
+  color: #b8c2cc !important;
+  font-size: 8px !important;
+  line-height: 1.35 !important;
+  padding: 0 4px !important;
+}
+
+main .find-frescopa-cafe .leaflet-control-attribution a { color: #8fb8ff !important; }
+
+main .find-frescopa-cafe-map-marker {
+  background: transparent;
+  border: none;
+}
+
+@media (width <= 560px) {
+  main .find-frescopa-cafe-layout {
+    flex-direction: column;
+  }
+
+  main .find-frescopa-cafe-map {
+    flex: none;
+    min-height: 140px;
+  }
+}
+
+/* Required for correct iframe sizing — AEM section margins inflate shadow body */
+main > div,
+main > .section,
+main > .section:first-of-type {
+  margin: 0;
+}
+main > .section > div {
+  max-width: none;
+  padding: 0;
+}
+body {
+  overflow: auto;
+}
+
+/* Dark mode — outer widget background transparent; palette-colored cards unchanged */
+@media (prefers-color-scheme: dark) {
+  main .find-frescopa-cafe { background: transparent; }
+}
+body.dark main .find-frescopa-cafe { background: transparent; }
