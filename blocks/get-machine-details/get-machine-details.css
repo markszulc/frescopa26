@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+/* Required for correct iframe sizing — AEM section margins inflate shadow body */
+main > div,
+main > .section,
+main > .section:first-of-type {
+  margin: 0;
+}
+main > .section > div {
+  max-width: none;
+  padding: 0;
+}
+body {
+  overflow: auto;
+}
+
+main .get-machine-details {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 8px;
+  max-width: 780px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+main .get-machine-details h1,
+main .get-machine-details h2,
+main .get-machine-details [class*="title"] {
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+main .get-machine-details-card {
+  display: flex;
+  flex-direction: row;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 340px;
+  background: #f3ede3;
+  box-sizing: border-box;
+}
+
+main .get-machine-details-image-panel {
+  flex: 0 0 260px;
+  overflow: hidden;
+  background: #e0dccf;
+}
+
+main .get-machine-details-image-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+main .get-machine-details-image-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  background: #ba6945;
+}
+
+main .get-machine-details-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 14px;
+  background: #f3ede3;
+  color: #2d221b;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+main .get-machine-details-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+main .get-machine-details-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9a4f35;
+}
+
+main .get-machine-details-title {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.05;
+  margin: 0 !important;
+  color: #4d2622;
+}
+
+main .get-machine-details-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+main .get-machine-details-badge {
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 3px 10px;
+  display: inline-block;
+}
+
+main .get-machine-details-badge.is-available {
+  background: #9a4f35;
+  color: #f8f5ee;
+}
+
+main .get-machine-details-badge.is-waitlist {
+  background: rgba(77, 38, 34, 0.12);
+  color: #4d2622;
+}
+
+main .get-machine-details-rating {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9a4f35;
+}
+
+main .get-machine-details-price {
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 2px;
+  color: #2d221b;
+}
+
+main .get-machine-details-description {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.82;
+  margin: 2px 0 0 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+main .get-machine-details-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+main .get-machine-details-section-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 6px;
+}
+
+main .get-machine-details-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+main .get-machine-details-chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(45, 34, 27, 0.06);
+  border: 1px solid rgba(45, 34, 27, 0.12);
+  color: #2d221b;
+}
+
+main .get-machine-details-features ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+main .get-machine-details-features li {
+  font-size: 12.5px;
+  line-height: 1.4;
+  padding-left: 16px;
+  position: relative;
+}
+
+main .get-machine-details-features li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ba6945;
+}
+
+main .get-machine-details-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+main .get-machine-details-cta {
+  flex: 1;
+  padding: 11px 14px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .get-machine-details-cta-primary {
+  background: #9a4f35;
+  color: #f3ede3;
+  border: none;
+}
+
+main .get-machine-details-cta-primary:hover,
+main .get-machine-details-cta-primary:focus-visible {
+  background: #7d3d2a;
+}
+
+main .get-machine-details-cta-secondary {
+  background: transparent;
+  color: #9a4f35;
+  border: 1px solid rgba(154, 79, 53, 0.5);
+}
+
+main .get-machine-details-cta-secondary:hover,
+main .get-machine-details-cta-secondary:focus-visible {
+  background: rgba(186, 105, 69, 0.1);
+}
+
+main .get-machine-details-empty {
+  padding: 24px;
+  font-size: 14px;
+  text-align: center;
+  color: #2d221b;
+}
+
+@media (max-width: 560px) {
+  main .get-machine-details-card {
+    flex-direction: column;
+  }
+  main .get-machine-details-image-panel {
+    flex: 0 0 180px;
+  }
+  main .get-machine-details-image-placeholder {
+    min-height: 180px;
+  }
+}
+
+/* Dark mode — warm dark ground, keep terracotta accent, lift text for contrast */
+@media (prefers-color-scheme: dark) {
+  main .get-machine-details { background: transparent; }
+  main .get-machine-details-card { background: #211914; }
+  main .get-machine-details-content { background: #211914; color: #f3ede3; }
+  main .get-machine-details-title { color: #f3ede3; }
+  main .get-machine-details-price { color: #f3ede3; }
+  main .get-machine-details-eyebrow { color: #d4a24a; }
+  main .get-machine-details-rating { color: #d4a24a; }
+  main .get-machine-details-badge.is-waitlist { background: rgba(243, 237, 227, 0.15); color: #f3ede3; }
+  main .get-machine-details-chip { background: rgba(243, 237, 227, 0.08); border-color: rgba(243, 237, 227, 0.18); color: #f3ede3; }
+  main .get-machine-details-cta-secondary { color: #e2a882; border-color: rgba(226, 168, 130, 0.5); }
+}
+body.dark main .get-machine-details { background: transparent; }
+body.dark main .get-machine-details-card { background: #211914; }
+body.dark main .get-machine-details-content { background: #211914; color: #f3ede3; }
+body.dark main .get-machine-details-title { color: #f3ede3; }
+body.dark main .get-machine-details-price { color: #f3ede3; }
+body.dark main .get-machine-details-eyebrow { color: #d4a24a; }
+body.dark main .get-machine-details-rating { color: #d4a24a; }
+body.dark main .get-machine-details-badge.is-waitlist { background: rgba(243, 237, 227, 0.15); color: #f3ede3; }
+body.dark main .get-machine-details-chip { background: rgba(243, 237, 227, 0.08); border-color: rgba(243, 237, 227, 0.18); color: #f3ede3; }
+body.dark main .get-machine-details-cta-secondary { color: #e2a882; border-color: rgba(226, 168, 130, 0.5); }
