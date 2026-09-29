@@ -3,40 +3,52 @@
 // In production, data comes dynamically from bridge.toolResult.
 const SAMPLE_DATA = [
   {
+    product_id: 'the-atelier',
     name: 'The Atelier',
-    description: 'AI-enabled bean-to-cup machine that learns your taste cup by cup and reorders beans before you run low.',
     category: 'Bean-to-cup',
-    brewing_style: 'bean-to-cup',
     price: 2199,
-    price_label: '$2,199 or $184/month',
+    availability: 'Available now',
     automation_level: 'Fully automatic',
-    footprint: '32 × 24 × 41 cm',
+    brewing_methods: ['Espresso', 'Filter', 'Long black', 'Cappuccino', 'Latte', 'Tea'],
+    ideal_for: 'Hands-off households wanting barista-quality coffee tailored to each person',
     capacity: '1.8 L water tank, 250 g bean hopper',
-    availability: 'Available',
-    key_features: ['Taste-learning flavour DNA per user', 'Sensor ring monitors grind, flow, strength and temperature', 'Automatic motorized milk wand', 'Wi-Fi + calendar integration', '2-year warranty, 30-night trial'],
-    tradeoffs: ['Highest price in the range', 'Hands-off automation means less manual control for ritual enthusiasts'],
-    image_url: 'https://main--frescopa26--markszulc.aem.live/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg?width=1200&format=pjpg&optimize=medium',
-    product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/atelier',
+    dimensions: '32 × 24 × 41 cm, 9.8 kg',
+    key_features: [
+      'Learns your taste over ~7 days, no dialing-in',
+      "Up to 6 household taste profiles ('flavour DNA')",
+      'Contextual intelligence reads calendar, weather and time of day',
+      'Automatic warm-up before your alarm and self-reordering beans',
+      'Whisper-quiet grinding at 58 dB',
+    ],
+    image_url: 'https://www.frescopa.coffee/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg?width=2000&format=webply&optimize=medium',
+    detail_url: 'https://www.frescopa.coffee/machines/atelier',
+    description: 'AI-enabled bean-to-cup machine that learns your taste cup by cup, reads the day ahead, and reorders beans before you run out.',
   },
   {
+    product_id: 'the-barista',
     name: 'The Barista',
-    description: 'A hands-on espresso machine for the morning ritualist, with full manual control over every shot.',
     category: 'Espresso',
-    brewing_style: 'hands-on espresso',
     price: 899,
-    price_label: '$899',
+    availability: 'Waitlist',
     automation_level: 'Manual',
-    footprint: 'Standard espresso machine',
-    capacity: 'Espresso-based drinks',
-    availability: 'Available',
-    key_features: ['Pure hands-on craft, no automation', 'Manual steam wand', 'Single shared setup'],
-    product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines',
+    brewing_methods: ['Espresso'],
+    ideal_for: 'People who want to be the barista and enjoy the hands-on ritual',
+    capacity: '',
+    dimensions: '',
+    key_features: [
+      'Full manual control over grind, dose and pull',
+      'Tactile, built to reward practice',
+    ],
+    image_url: 'https://www.frescopa.coffee/media_1db811b17fbc255479a69bb6ae75e55e55fbd2ea3.png?width=2000&format=webply&optimize=medium',
+    detail_url: 'https://www.frescopa.coffee/machines',
+    description: 'A hands-on espresso machine for the morning ritualist, with full manual control.',
   },
 ];
 
-// Brand colors from DESIGN_TOKENS' color tier.
-const PALETTE = ['#ba6945', '#d8a24f', '#211914', '#f8f5ee', '#f3ede3', '#2d221b', '#9a4f35', '#f2ece1'];
-const CARD_COLORS = ['#ba6945', '#9a4f35', '#d8a24f', '#211914'];
+// Brand palette from DESIGN_TOKENS (Warm Atelier). getThemedCardBg darkens PALETTE[0] to
+// luminance <= 0.12 so white text keeps WCAG AA contrast.
+const PALETTE = ['#ba6945', '#9a4f35', '#d4a24a', '#4d2622', '#f8f5ee', '#f3ede3', '#211914', '#2d221b'];
+const CARD_COLORS = ['#ba6945', '#9a4f35', '#d4a24a', '#4d2622', '#503d2c', '#6a5540'];
 
 function getThemedCardBg(palette) {
   if (!palette || !palette[0]) return null;
@@ -44,12 +56,12 @@ function getThemedCardBg(palette) {
   if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
   if (hex.length !== 6) return null;
   const [r, g, b] = [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
-  if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
-  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4); };
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
+  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
   const relLum = (rr, gg, bb) => 0.2126 * lum(rr) + 0.7152 * lum(gg) + 0.0722 * lum(bb);
   if (relLum(r, g, b) <= 0.12) return { bg: `#${hex}`, fg: '#ffffff' };
   let lo = 0; let hi = 1;
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 20; i += 1) {
     const m = (lo + hi) / 2;
     if (relLum(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) hi = m; else lo = m;
   }
@@ -58,24 +70,19 @@ function getThemedCardBg(palette) {
 }
 const theme = getThemedCardBg(PALETTE);
 
-const ATTR_ROWS = [
-  { key: 'category', label: 'Category' },
-  { key: 'price_label', label: 'Price', lead: true },
-  { key: 'availability', label: 'Availability', lead: true },
-  { key: 'brewing_style', label: 'Brewing' },
-  { key: 'automation_level', label: 'Automation' },
-  { key: 'footprint', label: 'Footprint' },
-  { key: 'capacity', label: 'Capacity' },
-  { key: 'key_features', label: 'Features' },
-];
-
-function fmtValue(v) {
-  if (Array.isArray(v)) return v.join(', ');
-  if (v === undefined || v === null || v === '') return '—';
+function fmtPrice(v) {
+  if (v === null || v === undefined || v === '') return '—';
+  if (typeof v === 'number') return `$${v.toLocaleString('en-US')}`;
   return String(v);
 }
 
-function makeImage(item, i, container) {
+function fmtValue(v) {
+  if (v === null || v === undefined || v === '') return '—';
+  if (Array.isArray(v)) return v.length ? v.join(', ') : '—';
+  return String(v);
+}
+
+function buildImage(container, item, i) {
   const fallbackColor = CARD_COLORS[i % CARD_COLORS.length];
   const colorDiv = () => {
     const d = document.createElement('div');
@@ -94,10 +101,10 @@ function makeImage(item, i, container) {
   }
 }
 
-function renderComparison(block, items, bridge) {
+function renderComparison(block, itemsIn, bridge) {
   block.textContent = '';
-  const pair = items.slice(0, 2);
-  if (pair.length < 2) {
+  const items = (itemsIn || []).slice(0, 2);
+  if (items.length < 2) {
     const empty = document.createElement('p');
     empty.className = 'ccm-empty';
     empty.textContent = 'Two machines are needed to compare.';
@@ -105,115 +112,124 @@ function renderComparison(block, items, bridge) {
     return;
   }
 
+  const bg = theme?.bg ?? '#1a1a1a';
+  const fg = theme?.fg ?? '#ffffff';
+
   const wrap = document.createElement('div');
   wrap.className = 'ccm-wrap';
+  wrap.style.background = bg;
+  wrap.style.color = fg;
 
-  // Header panels
-  const panels = document.createElement('div');
-  panels.className = 'ccm-panels ccm-header-row';
+  // Header panels — leading spacer matches the table's label column so the
+  // panel boundary lines up with the value-column boundary below.
+  const heads = document.createElement('div');
+  heads.className = 'ccm-heads';
   const headSpacer = document.createElement('div');
-  headSpacer.className = 'ccm-cta-spacer';
+  headSpacer.className = 'ccm-head-spacer';
   headSpacer.setAttribute('aria-hidden', 'true');
-  panels.appendChild(headSpacer);
-  pair.forEach((item, i) => {
+  heads.appendChild(headSpacer);
+  items.forEach((item, i) => {
     const panel = document.createElement('div');
     panel.className = 'ccm-panel';
 
     const imgBox = document.createElement('div');
     imgBox.className = 'ccm-panel-img';
-    makeImage(item, i, imgBox);
+    buildImage(imgBox, item, i);
     panel.appendChild(imgBox);
 
     const body = document.createElement('div');
     body.className = 'ccm-panel-body';
-    body.style.cssText = `background:${theme?.bg ?? '#1a1a1a'};color:${theme?.fg ?? '#fff'}`;
+    body.style.background = bg;
+    body.style.color = fg;
 
     const name = document.createElement('h3');
-    name.className = 'ccm-panel-name';
+    name.className = 'ccm-name';
     name.textContent = item.name || '';
     body.appendChild(name);
 
     if (item.description) {
       const desc = document.createElement('p');
-      desc.className = 'ccm-panel-desc';
+      desc.className = 'ccm-desc';
       desc.textContent = item.description;
       body.appendChild(desc);
     }
+
+    if (item.availability) {
+      const badge = document.createElement('span');
+      badge.className = 'ccm-avail';
+      badge.textContent = item.availability;
+      body.appendChild(badge);
+    }
+
     panel.appendChild(body);
-    panels.appendChild(panel);
+    heads.appendChild(panel);
   });
-  wrap.appendChild(panels);
+  wrap.appendChild(heads);
 
   // Attribute table
+  const rows = [
+    { label: 'Price', get: (it) => fmtPrice(it.price), lead: true },
+    { label: 'Category', get: (it) => fmtValue(it.category) },
+    { label: 'Availability', get: (it) => fmtValue(it.availability) },
+    { label: 'Automation', get: (it) => fmtValue(it.automation_level) },
+    { label: 'Brews', get: (it) => fmtValue(it.brewing_methods) },
+    { label: 'Ideal for', get: (it) => fmtValue(it.ideal_for) },
+    { label: 'Capacity', get: (it) => fmtValue(it.capacity) },
+    { label: 'Footprint', get: (it) => fmtValue(it.dimensions) },
+    { label: 'Features', get: (it) => fmtValue(it.key_features) },
+  ];
+
   const table = document.createElement('div');
   table.className = 'ccm-table';
-  table.style.cssText = `background:${theme?.bg ?? '#1a1a1a'};color:${theme?.fg ?? '#fff'}`;
-
-  ATTR_ROWS.forEach((row, idx) => {
-    const va = fmtValue(pair[0][row.key]);
-    const vb = fmtValue(pair[1][row.key]);
-    const differ = va !== vb;
-
+  rows.forEach((row, idx) => {
     const tr = document.createElement('div');
-    tr.className = `ccm-row${idx % 2 ? ' ccm-row-alt' : ''}${row.lead ? ' ccm-row-lead' : ''}`;
+    tr.className = `ccm-row${row.lead ? ' ccm-row-lead' : ''}${idx % 2 ? ' ccm-row-alt' : ''}`;
 
     const label = document.createElement('div');
     label.className = 'ccm-label';
     label.textContent = row.label;
     tr.appendChild(label);
 
-    [va, vb].forEach((val) => {
+    const v0 = row.get(items[0]);
+    const v1 = row.get(items[1]);
+    const differ = v0 !== v1 && v0 !== '—' && v1 !== '—';
+
+    [v0, v1].forEach((val) => {
       const cell = document.createElement('div');
-      cell.className = `ccm-val${differ ? ' ccm-val-diff' : ''}`;
+      cell.className = `ccm-cell${differ ? ' ccm-diff' : ''}`;
       cell.textContent = val;
       tr.appendChild(cell);
     });
+
     table.appendChild(tr);
   });
-  wrap.appendChild(table);
 
-  // CTA rows
-  const ctas = document.createElement('div');
-  ctas.className = 'ccm-ctas';
-
-  const viewRow = document.createElement('div');
-  viewRow.className = 'ccm-cta-row';
+  // CTA row — one button per machine
+  const ctaRow = document.createElement('div');
+  ctaRow.className = 'ccm-row ccm-cta-row';
   const spacer = document.createElement('div');
-  spacer.className = 'ccm-cta-spacer';
-  spacer.setAttribute('aria-hidden', 'true');
-  viewRow.appendChild(spacer);
-  pair.forEach((item) => {
+  spacer.className = 'ccm-label';
+  ctaRow.appendChild(spacer);
+  items.forEach((item) => {
+    const cellWrap = document.createElement('div');
+    cellWrap.className = 'ccm-cell ccm-cta-cell';
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'ccm-cta ccm-cta-view';
-    btn.textContent = 'View Machine';
-    if (bridge && item.product_url) {
-      btn.addEventListener('click', () => bridge.openLink(item.product_url));
+    btn.className = 'ccm-cta';
+    const waitlist = /wait/i.test(item.availability || '');
+    btn.textContent = waitlist ? 'Join Waitlist' : 'View Machine';
+    if (bridge) {
+      btn.addEventListener('click', () => {
+        if (item.detail_url) bridge.openLink(item.detail_url);
+        else bridge.sendMessage(`Tell me more about ${item.name}`);
+      });
     }
-    viewRow.appendChild(btn);
+    cellWrap.appendChild(btn);
+    ctaRow.appendChild(cellWrap);
   });
-  ctas.appendChild(viewRow);
+  table.appendChild(ctaRow);
 
-  [
-    { text: 'Book an Atelier Tour', msg: 'Book an Atelier tour' },
-    { text: 'Find a Showroom', msg: 'Find a Fréscopa showroom near me' },
-  ].forEach((shared) => {
-    const row = document.createElement('div');
-    row.className = 'ccm-cta-row ccm-cta-row-shared';
-    const sp = document.createElement('div');
-    sp.className = 'ccm-cta-spacer';
-    sp.setAttribute('aria-hidden', 'true');
-    row.appendChild(sp);
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ccm-cta ccm-cta-shared';
-    btn.textContent = shared.text;
-    if (bridge) btn.addEventListener('click', () => bridge.sendMessage(shared.msg));
-    row.appendChild(btn);
-    ctas.appendChild(row);
-  });
-  wrap.appendChild(ctas);
-
+  wrap.appendChild(table);
   block.appendChild(wrap);
 }
 

@@ -15,33 +15,39 @@ body {
 }
 
 main .compare-coffee-machines {
-  --label-col: 96px;
-  --label-gap: 2px;
   font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding: 8px;
+  max-width: 780px;
   box-sizing: border-box;
-  max-width: 640px;
 }
 
+main .compare-coffee-machines h1,
+main .compare-coffee-machines h2,
 main .compare-coffee-machines h3,
 main .compare-coffee-machines [class*="name"] {
   font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 main .compare-coffee-machines .ccm-wrap {
-  border-radius: 12px;
+  --label-col: 96px;
+  border-radius: 16px;
   overflow: hidden;
   box-sizing: border-box;
 }
 
 /* Header panels */
-main .compare-coffee-machines .ccm-panels {
+main .compare-coffee-machines .ccm-heads {
   display: flex;
-  gap: 2px;
+  flex-direction: row;
+  gap: 0;
+}
+
+main .compare-coffee-machines .ccm-head-spacer {
+  flex: 0 0 var(--label-col);
 }
 
 main .compare-coffee-machines .ccm-panel {
-  flex: 1 1 260px;
+  flex: 1 1 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -51,6 +57,7 @@ main .compare-coffee-machines .ccm-panel-img {
   height: 140px;
   width: 100%;
   overflow: hidden;
+  background: #503d2c;
 }
 
 main .compare-coffee-machines .ccm-panel-body {
@@ -59,66 +66,71 @@ main .compare-coffee-machines .ccm-panel-body {
   flex-direction: column;
   gap: 8px;
   flex: 1;
-  min-height: 0;
 }
 
-main .compare-coffee-machines .ccm-panel-name {
+main .compare-coffee-machines .ccm-name {
   margin: 0 !important;
   font-size: 18px !important;
   line-height: 1.15 !important;
   font-weight: 700;
-  letter-spacing: -0.3px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-main .compare-coffee-machines .ccm-panel-desc {
+main .compare-coffee-machines .ccm-desc {
   margin: 0 !important;
-  font-size: 12px !important;
-  line-height: 1.45 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
   opacity: 0.78;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+}
+
+main .compare-coffee-machines .ccm-avail {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: inherit;
 }
 
 /* Attribute table */
 main .compare-coffee-machines .ccm-table {
-  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  max-height: 340px;
   overflow-y: auto;
 }
 
 main .compare-coffee-machines .ccm-row {
   display: flex;
+  flex-direction: row;
   align-items: stretch;
-  gap: var(--label-gap);
 }
 
 main .compare-coffee-machines .ccm-row-alt {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 main .compare-coffee-machines .ccm-label {
-  flex: 0 0 var(--label-col);
-  width: var(--label-col);
-  padding: 8px 10px;
-  font-size: 10px;
+  flex: 0 0 96px;
+  padding: 10px 12px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
   opacity: 0.6;
-  display: flex;
-  align-items: center;
   box-sizing: border-box;
 }
 
-main .compare-coffee-machines .ccm-val {
+main .compare-coffee-machines .ccm-cell {
   flex: 1 1 0;
   min-width: 0;
-  padding: 8px 10px;
-  font-size: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
   line-height: 1.4;
   overflow-wrap: break-word;
   white-space: normal;
@@ -126,86 +138,57 @@ main .compare-coffee-machines .ccm-val {
   box-sizing: border-box;
 }
 
-main .compare-coffee-machines .ccm-val-diff {
-  font-weight: 700;
-  border-left-color: #d8a24f;
-}
-
-main .compare-coffee-machines .ccm-row-lead .ccm-val {
-  font-size: 14px;
+main .compare-coffee-machines .ccm-row-lead .ccm-cell {
+  font-size: 16px;
   font-weight: 700;
 }
 
-/* CTA rows */
-main .compare-coffee-machines .ccm-ctas {
-  margin-top: 2px;
+main .compare-coffee-machines .ccm-diff {
+  font-weight: 700;
+  border-left: 2px solid #ba6945;
 }
 
+main .compare-coffee-machines .ccm-row-lead .ccm-diff {
+  font-weight: 800;
+}
+
+/* CTA row */
 main .compare-coffee-machines .ccm-cta-row {
-  display: flex;
-  gap: var(--label-gap);
-  margin-top: 6px;
+  padding: 12px 0 4px;
 }
 
-main .compare-coffee-machines .ccm-cta-spacer {
-  flex: 0 0 var(--label-col);
-  width: var(--label-col);
+main .compare-coffee-machines .ccm-cta-cell {
+  border-left: 2px solid transparent;
+  padding: 4px 12px;
 }
 
 main .compare-coffee-machines .ccm-cta {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 12px 8px;
+  width: 100%;
   border: none;
-  border-radius: 999px;
-  font-family: 'Hanken Grotesk', sans-serif;
+  background: #9a4f35;
+  color: #f3ede3;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
   font-weight: 600;
+  padding: 16px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: opacity 0.15s ease, background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-main .compare-coffee-machines .ccm-cta-view {
-  background: #d8a24f;
-  color: #2d221b;
-}
-
-main .compare-coffee-machines .ccm-cta-view:hover,
-main .compare-coffee-machines .ccm-cta-view:focus-visible {
-  opacity: 0.88;
-}
-
-main .compare-coffee-machines .ccm-cta-shared {
-  background: #9a4f35;
-  color: #f2ece1;
-}
-
-main .compare-coffee-machines .ccm-cta-shared:hover,
-main .compare-coffee-machines .ccm-cta-shared:focus-visible {
-  background: #7a3f28;
-}
-
+main .compare-coffee-machines .ccm-cta:hover,
 main .compare-coffee-machines .ccm-cta:focus-visible {
-  outline: 2px solid #ba6945;
-  outline-offset: 2px;
+  background: #7a3d28;
+  outline: 2px solid transparent;
 }
 
 main .compare-coffee-machines .ccm-empty {
   padding: 24px;
   text-align: center;
   font-size: 14px;
-  opacity: 0.8;
 }
 
-@media (max-width: 480px) {
-  main .compare-coffee-machines .ccm-panel-desc {
-    display: block;
-    -webkit-line-clamp: none;
-    overflow: visible;
-  }
-}
-
-/* Dark mode — keep outer background transparent; card surfaces already carry the dark brand color */
+/* Dark mode — outer widget background transparent; palette card bg stays as-is */
 @media (prefers-color-scheme: dark) {
   main .compare-coffee-machines { background: transparent; }
 }
