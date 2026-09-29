@@ -33,7 +33,13 @@ export default function decorate(block) {
     const titleCell = cells[0];
     const listCell = cells[1] || cells[0];
     const title = t(titleCell.querySelector('h3') || titleCell);
-    const items = [...listCell.querySelectorAll('li')];
+    let items = [...listCell.querySelectorAll('li')];
+    // OF1 slot fills can flatten the list to "a — b | c — d" text with no <li>.
+    const flat = listCell.querySelector('ul') || (cells[1] ? listCell : null);
+    if (!items.length && flat) {
+      items = t(flat).split(/\s*\|\s*/).filter(Boolean)
+        .map((text) => Object.assign(document.createElement('li'), { textContent: text }));
+    }
 
     if (/in the box/i.test(title)) {
       inBox = document.createElement('div');

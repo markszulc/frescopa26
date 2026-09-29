@@ -41,6 +41,14 @@
   text-align: center;
 }
 
+/* Item names are authored as headings; keep them cream on the dark band
+   instead of the global burgundy heading color. */
+.comparison-grid-header :is(h1, h2, h3, h4, h5, h6, p) {
+  margin: 0;
+  color: inherit;
+  font: inherit;
+}
+
 .comparison-grid-header-label {
   background: var(--label-color);
   opacity: 0.4;
@@ -80,6 +88,11 @@
   text-align: left;
   justify-content: flex-start;
   border-right: 1px solid var(--border-color);
+}
+
+.comparison-grid-row p {
+  margin: 0;
+  color: inherit;
 }
 
 /* Value columns */

@@ -12,9 +12,10 @@
   margin: 0;
 }
 
-.section:has(.hero) > div {
-  max-width: none;
-  padding: 0;
+/* Other content sharing a hero's section (e.g. OF1 generated pages) keeps the
+   standard content width + gutters, with section rhythm between blocks. */
+.section:has(.hero) > div:not(.hero-wrapper) {
+  margin-block: var(--section-y);
 }
 
 /* Block root: positioning context + clipping for the absolute image/scrim */
@@ -107,7 +108,9 @@
 .hero.block p.eyebrow,
 .hero.block :where(p:not(
   .hero.block :is(p, :has(p)) ~ p,
-  .hero.block :is(p, :has(p)) ~ * p
+  .hero.block :is(p, :has(p)) ~ * p,
+  .hero.block :is(h1, h2, h3) ~ p,
+  .hero.block :is(h1, h2, h3) ~ * p
 )) {
   margin: 0;
   max-width: none;

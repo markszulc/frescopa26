@@ -39,6 +39,12 @@
 
 /* ─── Container & Layout ─── */
 
+/* The /of1 doc's metadata-only section is left empty after decoration;
+   collapse it so it doesn't push the page down by a full section rhythm. */
+main:has(.of1) > .section:empty {
+  display: none;
+}
+
 .section.of1-container {
   padding: 0;
 }
