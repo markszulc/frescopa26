@@ -21,6 +21,8 @@ main .book-atelier-tour {
   justify-content: center;
 }
 
+main .book-atelier-tour h1,
+main .book-atelier-tour h2,
 main .book-atelier-tour h3,
 main .book-atelier-tour [class*="title"] {
   font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -29,253 +31,236 @@ main .book-atelier-tour [class*="title"] {
 main .book-atelier-tour .bat-card {
   width: 100%;
   max-width: 400px;
-  border-radius: 18px;
-  overflow: hidden;
   background: #f8f5ee;
+  border-radius: 16px;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
+/* Header block — palette-derived dark terracotta via getThemedCardBg(PALETTE) */
 main .book-atelier-tour .bat-header {
-  padding: 16px 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+main .book-atelier-tour .bat-eyebrow,
+main .book-atelier-tour .bat-status {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #f5e0b5;
 }
 
 main .book-atelier-tour .bat-title {
   margin: 0 !important;
-  font-size: 15px !important;
-  font-weight: 700;
-  line-height: 1.2 !important;
-  letter-spacing: -0.3px;
+  font-size: 20px !important;
+  font-weight: 800;
+  line-height: 1.1 !important;
+  color: inherit;
 }
 
-main .book-atelier-tour .bat-summary {
-  margin: 4px 0 0 !important;
-  font-size: 11px !important;
-  line-height: 1.4 !important;
-  opacity: 0.78;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+main .book-atelier-tour .bat-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
 }
 
+main .book-atelier-tour .bat-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+main .book-atelier-tour .bat-conf-id {
+  font-size: 11px;
+  opacity: 0.8;
+  letter-spacing: 0.04em;
+}
+
+/* Form */
 main .book-atelier-tour .bat-form {
-  padding: 14px 18px 18px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-main .book-atelier-tour .bat-row {
-  display: flex;
-  gap: 10px;
-}
-
-main .book-atelier-tour .bat-row .field {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-main .book-atelier-tour .field {
+main .book-atelier-tour .bat-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-main .book-atelier-tour .field label {
-  font-size: 10px;
+main .book-atelier-tour .bat-label {
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
   opacity: 0.55;
   color: #2d221b;
 }
 
-main .book-atelier-tour .field input,
-main .book-atelier-tour .field select {
+main .book-atelier-tour .bat-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 9px 14px;
-  font-size: 13px;
+  padding: 9px 12px;
+  border: 1px solid rgba(45, 34, 27, 0.18);
+  border-radius: 12px;
+  font-size: 14px;
   font-family: inherit;
+  background: #fff;
   color: #2d221b;
-  background: #f3ede3;
-  border: 1px solid rgba(45, 34, 27, 0.15);
-  border-radius: 999px;
-  outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-main .book-atelier-tour .field input:focus,
-main .book-atelier-tour .field select:focus {
+main .book-atelier-tour .bat-input:focus {
+  outline: none;
   border-color: #ba6945;
-  box-shadow: 0 0 0 2px rgba(186, 105, 69, 0.35);
+  box-shadow: 0 0 0 3px rgba(186, 105, 69, 0.18);
 }
 
-main .book-atelier-tour .bat-chips {
+main .book-atelier-tour .bat-interests {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-main .book-atelier-tour .bat-chip {
-  padding: 6px 12px;
+main .book-atelier-tour .bat-interest {
   font-size: 12px;
-  font-family: inherit;
-  color: #2d221b;
-  background: #f3ede3;
-  border: 1px solid rgba(45, 34, 27, 0.15);
+  font-weight: 600;
+  padding: 6px 12px;
   border-radius: 999px;
+  border: 1px solid rgba(186, 105, 69, 0.4);
+  background: transparent;
+  color: #9a4f35;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-main .book-atelier-tour .bat-chip.selected {
-  background: #ba6945;
-  color: #f2ece1;
-  border-color: #ba6945;
-}
-
-main .book-atelier-tour .bat-note {
-  margin: 2px 0 0 !important;
-  font-size: 11px !important;
-  line-height: 1.4 !important;
-  opacity: 0.7;
-  color: #2d221b;
+main .book-atelier-tour .bat-interest.is-on {
+  background: #9a4f35;
+  color: #f3ede3;
+  border-color: #9a4f35;
 }
 
 main .book-atelier-tour .bat-submit {
+  margin-top: 4px;
   width: 100%;
   padding: 12px;
   border: none;
   border-radius: 999px;
   background: #9a4f35;
-  color: #f2ece1;
-  font-family: 'Hanken Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  color: #f3ede3;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
   transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 main .book-atelier-tour .bat-submit:hover,
 main .book-atelier-tour .bat-submit:focus-visible {
-  background: #7d3a24;
+  background: #7f3d24;
   outline: none;
 }
 
-main .book-atelier-tour .bat-status-chip {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 4px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.22);
-  color: #ffffff;
-}
-
-main .book-atelier-tour .bat-confirm-body {
-  padding: 16px 18px 18px;
+/* Confirmation */
+main .book-atelier-tour .bat-summary {
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-main .book-atelier-tour .bat-crow {
+main .book-atelier-tour .bat-row {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   font-size: 13px;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(45, 34, 27, 0.1);
 }
 
-main .book-atelier-tour .bat-ckey {
-  font-size: 10px;
+main .book-atelier-tour .bat-row-k {
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
+  font-size: 11px;
   opacity: 0.55;
   color: #2d221b;
-  align-self: center;
+  flex: 0 0 auto;
 }
 
-main .book-atelier-tour .bat-cval {
-  font-weight: 600;
-  color: #2d221b;
+main .book-atelier-tour .bat-row-v {
   text-align: right;
+  color: #2d221b;
 }
 
 main .book-atelier-tour .bat-message {
-  margin: 6px 0 0 !important;
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-  color: #2d221b;
-  opacity: 0.85;
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4d2622;
 }
 
 main .book-atelier-tour .bat-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 6px;
+  gap: 8px;
+  padding: 0 16px 16px;
 }
 
-main .book-atelier-tour .bat-actions .bat-submit {
-  flex: 1 1 0;
-}
-
-main .book-atelier-tour .bat-cta-secondary {
-  flex: 1 1 0;
-  padding: 12px;
-  border: 1px solid #9a4f35;
+main .book-atelier-tour .bat-cta {
+  flex: 1;
+  padding: 11px;
+  border: none;
   border-radius: 999px;
-  background: transparent;
-  color: #9a4f35;
-  font-family: 'Hanken Grotesk', sans-serif;
+  background: #9a4f35;
+  color: #f3ede3;
+  font-family: inherit;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s ease;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-main .book-atelier-tour .bat-cta-secondary:hover,
-main .book-atelier-tour .bat-cta-secondary:focus-visible {
-  background: #7d3a24;
-  color: #f2ece1;
+main .book-atelier-tour .bat-cta:hover,
+main .book-atelier-tour .bat-cta:focus-visible {
+  background: #7f3d24;
   outline: none;
 }
 
-/* Dark mode — keep outer widget transparent; darken card surface, lighten text/accents */
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
   main .book-atelier-tour { background: transparent; }
   main .book-atelier-tour .bat-card { background: #211914; }
-  main .book-atelier-tour .field label,
-  main .book-atelier-tour .bat-note,
-  main .book-atelier-tour .bat-ckey,
-  main .book-atelier-tour .bat-cval,
-  main .book-atelier-tour .bat-message { color: #f3ede3; }
-  main .book-atelier-tour .field input,
-  main .book-atelier-tour .field select,
-  main .book-atelier-tour .bat-chip {
-    background: #2d221b;
+  main .book-atelier-tour .bat-label,
+  main .book-atelier-tour .bat-row-k,
+  main .book-atelier-tour .bat-row-v { color: #f3ede3; }
+  main .book-atelier-tour .bat-input {
+    background: #1e1e1e;
     color: #f3ede3;
     border-color: rgba(243, 237, 227, 0.2);
   }
-  main .book-atelier-tour .bat-cta-secondary { color: #d8a24f; border-color: #d8a24f; }
+  main .book-atelier-tour .bat-message { color: #e8c9a0; }
+  main .book-atelier-tour .bat-interest { color: #e0a984; border-color: rgba(224, 169, 132, 0.45); }
+  main .book-atelier-tour .bat-interest.is-on { color: #f3ede3; }
 }
-
 body.dark main .book-atelier-tour { background: transparent; }
 body.dark main .book-atelier-tour .bat-card { background: #211914; }
-body.dark main .book-atelier-tour .field label,
-body.dark main .book-atelier-tour .bat-note,
-body.dark main .book-atelier-tour .bat-ckey,
-body.dark main .book-atelier-tour .bat-cval,
-body.dark main .book-atelier-tour .bat-message { color: #f3ede3; }
-body.dark main .book-atelier-tour .field input,
-body.dark main .book-atelier-tour .field select,
-body.dark main .book-atelier-tour .bat-chip {
-  background: #2d221b;
+body.dark main .book-atelier-tour .bat-label,
+body.dark main .book-atelier-tour .bat-row-k,
+body.dark main .book-atelier-tour .bat-row-v { color: #f3ede3; }
+body.dark main .book-atelier-tour .bat-input {
+  background: #1e1e1e;
   color: #f3ede3;
   border-color: rgba(243, 237, 227, 0.2);
 }
-body.dark main .book-atelier-tour .bat-cta-secondary { color: #d8a24f; border-color: #d8a24f; }
+body.dark main .book-atelier-tour .bat-message { color: #e8c9a0; }
+body.dark main .book-atelier-tour .bat-interest { color: #e0a984; border-color: rgba(224, 169, 132, 0.45); }
+body.dark main .book-atelier-tour .bat-interest.is-on { color: #f3ede3; }
