@@ -22,7 +22,7 @@
 }
 
 .booking-form .booking-form-copy h2 {
-  margin: 0;
+  margin: 10px 0;
   font-size: var(--fs-h2);
   font-weight: 800;
   line-height: 1.06;
@@ -35,6 +35,23 @@
   font-size: 1.05rem;
   line-height: 1.65;
   color: var(--ink-soft);
+}
+
+/* ---- Eyebrow: a leading paragraph that introduces a heading (h2 or h3) ---- */
+.booking-form p:first-child:has(+ :is(h2, h3)),
+.booking-form .prosemirror-editor:has(+ .prosemirror-editor :is(h2, h3)) p:first-child
+{ 
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  line-height: 1.62;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--terracotta);
 }
 
 /* eyebrow (first paragraph) */

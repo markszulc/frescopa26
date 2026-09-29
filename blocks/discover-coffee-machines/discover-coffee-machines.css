@@ -1,0 +1,306 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+/* Required for correct iframe sizing — AEM section margins inflate shadow body */
+main > div,
+main > .section,
+main > .section:first-of-type {
+  margin: 0;
+}
+main > .section > div {
+  max-width: none;
+  padding: 0;
+}
+body {
+  overflow: auto;
+}
+
+main .discover-coffee-machines {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 8px;
+  max-width: 780px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+main .discover-coffee-machines h1,
+main .discover-coffee-machines h2,
+main .discover-coffee-machines h3,
+main .discover-coffee-machines [class*="name"] {
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+main .discover-coffee-machines-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+main .discover-coffee-machines-track-wrap {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+main .discover-coffee-machines-track {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+main .discover-coffee-machines-track::-webkit-scrollbar {
+  display: none;
+}
+
+main .discover-coffee-machines-card {
+  flex: 0 0 220px;
+  height: 470px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  position: relative;
+}
+
+main .discover-coffee-machines-card.is-match {
+  outline: 2px solid #d8a24f;
+  outline-offset: -2px;
+}
+
+main .discover-coffee-machines-match-flag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  background: #d8a24f;
+  color: #211914;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+main .discover-coffee-machines-img {
+  flex: 0 0 150px;
+  overflow: hidden;
+  background: #e0e0e0;
+  position: relative;
+}
+
+main .discover-coffee-machines-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+main .discover-coffee-machines-avail {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 2;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(33,25,20,0.82);
+  color: #f2ece1;
+}
+
+main .discover-coffee-machines-avail.is-waitlist {
+  background: rgba(216,162,79,0.92);
+  color: #211914;
+}
+
+main .discover-coffee-machines-info {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 14px;
+  gap: 5px;
+  background: #211914;
+  color: #fff;
+}
+
+main .discover-coffee-machines-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+main .discover-coffee-machines-chip {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  color: inherit;
+  white-space: nowrap;
+}
+
+main .discover-coffee-machines-name {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+main .discover-coffee-machines-desc {
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.78;
+}
+
+main .discover-coffee-machines-feats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+main .discover-coffee-machines-feats li {
+  font-size: 10.5px;
+  line-height: 1.3;
+  opacity: 0.82;
+  padding-left: 12px;
+  position: relative;
+}
+
+main .discover-coffee-machines-feats li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d8a24f;
+}
+
+main .discover-coffee-machines-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+main .discover-coffee-machines-price {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+main .discover-coffee-machines-cta {
+  width: 100%;
+  margin-top: 2px;
+  padding: 8px 0;
+  background: #9a4f35;
+  color: #f2ece1;
+  border: none;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .discover-coffee-machines-cta:hover,
+main .discover-coffee-machines-cta:focus-visible {
+  background: #7d3a20;
+  outline: none;
+}
+
+main .discover-coffee-machines-cta:focus-visible {
+  box-shadow: 0 0 0 2px #ba6945, 0 0 0 4px rgba(255,255,255,0.5);
+}
+
+main .discover-coffee-machines-journey {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 0 2px;
+}
+
+main .discover-coffee-machines-journey button {
+  flex: 1;
+  padding: 8px 6px;
+  background: transparent;
+  color: #9a4f35;
+  border: 1px solid #9a4f35;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .discover-coffee-machines-journey button:hover,
+main .discover-coffee-machines-journey button:focus-visible {
+  background: #9a4f35;
+  color: #f2ece1;
+  outline: none;
+}
+
+main .discover-coffee-machines-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: rgba(33,25,20,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+main .discover-coffee-machines-arrow:focus-visible {
+  outline: 2px solid #d8a24f;
+  outline-offset: 2px;
+}
+
+main .discover-coffee-machines-arrow-left {
+  left: 4px;
+}
+
+main .discover-coffee-machines-arrow-right {
+  right: 4px;
+}
+
+main .discover-coffee-machines-fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 100%;
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  main .discover-coffee-machines { background: transparent; }
+  main .discover-coffee-machines-img { background: #1e1e1e; }
+}
+body.dark main .discover-coffee-machines { background: transparent; }
+body.dark main .discover-coffee-machines-img { background: #1e1e1e; }

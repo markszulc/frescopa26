@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+/* Required for correct iframe sizing — AEM section margins inflate shadow body */
+main > div,
+main > .section,
+main > .section:first-of-type {
+  margin: 0;
+}
+main > .section > div {
+  max-width: none;
+  padding: 0;
+}
+body {
+  overflow: auto;
+}
+
+main .compare-coffee-machines {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 8px;
+  max-width: 780px;
+  box-sizing: border-box;
+}
+
+main .compare-coffee-machines h1,
+main .compare-coffee-machines h2,
+main .compare-coffee-machines h3,
+main .compare-coffee-machines [class*="name"] {
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+main .compare-coffee-machines .ccm-wrap {
+  --label-col: 96px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Header panels */
+main .compare-coffee-machines .ccm-heads {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+}
+
+main .compare-coffee-machines .ccm-head-spacer {
+  flex: 0 0 var(--label-col);
+}
+
+main .compare-coffee-machines .ccm-panel {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+main .compare-coffee-machines .ccm-panel-img {
+  height: 140px;
+  width: 100%;
+  overflow: hidden;
+  background: #503d2c;
+}
+
+main .compare-coffee-machines .ccm-panel-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+main .compare-coffee-machines .ccm-name {
+  margin: 0 !important;
+  font-size: 18px !important;
+  line-height: 1.15 !important;
+  font-weight: 700;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+main .compare-coffee-machines .ccm-desc {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  opacity: 0.78;
+}
+
+main .compare-coffee-machines .ccm-avail {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: inherit;
+}
+
+/* Attribute table */
+main .compare-coffee-machines .ccm-table {
+  display: flex;
+  flex-direction: column;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+main .compare-coffee-machines .ccm-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+main .compare-coffee-machines .ccm-row-alt {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+main .compare-coffee-machines .ccm-label {
+  flex: 0 0 96px;
+  padding: 10px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  box-sizing: border-box;
+}
+
+main .compare-coffee-machines .ccm-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  white-space: normal;
+  border-left: 2px solid transparent;
+  box-sizing: border-box;
+}
+
+main .compare-coffee-machines .ccm-row-lead .ccm-cell {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+main .compare-coffee-machines .ccm-diff {
+  font-weight: 700;
+  border-left: 2px solid #ba6945;
+}
+
+main .compare-coffee-machines .ccm-row-lead .ccm-diff {
+  font-weight: 800;
+}
+
+/* CTA row */
+main .compare-coffee-machines .ccm-cta-row {
+  padding: 12px 0 4px;
+}
+
+main .compare-coffee-machines .ccm-cta-cell {
+  border-left: 2px solid transparent;
+  padding: 4px 12px;
+}
+
+main .compare-coffee-machines .ccm-cta {
+  width: 100%;
+  border: none;
+  background: #9a4f35;
+  color: #f3ede3;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main .compare-coffee-machines .ccm-cta:hover,
+main .compare-coffee-machines .ccm-cta:focus-visible {
+  background: #7a3d28;
+  outline: 2px solid transparent;
+}
+
+main .compare-coffee-machines .ccm-empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Dark mode — outer widget background transparent; palette card bg stays as-is */
+@media (prefers-color-scheme: dark) {
+  main .compare-coffee-machines { background: transparent; }
+}
+body.dark main .compare-coffee-machines { background: transparent; }
