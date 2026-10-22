@@ -5,6 +5,22 @@ const TAB_RESULTS = 'search-results';
 const TAB_AI = 'ai-mode';
 const MAX_RESULTS_SIZE = 50;
 const MAX_TOP_UP_REQUESTS = 3;
+// Candidate pool of the vector query. Also caps how many results can be paged through
+// for queries the full-text query does not match, so keep it well above the page size.
+const VECTOR_NUM_CANDIDATES = 50;
+// Only the result fields the block reads (paths are relative to each result's "data").
+const RESULT_FIELDS = [
+  'text',
+  'source',
+  'title',
+  'name',
+  'metadata.url',
+  'metadata.source',
+  'metadata.title',
+  'metadata.description',
+  'metadata.image',
+  'metadata.meta.image',
+];
 
 async function fetchMockAnswer() {
   const url = `${window.hlx.codeBasePath}/blocks/content-ai-search/mock-answer.json`;
@@ -34,6 +50,28 @@ async function fetchSearchAnswer(baseUrl, contentSource, contentSourceType, quer
   return resp.json();
 }
 
+// Longer, natural-language queries are better served by the semantic vector match than by
+// literal term matching, so the full-text boost shrinks with the number of words.
+function fulltextBoost(query) {
+  const tokens = query.trim().split(/\s+/).length;
+  return tokens > 1 ? 1 / (5 * tokens) : 1;
+}
+
+function buildSearchQuery(text) {
+  return {
+    type: 'composite',
+    operator: 'OR',
+    queries: [
+      { type: 'vector', text, options: { numCandidates: VECTOR_NUM_CANDIDATES, boost: 1 } },
+      {
+        type: 'fulltext',
+        text,
+        options: { boost: fulltextBoost(text), operator: 'AND', matchStrategy: 'COMBINED_FIELDS' },
+      },
+    ],
+  };
+}
+
 async function fetchSearchResults(baseUrl, contentSource, contentSourceType, query, limit, cursor) {
   const url = `${baseUrl}/search`;
   const resp = await fetch(url, {
@@ -41,8 +79,9 @@ async function fetchSearchResults(baseUrl, contentSource, contentSourceType, que
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contentSource: { name: contentSource, type: contentSourceType },
-      query: { type: 'vector', text: query, options: {} },
+      query: buildSearchQuery(query),
       queryOptions: {
+        resultFields: { includes: RESULT_FIELDS },
         pagination: {
           limit,
           ...(cursor ? { cursor } : {}),
