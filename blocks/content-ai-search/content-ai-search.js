@@ -411,7 +411,17 @@ export default function decorate(block) {
   loadMoreButton.hidden = true;
 
   resultsSection.append(resultsToolbar, resultsList, loadMoreError, loadMoreButton);
-  panelResults.append(resultsSection);
+
+  const resultsLoading = document.createElement('div');
+  resultsLoading.className = 'cmp-content-ai-search__summary-loading cmp-content-ai-search__results-loading';
+  resultsLoading.setAttribute('aria-live', 'polite');
+  resultsLoading.hidden = true;
+  resultsLoading.innerHTML = '<div class="cmp-content-ai-search__summary-loading-content">'
+    + '<span class="cmp-content-ai-search__summary-loading-indicator" aria-hidden="true"></span>'
+    + '<p class="cmp-content-ai-search__summary-loading-text">Searching…</p>'
+    + '</div>';
+
+  panelResults.append(resultsLoading, resultsSection);
 
   block.append(form);
   if (aiSearchModeEnabled) {
@@ -452,7 +462,13 @@ export default function decorate(block) {
     loadMoreButton.hidden = !nextCursor;
   }
 
+  function setResultsLoading(loading) {
+    resultsLoading.hidden = !loading;
+    if (loading) resultsSection.hidden = true;
+  }
+
   function clearResults() {
+    setResultsLoading(false);
     currentQuery = '';
     allResults = [];
     nextCursor = null;
@@ -471,6 +487,7 @@ export default function decorate(block) {
     resultsRequestId += 1;
     const requestId = resultsRequestId;
     if (append) loadMoreError.hidden = true;
+    else setResultsLoading(true);
     try {
       const data = baseUrl
         ? await fetchSearchResults(
@@ -483,6 +500,7 @@ export default function decorate(block) {
         )
         : await fetchMockResults();
       if (requestId !== resultsRequestId) return;
+      setResultsLoading(false);
       const results = data.results || [];
       if (append) {
         const knownIds = new Set(allResults.map((item) => item.id));
@@ -497,6 +515,7 @@ export default function decorate(block) {
       renderResults();
     } catch (error) {
       if (requestId !== resultsRequestId) return;
+      setResultsLoading(false);
       if (append) {
         loadMoreError.hidden = false;
       } else {
