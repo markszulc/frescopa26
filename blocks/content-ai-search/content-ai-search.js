@@ -4,6 +4,7 @@ const LOADING_DISPLAY_DELAY = 300;
 const TAB_RESULTS = 'search-results';
 const TAB_AI = 'ai-mode';
 const MAX_RESULTS_SIZE = 50;
+const MAX_TOP_UP_REQUESTS = 3;
 
 async function fetchMockAnswer() {
   const url = `${window.hlx.codeBasePath}/blocks/content-ai-search/mock-answer.json`;
@@ -207,6 +208,74 @@ function renderSourceChip(hit) {
   }
   li.append(chip);
   return li;
+}
+
+function resolveItemImage(item) {
+  const meta = (item.data && item.data.metadata) || {};
+  const rawMeta = meta.meta && typeof meta.meta === 'object' ? meta.meta : {};
+  const image = meta.image || rawMeta.image || '';
+  return image && isSafeUrl(image) ? image : '';
+}
+
+function resolveItemUrl(item) {
+  const data = item.data || {};
+  const meta = data.metadata || {};
+  const rawMeta = meta.meta && typeof meta.meta === 'object' ? meta.meta : {};
+  return meta.canonicalUrl || meta.canonical || rawMeta.canonical || rawMeta['og:url']
+    || resolveMetadataUrl(meta) || data.source || '';
+}
+
+function resolveImageLessIdentity(item) {
+  const meta = (item.data && item.data.metadata) || {};
+  const title = meta.title || resolveItemUrl(item) || item.id || '';
+  return `${title}|${meta.description || ''}`.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+// Identity used to spot duplicate results. Image-less results (e.g. nav/footer
+// anchors like page.html#sign-in) collapse by page + text; image-backed results
+// keep the URL fragment as a differentiator.
+function resolveResultIdentity(item) {
+  const image = resolveItemImage(item);
+  const url = resolveItemUrl(item);
+  const prefix = image ? 'content:' : 'image-less:';
+  const suffix = image ? '' : `|${resolveImageLessIdentity(item)}`;
+  if (!url || !isSafeUrl(url)) {
+    return image ? `content-image:${image}` : `image-less:${resolveImageLessIdentity(item)}`;
+  }
+  try {
+    const parsed = new URL(url, window.location.origin);
+    if (!image) parsed.hash = '';
+    parsed.pathname = parsed.pathname.replace(/\/+$/, '') || '/';
+    return `${prefix}${parsed.href}${suffix}`;
+  } catch (error) {
+    return `${prefix}${String(url).replace(/\/+$/, '').toLowerCase()}${suffix}`;
+  }
+}
+
+// Keeps the first occurrence of each identity; a later duplicate replaces it only
+// if it has an image the kept one lacks, or the same image state and a higher score.
+function deduplicateResults(results) {
+  const unique = [];
+  const indexes = new Map();
+  results.forEach((result) => {
+    const identity = resolveResultIdentity(result);
+    if (!indexes.has(identity)) {
+      indexes.set(identity, unique.length);
+      unique.push(result);
+      return;
+    }
+    const index = indexes.get(identity);
+    const existing = unique[index];
+    const resultHasImage = !!resolveItemImage(result);
+    const existingHasImage = !!resolveItemImage(existing);
+    const resultScore = Number(result.score) || 0;
+    const existingScore = Number(existing.score) || 0;
+    if ((resultHasImage && !existingHasImage)
+      || (resultHasImage === existingHasImage && resultScore > existingScore)) {
+      unique[index] = result;
+    }
+  });
+  return unique;
 }
 
 export default function decorate(block) {
@@ -436,6 +505,9 @@ export default function decorate(block) {
   let currentQuery = '';
   let resultsRequestId = 0;
   let genSearchRequestId = 0;
+  let visibleCount = 0;
+  let pageSize = 0;
+  let seenIds = new Set();
 
   function syncLayoutButtons() {
     layoutCardBtn.setAttribute('aria-pressed', resultsLayout === 'list' ? 'false' : 'true');
@@ -450,7 +522,8 @@ export default function decorate(block) {
   function renderResults(message) {
     resultsList.innerHTML = '';
     resultsSection.hidden = false;
-    if (!allResults.length) {
+    const visibleResults = allResults.slice(0, visibleCount);
+    if (!visibleResults.length) {
       const empty = document.createElement('p');
       empty.className = 'cmp-content-ai-search__empty';
       empty.textContent = message || 'No results found.';
@@ -458,8 +531,8 @@ export default function decorate(block) {
       loadMoreButton.hidden = true;
       return;
     }
-    allResults.forEach((item) => resultsList.append(renderResultItem(item, resultsLayout)));
-    loadMoreButton.hidden = !nextCursor;
+    visibleResults.forEach((item) => resultsList.append(renderResultItem(item, resultsLayout)));
+    loadMoreButton.hidden = !(nextCursor || allResults.length > visibleCount);
   }
 
   function setResultsLoading(loading) {
@@ -472,6 +545,9 @@ export default function decorate(block) {
     currentQuery = '';
     allResults = [];
     nextCursor = null;
+    visibleCount = 0;
+    pageSize = 0;
+    seenIds = new Set();
     resultsRequestId += 1;
     genSearchRequestId += 1;
     resultsList.innerHTML = '';
@@ -483,46 +559,83 @@ export default function decorate(block) {
     if (errorEl) errorEl.hidden = true;
   }
 
-  async function runResultsSearch(query, cursor, append) {
+  function fetchResultsPage(query, cursor) {
+    return baseUrl
+      ? fetchSearchResults(baseUrl, contentSource, contentSourceType, query, resultsSize, cursor)
+      : fetchMockResults();
+  }
+
+  function storeResults(data, cursor, append) {
+    const results = data.results || [];
+    const newResults = results.filter((item) => item.id == null || !seenIds.has(item.id));
+    newResults.forEach((item) => seenIds.add(item.id));
+    if (append) {
+      allResults = deduplicateResults(allResults.concat(newResults));
+      const cursorAdvanced = data.cursor && data.cursor !== cursor;
+      nextCursor = (cursorAdvanced && newResults.length) ? data.cursor : null;
+    } else {
+      allResults = deduplicateResults(newResults);
+      nextCursor = data.cursor || null;
+    }
+  }
+
+  // Dropping duplicates can leave a page short of the configured results size;
+  // pull follow-up pages (bounded) until it is filled or the index is exhausted.
+  async function topUpResults(requestId, query, targetCount, remaining = MAX_TOP_UP_REQUESTS) {
+    if (remaining <= 0 || !nextCursor || allResults.length >= targetCount) return;
+    const cursor = nextCursor;
+    const data = await fetchResultsPage(query, cursor);
+    if (requestId !== resultsRequestId) return;
+    storeResults(data, cursor, true);
+    await topUpResults(requestId, query, targetCount, remaining - 1);
+  }
+
+  async function runResultsSearch(query) {
     resultsRequestId += 1;
     const requestId = resultsRequestId;
-    if (append) loadMoreError.hidden = true;
-    else setResultsLoading(true);
+    loadMoreError.hidden = true;
+    setResultsLoading(true);
     try {
-      const data = baseUrl
-        ? await fetchSearchResults(
-          baseUrl,
-          contentSource,
-          contentSourceType,
-          query,
-          resultsSize,
-          cursor,
-        )
-        : await fetchMockResults();
+      const data = await fetchResultsPage(query, null);
+      if (requestId !== resultsRequestId) return;
+      seenIds = new Set();
+      storeResults(data, null, false);
+      // The server returns the configured results size per page, so that raw count is
+      // the target to restore after duplicates are dropped.
+      pageSize = (data.results || []).length;
+      visibleCount = pageSize;
+      try {
+        await topUpResults(requestId, query, pageSize);
+      } catch (error) {
+        // Keep the results we already have.
+      }
       if (requestId !== resultsRequestId) return;
       setResultsLoading(false);
-      const results = data.results || [];
-      if (append) {
-        const knownIds = new Set(allResults.map((item) => item.id));
-        const newResults = results.filter((item) => !knownIds.has(item.id));
-        allResults = allResults.concat(newResults);
-        const cursorAdvanced = data.cursor && data.cursor !== cursor;
-        nextCursor = (cursorAdvanced && newResults.length) ? data.cursor : null;
-      } else {
-        allResults = results;
-        nextCursor = data.cursor || null;
-      }
       renderResults();
     } catch (error) {
       if (requestId !== resultsRequestId) return;
       setResultsLoading(false);
-      if (append) {
-        loadMoreError.hidden = false;
-      } else {
-        allResults = [];
-        nextCursor = null;
-        renderResults('Something went wrong loading results. Please try again.');
-      }
+      allResults = [];
+      nextCursor = null;
+      visibleCount = 0;
+      renderResults('Something went wrong loading results. Please try again.');
+    }
+  }
+
+  async function runLoadMore() {
+    if (!nextCursor && allResults.length <= visibleCount) return;
+    resultsRequestId += 1;
+    const requestId = resultsRequestId;
+    loadMoreError.hidden = true;
+    const targetCount = visibleCount + pageSize;
+    try {
+      await topUpResults(requestId, currentQuery, targetCount);
+      if (requestId !== resultsRequestId) return;
+      visibleCount = targetCount;
+      renderResults();
+    } catch (error) {
+      if (requestId !== resultsRequestId) return;
+      loadMoreError.hidden = false;
     }
   }
 
@@ -564,7 +677,7 @@ export default function decorate(block) {
       return;
     }
     currentQuery = query;
-    runResultsSearch(query, null, false);
+    runResultsSearch(query);
     if (aiSearchModeEnabled) runGenSearch(query);
   }
 
@@ -611,10 +724,7 @@ export default function decorate(block) {
     renderResults();
   });
 
-  loadMoreButton.addEventListener('click', () => {
-    if (!nextCursor) return;
-    runResultsSearch(currentQuery, nextCursor, true);
-  });
+  loadMoreButton.addEventListener('click', runLoadMore);
 
   input.addEventListener('input', () => {
     clearButton.hidden = !input.value;
