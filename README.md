@@ -27,6 +27,29 @@ npm i
 npm run lint
 ```
 
+## Navigation search
+
+The navigation modal uses the same vector-search request and result metadata
+helpers as the Content AI search block. Its layout, default suggestions, and
+trending products remain unchanged; generative answers are not requested.
+
+On the first query, it reads the authored Content AI search block from
+`/search.plain.html`. Keep `Base Url`, `Content Source`, and `Content Source Type`
+configured on that page. `Base Url` must point to the public search proxy, not
+an upstream endpoint requiring a credential in the browser. Missing configuration
+or request failures show an explicit error with a retry button, never mock results.
+The proxy must allow the site's origins through CORS, including
+`http://localhost:3000` for development. Its `OPTIONS` responses must allow `POST`
+and the `Content-Type` header; both preflight and actual responses need
+`Access-Control-Allow-Origin`. This is a server-side requirement and cannot be
+fixed in the browser code.
+
+Typing is debounced by 250 ms. Requests are cancelled on query changes or close,
+with a 15-second timeout. Up to eight unique page results are displayed in server
+rank order, using at most three pages to compensate for duplicate indexed chunks.
+Result links retain their indexed canonical origin; the index controls which
+pages appear, including any indexed templates or demos.
+
 ## Local development
 
 1. Create a new repository based on the `aem-boilerplate` template

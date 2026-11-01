@@ -1,4 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
+import { fetchSearchResults, isSafeUrl, resolveSearchResult } from '../../scripts/content-ai.js';
 
 const LOADING_DISPLAY_DELAY = 300;
 const TAB_RESULTS = 'search-results';
@@ -31,26 +32,6 @@ async function fetchSearchAnswer(baseUrl, contentSource, contentSourceType, quer
     }),
   });
   if (!resp.ok) throw new Error(`Content AI request failed: ${resp.status}`);
-  return resp.json();
-}
-
-async function fetchSearchResults(baseUrl, contentSource, contentSourceType, query, limit, cursor) {
-  const url = `${baseUrl}/search`;
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contentSource: { name: contentSource, type: contentSourceType },
-      query: { type: 'vector', text: query, options: {} },
-      queryOptions: {
-        pagination: {
-          limit,
-          ...(cursor ? { cursor } : {}),
-        },
-      },
-    }),
-  });
-  if (!resp.ok) throw new Error(`Content AI search failed: ${resp.status}`);
   return resp.json();
 }
 
@@ -87,16 +68,6 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-function isSafeUrl(url) {
-  if (!url) return false;
-  try {
-    const parsed = new URL(url, window.location.origin);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-  } catch (error) {
-    return false;
-  }
 }
 
 function linkifyBareUrls(html) {
@@ -147,12 +118,10 @@ function renderMarkdownSummary(text) {
 }
 
 function renderResultItem(item, layout) {
-  const data = item.data || {};
-  const meta = data.metadata || {};
-  const url = data.source || resolveMetadataUrl(meta);
-  const title = meta.title || url || item.id || 'Untitled';
-  const description = meta.description || '';
-  const image = meta.image || '';
+  const {
+    url, title: resultTitle, description, image,
+  } = resolveSearchResult(item);
+  const title = resultTitle || url || item.id || 'Untitled';
   const href = isSafeUrl(url) ? url : '#';
 
   const li = document.createElement('li');
@@ -211,18 +180,12 @@ function renderSourceChip(hit) {
 }
 
 function resolveItemImage(item) {
-  const meta = (item.data && item.data.metadata) || {};
-  const rawMeta = meta.meta && typeof meta.meta === 'object' ? meta.meta : {};
-  const image = meta.image || rawMeta.image || '';
+  const { image } = resolveSearchResult(item);
   return image && isSafeUrl(image) ? image : '';
 }
 
 function resolveItemUrl(item) {
-  const data = item.data || {};
-  const meta = data.metadata || {};
-  const rawMeta = meta.meta && typeof meta.meta === 'object' ? meta.meta : {};
-  return meta.canonicalUrl || meta.canonical || rawMeta.canonical || rawMeta['og:url']
-    || resolveMetadataUrl(meta) || data.source || '';
+  return resolveSearchResult(item).url;
 }
 
 function resolveImageLessIdentity(item) {
