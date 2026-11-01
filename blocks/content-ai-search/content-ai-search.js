@@ -1,5 +1,11 @@
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchSearchResults, isSafeUrl, resolveSearchResult } from '../../scripts/content-ai.js';
+import {
+  fetchSearchAnswer,
+  fetchSearchResults,
+  isSafeUrl,
+  renderMarkdownSummary,
+  resolveSearchResult,
+} from '../../scripts/content-ai.js';
 
 const LOADING_DISPLAY_DELAY = 300;
 const TAB_RESULTS = 'search-results';
@@ -18,20 +24,6 @@ async function fetchMockResults() {
   const url = `${window.hlx.codeBasePath}/blocks/content-ai-search/mock-results.json`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Failed to load mock results: ${resp.status}`);
-  return resp.json();
-}
-
-async function fetchSearchAnswer(baseUrl, contentSource, contentSourceType, query) {
-  const url = `${baseUrl}/gensearch`;
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contentSource: { name: contentSource, type: contentSourceType },
-      query,
-    }),
-  });
-  if (!resp.ok) throw new Error(`Content AI request failed: ${resp.status}`);
   return resp.json();
 }
 
@@ -59,62 +51,6 @@ function labelFromUrl(url) {
   } catch (error) {
     return url;
   }
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function linkifyBareUrls(html) {
-  return html.split(/(<a\b[^>]*>.*?<\/a>)/g).map((part) => {
-    if (/^<a\b/.test(part)) return part;
-    return part.replace(/https?:\/\/[^\s<]+/g, (url) => {
-      const trailingMatch = url.match(/[).,;:!?]+$/);
-      const trailing = trailingMatch ? trailingMatch[0] : '';
-      const cleanUrl = trailing ? url.slice(0, -trailing.length) : url;
-      if (!isSafeUrl(cleanUrl)) return url;
-      return `<a href="${cleanUrl}" target="_blank" rel="noopener">${cleanUrl}</a>${trailing}`;
-    });
-  }).join('');
-}
-
-function renderMarkdownInline(text) {
-  let html = escapeHtml(text);
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (match, label, url) => (
-    isSafeUrl(url) ? `<a href="${url}" target="_blank" rel="noopener">${label}</a>` : label
-  ));
-  html = linkifyBareUrls(html);
-  return html;
-}
-
-function renderMarkdownSummary(text) {
-  const lines = String(text || '').split(/\r?\n/);
-  let html = '';
-  let listOpen = false;
-  lines.forEach((line) => {
-    const trimmed = line.replace(/^\s+/, '');
-    if (/^[-*]\s+/.test(trimmed)) {
-      if (!listOpen) {
-        html += '<ul>';
-        listOpen = true;
-      }
-      html += `<li>${renderMarkdownInline(trimmed.replace(/^[-*]\s+/, ''))}</li>`;
-    } else {
-      if (listOpen) {
-        html += '</ul>';
-        listOpen = false;
-      }
-      if (trimmed.length > 0) html += `<p>${renderMarkdownInline(trimmed)}</p>`;
-    }
-  });
-  if (listOpen) html += '</ul>';
-  return html;
 }
 
 function renderResultItem(item, layout) {

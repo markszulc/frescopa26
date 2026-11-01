@@ -1,8 +1,15 @@
 import { loadCSS, createOptimizedPicture, readBlockConfig } from '../../scripts/aem.js';
-import { fetchSearchResults, isSafeUrl, resolveSearchResult } from '../../scripts/content-ai.js';
+import {
+  fetchSearchAnswer,
+  fetchSearchResults,
+  isSafeUrl,
+  renderMarkdownSummary,
+  resolveSearchResult,
+} from '../../scripts/content-ai.js';
 
 const SEARCH_DELAY = 250;
 const SEARCH_TIMEOUT = 15000;
+const SUMMARY_TIMEOUT = 30000;
 const RESULTS_LIMIT = 8;
 const MAX_SEARCH_PAGES = 3;
 
@@ -31,12 +38,18 @@ let modal;
 let input;
 let defaultPanel;
 let resultsPanel;
+let summaryPanel;
+let summaryText;
+let summarySources;
+let summaryDisclaimer;
 let lastFocused;
 let hideTimer;
 let searchTimer;
 let searchController;
 let searchRequestId = 0;
 let searchConfig;
+let summaryController;
+let summaryRequestId = 0;
 
 async function getSearchConfig(signal) {
   if (searchConfig) return searchConfig;
@@ -56,6 +69,7 @@ async function getSearchConfig(signal) {
     baseUrl,
     contentSource,
     contentSourceType: config['content-source-type'] || 'AEM_PUBLISH',
+    disclaimer: config['disclaimer-text'] || '',
   };
   return searchConfig;
 }
@@ -128,19 +142,113 @@ function showMessage(message, retry = false) {
   }
 }
 
+function showSummaryMessage(message, retry = false) {
+  summaryText.textContent = '';
+  const text = document.createElement('p');
+  text.textContent = message;
+  summaryText.append(text);
+  summarySources.textContent = '';
+  summarySources.hidden = true;
+  summaryDisclaimer.hidden = true;
+  if (retry) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'search-chip';
+    button.dataset.summaryRetry = '';
+    button.textContent = 'Retry AI summary';
+    summaryText.append(button);
+  }
+}
+
+function renderSummarySources(hits) {
+  summarySources.textContent = '';
+  const seen = new Set();
+  hits.forEach((hit) => {
+    const { url, title } = resolveSearchResult({
+      data: { metadata: hit.metadata, source: hit.source },
+    });
+    if (!isSafeUrl(url)) {
+      console.warn('Skipping Content AI summary source with an invalid URL', hit.id);
+      return;
+    }
+    const parsed = new URL(url, window.location.origin);
+    const { href } = parsed;
+    if (seen.has(href)) return;
+    seen.add(href);
+    const link = document.createElement('a');
+    link.className = 'search-chip';
+    link.href = href;
+    link.textContent = title || labelFromPath(parsed.pathname.split('/').filter(Boolean).at(-1)
+      || 'Home');
+    summarySources.append(link);
+  });
+  summarySources.hidden = !summarySources.childElementCount;
+}
+
+async function renderSummary(query, requestId, config) {
+  summaryRequestId += 1;
+  const summaryId = summaryRequestId;
+  summaryController?.abort();
+  const controller = new AbortController();
+  summaryController = controller;
+  const timeout = setTimeout(() => controller.abort(), SUMMARY_TIMEOUT);
+  summaryPanel.setAttribute('aria-busy', 'true');
+  showSummaryMessage('Generating AI summary…');
+  try {
+    const {
+      baseUrl, contentSource, contentSourceType, disclaimer,
+    } = config || await getSearchConfig(controller.signal);
+    if (requestId !== searchRequestId || summaryId !== summaryRequestId) return;
+    const data = await fetchSearchAnswer(
+      baseUrl,
+      contentSource,
+      contentSourceType,
+      query,
+      controller.signal,
+    );
+    if (requestId !== searchRequestId || summaryId !== summaryRequestId) return;
+    if (data.result.trim()) {
+      summaryText.innerHTML = renderMarkdownSummary(data.result);
+      renderSummarySources(data.hits || []);
+      summaryDisclaimer.textContent = disclaimer;
+      summaryDisclaimer.hidden = !disclaimer;
+    } else {
+      showSummaryMessage('No AI summary is available for this search.');
+    }
+  } catch (error) {
+    if (requestId !== searchRequestId || summaryId !== summaryRequestId) return;
+    console.error('Navigation AI summary failed', error);
+    showSummaryMessage('The AI summary is unavailable right now.', true);
+  } finally {
+    clearTimeout(timeout);
+    if (requestId === searchRequestId && summaryId === summaryRequestId) {
+      summaryPanel.setAttribute('aria-busy', 'false');
+      summaryController = null;
+    }
+  }
+}
+
 function cancelSearch() {
   searchRequestId += 1;
+  summaryRequestId += 1;
   clearTimeout(searchTimer);
   searchController?.abort();
+  summaryController?.abort();
+  summaryController = null;
   resultsPanel?.setAttribute('aria-busy', 'false');
+  summaryPanel?.setAttribute('aria-busy', 'false');
 }
 
 async function renderResults(query, requestId) {
   const controller = new AbortController();
   searchController = controller;
   const timeout = setTimeout(() => controller.abort(), SEARCH_TIMEOUT);
+  let config;
   try {
-    const { baseUrl, contentSource, contentSourceType } = await getSearchConfig(controller.signal);
+    config = await getSearchConfig(controller.signal);
+    if (requestId !== searchRequestId) return;
+    const { baseUrl, contentSource, contentSourceType } = config;
+    renderSummary(query, requestId, config);
     let cursor;
     let rows = [];
     const items = [];
@@ -168,6 +276,10 @@ async function renderResults(query, requestId) {
     if (requestId !== searchRequestId) return;
     console.error('Navigation search failed', error);
     showMessage('Search is unavailable right now. Please try again.', true);
+    if (!config) {
+      showSummaryMessage('The AI summary is unavailable right now.', true);
+      summaryPanel.setAttribute('aria-busy', 'false');
+    }
   } finally {
     clearTimeout(timeout);
     if (requestId === searchRequestId) {
@@ -183,8 +295,11 @@ function render() {
   const hasQuery = query.length > 0;
   defaultPanel.hidden = hasQuery;
   resultsPanel.hidden = !hasQuery;
+  summaryPanel.hidden = !hasQuery;
   if (hasQuery) {
     showMessage('Searching…');
+    showSummaryMessage('Generating AI summary…');
+    summaryPanel.setAttribute('aria-busy', 'true');
     resultsPanel.setAttribute('aria-busy', 'true');
     const requestId = searchRequestId;
     searchTimer = setTimeout(() => renderResults(query, requestId), SEARCH_DELAY);
@@ -314,6 +429,14 @@ function buildOverlay() {
       </div>
       <div class="search-body">
         <div class="search-default"></div>
+        <section class="search-summary" role="status" aria-live="polite"
+          aria-label="AI summary" hidden>
+          <p class="search-group-title">AI summary</p>
+          <div class="search-summary-text"></div>
+          <div class="search-chips search-summary-sources" role="group"
+            aria-label="Sources" hidden></div>
+          <p class="search-summary-disclaimer" hidden></p>
+        </section>
         <div class="search-results" role="status" aria-live="polite" hidden></div>
       </div>
     </div>`;
@@ -322,6 +445,10 @@ function buildOverlay() {
   input = overlay.querySelector('.search-input');
   defaultPanel = overlay.querySelector('.search-default');
   resultsPanel = overlay.querySelector('.search-results');
+  summaryPanel = overlay.querySelector('.search-summary');
+  summaryText = overlay.querySelector('.search-summary-text');
+  summarySources = overlay.querySelector('.search-summary-sources');
+  summaryDisclaimer = overlay.querySelector('.search-summary-disclaimer');
 
   renderDefault();
 
@@ -332,6 +459,11 @@ function buildOverlay() {
   input.addEventListener('compositionend', render);
   resultsPanel.addEventListener('click', (event) => {
     if (event.target.closest('[data-search-retry]')) render();
+  });
+  summaryPanel.addEventListener('click', (event) => {
+    if (event.target.closest('[data-summary-retry]')) {
+      renderSummary(input.value.trim(), searchRequestId);
+    }
   });
   defaultPanel.addEventListener('click', (e) => {
     const c = e.target.closest('.search-chip');
