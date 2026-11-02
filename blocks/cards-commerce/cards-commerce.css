@@ -1,0 +1,45 @@
+/* Block: cards-commerce
+ * Same look as cards-machine (the block JS also adds the cards-machine class),
+ * plus a loading skeleton shown until Commerce data arrives.
+ */
+@import url("../cards-machine/cards-machine.css");
+
+.cards-commerce .cards-commerce-skeleton .cards-machine-eyebrow,
+.cards-commerce .cards-commerce-skeleton .cards-machine-title,
+.cards-commerce .cards-commerce-skeleton .cards-machine-desc,
+.cards-commerce .cards-commerce-skeleton .cards-machine-price {
+  border-radius: var(--r-sm);
+  background-color: var(--paper-3);
+  color: transparent;
+  animation: cards-commerce-pulse 1.4s ease-in-out infinite;
+}
+
+.cards-commerce .cards-commerce-skeleton .cards-machine-eyebrow {
+  align-self: flex-start;
+  width: 30%;
+}
+
+.cards-commerce .cards-commerce-skeleton .cards-machine-title {
+  width: 70%;
+}
+
+/* Reserve two lines, the typical short description length. */
+.cards-commerce .cards-commerce-skeleton .cards-machine-desc {
+  min-height: calc(var(--lh-body) * 2em);
+}
+
+.cards-commerce .cards-commerce-skeleton .cards-machine-price {
+  width: 4ch;
+}
+
+@keyframes cards-commerce-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cards-commerce .cards-commerce-skeleton * {
+    animation: none;
+  }
+}
