@@ -13,6 +13,12 @@ import {
   readBlockConfig,
   toClassName,
 } from './aem.js';
+import {
+  loadCommerceEager,
+  loadCommerceLazy,
+  initializeCommerce,
+  loadErrorPage,
+} from './commerce.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -346,6 +352,8 @@ export function decorateMain(main) {
   decorateArticleHeader(main);
 }
 
+let commerceReady = false;
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -355,7 +363,26 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    try {
+      await initializeCommerce();
+      commerceReady = true;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Error initializing commerce configuration:', e);
+    }
     decorateMain(main);
+    // Only commerce pages need a working config; other pages keep rendering without it.
+    if (commerceReady) {
+      try {
+        await loadCommerceEager();
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error loading commerce:', e);
+        loadErrorPage(418);
+      }
+    } else if (main.querySelector('.product-details')) {
+      loadErrorPage(418);
+    }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -388,6 +415,8 @@ async function loadLazy(doc) {
 
   loadFooter(doc.querySelector('footer'));
 
+  if (commerceReady) await loadCommerceLazy();
+
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
@@ -418,6 +447,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  import('./consent-check.js');
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here

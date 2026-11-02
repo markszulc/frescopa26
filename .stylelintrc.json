@@ -1,3 +1,12 @@
 {
-  "extends": ["stylelint-config-standard"]
+  "extends": ["stylelint-config-standard"],
+  "overrides": [
+    {
+      "files": ["blocks/product-details/**/*.css"],
+      "rules": {
+        "media-feature-range-notation": "prefix",
+        "selector-class-pattern": null
+      }
+    }
+  ]
 }
