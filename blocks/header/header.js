@@ -1,5 +1,7 @@
+import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { fetchPlaceholders } from '../../scripts/commerce.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -109,6 +111,168 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 /**
+ * Turns the nav's cart tool into a mini cart toggle: a live item-count badge
+ * driven by cart/data events, and a drawer that lazy-loads the mini cart
+ * fragment (commerce-mini-cart block) on first open.
+ * @param {Element} link The decorated cart link from the nav tools
+ */
+async function decorateMiniCart(link) {
+  const labels = await fetchPlaceholders();
+  const cartLabel = labels.Global?.Cart ?? 'Cart';
+  const countLabel = (count) => (count === 1
+    ? labels.Global?.CartWithItem?.replace('{count}', count) ?? `${cartLabel}, ${count} item`
+    : labels.Global?.CartWithItems?.replace('{count}', count) ?? `${cartLabel}, ${count} items`);
+  const updatedLabel = (count) => {
+    if (!count) return labels.Global?.CartUpdatedEmpty ?? 'Cart updated, cart is empty';
+    return count === 1
+      ? labels.Global?.CartUpdatedWithItem?.replace('{count}', count) ?? `Cart updated, ${count} item in cart`
+      : labels.Global?.CartUpdatedWithItems?.replace('{count}', count) ?? `Cart updated, ${count} items in cart`;
+  };
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'nav-cart-button';
+  button.innerHTML = link.innerHTML;
+  button.setAttribute('aria-label', countLabel(0));
+  button.setAttribute('aria-haspopup', 'dialog');
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-controls', 'minicart-drawer');
+
+  // Kept mounted so count changes are announced; the visual badge is CSS-only.
+  const status = document.createElement('span');
+  status.className = 'nav-cart-status';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
+
+  link.replaceWith(button);
+  button.after(status);
+
+  const overlay = document.createRange().createContextualFragment(`
+    <div class="minicart-overlay">
+      <div class="minicart-drawer" id="minicart-drawer" role="dialog" aria-modal="true" aria-labelledby="minicart-title" tabindex="-1">
+        <div class="minicart-drawer-head">
+          <h2 class="minicart-drawer-title" id="minicart-title"></h2>
+          <button type="button" class="minicart-close">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+        <div class="minicart-drawer-body"></div>
+      </div>
+    </div>
+  `).firstElementChild;
+  overlay.inert = true;
+  overlay.querySelector('.minicart-drawer-title').textContent = cartLabel;
+  overlay.querySelector('.minicart-close').setAttribute('aria-label', labels.Global?.CloseCart ?? 'Close cart');
+  document.body.append(overlay);
+
+  const drawer = overlay.querySelector('.minicart-drawer');
+  const drawerBody = overlay.querySelector('.minicart-drawer-body');
+  const closeButton = overlay.querySelector('.minicart-close');
+  const title = overlay.querySelector('.minicart-drawer-title');
+  let loading;
+
+  const loadMiniCart = () => {
+    if (!loading) {
+      loading = (async () => {
+        drawerBody.setAttribute('aria-busy', 'true');
+        const miniCartMeta = getMetadata('mini-cart');
+        const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
+        const fragment = await loadFragment(miniCartPath);
+        if (fragment?.firstElementChild) {
+          drawerBody.append(fragment.firstElementChild);
+        } else {
+          // eslint-disable-next-line no-console
+          console.warn(`Mini cart fragment not found at ${miniCartPath}`);
+          loading = null;
+        }
+        drawerBody.removeAttribute('aria-busy');
+      })();
+    }
+    return loading;
+  };
+
+  const getFocusable = () => [...drawer.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+  )].filter((el) => el.offsetParent !== null);
+
+  /* eslint-disable no-use-before-define */
+  const onKeydown = (e) => {
+    if (e.key === 'Escape') {
+      // keep the nav's own Escape handling (on window) from also firing
+      e.stopPropagation();
+      e.preventDefault();
+      closeMiniCart();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusable();
+    if (!focusable.length) {
+      e.preventDefault();
+      drawer.focus();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || document.activeElement === drawer)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+  /* eslint-enable no-use-before-define */
+
+  async function openMiniCart() {
+    if (overlay.classList.contains('is-open')) return;
+    overlay.inert = false;
+    overlay.classList.add('is-open');
+    document.body.classList.add('minicart-open');
+    button.setAttribute('aria-expanded', 'true');
+    document.addEventListener('keydown', onKeydown);
+    // Focus the dialog itself, not the close button: Chrome activates buttons on
+    // the Enter keypress that follows the keydown which opened the drawer.
+    drawer.focus();
+    await loadMiniCart();
+    const { publishShoppingCartViewEvent } = await import('@dropins/storefront-cart/api.js');
+    publishShoppingCartViewEvent();
+  }
+
+  function closeMiniCart() {
+    if (!overlay.classList.contains('is-open')) return;
+    overlay.classList.remove('is-open');
+    overlay.inert = true;
+    document.body.classList.remove('minicart-open');
+    button.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('keydown', onKeydown);
+    button.focus();
+  }
+
+  button.addEventListener('click', () => {
+    if (overlay.classList.contains('is-open')) closeMiniCart();
+    else openMiniCart();
+  });
+  closeButton.addEventListener('click', closeMiniCart);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeMiniCart();
+  });
+
+  let previousCount;
+  events.on('cart/data', (data) => {
+    const count = data?.totalQuantity ?? 0;
+    if (count) button.dataset.count = count > 99 ? '99+' : count;
+    else delete button.dataset.count;
+    button.setAttribute('aria-label', countLabel(count));
+    title.textContent = count ? `${cartLabel} (${count})` : cartLabel;
+    // announce changes only, not the initial count on page load
+    if (previousCount !== undefined && previousCount !== count) {
+      status.textContent = updatedLabel(count);
+    }
+    previousCount = count;
+  }, { eager: true });
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
@@ -198,6 +362,7 @@ export default async function decorate(block) {
           }
         });
       }
+      if (key === 'cart') decorateMiniCart(link);
     });
   }
 

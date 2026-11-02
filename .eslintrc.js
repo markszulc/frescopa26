@@ -24,6 +24,10 @@ module.exports = {
         'scripts/consented.js',
         'scripts/initializers/**/*.js',
         'blocks/product-details/**/*.js',
+        'blocks/commerce-cart/**/*.js',
+        'blocks/commerce-mini-cart/**/*.js',
+        'blocks/modal/**/*.js',
+        'scripts/components/**/*.js',
       ],
       rules: {
         'import/prefer-default-export': 'off',
