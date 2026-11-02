@@ -15,4 +15,34 @@ module.exports = {
     'linebreak-style': ['error', 'unix'], // enforce unix linebreaks
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
   },
+  overrides: [
+    {
+      // Adobe Commerce boilerplate code, kept as-is upstream
+      files: [
+        'scripts/commerce.js',
+        'scripts/consent-check.js',
+        'scripts/consented.js',
+        'scripts/initializers/**/*.js',
+        'blocks/product-details/**/*.js',
+        'blocks/commerce-cart/**/*.js',
+        'blocks/commerce-mini-cart/**/*.js',
+        'blocks/modal/**/*.js',
+        'scripts/components/**/*.js',
+      ],
+      rules: {
+        'import/prefer-default-export': 'off',
+        'import/no-cycle': 'off',
+        'no-use-before-define': [2, { functions: false }],
+        'no-console': ['error', { allow: ['warn', 'error', 'info', 'debug'] }],
+        'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+        'no-underscore-dangle': 'off',
+      },
+    },
+    {
+      files: ['build.mjs', 'postinstall.js'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
+  ],
 };

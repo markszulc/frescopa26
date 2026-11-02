@@ -2,3 +2,7 @@ helix-importer-ui
 *.min.js
 stardust/
 blocks/*/vendor/
+scripts/acdl
+scripts/__dropins__
+scripts/commerce-events-collector.js
+scripts/commerce-events-sdk.js

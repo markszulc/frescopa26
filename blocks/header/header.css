@@ -412,3 +412,205 @@ body:has(main > .section:first-child .hero.block) header nav .nav-sections a[ari
 body:has(main > .section:first-child .hero.block) header nav .nav-hamburger button {
   background-color: transparent;
 }
+
+/* mini cart: cart tool button with live item-count badge */
+header nav .nav-tools .nav-cart-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  line-height: 0;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-quint);
+}
+
+header nav .nav-tools .nav-cart-button:hover,
+header nav .nav-tools .nav-cart-button[aria-expanded='true'] {
+  color: var(--terracotta);
+}
+
+header nav .nav-tools .nav-cart-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+header nav .nav-tools .nav-cart-button svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+header nav .nav-tools .nav-cart-button[data-count]::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -7px;
+  left: 12px;
+  box-sizing: border-box;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background-color: var(--terracotta);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+  text-align: center;
+}
+
+header nav .nav-tools .nav-cart-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-cart-button {
+  color: var(--cream);
+}
+
+body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-cart-button:hover,
+body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-cart-button[aria-expanded='true'] {
+  color: var(--amber);
+}
+
+body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-cart-button[data-count]::after {
+  background-color: var(--amber);
+  color: var(--charcoal);
+}
+
+/* mini cart drawer (appended to body, mirrors the search overlay look) */
+body.minicart-open {
+  overflow: hidden;
+}
+
+.minicart-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  background-color: oklch(22.2% 0.016 52deg / 45%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-1) var(--ease-quint),
+    visibility 0s linear var(--dur-1),
+    backdrop-filter var(--dur-1) var(--ease-quint);
+}
+
+.minicart-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  backdrop-filter: blur(6px);
+  transition:
+    opacity var(--dur-1) var(--ease-quint),
+    visibility 0s,
+    backdrop-filter var(--dur-1) var(--ease-quint);
+}
+
+.minicart-drawer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-body);
+  transform: translateX(100%);
+  transition: transform var(--dur-2) var(--ease-expo);
+}
+
+.minicart-drawer:focus {
+  outline: none;
+}
+
+.minicart-overlay.is-open .minicart-drawer {
+  transform: translateX(0);
+}
+
+.minicart-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  min-height: var(--nav-height);
+  padding: 0 var(--space-lg);
+  border-bottom: 1px solid var(--line);
+}
+
+.minicart-drawer-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+.minicart-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-quint), border-color var(--dur-1) var(--ease-quint);
+}
+
+.minicart-close:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
+
+.minicart-close:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.minicart-drawer-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+
+  /* the mini cart container adds its own inner padding */
+  padding: var(--space-xs) var(--space-md) var(--space-md);
+}
+
+@media (width >= 600px) {
+  .minicart-drawer {
+    width: min(420px, 100%);
+    border-left: 1px solid var(--line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .minicart-overlay,
+  .minicart-overlay.is-open,
+  .minicart-drawer {
+    transition: none;
+  }
+}
+
+/* the drawer title already shows the cart heading and count */
+/* stylelint-disable-next-line selector-class-pattern */
+.minicart-drawer .cart-cart-summary-list__heading {
+  display: none;
+}

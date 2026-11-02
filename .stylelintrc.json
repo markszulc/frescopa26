@@ -1,3 +1,17 @@
 {
-  "extends": ["stylelint-config-standard"]
+  "extends": ["stylelint-config-standard"],
+  "overrides": [
+    {
+      "files": [
+        "blocks/product-details/**/*.css",
+        "blocks/commerce-cart/**/*.css",
+        "blocks/commerce-mini-cart/**/*.css",
+        "blocks/modal/**/*.css"
+      ],
+      "rules": {
+        "media-feature-range-notation": "prefix",
+        "selector-class-pattern": null
+      }
+    }
+  ]
 }

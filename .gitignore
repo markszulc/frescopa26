@@ -13,3 +13,7 @@ helix-importer-ui
 !AGENTS.md
 .hlx/
 .of1/
+
+# Adobe Commerce: drop-in source maps and local-only storefront config
+scripts/__dropins__/**/*.map
+config.json
