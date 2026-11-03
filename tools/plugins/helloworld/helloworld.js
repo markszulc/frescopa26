@@ -8,7 +8,7 @@ import {
   isComplete,
   parseWelcomeBlock,
 } from './utils.js';
-import { startPolling } from './poll.js';
+import startPolling from './poll.js';
 
 const CONTENT_URL = 'https://adobe--sendto--aemcoder.aem.page/adobe/onboarding/';
 
@@ -179,16 +179,16 @@ class WelcomeApp extends LitElement {
         <p class="ob-lessons-label">All lessons</p>
         <ul class="ob-lessons-list">
           ${this._steps.map((step, i) => {
-            const completed = this._completedSteps.has(i);
-            const active = !this._showWelcome && this._activeStep === i;
-            const cls = `ob-lesson-row${active ? ' active' : ''}${completed ? ' completed' : ''}`;
-            const badge = completed ? '✓' : String(i + 1);
-            return html`
+    const completed = this._completedSteps.has(i);
+    const active = !this._showWelcome && this._activeStep === i;
+    const cls = `ob-lesson-row${active ? ' active' : ''}${completed ? ' completed' : ''}`;
+    const badge = completed ? '✓' : String(i + 1);
+    return html`
               <li class=${cls} @click=${() => this._onNavigateToStep(i)}>
                 <span class="ob-lesson-badge">${badge}</span>
                 <span class="ob-lesson-title">${step.title}</span>
               </li>`;
-          })}
+  })}
         </ul>
       </div>` : ''}
       ${this._hasJob ? html`<div class="ob-page-status">

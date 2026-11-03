@@ -111,7 +111,7 @@ function getThemedCardBg(palette) {
   if (hex.length !== 6) return null;
   const [r, g, b] = [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
   if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
-  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4); };
+  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
   const relLum = (rr, gg, bb) => 0.2126 * lum(rr) + 0.7152 * lum(gg) + 0.0722 * lum(bb);
   if (relLum(r, g, b) <= 0.12) return { bg: `#${hex}`, fg: '#ffffff' };
   let lo = 0; let hi = 1;
@@ -226,7 +226,7 @@ function renderItems(block, items, bridge) {
   chips.forEach((label) => {
     const chip = document.createElement('button');
     chip.type = 'button';
-    chip.className = 'scm-chip' + (label === active ? ' scm-chip--active' : '');
+    chip.className = `scm-chip${label === active ? ' scm-chip--active' : ''}`;
     chip.textContent = label;
     chip.setAttribute('aria-pressed', label === active ? 'true' : 'false');
     chip.addEventListener('click', () => {

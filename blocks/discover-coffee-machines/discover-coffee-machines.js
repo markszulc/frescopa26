@@ -1,7 +1,19 @@
 // codegen:layout-pattern=carousel
 // Sample data for standalone/preview mode.
 // In production, data comes dynamically from bridge.toolResult.
-const SAMPLE_DATA = [{"name": "The Atelier", "description": "AI-enabled bean-to-cup machine that learns your taste cup by cup and reorders beans before you run low.", "category": "Bean-to-cup", "brewing_style": "bean-to-cup", "price": 2199, "price_label": "$2,199 or $184/month", "automation_level": "Fully automatic", "automation_preference": "fully automatic", "counter_space": "standard", "availability": "Available", "availability_status": "available", "feature_highlights": ["Learns your taste over ~7 days across up to 6 household profiles", "Automatically reorders beans before you run low", "Whisper-quiet grinding at 58 dB", "Calendar-aware smart warmup and self-rinsing"], "image_url": "https://main--frescopa26--markszulc.aem.live/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg?width=1200&format=pjpg&optimize=medium", "product_url": "https://main--frescopa26--markszulc.aem.live/of1/knowledge/atelier"}, {"name": "The Atelier Mini", "description": "The same intelligent taste-learning technology as the flagship, sized for smaller kitchens.", "category": "Bean-to-cup", "brewing_style": "bean-to-cup", "price": 799, "price_label": "$799", "automation_level": "Fully automatic", "automation_preference": "fully automatic", "counter_space": "compact", "availability": "Join the list", "availability_status": "waitlist", "feature_highlights": ["Same intelligent taste-learning as the flagship", "Compact design for smaller kitchens", "Automatic motorized milk wand", "Wi-Fi and calendar integration"], "product_url": "https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines"}, {"name": "The Barista", "description": "A hands-on espresso machine for the morning ritualist, with full manual control over every shot.", "category": "Espresso", "brewing_style": "hands-on espresso", "price": 899, "price_label": "$899", "automation_level": "Manual", "automation_preference": "hands-on", "counter_space": "standard", "availability": "Available", "availability_status": "available", "feature_highlights": ["Full manual control — dial in every shot", "Manual steam wand", "Built for espresso-based drinks", "Made for the hands-on ritualist"], "product_url": "https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines"}, {"name": "The Everyday", "description": "Honest espresso every single morning with simplified, one-button operation.", "category": "Espresso", "brewing_style": "espresso", "price": 499, "price_label": "$499", "automation_level": "Semi-automatic (one-button)", "automation_preference": "simple", "counter_space": "compact", "availability": "Available", "availability_status": "available", "feature_highlights": ["Simplified one-button operation", "Reliable, consistent results", "Honest espresso every morning"], "product_url": "https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines"}, {"name": "The Slow Pour", "description": "Even saturation and gentle timing for consistent filter coffee.", "category": "Filter", "brewing_style": "filter", "price": 279, "price_label": "$279", "automation_level": "Automatic pour-over", "automation_preference": "guided", "counter_space": "compact", "availability": "Available", "availability_status": "available", "feature_highlights": ["Even saturation for consistent extraction", "Gentle, controlled timing", "Reliable filter coffee"], "product_url": "https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines"}, {"name": "The Carafe", "description": "Overnight steeping produces smooth, low-acid cold brew, ready from the fridge whenever you need it.", "category": "Cold brew", "brewing_style": "cold brew", "price": 179, "price_label": "$179", "automation_level": "Manual overnight steep", "automation_preference": "hands-off steep", "counter_space": "compact", "availability": "Join the list", "availability_status": "waitlist", "feature_highlights": ["Overnight steeping for smooth flavor", "Low-acid cold brew", "Ready from the fridge anytime"], "product_url": "https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines"}];
+const SAMPLE_DATA = [{
+  name: 'The Atelier', description: 'AI-enabled bean-to-cup machine that learns your taste cup by cup and reorders beans before you run low.', category: 'Bean-to-cup', brewing_style: 'bean-to-cup', price: 2199, price_label: '$2,199 or $184/month', automation_level: 'Fully automatic', automation_preference: 'fully automatic', counter_space: 'standard', availability: 'Available', availability_status: 'available', feature_highlights: ['Learns your taste over ~7 days across up to 6 household profiles', 'Automatically reorders beans before you run low', 'Whisper-quiet grinding at 58 dB', 'Calendar-aware smart warmup and self-rinsing'], image_url: 'https://main--frescopa26--markszulc.aem.live/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg?width=1200&format=pjpg&optimize=medium', product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/atelier',
+}, {
+  name: 'The Atelier Mini', description: 'The same intelligent taste-learning technology as the flagship, sized for smaller kitchens.', category: 'Bean-to-cup', brewing_style: 'bean-to-cup', price: 799, price_label: '$799', automation_level: 'Fully automatic', automation_preference: 'fully automatic', counter_space: 'compact', availability: 'Join the list', availability_status: 'waitlist', feature_highlights: ['Same intelligent taste-learning as the flagship', 'Compact design for smaller kitchens', 'Automatic motorized milk wand', 'Wi-Fi and calendar integration'], product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines',
+}, {
+  name: 'The Barista', description: 'A hands-on espresso machine for the morning ritualist, with full manual control over every shot.', category: 'Espresso', brewing_style: 'hands-on espresso', price: 899, price_label: '$899', automation_level: 'Manual', automation_preference: 'hands-on', counter_space: 'standard', availability: 'Available', availability_status: 'available', feature_highlights: ['Full manual control — dial in every shot', 'Manual steam wand', 'Built for espresso-based drinks', 'Made for the hands-on ritualist'], product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines',
+}, {
+  name: 'The Everyday', description: 'Honest espresso every single morning with simplified, one-button operation.', category: 'Espresso', brewing_style: 'espresso', price: 499, price_label: '$499', automation_level: 'Semi-automatic (one-button)', automation_preference: 'simple', counter_space: 'compact', availability: 'Available', availability_status: 'available', feature_highlights: ['Simplified one-button operation', 'Reliable, consistent results', 'Honest espresso every morning'], product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines',
+}, {
+  name: 'The Slow Pour', description: 'Even saturation and gentle timing for consistent filter coffee.', category: 'Filter', brewing_style: 'filter', price: 279, price_label: '$279', automation_level: 'Automatic pour-over', automation_preference: 'guided', counter_space: 'compact', availability: 'Available', availability_status: 'available', feature_highlights: ['Even saturation for consistent extraction', 'Gentle, controlled timing', 'Reliable filter coffee'], product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines',
+}, {
+  name: 'The Carafe', description: 'Overnight steeping produces smooth, low-acid cold brew, ready from the fridge whenever you need it.', category: 'Cold brew', brewing_style: 'cold brew', price: 179, price_label: '$179', automation_level: 'Manual overnight steep', automation_preference: 'hands-off steep', counter_space: 'compact', availability: 'Join the list', availability_status: 'waitlist', feature_highlights: ['Overnight steeping for smooth flavor', 'Low-acid cold brew', 'Ready from the fridge anytime'], product_url: 'https://main--frescopa26--markszulc.aem.live/of1/knowledge/machines',
+}];
 
 // Brand colors from DESIGN_TOKENS' color tier.
 const PALETTE = ['#ba6945', '#d8a24f', '#211914'];
@@ -10,17 +22,19 @@ const CARD_COLORS = ['#ba6945', '#d8a24f', '#9a4f35', '#211914', '#2d221b', '#b0
 function getThemedCardBg(palette) {
   if (!palette || !palette[0]) return null;
   let hex = palette[0].replace('#', '');
-  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
   if (hex.length !== 6) return null;
-  let [r, g, b] = [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+  const [r, g, b] = [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
   if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
-  const lum = (c) => { const s=c/255; return s<=0.03928?s/12.92:Math.pow((s+0.055)/1.055,2.4); };
-  const relLum = (r,g,b) => 0.2126*lum(r)+0.7152*lum(g)+0.0722*lum(b);
-  if (relLum(r,g,b) <= 0.12) return { bg: `#${hex}`, fg: '#ffffff' };
-  let lo=0, hi=1;
-  for (let i=0; i<20; i++) { const m=(lo+hi)/2; if (relLum(Math.round(r*m),Math.round(g*m),Math.round(b*m)) > 0.12) hi=m; else lo=m; }
-  const dr=Math.round(r*lo), dg=Math.round(g*lo), db=Math.round(b*lo);
-  return { bg:`#${dr.toString(16).padStart(2,'0')}${dg.toString(16).padStart(2,'0')}${db.toString(16).padStart(2,'0')}`, fg:'#ffffff' };
+  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
+  const relLum = (r, g, b) => 0.2126 * lum(r) + 0.7152 * lum(g) + 0.0722 * lum(b);
+  if (relLum(r, g, b) <= 0.12) return { bg: `#${hex}`, fg: '#ffffff' };
+  let lo = 0; let
+    hi = 1;
+  for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (relLum(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) hi = m; else lo = m; }
+  const dr = Math.round(r * lo); const dg = Math.round(g * lo); const
+    db = Math.round(b * lo);
+  return { bg: `#${dr.toString(16).padStart(2, '0')}${dg.toString(16).padStart(2, '0')}${db.toString(16).padStart(2, '0')}`, fg: '#ffffff' };
 }
 const theme = getThemedCardBg(PALETTE);
 
@@ -35,7 +49,7 @@ function closestMatchIndex(items) {
     let s = 0;
     const cs = (it.counter_space || '').toLowerCase();
     if (cs === 'compact') s += 2;
-    const auto = ((it.automation_level || '') + ' ' + (it.automation_preference || '')).toLowerCase();
+    const auto = (`${it.automation_level || ''} ${it.automation_preference || ''}`).toLowerCase();
     if (/semi|one-button|simple|guided/.test(auto)) s += 2;
     if (typeof it.price === 'number') s += Math.max(0, 3 - it.price / 500);
     if ((it.availability_status || '').toLowerCase() === 'available') s += 1;

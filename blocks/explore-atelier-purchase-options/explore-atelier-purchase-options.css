@@ -6,10 +6,12 @@ main > .section,
 main > .section:first-of-type {
   margin: 0;
 }
+
 main > .section > div {
   max-width: none;
   padding: 0;
 }
+
 body {
   overflow: auto;
 }
@@ -101,7 +103,7 @@ main .explore-atelier-purchase-options-info {
   padding: 12px 14px 14px;
   gap: 5px;
   background: #2d221b;
-  color: #ffffff;
+  color: #fff;
 }
 
 main .explore-atelier-purchase-options-name {
@@ -186,7 +188,7 @@ main .explore-atelier-purchase-options-arrow {
   transform: translateY(-50%);
   width: 30px;
   height: 30px;
-  background: rgba(45, 34, 27, 0.72);
+  background: rgb(45 34 27 / 72%);
   color: #f3ede3;
   border: none;
   border-radius: 50%;

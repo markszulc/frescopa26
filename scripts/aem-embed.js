@@ -18,7 +18,9 @@
  *   - bridge.isEmbedded              → true if inside a host iframe
  */
 
-import { LLMApp, applyAdobeHandles, sendAdobeEvent, _resolveEdgeConfig, _buildInteractionXdm } from './llmapps-sdk.js';
+import {
+  LLMApp, applyAdobeHandles, sendAdobeEvent, _resolveEdgeConfig, _buildInteractionXdm,
+} from './llmapps-sdk.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export class AEMEmbed extends HTMLElement {
@@ -215,7 +217,7 @@ export class AEMEmbed extends HTMLElement {
         const edgeConfig = _resolveEdgeConfig({
           edgeEnabled: /** @type {any} */(window).LLM_APPS_EDGE_ENABLED,
           datastreamId: /** @type {any} */(window).LLM_APPS_DATASTREAM_ID,
-          orgId: /** @type {any} */(window).LLM_APPS_ORG_ID
+          orgId: /** @type {any} */(window).LLM_APPS_ORG_ID,
         });
         // Guard against a second init (a re-parent mid-fetch can re-enter
         // connectedCallback before `initialized` is set) double-configuring
@@ -266,7 +268,7 @@ export class AEMEmbed extends HTMLElement {
   // touches Adobe. Fail-soft: sendAdobeEvent never throws into the widget.
   _trackInteractions() {
     this.shadowRoot.addEventListener('click', (e) => {
-      const target = /** @type {Element} */ (e.target);
+      const { target } = e;
       const el = target && target.closest
         ? target.closest('a, button, [role="button"], [data-analytics]')
         : null;
