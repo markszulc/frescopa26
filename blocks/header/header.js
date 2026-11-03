@@ -291,7 +291,7 @@ function readCookie(name) {
 }
 
 /**
- * Turns the nav's account tool into a sign-in link (signed out) or a menu
+ * Turns the nav's account tool into an icon-only sign-in link (signed out) or a menu
  * button with the customer's first name and a sign-out action (signed in).
  * State follows the auth drop-in's `authenticated` event, so no reload is needed.
  * @param {Element} link The decorated account link from the nav tools
@@ -315,10 +315,7 @@ async function decorateAccount(link) {
     ? CUSTOMER_LOGIN_PATH
     : `${CUSTOMER_LOGIN_PATH}?returnUrl=${encodeURIComponent(`${pathname}${search}${hash}`)}`;
   signIn.innerHTML = icon;
-  const signInLabel = document.createElement('span');
-  signInLabel.className = 'nav-account-label';
-  signInLabel.textContent = signInText;
-  signIn.append(signInLabel);
+  signIn.setAttribute('aria-label', signInText);
 
   // Signed in: a disclosure button with the first name, and a sign-out menu.
   const button = document.createElement('button');
