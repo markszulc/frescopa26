@@ -98,10 +98,53 @@ export function stabilizePasswordInput(root) {
   }, true);
 }
 
+/**
+ * Moves authored content into the card: row 1 is the intro (an eyebrow
+ * paragraph, a heading, and a lede), row 2 an optional note under the form.
+ * Both are optional; without an intro the drop-in's own "Sign in" title shows.
+ * @param {Element} block The block element
+ * @returns {Element} The element to render the sign-in form into
+ */
+function buildCard(block) {
+  const [introRow, noteRow] = [...block.children];
+  const cellContent = (row) => (row ? [...row.querySelectorAll(':scope > div > *')] : []);
+  const introEls = cellContent(introRow);
+  const noteEls = cellContent(noteRow);
+  block.textContent = '';
+
+  const hasIntro = introEls.some((el) => el.textContent.trim());
+  if (hasIntro) {
+    const intro = document.createElement('div');
+    intro.className = 'commerce-login-intro';
+    const headingIndex = introEls.findIndex((el) => /^H[1-6]$/.test(el.tagName));
+    introEls.forEach((el, i) => {
+      if (i === headingIndex) el.classList.add('commerce-login-title');
+      else if (headingIndex > 0 && i < headingIndex) el.classList.add('commerce-login-eyebrow');
+      else el.classList.add('commerce-login-lede');
+      intro.append(el);
+    });
+    block.append(intro);
+  }
+  block.classList.toggle('commerce-login--intro', hasIntro);
+
+  const form = document.createElement('div');
+  form.className = 'commerce-login-form';
+  block.append(form);
+
+  if (noteEls.some((el) => el.textContent.trim())) {
+    const note = document.createElement('div');
+    note.className = 'commerce-login-note';
+    note.append(...noteEls);
+    block.append(note);
+  }
+  return form;
+}
+
 export default async function decorate(block) {
   if (checkIsAuthenticated()) {
     window.location.href = getReturnPath();
   } else {
+    const formContainer = buildCard(block);
     syncAriaInvalid(block);
     stabilizePasswordInput(block);
     await authRenderer.render(SignIn, {
@@ -110,6 +153,6 @@ export default async function decorate(block) {
       renderSignUpLink: true,
       routeSignUp: () => withReturnUrl(CUSTOMER_CREATE_PATH),
       routeRedirectOnSignIn: () => getReturnPath(),
-    })(block);
+    })(formContainer);
   }
 }

@@ -1,10 +1,303 @@
-main .commerce-login-container {
-    max-width: 700px;
-    margin: 40px auto;
-    width: 100%;
+/* Sign-in card, styled after the Atelier "Welcome back." panel. */
+
+/* the section that holds the block: centred card on a raised paper tone */
+main .section.commerce-login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - var(--nav-height));
+  padding: 2rem var(--gutter) 4rem;
+  background-color: var(--paper-2);
 }
 
-/* Frescopa: no forgot-password page yet, and the SignIn container can't reset inline */
-.commerce-login .auth-sign-in-form__button--forgot {
-    display: none;
+main .section.commerce-login-container > .commerce-login-wrapper {
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
+  padding: 0;
+}
+
+.commerce-login {
+  box-sizing: border-box;
+  width: 100%;
+  padding: clamp(1.8rem, 1.2rem + 2vw, 2.8rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background-color: var(--paper);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* ---- authored intro ---- */
+.commerce-login .commerce-login-intro > * {
+  margin: 0;
+}
+
+.commerce-login .commerce-login-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.commerce-login .commerce-login-eyebrow::before {
+  content: "";
+  width: 1.6em;
+  height: 1px;
+  background: currentcolor;
+  opacity: 0.5;
+}
+
+.commerce-login .commerce-login-intro .commerce-login-title {
+  margin-top: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--burgundy);
+}
+
+.commerce-login .commerce-login-intro .commerce-login-lede {
+  margin-top: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* the authored heading replaces the drop-in's own title */
+.commerce-login.commerce-login--intro .auth-sign-in-form__title {
+  display: none;
+}
+
+.commerce-login .commerce-login-form {
+  margin-top: 1.8rem;
+}
+
+.commerce-login:not(.commerce-login--intro) .commerce-login-form {
+  margin-top: 0;
+}
+
+/* ---- drop-in form ---- */
+.commerce-login .auth-sign-in-form {
+  padding: 0;
+  background: none;
+}
+
+.commerce-login .auth-sign-in-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* the drop-in spaces fields with its own margins; the gap above replaces them */
+.commerce-login .auth-sign-in-form__form > *,
+.commerce-login .dropin-input-password > .dropin-field,
+.commerce-login form[name="signIn_form"] {
+  margin: 0;
+}
+
+/* floating labels become small uppercase labels above the field */
+.commerce-login .dropin-input-container--floating .dropin-input-label-container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+}
+
+.commerce-login .dropin-input-container--floating .dropin-input__label--floating {
+  position: static;
+  transform: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.commerce-login .dropin-input-container {
+  border: 0;
+  background: none;
+}
+
+/* the lock icon doesn't fit the label-above layout */
+.commerce-login .dropin-input-container > svg {
+  display: none;
+}
+
+.commerce-login .dropin-input.dropin-input--floating {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 3rem;
+  padding: 0.85em 1.25em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  transition:
+    border-color var(--dur-1) var(--ease-quint),
+    box-shadow var(--dur-1) var(--ease-quint);
+}
+
+.commerce-login .dropin-input.dropin-input--floating::placeholder {
+  color: transparent;
+}
+
+.commerce-login .dropin-input.dropin-input--floating:focus,
+.commerce-login .dropin-input.dropin-input--floating:focus-visible {
+  outline: none;
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--terracotta) 22%, transparent);
+}
+
+/* error icon: centred in the pill, like the eye icon */
+.commerce-login .dropin-input__field-icon--right {
+  top: calc(1.25rem + 0.5rem + 1.5rem);
+  right: 1.1rem;
+  transform: translateY(-50%);
+}
+
+/* hint lines only take space when they have a message */
+.commerce-login .dropin-field__hint:empty {
+  display: none;
+}
+
+.commerce-login .dropin-input.dropin-input--error {
+  border-color: var(--color-alert-800);
+}
+
+/* show/hide password: keep it inside the pill, next to the right edge */
+.commerce-login .dropin-input-password {
+  position: relative;
+}
+
+.commerce-login .dropin-input-password__eye-icon {
+  position: absolute;
+
+  /* label line + label gap + half the pill, minus half the 24px icon */
+  top: calc(1.25rem + 0.5rem + (3rem - 24px) / 2);
+  right: 0.9rem;
+  transform: none;
+  padding: 0;
+  color: var(--ink-soft);
+}
+
+.commerce-login .dropin-input-password .dropin-input {
+  padding-right: 3rem;
+}
+
+/* ---- actions: Sign in first, then the Sign up link ---- */
+.commerce-login .auth-sign-in-form__form__buttons__wrapper {
+  margin-top: 0.4rem;
+}
+
+.commerce-login .auth-sign-in-form__form__buttons {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.commerce-login .auth-sign-in-form .auth-sign-in-form__button--submit.dropin-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 0;
+  padding: 0.95em 1.6em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: var(--terracotta);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    transform var(--dur-1) var(--ease-quint),
+    background-color var(--dur-1) var(--ease-quint),
+    box-shadow var(--dur-1) var(--ease-quint);
+}
+
+.commerce-login .auth-sign-in-form__button--submit::after {
+  content: "→";
+  transition: transform var(--dur-1) var(--ease-quint);
+}
+
+.commerce-login .auth-sign-in-form .auth-sign-in-form__button--submit.dropin-button:hover {
+  background: var(--terracotta-deep);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.commerce-login .auth-sign-in-form__button--submit:hover::after {
+  transform: translateX(3px);
+}
+
+.commerce-login .auth-sign-in-form__button--submit:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.commerce-login .auth-sign-in-form__button--submit .auth-button__text {
+  color: inherit;
+  font: inherit;
+}
+
+.commerce-login .auth-sign-in-form__button--signup {
+  min-height: 0;
+  border: 0;
+  background: none;
+  color: var(--terracotta);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.commerce-login .auth-sign-in-form__button--signup:hover {
+  color: var(--terracotta-deep);
+}
+
+/* no forgot-password page yet, and the SignIn container can't reset inline;
+   the bare span is the separator that sat between it and "Sign up" */
+.commerce-login .auth-sign-in-form__button--forgot,
+.commerce-login .auth-sign-in-form__form__buttons__combine > span:not([class]) {
+  display: none;
+}
+
+/* error and status banners */
+.commerce-login .auth-sign-in-form__notification {
+  margin-bottom: 1rem;
+  border-radius: var(--r-md);
+}
+
+/* ---- authored note under the form ---- */
+.commerce-login .commerce-login-note {
+  margin-top: 1.4rem;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.commerce-login .commerce-login-note > * {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commerce-login .auth-sign-in-form__button--submit,
+  .commerce-login .auth-sign-in-form__button--submit::after {
+    transition: none;
+  }
+
+  .commerce-login .auth-sign-in-form__button--submit:hover {
+    transform: none;
+  }
 }

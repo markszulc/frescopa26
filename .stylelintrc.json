@@ -6,6 +6,9 @@
         "blocks/product-details/**/*.css",
         "blocks/commerce-cart/**/*.css",
         "blocks/commerce-mini-cart/**/*.css",
+        "blocks/commerce-login/**/*.css",
+        "blocks/commerce-create-account/**/*.css",
+        "blocks/commerce-confirm-account/**/*.css",
         "blocks/modal/**/*.css"
       ],
       "rules": {
