@@ -2,6 +2,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { fetchPlaceholders, CUSTOMER_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/commerce.js';
+import decorateLanguageSelector from './language-selector.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -538,6 +539,7 @@ export default async function decorate(block) {
       if (key === 'cart') decorateMiniCart(link);
       if (key === 'account') decorateAccount(link);
     });
+    decorateLanguageSelector(navTools);
   }
 
   // hamburger for mobile
