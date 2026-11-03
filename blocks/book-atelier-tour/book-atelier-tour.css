@@ -252,8 +252,11 @@ main .book-atelier-tour .bat-cta:focus-visible {
     border-color: rgb(243 237 227 / 20%);
   }
   main .book-atelier-tour .bat-message { color: #e8c9a0; }
-  main .book-atelier-tour .bat-interest { color: #e0a984; border-color: rgb(224 169 132 / 45%); }
-  main .book-atelier-tour .bat-interest.is-on { color: #f3ede3; }
+
+  main .book-atelier-tour .bat-interest {
+    color: #e0a984;
+    border-color: rgb(224 169 132 / 45%);
+  }  main .book-atelier-tour .bat-interest.is-on { color: #f3ede3; }
 }
 body.dark main .book-atelier-tour { background: transparent; }
 body.dark main .book-atelier-tour .bat-card { background: #211914; }
@@ -268,5 +271,8 @@ body.dark main .book-atelier-tour .bat-input {
   border-color: rgb(243 237 227 / 20%);
 }
 body.dark main .book-atelier-tour .bat-message { color: #e8c9a0; }
-body.dark main .book-atelier-tour .bat-interest { color: #e0a984; border-color: rgb(224 169 132 / 45%); }
-body.dark main .book-atelier-tour .bat-interest.is-on { color: #f3ede3; }
+
+body.dark main .book-atelier-tour .bat-interest {
+  color: #e0a984;
+  border-color: rgb(224 169 132 / 45%);
+}body.dark main .book-atelier-tour .bat-interest.is-on { color: #f3ede3; }

@@ -243,21 +243,58 @@ main .get-coffee-machine-details-empty {
 @media (prefers-color-scheme: dark) {
   main .get-coffee-machine-details { color: #f3ede3; }
   main .get-coffee-machine-details-card { background: #2a201a; }
-  main .get-coffee-machine-details-content { background: #2a201a; color: #f3ede3; }
-  main .get-coffee-machine-details-title { color: #e8a985; }
+
+  main .get-coffee-machine-details-content {
+    background: #2a201a;
+    color: #f3ede3;
+  }  main .get-coffee-machine-details-title { color: #e8a985; }
   main .get-coffee-machine-details-price { color: #f3ede3; }
-  main .get-coffee-machine-details-badge { background: rgb(243 237 227 / 12%); color: #f3ede3; }
-  main .get-coffee-machine-details-chip { border-color: rgb(243 237 227 / 28%); color: #f3ede3; }
-  main .get-coffee-machine-details-avail { background: rgb(232 169 133 / 20%); color: #f0c3aa; }
-  main .get-coffee-machine-details-avail.is-waitlist { background: rgb(216 162 79 / 24%); color: #e6c583; }
-}
+
+  main .get-coffee-machine-details-badge {
+    background: rgb(243 237 227 / 12%);
+    color: #f3ede3;
+  }
+
+  main .get-coffee-machine-details-chip {
+    border-color: rgb(243 237 227 / 28%);
+    color: #f3ede3;
+  }
+
+  main .get-coffee-machine-details-avail {
+    background: rgb(232 169 133 / 20%);
+    color: #f0c3aa;
+  }
+
+  main .get-coffee-machine-details-avail.is-waitlist {
+    background: rgb(216 162 79 / 24%);
+    color: #e6c583;
+  }}
 
 body.dark main .get-coffee-machine-details { color: #f3ede3; }
 body.dark main .get-coffee-machine-details-card { background: #2a201a; }
-body.dark main .get-coffee-machine-details-content { background: #2a201a; color: #f3ede3; }
-body.dark main .get-coffee-machine-details-title { color: #e8a985; }
+
+body.dark main .get-coffee-machine-details-content {
+  background: #2a201a;
+  color: #f3ede3;
+}body.dark main .get-coffee-machine-details-title { color: #e8a985; }
 body.dark main .get-coffee-machine-details-price { color: #f3ede3; }
-body.dark main .get-coffee-machine-details-badge { background: rgb(243 237 227 / 12%); color: #f3ede3; }
-body.dark main .get-coffee-machine-details-chip { border-color: rgb(243 237 227 / 28%); color: #f3ede3; }
-body.dark main .get-coffee-machine-details-avail { background: rgb(232 169 133 / 20%); color: #f0c3aa; }
-body.dark main .get-coffee-machine-details-avail.is-waitlist { background: rgb(216 162 79 / 24%); color: #e6c583; }
+
+body.dark main .get-coffee-machine-details-badge {
+  background: rgb(243 237 227 / 12%);
+  color: #f3ede3;
+}
+
+body.dark main .get-coffee-machine-details-chip {
+  border-color: rgb(243 237 227 / 28%);
+  color: #f3ede3;
+}
+
+body.dark main .get-coffee-machine-details-avail {
+  background: rgb(232 169 133 / 20%);
+  color: #f0c3aa;
+}
+
+body.dark main .get-coffee-machine-details-avail.is-waitlist {
+  background: rgb(216 162 79 / 24%);
+  color: #e6c583;
+}

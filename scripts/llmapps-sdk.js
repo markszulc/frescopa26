@@ -615,7 +615,9 @@ export class LLMApp {
       }
       if (typeof window !== 'undefined' && window.openai?.toolOutput) {
         this._toolResultCallbacks.forEach((fn) => {
-          try { fn({ structuredContent: window.openai.toolOutput }); } catch { /* consumer error */ }
+          try {
+            fn({ structuredContent: window.openai.toolOutput });
+          } catch { /* consumer error */ }
         });
       }
     } catch (err) {

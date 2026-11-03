@@ -97,6 +97,11 @@ main .find-frescopa-cafe-map {
   min-width: 0;
   min-height: 240px;
   border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #2a2a2a;
+  color: #2d221b;
 }
 
 main .find-frescopa-cafe-side {
@@ -290,14 +295,6 @@ main .find-frescopa-cafe-cta-secondary:focus-visible {
 
 /* ── Map engine ───────────────────────────────── */
 
-main .find-frescopa-cafe-map {
-  position: relative;
-  overflow: hidden;
-  box-sizing: border-box;
-  background: #2a2a2a;
-  color: #2d221b;
-}
-
 main .find-frescopa-cafe-map.is-fallback {
   background: #f3ede3;
   border: 1px solid rgb(255 255 255 / 14%);
@@ -444,8 +441,13 @@ main .find-frescopa-cafe .leaflet-marker-shadow {
   -webkit-user-drag: none;
 }
 
-main .find-frescopa-cafe .leaflet-tile { filter: inherit; visibility: hidden; }
-main .find-frescopa-cafe .leaflet-tile-loaded { visibility: inherit; }
+main .find-frescopa-cafe .leaflet-tile {
+  filter: brightness(0.72) contrast(1.12);
+  visibility: hidden;
+  max-width: none !important;
+  width: 256px !important;
+  height: 256px !important;
+}main .find-frescopa-cafe .leaflet-tile-loaded { visibility: inherit; }
 main .find-frescopa-cafe .leaflet-zoom-animated { transform-origin: 0 0; }
 main .find-frescopa-cafe .leaflet-pane { z-index: 400; }
 main .find-frescopa-cafe .leaflet-tile-pane { z-index: 200; }
@@ -454,7 +456,14 @@ main .find-frescopa-cafe .leaflet-shadow-pane { z-index: 500; }
 main .find-frescopa-cafe .leaflet-marker-pane { z-index: 600; }
 main .find-frescopa-cafe .leaflet-tooltip-pane { z-index: 650; }
 main .find-frescopa-cafe .leaflet-popup-pane { z-index: 700; }
-main .find-frescopa-cafe .leaflet-control { z-index: 800; position: relative; float: left; clear: both; pointer-events: auto; }
+
+main .find-frescopa-cafe .leaflet-control {
+  z-index: 800;
+  position: relative;
+  float: left;
+  clear: both;
+  pointer-events: auto;
+}
 
 main .find-frescopa-cafe .leaflet-top,
 main .find-frescopa-cafe .leaflet-bottom {
@@ -469,12 +478,6 @@ main .find-frescopa-cafe .leaflet-left { left: 0; }
 main .find-frescopa-cafe .leaflet-right { right: 0; }
 main .find-frescopa-cafe .leaflet-right .leaflet-control { float: right; }
 
-main .find-frescopa-cafe .leaflet-tile {
-  max-width: none !important;
-  width: 256px !important;
-  height: 256px !important;
-}
-
 main .find-frescopa-cafe .leaflet-pane img,
 main .find-frescopa-cafe .leaflet-marker-icon,
 main .find-frescopa-cafe .leaflet-image-layer,
@@ -482,17 +485,11 @@ main .find-frescopa-cafe .leaflet-container img {
   max-width: none;
 }
 
-main .find-frescopa-cafe .leaflet-tile {
-  filter: brightness(0.72) contrast(1.12);
-}
-
 main .find-frescopa-cafe .leaflet-bar a {
   background: #333;
   color: #f4f4f4;
   border-bottom-color: rgb(255 255 255 / 14%);
 }
-
-main .find-frescopa-cafe .leaflet-bar a:hover { background: #444; }
 
 main .find-frescopa-cafe .leaflet-control-attribution {
   background: rgb(20 20 20 / 72%) !important;
@@ -503,6 +500,8 @@ main .find-frescopa-cafe .leaflet-control-attribution {
 }
 
 main .find-frescopa-cafe .leaflet-control-attribution a { color: #8fb8ff !important; }
+
+main .find-frescopa-cafe .leaflet-bar a:hover { background: #444; }
 
 main .find-frescopa-cafe-map-marker {
   background: transparent;

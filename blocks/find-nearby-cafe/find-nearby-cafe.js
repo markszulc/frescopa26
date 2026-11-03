@@ -43,25 +43,38 @@ const SAMPLE_DATA = [
     directions_url: 'https://www.google.com/maps/dir/?api=1&destination=720+E+3rd+St+Los+Angeles+CA+90013',
   },
 ];
-
-const ACCENT = '#ba6945';
 const PIN_FILL = '#9a4f35';
 const MAX_STORES = 6;
 
-function getThemedCardBg(p) {
-  if (!p || !p[0]) return null;
-  let hex = p[0].replace('#', '');
+function getThemedCardBg(palette) {
+  if (!palette || !palette[0]) return null;
+  let hex = palette[0].replace('#', '');
   if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
   if (hex.length !== 6) return null;
-  const [r, g, b] = [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
-  if (isNaN(r)) return null;
-  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
-  const rl = (rr, gg, bb) => 0.2126 * lum(rr) + 0.7152 * lum(gg) + 0.0722 * lum(bb);
-  if (rl(r, g, b) <= 0.12) return { bg: `#${hex}`, fg: '#fff' };
-  let lo = 0; let hi = 1;
-  for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (rl(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) hi = m; else lo = m; }
-  const dr = Math.round(r * lo); const dg = Math.round(g * lo); const db = Math.round(b * lo);
-  return { bg: `#${dr.toString(16).padStart(2, '0')}${dg.toString(16).padStart(2, '0')}${db.toString(16).padStart(2, '0')}`, fg: '#fff' };
+  const [r, g, b] = [
+    parseInt(hex.slice(0, 2), 16),
+    parseInt(hex.slice(2, 4), 16),
+    parseInt(hex.slice(4, 6), 16),
+  ];
+  if (Number.isNaN(r)) return null;
+  const lum = (c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const relLum = (rr, gg, bb) => 0.2126 * lum(rr) + 0.7152 * lum(gg) + 0.0722 * lum(bb);
+  if (relLum(r, g, b) <= 0.12) return { bg: `#${hex}`, fg: '#fff' };
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 20; i += 1) {
+    const m = (lo + hi) / 2;
+    if (relLum(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) {
+      hi = m;
+    } else {
+      lo = m;
+    }
+  }
+  const channels = [r, g, b].map((c) => Math.round(c * lo).toString(16).padStart(2, '0'));
+  return { bg: `#${channels.join('')}`, fg: '#fff' };
 }
 
 const PALETTE = ['#f3ede3', '#ba6945', '#d8a24f'];
@@ -76,14 +89,14 @@ const MAP_TILE_ATTRIB = 'Esri, HERE, Garmin, &copy; <a href="https://www.openstr
 const MAP_TILE_MAX_NATIVE_ZOOM = 16;
 const MAP_TILE_MAX_ZOOM = 18;
 
-let __mapLeafletPromise = null;
+let mapLeafletPromise = null;
 
 function loadLeaflet() {
   const cssLink = document.querySelector(`link[data-leaflet="${MAP_LEAFLET_VERSION}"]`);
   if (window.L && cssLink && cssLink.dataset.loaded === '1') {
     return Promise.resolve(window.L);
   }
-  if (__mapLeafletPromise) return __mapLeafletPromise;
+  if (mapLeafletPromise) return mapLeafletPromise;
 
   const cssReady = new Promise((resolve) => {
     const existing = document.querySelector(`link[data-leaflet="${MAP_LEAFLET_VERSION}"]`);
@@ -108,21 +121,21 @@ function loadLeaflet() {
     const script = document.createElement('script');
     script.src = MAP_LEAFLET_JS;
     script.async = true;
-    script.onload = function () {
+    script.onload = function onload() {
       if (window.L) resolve(window.L);
       else reject(new Error('Leaflet loaded but window.L is missing'));
     };
-    script.onerror = function () { reject(new Error('Failed to load Leaflet')); };
+    script.onerror = function onerror() { reject(new Error('Failed to load Leaflet')); };
     document.head.appendChild(script);
   });
 
-  __mapLeafletPromise = Promise.all([jsReady, cssReady]).then((r) => r[0]);
-  return __mapLeafletPromise;
+  mapLeafletPromise = Promise.all([jsReady, cssReady]).then((r) => r[0]);
+  return mapLeafletPromise;
 }
 
 function mapCoordsOf(item) {
   if (!item) return null;
-  const num = function (v) {
+  const num = function num(v) {
     if (v === null || v === undefined || v === '') return null;
     const n = typeof v === 'number' ? v : parseFloat(String(v));
     return Number.isFinite(n) ? n : null;
@@ -217,11 +230,11 @@ function mapDeclutterLabels(points, opts) {
   points.forEach((p) => { if (p.pin) mapPromoteToLabel(p); });
 
   const PAD = 2;
-  const overlaps = function (a, b) {
+  const overlaps = function overlaps(a, b) {
     return a.left < b.right + PAD && b.left < a.right + PAD
       && a.top < b.bottom + PAD && b.top < a.bottom + PAD;
   };
-  const rectOf = function (p) {
+  const rectOf = function rectOf(p) {
     const r = p.pin ? p.pin.getBoundingClientRect() : null;
     return r && r.width && r.height ? r : null;
   };
@@ -235,10 +248,11 @@ function mapDeclutterLabels(points, opts) {
     for (let i = 0; i < labelled.length; i += 1) {
       const p = labelled[i];
       const r = rectOf(p);
-      if (!r) continue;
-      const hitsLabel = kept.some((k) => overlaps(r, k));
-      if (hitsLabel) { demoted = p; break; }
-      kept.push(r);
+      if (r) {
+        const hitsLabel = kept.some((k) => overlaps(r, k));
+        if (hitsLabel) { demoted = p; break; }
+        kept.push(r);
+      }
     }
     if (!demoted) return;
     mapDemoteLabelToPin(demoted, points.indexOf(demoted) + 1, opts);
@@ -250,7 +264,7 @@ function mapWhenWidthStable(el) {
     let last = -1;
     let stable = 0;
     const started = Date.now();
-    const tick = function () {
+    const tick = function tick() {
       const w = el.offsetWidth;
       if (w > 0 && w === last) stable += 1; else stable = 0;
       last = w;
@@ -344,7 +358,7 @@ function mapRenderLeaflet(L, container, points, onSelect, opts) {
     p.marker = marker;
     p.pin = pin;
 
-    const attach = function () {
+    const attach = function attach() {
       const host = marker.getElement();
       if (host) host.appendChild(pin);
     };
@@ -357,7 +371,7 @@ function mapRenderLeaflet(L, container, points, onSelect, opts) {
   mapDeclutterLabels(points, opts);
   map.on('zoomend', () => { mapDeclutterLabels(points, opts); });
 
-  const refresh = function () {
+  const refresh = function refresh() {
     map.invalidateSize(false);
     tiles.redraw();
     mapDeclutterLabels(points, opts);
@@ -449,9 +463,10 @@ async function decorate(block, bridge) {
       allStores = SAMPLE_DATA;
     } else {
       try {
-        const _result = await bridge.toolResult;
-        const sc = _result?.structuredContent || {};
-        // structuredContent.cafes — derived from action name "find_nearby_cafe" (bare array outputSchema rule)
+        const result = await bridge.toolResult;
+        const sc = result?.structuredContent || {};
+        // structuredContent.cafes — derived from action name "find_nearby_cafe" (bare array
+        // outputSchema rule)
         allStores = sc.cafes || sc.stores || sc.locations || (Array.isArray(sc) ? sc : null);
       } catch (e) { allStores = null; }
     }
@@ -498,7 +513,7 @@ async function decorate(block, bridge) {
     btn.textContent = 'Find Nearby';
     formCard.appendChild(btn);
 
-    const submit = function () {
+    const submit = function submit() {
       const value = input.value.trim();
       if (!value) { input.focus(); return; }
       if (bridge && bridge.sendMessage) bridge.sendMessage(`Find Fréscopa cafés near ${value}`);
@@ -599,8 +614,11 @@ async function decorate(block, bridge) {
       dirBtn.textContent = 'Get Directions';
       dirBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (store.directions_url && bridge && bridge.openLink) bridge.openLink(store.directions_url);
-        else if (bridge && bridge.sendMessage) bridge.sendMessage(`How do I get to ${store.name || 'this location'}?`);
+        if (store.directions_url && bridge && bridge.openLink) {
+          bridge.openLink(store.directions_url);
+        } else if (bridge && bridge.sendMessage) {
+          bridge.sendMessage(`How do I get to ${store.name || 'this location'}?`);
+        }
       });
       actions.appendChild(dirBtn);
 
@@ -671,7 +689,9 @@ async function decorate(block, bridge) {
     let resizeTimer;
     const ro = new ResizeObserver(() => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { bridge.reportSize(block.offsetWidth, block.offsetHeight); }, 150);
+      resizeTimer = setTimeout(() => {
+        bridge.reportSize(block.offsetWidth, block.offsetHeight);
+      }, 150);
     });
     ro.observe(block);
   }

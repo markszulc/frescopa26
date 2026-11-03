@@ -270,22 +270,53 @@ main .get-machine-details-empty {
 @media (prefers-color-scheme: dark) {
   main .get-machine-details { background: transparent; }
   main .get-machine-details-card { background: #211914; }
-  main .get-machine-details-content { background: #211914; color: #f3ede3; }
-  main .get-machine-details-title { color: #f3ede3; }
+
+  main .get-machine-details-content {
+    background: #211914;
+    color: #f3ede3;
+  }  main .get-machine-details-title { color: #f3ede3; }
   main .get-machine-details-price { color: #f3ede3; }
   main .get-machine-details-eyebrow { color: #d4a24a; }
   main .get-machine-details-rating { color: #d4a24a; }
-  main .get-machine-details-badge.is-waitlist { background: rgb(243 237 227 / 15%); color: #f3ede3; }
-  main .get-machine-details-chip { background: rgb(243 237 227 / 8%); border-color: rgb(243 237 227 / 18%); color: #f3ede3; }
-  main .get-machine-details-cta-secondary { color: #e2a882; border-color: rgb(226 168 130 / 50%); }
-}
+
+  main .get-machine-details-badge.is-waitlist {
+    background: rgb(243 237 227 / 15%);
+    color: #f3ede3;
+  }
+
+  main .get-machine-details-chip {
+    background: rgb(243 237 227 / 8%);
+    border-color: rgb(243 237 227 / 18%);
+    color: #f3ede3;
+  }
+
+  main .get-machine-details-cta-secondary {
+    color: #e2a882;
+    border-color: rgb(226 168 130 / 50%);
+  }}
 body.dark main .get-machine-details { background: transparent; }
 body.dark main .get-machine-details-card { background: #211914; }
-body.dark main .get-machine-details-content { background: #211914; color: #f3ede3; }
-body.dark main .get-machine-details-title { color: #f3ede3; }
+
+body.dark main .get-machine-details-content {
+  background: #211914;
+  color: #f3ede3;
+}body.dark main .get-machine-details-title { color: #f3ede3; }
 body.dark main .get-machine-details-price { color: #f3ede3; }
 body.dark main .get-machine-details-eyebrow { color: #d4a24a; }
 body.dark main .get-machine-details-rating { color: #d4a24a; }
-body.dark main .get-machine-details-badge.is-waitlist { background: rgb(243 237 227 / 15%); color: #f3ede3; }
-body.dark main .get-machine-details-chip { background: rgb(243 237 227 / 8%); border-color: rgb(243 237 227 / 18%); color: #f3ede3; }
-body.dark main .get-machine-details-cta-secondary { color: #e2a882; border-color: rgb(226 168 130 / 50%); }
+
+body.dark main .get-machine-details-badge.is-waitlist {
+  background: rgb(243 237 227 / 15%);
+  color: #f3ede3;
+}
+
+body.dark main .get-machine-details-chip {
+  background: rgb(243 237 227 / 8%);
+  border-color: rgb(243 237 227 / 18%);
+  color: #f3ede3;
+}
+
+body.dark main .get-machine-details-cta-secondary {
+  color: #e2a882;
+  border-color: rgb(226 168 130 / 50%);
+}

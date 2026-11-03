@@ -20,9 +20,6 @@ const SAMPLE_DATA = [{
 
 // Brand colors from DESIGN_TOKENS (Warm Atelier). Cream surface + ink text passes WCAG AA,
 // so the content panel uses the real editorial cream ground rather than a darkened strip.
-const SURFACE = '#f3ede3';
-const INK = '#2d221b';
-const ACCENT = '#ba6945';
 const CARD_COLORS = ['#ba6945', '#9a4f35', '#4d2622', '#d4a24a', '#503d2c'];
 
 function isPurchasable(availability) {
@@ -39,7 +36,7 @@ function renderDetail(block, item, bridge) {
   const colorDiv = () => {
     const d = document.createElement('div');
     d.className = 'get-machine-details-image-placeholder';
-    d.style.backgroundColor = CARD_COLORS[0];
+    [d.style.backgroundColor] = CARD_COLORS;
     return d;
   };
   if (item.image_url) {
@@ -187,8 +184,8 @@ export default async function decorate(block, bridge) {
       item = Array.isArray(SAMPLE_DATA) ? SAMPLE_DATA[0] : SAMPLE_DATA;
     } else {
       // Detail concept — structuredContent IS the item (flat). No wrapper key.
-      const _result = await bridge.toolResult;
-      item = _result?.structuredContent || {};
+      const result = await bridge.toolResult;
+      item = result?.structuredContent || {};
     }
   } else {
     item = Array.isArray(SAMPLE_DATA) ? SAMPLE_DATA[0] : SAMPLE_DATA;

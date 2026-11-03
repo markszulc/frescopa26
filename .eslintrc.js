@@ -17,6 +17,36 @@ module.exports = {
   },
   overrides: [
     {
+      files: [
+        'blocks/discover-coffee-machines/*.js',
+        'blocks/find-coffee-by-taste/*.js',
+        'blocks/find-frescopa-cafe/*.js',
+        'blocks/find-nearby-cafe/*.js',
+        'blocks/join-machine-waitlist/*.js',
+        'blocks/preview-atelier-routine/*.js',
+        'blocks/search-coffee-machines/*.js',
+      ],
+      rules: {
+        // Renderers use hoisted declarations; variables must still be defined first.
+        'no-use-before-define': ['error', { functions: false }],
+      },
+    },
+    {
+      files: ['blocks/search/search.js', 'postinstall.js'],
+      rules: {
+        'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      },
+    },
+    {
+      files: ['tools/plugins/helloworld/*.js'],
+      rules: {
+        // These modules are resolved by the plugin's browser import map and DA host.
+        'import/no-unresolved': ['error', {
+          ignore: ['^da-lit$', '^https://da\\.live/nx/utils/sdk\\.js$'],
+        }],
+      },
+    },
+    {
       // Adobe Commerce boilerplate code, kept as-is upstream
       files: [
         'scripts/commerce.js',
