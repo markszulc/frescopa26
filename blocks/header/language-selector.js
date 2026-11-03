@@ -32,12 +32,11 @@ export function getLanguage(pathname) {
 
 export function getLanguageHref(language, location) {
   const current = getLanguage(location.pathname);
-  if (language === current) return `${location.pathname}${location.search}${location.hash}`;
   const pagePath = current.prefix
     ? location.pathname.slice(current.prefix.length + 1)
     : location.pathname;
-  const suffix = pagePath === '/' ? '' : pagePath;
-  const pathname = language.prefix ? `/${language.prefix}${suffix}` : pagePath || '/';
+  const suffix = pagePath || '/';
+  const pathname = language.prefix ? `/${language.prefix}${suffix}` : suffix;
   return `${pathname}${location.search}${location.hash}`;
 }
 
@@ -49,7 +48,8 @@ export default function decorateLanguageSelector(navTools) {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'nav-language-button';
-  button.setAttribute('aria-label', `Select language, current language: ${current.label}`);
+  const labels = navTools.dataset;
+  button.setAttribute('aria-label', (labels.selectLanguage || 'Select language, current language: {language}').replace('{language}', current.label));
   button.setAttribute('aria-expanded', 'false');
   button.setAttribute('aria-controls', 'nav-language-menu');
   button.innerHTML = `
@@ -67,7 +67,7 @@ export default function decorateLanguageSelector(navTools) {
   menu.id = 'nav-language-menu';
   menu.className = 'nav-language-menu';
   menu.setAttribute('popover', 'auto');
-  menu.setAttribute('aria-label', 'Languages');
+  menu.setAttribute('aria-label', labels.languages || 'Languages');
   LANGUAGES.forEach((language) => {
     const option = document.createElement('li');
     const link = document.createElement('a');

@@ -2,7 +2,8 @@ import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { fetchPlaceholders, CUSTOMER_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/commerce.js';
-import decorateLanguageSelector from './language-selector.js';
+import decorateLanguageSelector, { getLanguage } from './language-selector.js';
+import { loadNavigation, getNavigationTool } from './navigation.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -80,7 +81,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  button.setAttribute('aria-label', expanded ? nav.dataset.openNavigation : nav.dataset.closeNavigation);
   // enable nav dropdown keyboard accessibility
   if (navSections) {
     const navDrops = navSections.querySelectorAll('.nav-drop');
@@ -119,7 +120,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  */
 async function decorateMiniCart(link) {
   const labels = await fetchPlaceholders();
-  const cartLabel = labels.Global?.Cart ?? 'Cart';
+  const cartLabel = link.getAttribute('aria-label') || labels.Global?.Cart || 'Cart';
   const countLabel = (count) => (count === 1
     ? labels.Global?.CartWithItem?.replace('{count}', count) ?? `${cartLabel}, ${count} item`
     : labels.Global?.CartWithItems?.replace('{count}', count) ?? `${cartLabel}, ${count} items`);
@@ -297,13 +298,12 @@ function readCookie(name) {
  * State follows the auth drop-in's `authenticated` event, so no reload is needed.
  * @param {Element} link The decorated account link from the nav tools
  */
-async function decorateAccount(link) {
+async function decorateAccount(link, navLabels) {
   const labels = await fetchPlaceholders();
-  const signInText = labels.Global?.SignIn ?? 'Sign in';
-  const signOutText = labels.Global?.SignOut ?? 'Sign out';
-  const greeting = (name) => (labels.Global?.AccountGreeting ?? 'Hi {name}!').replace('{name}', name);
-  const menuLabel = (name) => labels.Global?.AccountMenu?.replace('{name}', name)
-    ?? `Account menu for ${name}`;
+  const signInText = link.getAttribute('aria-label') || labels.Global?.SignIn || 'Sign in';
+  const signOutText = navLabels.signOut ?? labels.Global?.SignOut ?? 'Sign out';
+  const greeting = (name) => (navLabels.accountGreeting ?? labels.Global?.AccountGreeting ?? 'Hi {name}!').replace('{name}', name);
+  const menuLabel = (name) => (navLabels.accountMenu ?? labels.Global?.AccountMenu ?? 'Account menu for {name}').replace('{name}', name);
   const icon = link.innerHTML;
 
   const wrap = document.createElement('div');
@@ -453,13 +453,13 @@ async function decorateAccount(link) {
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/fragments/nav';
-  const fragment = await loadFragment(navPath);
+  const { fragment, path: navPath } = await loadNavigation(navMeta, window.location, loadFragment);
 
   // decorate nav DOM
   block.textContent = '';
   const nav = document.createElement('nav');
   nav.id = 'nav';
+  nav.lang = getLanguage(navPath).code;
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
   const classes = ['brand', 'sections', 'tools'];
@@ -467,6 +467,10 @@ export default async function decorate(block) {
     const section = nav.children[i];
     if (section) section.classList.add(`nav-${c}`);
   });
+  const navLabels = nav.querySelector('.nav-tools')?.dataset || {};
+  nav.dataset.openNavigation = navLabels.openNavigation || 'Open navigation';
+  nav.dataset.closeNavigation = navLabels.closeNavigation || 'Close navigation';
+  nav.setAttribute('aria-label', navLabels.navigationLabel || 'Main navigation');
 
   const navBrand = nav.querySelector('.nav-brand');
   const brandLink = navBrand.querySelector('.button');
@@ -516,9 +520,7 @@ export default async function decorate(block) {
     };
     navTools.querySelectorAll('a').forEach((link) => {
       const label = link.textContent.trim();
-      // match by href fragment (#search) or by the link label (Search)
-      const hrefKey = (link.getAttribute('href') || '').replace(/^#/, '').toLowerCase();
-      const key = toolIcons[hrefKey] ? hrefKey : label.toLowerCase();
+      const key = getNavigationTool(link.getAttribute('href') || '', label, window.location);
       const icon = toolIcons[key];
       if (!icon) return;
       link.setAttribute('aria-label', label);
@@ -537,7 +539,7 @@ export default async function decorate(block) {
         });
       }
       if (key === 'cart') decorateMiniCart(link);
-      if (key === 'account') decorateAccount(link);
+      if (key === 'account') decorateAccount(link, navLabels);
     });
     decorateLanguageSelector(navTools);
   }
@@ -545,9 +547,10 @@ export default async function decorate(block) {
   // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
-  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
+  hamburger.innerHTML = `<button type="button" aria-controls="nav">
       <span class="nav-hamburger-icon"></span>
     </button>`;
+  hamburger.querySelector('button').setAttribute('aria-label', nav.dataset.openNavigation);
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
