@@ -1,7 +1,7 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { fetchPlaceholders } from '../../scripts/commerce.js';
+import { fetchPlaceholders, CUSTOMER_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/commerce.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -272,6 +272,180 @@ async function decorateMiniCart(link) {
   }, { eager: true });
 }
 
+const AUTH_COOKIES = [
+  'auth_dropin_user_token',
+  'auth_dropin_firstname',
+  'auth_dropin_lastname',
+  'auth_dropin_admin_session',
+  'auth_dropin_website_code',
+];
+
+function readCookie(name) {
+  const entry = document.cookie.split(';').map((c) => c.trim()).find((c) => c.startsWith(`${name}=`));
+  if (!entry) return '';
+  try {
+    return decodeURIComponent(entry.slice(name.length + 1));
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Turns the nav's account tool into a sign-in link (signed out) or a menu
+ * button with the customer's first name and a sign-out action (signed in).
+ * State follows the auth drop-in's `authenticated` event, so no reload is needed.
+ * @param {Element} link The decorated account link from the nav tools
+ */
+async function decorateAccount(link) {
+  const labels = await fetchPlaceholders();
+  const signInText = labels.Global?.SignIn ?? 'Sign in';
+  const signOutText = labels.Global?.SignOut ?? 'Sign out';
+  const menuLabel = (name) => labels.Global?.AccountMenu?.replace('{name}', name)
+    ?? `Account menu for ${name}`;
+  const icon = link.innerHTML;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'nav-account';
+
+  // Signed out: a plain link to the login page that returns here afterwards.
+  const signIn = document.createElement('a');
+  signIn.className = 'nav-account-link';
+  const { pathname, search, hash } = window.location;
+  signIn.href = pathname.startsWith(`${CUSTOMER_PATH}/`)
+    ? CUSTOMER_LOGIN_PATH
+    : `${CUSTOMER_LOGIN_PATH}?returnUrl=${encodeURIComponent(`${pathname}${search}${hash}`)}`;
+  signIn.innerHTML = icon;
+  const signInLabel = document.createElement('span');
+  signInLabel.className = 'nav-account-label';
+  signInLabel.textContent = signInText;
+  signIn.append(signInLabel);
+
+  // Signed in: a disclosure button with the first name, and a sign-out menu.
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'nav-account-button';
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-controls', 'nav-account-menu');
+  button.innerHTML = icon;
+  const nameLabel = document.createElement('span');
+  nameLabel.className = 'nav-account-label';
+  button.append(nameLabel);
+
+  const menu = document.createElement('ul');
+  menu.className = 'nav-account-menu';
+  menu.id = 'nav-account-menu';
+  menu.hidden = true;
+  const signOutItem = document.createElement('li');
+  const signOut = document.createElement('button');
+  signOut.type = 'button';
+  signOut.className = 'nav-account-signout';
+  signOut.textContent = signOutText;
+  signOutItem.append(signOut);
+  menu.append(signOutItem);
+
+  wrap.append(signIn, button, menu);
+  link.replaceWith(wrap);
+
+  // On a page that already has the sign-in form, point at the form instead of
+  // navigating away (and never wrap the login page in its own returnUrl).
+  const loginForm = document.querySelector('main .commerce-login');
+  if (loginForm) {
+    signIn.href = `${pathname}${search}`;
+    signIn.addEventListener('click', (e) => {
+      const email = loginForm.querySelector('input[name="email"], input');
+      if (!email) return;
+      e.preventDefault();
+      email.focus();
+    });
+  }
+
+  /* eslint-disable no-use-before-define */
+  const onKeydown = (e) => {
+    if (e.key !== 'Escape') return;
+    // keep the nav's own Escape handling (on window) from also firing
+    e.stopPropagation();
+    closeMenu(true);
+  };
+  const onOutside = (e) => {
+    if (!wrap.contains(e.target)) closeMenu(false);
+  };
+  /* eslint-enable no-use-before-define */
+
+  function closeMenu(restoreFocus) {
+    if (menu.hidden) return;
+    menu.hidden = true;
+    button.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('keydown', onKeydown);
+    document.removeEventListener('click', onOutside);
+    wrap.removeEventListener('focusout', onFocusOut); // eslint-disable-line no-use-before-define
+    if (restoreFocus) button.focus();
+  }
+
+  function onFocusOut(e) {
+    if (e.relatedTarget && !wrap.contains(e.relatedTarget)) closeMenu(false);
+  }
+
+  function openMenu() {
+    menu.hidden = false;
+    button.setAttribute('aria-expanded', 'true');
+    document.addEventListener('keydown', onKeydown);
+    document.addEventListener('click', onOutside);
+    wrap.addEventListener('focusout', onFocusOut);
+  }
+
+  button.addEventListener('click', () => {
+    if (menu.hidden) openMenu();
+    else closeMenu(false);
+  });
+
+  const render = (authenticated) => {
+    const signedIn = authenticated && !!readCookie('auth_dropin_user_token');
+    if (signedIn) {
+      const name = readCookie('auth_dropin_firstname').trim() || (labels.Global?.Account ?? 'Account');
+      nameLabel.textContent = name;
+      button.setAttribute('aria-label', menuLabel(name));
+    } else {
+      closeMenu(false);
+    }
+    signIn.hidden = signedIn;
+    button.hidden = !signedIn;
+    wrap.classList.toggle('is-signed-in', signedIn);
+  };
+
+  // Show the cookie state immediately, then follow the drop-in's validation.
+  render(!!readCookie('auth_dropin_user_token'));
+  events.on('authenticated', render, { eager: true });
+
+  signOut.addEventListener('click', async () => {
+    signOut.disabled = true;
+    let revoked = false;
+    try {
+      const { revokeCustomerToken } = await import('@dropins/storefront-auth/api.js');
+      const result = await revokeCustomerToken();
+      revoked = !!result?.success;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('Sign out: could not revoke the token on the server', error);
+    }
+    if (!revoked) {
+      // Still sign out locally so the browser no longer holds the token.
+      AUTH_COOKIES.forEach((name) => {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+      });
+      events.emit('authenticated', false);
+    }
+    signOut.disabled = false;
+    if (window.location.pathname.startsWith(`${CUSTOMER_PATH}/`)) {
+      window.location.assign(CUSTOMER_LOGIN_PATH);
+      return;
+    }
+    // Update the header now (the drop-in's event may arrive later) so the
+    // sign-in link is visible and can take focus.
+    render(false);
+    signIn.focus();
+  });
+}
+
 /**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -363,6 +537,7 @@ export default async function decorate(block) {
         });
       }
       if (key === 'cart') decorateMiniCart(link);
+      if (key === 'account') decorateAccount(link);
     });
   }
 
