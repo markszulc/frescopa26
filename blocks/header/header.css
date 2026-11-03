@@ -614,3 +614,131 @@ body.minicart-open {
 .minicart-drawer .cart-cart-summary-list__heading {
   display: none;
 }
+
+/* account: sign-in link (signed out) or name button + sign-out menu (signed in) */
+header nav .nav-tools .nav-account {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+header nav .nav-tools .nav-account [hidden] {
+  display: none;
+}
+
+header nav .nav-tools .nav-account-link,
+header nav .nav-tools .nav-account-button {
+  gap: 0.5em;
+}
+
+header nav .nav-tools .nav-account-button {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-quint);
+}
+
+header nav .nav-tools .nav-account-button:hover,
+header nav .nav-tools .nav-account-button[aria-expanded='true'] {
+  color: var(--terracotta);
+}
+
+header nav .nav-tools .nav-account-link:focus-visible,
+header nav .nav-tools .nav-account-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+header nav .nav-tools .nav-account svg {
+  display: block;
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+header nav .nav-tools .nav-account-label {
+  max-width: 12ch;
+  overflow: hidden;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+header nav .nav-tools .nav-account-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 10;
+  min-width: 160px;
+  margin: 0;
+  padding: var(--space-2xs);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background-color: var(--paper);
+  box-shadow: var(--shadow-md);
+  line-height: 1.2;
+}
+
+header nav .nav-tools .nav-account-signout {
+  display: block;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: var(--r-sm);
+  padding: 0.7em 0.9em;
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease-quint), color var(--dur-1) var(--ease-quint);
+}
+
+header nav .nav-tools .nav-account-signout:hover {
+  background-color: var(--paper-2);
+  color: var(--terracotta);
+}
+
+header nav .nav-tools .nav-account-signout:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+header nav .nav-tools .nav-account-signout:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+/* small screens: icon only, the label stays available to assistive tech */
+@media (width < 600px) {
+  header nav .nav-tools .nav-account-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-account-button {
+  color: var(--cream);
+}
+
+body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-account-button:hover,
+body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-account-button[aria-expanded='true'] {
+  color: var(--amber);
+}

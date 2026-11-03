@@ -6,10 +6,12 @@ main > .section,
 main > .section:first-of-type {
   margin: 0;
 }
+
 main > .section > div {
   max-width: none;
   padding: 0;
 }
+
 body {
   overflow: auto;
 }
@@ -102,7 +104,7 @@ main .find-coffee-by-taste .coffee-chip {
   line-height: 1;
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(216, 162, 79, 0.22);
+  background: rgb(216 162 79 / 22%);
   color: inherit;
   white-space: nowrap;
 }
@@ -147,7 +149,7 @@ main .find-coffee-by-taste .coffee-cta {
   width: 100%;
   padding: 8px;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgb(255 255 255 / 12%);
   border-radius: 999px;
   background: #9a4f35;
   color: #f2ece1;

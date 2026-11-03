@@ -3,9 +3,21 @@
   "overrides": [
     {
       "files": [
+        "blocks/content-ai-search/content-ai-search.css",
+        "blocks/search-coffee-machines/search-coffee-machines.css"
+      ],
+      "rules": {
+        "selector-class-pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$"
+      }
+    },
+    {
+      "files": [
         "blocks/product-details/**/*.css",
         "blocks/commerce-cart/**/*.css",
         "blocks/commerce-mini-cart/**/*.css",
+        "blocks/commerce-login/**/*.css",
+        "blocks/commerce-create-account/**/*.css",
+        "blocks/commerce-confirm-account/**/*.css",
         "blocks/modal/**/*.css"
       ],
       "rules": {

@@ -6,10 +6,12 @@ main > .section,
 main > .section:first-of-type {
   margin: 0;
 }
+
 main > .section > div {
   max-width: none;
   padding: 0;
 }
+
 body {
   overflow: auto;
 }
@@ -30,6 +32,7 @@ main .compare-coffee-machines [class*="name"] {
 
 main .compare-coffee-machines .ccm-wrap {
   --label-col: 96px;
+
   border-radius: 16px;
   overflow: hidden;
   box-sizing: border-box;
@@ -94,7 +97,7 @@ main .compare-coffee-machines .ccm-avail {
   letter-spacing: 0.04em;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgb(255 255 255 / 14%);
   color: inherit;
 }
 
@@ -113,7 +116,7 @@ main .compare-coffee-machines .ccm-row {
 }
 
 main .compare-coffee-machines .ccm-row-alt {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(255 255 255 / 5%);
 }
 
 main .compare-coffee-machines .ccm-label {

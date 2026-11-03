@@ -1,0 +1,339 @@
+/* Auth card (sign in, create account, confirm account), styled after the
+ * Atelier "Welcome back." panel. Shared: commerce-create-account and
+ * commerce-confirm-account import this file. The block JS adds the
+ * commerce-auth-card class (see buildAuthCard in commerce-login.js). */
+
+/* the section that holds the block: centred card on a raised paper tone */
+main .section:is(
+  .commerce-login-container,
+  .commerce-create-account-container,
+  .commerce-confirm-account-container
+) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - var(--nav-height));
+  padding: 2rem var(--gutter) 4rem;
+  background-color: var(--paper-2);
+}
+
+main .section > :is(
+  .commerce-login-wrapper,
+  .commerce-create-account-wrapper,
+  .commerce-confirm-account-wrapper
+) {
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
+  padding: 0;
+}
+
+.commerce-auth-card {
+  box-sizing: border-box;
+  width: 100%;
+  padding: clamp(1.8rem, 1.2rem + 2vw, 2.8rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background-color: var(--paper);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* ---- authored intro ---- */
+.commerce-auth-card .commerce-auth-card-intro > * {
+  margin: 0;
+}
+
+.commerce-auth-card .commerce-auth-card-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.commerce-auth-card .commerce-auth-card-eyebrow::before {
+  content: "";
+  width: 1.6em;
+  height: 1px;
+  background: currentcolor;
+  opacity: 0.5;
+}
+
+.commerce-auth-card .commerce-auth-card-intro .commerce-auth-card-title {
+  margin-top: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--burgundy);
+}
+
+.commerce-auth-card .commerce-auth-card-intro .commerce-auth-card-lede {
+  margin-top: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* the authored heading replaces the drop-in's own title */
+.commerce-auth-card.commerce-auth-card--intro :is(.auth-sign-in-form__title, .auth-sign-up-form__title) {
+  display: none;
+}
+
+.commerce-auth-card .commerce-auth-card-form {
+  margin-top: 1.8rem;
+}
+
+.commerce-auth-card:not(.commerce-auth-card--intro) .commerce-auth-card-form {
+  margin-top: 0;
+}
+
+/* ---- drop-in forms ---- */
+.commerce-auth-card :is(.auth-sign-in-form, .auth-sign-up-form) {
+  padding: 0;
+  background: none;
+}
+
+/* single column: the sign-up form's side-by-side grid is too tight here */
+.commerce-auth-card :is(.auth-sign-in-form__form, .auth-sign-up-form__form) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* the drop-ins space fields with their own margins; the gap above replaces them */
+.commerce-auth-card :is(.auth-sign-in-form__form, .auth-sign-up-form__form) > *,
+.commerce-auth-card .auth-sign-up-form__form__confirm-wrapper > *,
+.commerce-auth-card .dropin-input-password > .dropin-field,
+.commerce-auth-card form {
+  margin: 0;
+}
+
+.commerce-auth-card .auth-sign-up-form__form__confirm-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* floating labels become small uppercase labels above the field */
+.commerce-auth-card .dropin-input-container--floating .dropin-input-label-container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+}
+
+.commerce-auth-card .dropin-input-container--floating .dropin-input__label--floating {
+  position: static;
+  transform: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.commerce-auth-card .dropin-input-container {
+  border: 0;
+  background: none;
+}
+
+/* the lock icon doesn't fit the label-above layout */
+.commerce-auth-card .dropin-input-container > svg {
+  display: none;
+}
+
+.commerce-auth-card .dropin-input.dropin-input--floating {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 3rem;
+  padding: 0.85em 1.25em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  transition:
+    border-color var(--dur-1) var(--ease-quint),
+    box-shadow var(--dur-1) var(--ease-quint);
+}
+
+.commerce-auth-card .dropin-input.dropin-input--floating::placeholder {
+  color: transparent;
+}
+
+.commerce-auth-card .dropin-input.dropin-input--floating:focus,
+.commerce-auth-card .dropin-input.dropin-input--floating:focus-visible {
+  outline: none;
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--terracotta) 22%, transparent);
+}
+
+/* error icon: centred in the pill, like the eye icon */
+.commerce-auth-card .dropin-input__field-icon--right {
+  top: calc(1.25rem + 0.5rem + 1.5rem);
+  right: 1.1rem;
+  transform: translateY(-50%);
+}
+
+/* hint lines only take space when they have a message */
+.commerce-auth-card .dropin-field__hint:empty {
+  display: none;
+}
+
+.commerce-auth-card .dropin-input.dropin-input--error {
+  border-color: var(--color-alert-800);
+}
+
+/* show/hide password: keep it inside the pill, next to the right edge */
+.commerce-auth-card .dropin-input-password {
+  position: relative;
+}
+
+.commerce-auth-card .dropin-input-password__eye-icon {
+  position: absolute;
+
+  /* label line + label gap + half the pill, minus half the 24px icon */
+  top: calc(1.25rem + 0.5rem + (3rem - 24px) / 2);
+  right: 0.9rem;
+  transform: none;
+  padding: 0;
+  color: var(--ink-soft);
+}
+
+.commerce-auth-card .dropin-input-password .dropin-input {
+  padding-right: 3rem;
+}
+
+/* live password rules (sign up) */
+.commerce-auth-card .dropin-password-status-indicator {
+  margin-top: 0.5rem;
+  padding-left: 1.25em;
+  font-size: 0.8rem;
+}
+
+.commerce-auth-card .dropin-password-status-indicator:empty {
+  display: none;
+}
+
+/* privacy consent (sign up); the drop-in slot sets its text styles inline */
+.commerce-auth-card [data-slot="PrivacyPolicyConsent"] span {
+  margin-bottom: 0 !important;
+  line-height: 1.5;
+}
+
+/* ---- actions: primary first, then the secondary link ---- */
+.commerce-auth-card .dropin-button .auth-button__text {
+  color: inherit;
+  font: inherit;
+}
+
+.commerce-auth-card :is(.auth-sign-in-form__form__buttons__wrapper, .auth-sign-up-form-buttons) {
+  margin-top: 0.4rem;
+}
+
+.commerce-auth-card :is(.auth-sign-in-form__form__buttons, .auth-sign-up-form-buttons) {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.commerce-auth-card form button[type="submit"].dropin-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 0;
+  padding: 0.95em 1.6em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: var(--terracotta);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    transform var(--dur-1) var(--ease-quint),
+    background-color var(--dur-1) var(--ease-quint),
+    box-shadow var(--dur-1) var(--ease-quint);
+}
+
+.commerce-auth-card form button[type="submit"].dropin-button::after {
+  content: "→";
+  transition: transform var(--dur-1) var(--ease-quint);
+}
+
+.commerce-auth-card form button[type="submit"].dropin-button:hover {
+  background: var(--terracotta-deep);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.commerce-auth-card form button[type="submit"].dropin-button:hover::after {
+  transform: translateX(3px);
+}
+
+.commerce-auth-card form button[type="submit"].dropin-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.commerce-auth-card :is(.auth-sign-in-form__button--signup, .auth-sign-up-form-buttons--signin) {
+  min-height: 0;
+  border: 0;
+  background: none;
+  color: var(--terracotta);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.commerce-auth-card :is(.auth-sign-in-form__button--signup, .auth-sign-up-form-buttons--signin):hover {
+  color: var(--terracotta-deep);
+}
+
+/* no forgot-password page yet, and the SignIn container can't reset inline;
+   the bare span is the separator that sat between it and "Sign up" */
+.commerce-auth-card .auth-sign-in-form__button--forgot,
+.commerce-auth-card .auth-sign-in-form__form__buttons__combine > span:not([class]) {
+  display: none;
+}
+
+/* error and status banners */
+.commerce-auth-card :is(.auth-sign-in-form__notification, .auth-sign-up-form__notification) {
+  margin-bottom: 1rem;
+  border-radius: var(--r-md);
+}
+
+/* ---- authored note under the form ---- */
+.commerce-auth-card .commerce-auth-card-note {
+  margin-top: 1.4rem;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.commerce-auth-card .commerce-auth-card-note > * {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commerce-auth-card form button[type="submit"].dropin-button,
+  .commerce-auth-card form button[type="submit"].dropin-button::after {
+    transition: none;
+  }
+
+  .commerce-auth-card form button[type="submit"].dropin-button:hover {
+    transform: none;
+  }
+}

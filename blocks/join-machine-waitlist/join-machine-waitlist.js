@@ -36,11 +36,14 @@ export default async function decorate(block, bridge) {
     const isPreview = bridge.hostContext?.preview === true;
     if (!isPreview) {
       // Production — the tool result is the flat confirmation object.
-      const _result = await bridge.toolResult;
-      const structuredContent = _result?.structuredContent || {};
+      const result = await bridge.toolResult;
+      const structuredContent = result?.structuredContent || {};
       if (structuredContent.confirmation_id || structuredContent.status) {
         confirmation = structuredContent;
-        machine = { ...machine, machine_name: structuredContent.machine_name || machine.machine_name };
+        machine = {
+          ...machine,
+          machine_name: structuredContent.machine_name || machine.machine_name,
+        };
       }
     }
   }
