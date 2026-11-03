@@ -292,7 +292,7 @@ function readCookie(name) {
 
 /**
  * Turns the nav's account tool into an icon-only sign-in link (signed out) or a menu
- * button with the customer's first name and a sign-out action (signed in).
+ * button with a first-name greeting and a sign-out action (signed in).
  * State follows the auth drop-in's `authenticated` event, so no reload is needed.
  * @param {Element} link The decorated account link from the nav tools
  */
@@ -300,6 +300,7 @@ async function decorateAccount(link) {
   const labels = await fetchPlaceholders();
   const signInText = labels.Global?.SignIn ?? 'Sign in';
   const signOutText = labels.Global?.SignOut ?? 'Sign out';
+  const greeting = (name) => (labels.Global?.AccountGreeting ?? 'Hi {name}!').replace('{name}', name);
   const menuLabel = (name) => labels.Global?.AccountMenu?.replace('{name}', name)
     ?? `Account menu for ${name}`;
   const icon = link.innerHTML;
@@ -398,8 +399,9 @@ async function decorateAccount(link) {
   const render = (authenticated) => {
     const signedIn = authenticated && !!readCookie('auth_dropin_user_token');
     if (signedIn) {
-      const name = readCookie('auth_dropin_firstname').trim() || (labels.Global?.Account ?? 'Account');
-      nameLabel.textContent = name;
+      const firstName = readCookie('auth_dropin_firstname').trim();
+      const name = firstName || (labels.Global?.Account ?? 'Account');
+      nameLabel.textContent = firstName ? greeting(firstName) : name;
       button.setAttribute('aria-label', menuLabel(name));
     } else {
       closeMenu(false);
