@@ -1,7 +1,14 @@
-/* Sign-in card, styled after the Atelier "Welcome back." panel. */
+/* Auth card (sign in, create account, confirm account), styled after the
+ * Atelier "Welcome back." panel. Shared: commerce-create-account and
+ * commerce-confirm-account import this file. The block JS adds the
+ * commerce-auth-card class (see buildAuthCard in commerce-login.js). */
 
 /* the section that holds the block: centred card on a raised paper tone */
-main .section.commerce-login-container {
+main .section:is(
+  .commerce-login-container,
+  .commerce-create-account-container,
+  .commerce-confirm-account-container
+) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,14 +17,18 @@ main .section.commerce-login-container {
   background-color: var(--paper-2);
 }
 
-main .section.commerce-login-container > .commerce-login-wrapper {
+main .section > :is(
+  .commerce-login-wrapper,
+  .commerce-create-account-wrapper,
+  .commerce-confirm-account-wrapper
+) {
   width: 100%;
   max-width: 420px;
   margin: 0;
   padding: 0;
 }
 
-.commerce-login {
+.commerce-auth-card {
   box-sizing: border-box;
   width: 100%;
   padding: clamp(1.8rem, 1.2rem + 2vw, 2.8rem);
@@ -30,11 +41,11 @@ main .section.commerce-login-container > .commerce-login-wrapper {
 }
 
 /* ---- authored intro ---- */
-.commerce-login .commerce-login-intro > * {
+.commerce-auth-card .commerce-auth-card-intro > * {
   margin: 0;
 }
 
-.commerce-login .commerce-login-eyebrow {
+.commerce-auth-card .commerce-auth-card-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 0.7em;
@@ -45,7 +56,7 @@ main .section.commerce-login-container > .commerce-login-wrapper {
   color: var(--terracotta);
 }
 
-.commerce-login .commerce-login-eyebrow::before {
+.commerce-auth-card .commerce-auth-card-eyebrow::before {
   content: "";
   width: 1.6em;
   height: 1px;
@@ -53,7 +64,7 @@ main .section.commerce-login-container > .commerce-login-wrapper {
   opacity: 0.5;
 }
 
-.commerce-login .commerce-login-intro .commerce-login-title {
+.commerce-auth-card .commerce-auth-card-intro .commerce-auth-card-title {
   margin-top: 0.8rem;
   font-family: var(--font-display);
   font-size: 2.2rem;
@@ -63,52 +74,60 @@ main .section.commerce-login-container > .commerce-login-wrapper {
   color: var(--burgundy);
 }
 
-.commerce-login .commerce-login-intro .commerce-login-lede {
+.commerce-auth-card .commerce-auth-card-intro .commerce-auth-card-lede {
   margin-top: 0.8rem;
   line-height: 1.6;
   color: var(--ink-soft);
 }
 
 /* the authored heading replaces the drop-in's own title */
-.commerce-login.commerce-login--intro .auth-sign-in-form__title {
+.commerce-auth-card.commerce-auth-card--intro :is(.auth-sign-in-form__title, .auth-sign-up-form__title) {
   display: none;
 }
 
-.commerce-login .commerce-login-form {
+.commerce-auth-card .commerce-auth-card-form {
   margin-top: 1.8rem;
 }
 
-.commerce-login:not(.commerce-login--intro) .commerce-login-form {
+.commerce-auth-card:not(.commerce-auth-card--intro) .commerce-auth-card-form {
   margin-top: 0;
 }
 
-/* ---- drop-in form ---- */
-.commerce-login .auth-sign-in-form {
+/* ---- drop-in forms ---- */
+.commerce-auth-card :is(.auth-sign-in-form, .auth-sign-up-form) {
   padding: 0;
   background: none;
 }
 
-.commerce-login .auth-sign-in-form__form {
+/* single column: the sign-up form's side-by-side grid is too tight here */
+.commerce-auth-card :is(.auth-sign-in-form__form, .auth-sign-up-form__form) {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
 }
 
-/* the drop-in spaces fields with its own margins; the gap above replaces them */
-.commerce-login .auth-sign-in-form__form > *,
-.commerce-login .dropin-input-password > .dropin-field,
-.commerce-login form[name="signIn_form"] {
+/* the drop-ins space fields with their own margins; the gap above replaces them */
+.commerce-auth-card :is(.auth-sign-in-form__form, .auth-sign-up-form__form) > *,
+.commerce-auth-card .auth-sign-up-form__form__confirm-wrapper > *,
+.commerce-auth-card .dropin-input-password > .dropin-field,
+.commerce-auth-card form {
   margin: 0;
 }
 
+.commerce-auth-card .auth-sign-up-form__form__confirm-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
 /* floating labels become small uppercase labels above the field */
-.commerce-login .dropin-input-container--floating .dropin-input-label-container {
+.commerce-auth-card .dropin-input-container--floating .dropin-input-label-container {
   display: flex;
   flex-direction: column-reverse;
   gap: 0.5rem;
 }
 
-.commerce-login .dropin-input-container--floating .dropin-input__label--floating {
+.commerce-auth-card .dropin-input-container--floating .dropin-input__label--floating {
   position: static;
   transform: none;
   padding: 0;
@@ -121,17 +140,17 @@ main .section.commerce-login-container > .commerce-login-wrapper {
   color: var(--ink);
 }
 
-.commerce-login .dropin-input-container {
+.commerce-auth-card .dropin-input-container {
   border: 0;
   background: none;
 }
 
 /* the lock icon doesn't fit the label-above layout */
-.commerce-login .dropin-input-container > svg {
+.commerce-auth-card .dropin-input-container > svg {
   display: none;
 }
 
-.commerce-login .dropin-input.dropin-input--floating {
+.commerce-auth-card .dropin-input.dropin-input--floating {
   box-sizing: border-box;
   width: 100%;
   height: auto;
@@ -148,39 +167,39 @@ main .section.commerce-login-container > .commerce-login-wrapper {
     box-shadow var(--dur-1) var(--ease-quint);
 }
 
-.commerce-login .dropin-input.dropin-input--floating::placeholder {
+.commerce-auth-card .dropin-input.dropin-input--floating::placeholder {
   color: transparent;
 }
 
-.commerce-login .dropin-input.dropin-input--floating:focus,
-.commerce-login .dropin-input.dropin-input--floating:focus-visible {
+.commerce-auth-card .dropin-input.dropin-input--floating:focus,
+.commerce-auth-card .dropin-input.dropin-input--floating:focus-visible {
   outline: none;
   border-color: var(--terracotta);
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--terracotta) 22%, transparent);
 }
 
 /* error icon: centred in the pill, like the eye icon */
-.commerce-login .dropin-input__field-icon--right {
+.commerce-auth-card .dropin-input__field-icon--right {
   top: calc(1.25rem + 0.5rem + 1.5rem);
   right: 1.1rem;
   transform: translateY(-50%);
 }
 
 /* hint lines only take space when they have a message */
-.commerce-login .dropin-field__hint:empty {
+.commerce-auth-card .dropin-field__hint:empty {
   display: none;
 }
 
-.commerce-login .dropin-input.dropin-input--error {
+.commerce-auth-card .dropin-input.dropin-input--error {
   border-color: var(--color-alert-800);
 }
 
 /* show/hide password: keep it inside the pill, next to the right edge */
-.commerce-login .dropin-input-password {
+.commerce-auth-card .dropin-input-password {
   position: relative;
 }
 
-.commerce-login .dropin-input-password__eye-icon {
+.commerce-auth-card .dropin-input-password__eye-icon {
   position: absolute;
 
   /* label line + label gap + half the pill, minus half the 24px icon */
@@ -191,23 +210,45 @@ main .section.commerce-login-container > .commerce-login-wrapper {
   color: var(--ink-soft);
 }
 
-.commerce-login .dropin-input-password .dropin-input {
+.commerce-auth-card .dropin-input-password .dropin-input {
   padding-right: 3rem;
 }
 
-/* ---- actions: Sign in first, then the Sign up link ---- */
-.commerce-login .auth-sign-in-form__form__buttons__wrapper {
+/* live password rules (sign up) */
+.commerce-auth-card .dropin-password-status-indicator {
+  margin-top: 0.5rem;
+  padding-left: 1.25em;
+  font-size: 0.8rem;
+}
+
+.commerce-auth-card .dropin-password-status-indicator:empty {
+  display: none;
+}
+
+/* privacy consent (sign up); the drop-in slot sets its text styles inline */
+.commerce-auth-card [data-slot="PrivacyPolicyConsent"] span {
+  margin-bottom: 0 !important;
+  line-height: 1.5;
+}
+
+/* ---- actions: primary first, then the secondary link ---- */
+.commerce-auth-card .dropin-button .auth-button__text {
+  color: inherit;
+  font: inherit;
+}
+
+.commerce-auth-card :is(.auth-sign-in-form__form__buttons__wrapper, .auth-sign-up-form-buttons) {
   margin-top: 0.4rem;
 }
 
-.commerce-login .auth-sign-in-form__form__buttons {
+.commerce-auth-card :is(.auth-sign-in-form__form__buttons, .auth-sign-up-form-buttons) {
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-start;
   gap: 1rem;
 }
 
-.commerce-login .auth-sign-in-form .auth-sign-in-form__button--submit.dropin-button {
+.commerce-auth-card form button[type="submit"].dropin-button {
   display: inline-flex;
   align-items: center;
   gap: 0.6em;
@@ -227,32 +268,27 @@ main .section.commerce-login-container > .commerce-login-wrapper {
     box-shadow var(--dur-1) var(--ease-quint);
 }
 
-.commerce-login .auth-sign-in-form__button--submit::after {
+.commerce-auth-card form button[type="submit"].dropin-button::after {
   content: "→";
   transition: transform var(--dur-1) var(--ease-quint);
 }
 
-.commerce-login .auth-sign-in-form .auth-sign-in-form__button--submit.dropin-button:hover {
+.commerce-auth-card form button[type="submit"].dropin-button:hover {
   background: var(--terracotta-deep);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
-.commerce-login .auth-sign-in-form__button--submit:hover::after {
+.commerce-auth-card form button[type="submit"].dropin-button:hover::after {
   transform: translateX(3px);
 }
 
-.commerce-login .auth-sign-in-form__button--submit:focus-visible {
+.commerce-auth-card form button[type="submit"].dropin-button:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
-.commerce-login .auth-sign-in-form__button--submit .auth-button__text {
-  color: inherit;
-  font: inherit;
-}
-
-.commerce-login .auth-sign-in-form__button--signup {
+.commerce-auth-card :is(.auth-sign-in-form__button--signup, .auth-sign-up-form-buttons--signin) {
   min-height: 0;
   border: 0;
   background: none;
@@ -262,42 +298,42 @@ main .section.commerce-login-container > .commerce-login-wrapper {
   font-weight: 600;
 }
 
-.commerce-login .auth-sign-in-form__button--signup:hover {
+.commerce-auth-card :is(.auth-sign-in-form__button--signup, .auth-sign-up-form-buttons--signin):hover {
   color: var(--terracotta-deep);
 }
 
 /* no forgot-password page yet, and the SignIn container can't reset inline;
    the bare span is the separator that sat between it and "Sign up" */
-.commerce-login .auth-sign-in-form__button--forgot,
-.commerce-login .auth-sign-in-form__form__buttons__combine > span:not([class]) {
+.commerce-auth-card .auth-sign-in-form__button--forgot,
+.commerce-auth-card .auth-sign-in-form__form__buttons__combine > span:not([class]) {
   display: none;
 }
 
 /* error and status banners */
-.commerce-login .auth-sign-in-form__notification {
+.commerce-auth-card :is(.auth-sign-in-form__notification, .auth-sign-up-form__notification) {
   margin-bottom: 1rem;
   border-radius: var(--r-md);
 }
 
 /* ---- authored note under the form ---- */
-.commerce-login .commerce-login-note {
+.commerce-auth-card .commerce-auth-card-note {
   margin-top: 1.4rem;
   font-size: 0.85rem;
   text-align: center;
   color: var(--ink-soft);
 }
 
-.commerce-login .commerce-login-note > * {
+.commerce-auth-card .commerce-auth-card-note > * {
   margin: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .commerce-login .auth-sign-in-form__button--submit,
-  .commerce-login .auth-sign-in-form__button--submit::after {
+  .commerce-auth-card form button[type="submit"].dropin-button,
+  .commerce-auth-card form button[type="submit"].dropin-button::after {
     transition: none;
   }
 
-  .commerce-login .auth-sign-in-form__button--submit:hover {
+  .commerce-auth-card form button[type="submit"].dropin-button:hover {
     transform: none;
   }
 }

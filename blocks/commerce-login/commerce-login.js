@@ -99,13 +99,14 @@ export function stabilizePasswordInput(root) {
 }
 
 /**
- * Moves authored content into the card: row 1 is the intro (an eyebrow
- * paragraph, a heading, and a lede), row 2 an optional note under the form.
- * Both are optional; without an intro the drop-in's own "Sign in" title shows.
+ * Lays out an auth block (login, create account, confirm account) as a card.
+ * Row 1 is the intro (an eyebrow paragraph, a heading, and a lede), row 2 an
+ * optional note under the form. Both are optional; without an intro the
+ * drop-in's own title shows. Styles live in commerce-login.css.
  * @param {Element} block The block element
- * @returns {Element} The element to render the sign-in form into
+ * @returns {Element} The element to render the drop-in form into
  */
-function buildCard(block) {
+export function buildAuthCard(block) {
   const [introRow, noteRow] = [...block.children];
   const cellContent = (row) => (row ? [...row.querySelectorAll(':scope > div > *')] : []);
   const introEls = cellContent(introRow);
@@ -115,25 +116,26 @@ function buildCard(block) {
   const hasIntro = introEls.some((el) => el.textContent.trim());
   if (hasIntro) {
     const intro = document.createElement('div');
-    intro.className = 'commerce-login-intro';
+    intro.className = 'commerce-auth-card-intro';
     const headingIndex = introEls.findIndex((el) => /^H[1-6]$/.test(el.tagName));
     introEls.forEach((el, i) => {
-      if (i === headingIndex) el.classList.add('commerce-login-title');
-      else if (headingIndex > 0 && i < headingIndex) el.classList.add('commerce-login-eyebrow');
-      else el.classList.add('commerce-login-lede');
+      if (i === headingIndex) el.classList.add('commerce-auth-card-title');
+      else if (headingIndex > 0 && i < headingIndex) el.classList.add('commerce-auth-card-eyebrow');
+      else el.classList.add('commerce-auth-card-lede');
       intro.append(el);
     });
     block.append(intro);
   }
-  block.classList.toggle('commerce-login--intro', hasIntro);
+  block.classList.add('commerce-auth-card');
+  block.classList.toggle('commerce-auth-card--intro', hasIntro);
 
   const form = document.createElement('div');
-  form.className = 'commerce-login-form';
+  form.className = 'commerce-auth-card-form';
   block.append(form);
 
   if (noteEls.some((el) => el.textContent.trim())) {
     const note = document.createElement('div');
-    note.className = 'commerce-login-note';
+    note.className = 'commerce-auth-card-note';
     note.append(...noteEls);
     block.append(note);
   }
@@ -144,7 +146,7 @@ export default async function decorate(block) {
   if (checkIsAuthenticated()) {
     window.location.href = getReturnPath();
   } else {
-    const formContainer = buildCard(block);
+    const formContainer = buildAuthCard(block);
     syncAriaInvalid(block);
     stabilizePasswordInput(block);
     await authRenderer.render(SignIn, {

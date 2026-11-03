@@ -5,7 +5,9 @@ import {
   checkIsAuthenticated,
   authPrivacyPolicyConsentSlot,
 } from '../../scripts/commerce.js';
-import { getReturnPath, syncAriaInvalid, withReturnUrl } from '../commerce-login/commerce-login.js';
+import {
+  buildAuthCard, getReturnPath, syncAriaInvalid, withReturnUrl,
+} from '../commerce-login/commerce-login.js';
 
 // Initialize
 import '../../scripts/initializers/auth.js';
@@ -14,6 +16,7 @@ export default async function decorate(block) {
   if (checkIsAuthenticated()) {
     window.location.href = getReturnPath();
   } else {
+    const formContainer = buildAuthCard(block);
     syncAriaInvalid(block);
     await authRenderer.render(SignUp, {
       requireRetypePassword: true,
@@ -23,6 +26,6 @@ export default async function decorate(block) {
       slots: {
         ...authPrivacyPolicyConsentSlot,
       },
-    })(block);
+    })(formContainer);
   }
 }

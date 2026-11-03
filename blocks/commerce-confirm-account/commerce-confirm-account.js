@@ -1,7 +1,9 @@
 import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { checkIsAuthenticated } from '../../scripts/commerce.js';
-import { getReturnPath, stabilizePasswordInput, syncAriaInvalid } from '../commerce-login/commerce-login.js';
+import {
+  buildAuthCard, getReturnPath, stabilizePasswordInput, syncAriaInvalid,
+} from '../commerce-login/commerce-login.js';
 
 // Initialize
 import '../../scripts/initializers/auth.js';
@@ -15,12 +17,13 @@ export default async function decorate(block) {
   if (checkIsAuthenticated()) {
     window.location.href = getReturnPath();
   } else {
+    const formContainer = buildAuthCard(block);
     syncAriaInvalid(block);
     stabilizePasswordInput(block);
     await authRenderer.render(SignIn, {
       enableEmailConfirmation: true,
       renderSignUpLink: false,
       routeRedirectOnSignIn: () => getReturnPath(),
-    })(block);
+    })(formContainer);
   }
 }

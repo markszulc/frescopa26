@@ -1,9 +1,2 @@
-.commerce-confirm-account-container {
-    max-width: 700px;
-    margin: auto;
-}
-
-/* Frescopa: no forgot-password page yet, and the SignIn container can't reset inline */
-.commerce-confirm-account .auth-sign-in-form__button--forgot {
-    display: none;
-}
+/* Same card design as the sign-in block; see commerce-login.css. */
+@import url("../commerce-login/commerce-login.css");
