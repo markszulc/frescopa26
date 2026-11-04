@@ -19,6 +19,11 @@ import {
   initializeCommerce,
   loadErrorPage,
 } from './commerce.js';
+import {
+  isAuthorPreview,
+  runExperimentation,
+  runExperimentationLazy,
+} from './experiment-loader.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -352,7 +357,16 @@ export function decorateMain(main) {
   decorateArticleHeader(main);
 }
 
+const experimentationConfig = {
+  prodHost: 'main--frescopa26--sudo-buddy.aem.live',
+  decorateFunction: async (element) => {
+    decorateMain(element);
+    await loadSections(element);
+  },
+};
+
 let commerceReady = false;
+let experimentationReady = false;
 
 /**
  * Loads everything needed to get to LCP.
@@ -363,6 +377,7 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    experimentationReady = await runExperimentation(doc, experimentationConfig);
     try {
       await initializeCommerce();
       commerceReady = true;
@@ -440,6 +455,8 @@ async function loadLazy(doc) {
       addSidekickListeners(document.querySelector('aem-sidekick'));
     }, { once: true });
   }
+
+  await runExperimentationLazy(doc, experimentationConfig);
 }
 
 /**
@@ -459,7 +476,15 @@ export async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+const pageLoaded = loadPage();
+
+if (isAuthorPreview(window.location.href, window.parent !== window)) {
+  pageLoaded.then(async () => {
+    if (!experimentationReady) return;
+    const { default: connectAuthorPreview } = await import('./experimentation-preview.js');
+    connectAuthorPreview(experimentationConfig);
+  });
+}
 
 (() => {
   const hasQE = new URL(window.location.href).searchParams.has('quick-edit');
