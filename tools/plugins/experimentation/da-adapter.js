@@ -30,11 +30,11 @@ function modelOperation(operation, run) {
 
 function pageIdentity(context) {
   const {
-    org, repo = context?.site, site, path,
+    org, repo = context?.site, site, path, view = 'edit',
   } = context || {};
   const validName = (name) => typeof name === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name);
   if (!validName(org) || !validName(repo) || (site && site !== repo)
-    || typeof path !== 'string' || (context.view && context.view !== 'edit')) {
+    || typeof path !== 'string' || !['edit', 'canvas'].includes(view)) {
     throw new ExperimentationError('INVALID_CONTEXT', 'Open a native DA page with an explicit organization, site and document path.');
   }
   const normalized = normalizePagePath(path.startsWith('/') ? path : `/${path}`);
@@ -42,7 +42,7 @@ function pageIdentity(context) {
     org,
     repo,
     path: normalized,
-    editorUrl: `https://da.live/edit#/${org}/${repo}${normalized}`,
+    editorUrl: `https://da.live/${view}#/${org}/${repo}${normalized}`,
   });
 }
 
@@ -75,6 +75,7 @@ function pageIdentity(context) {
  */
 export function createDaExperimentationAdapter({ context, actions } = {}) {
   const page = pageIdentity(context);
+  const { view = 'edit' } = context;
   if (typeof actions?.daFetch !== 'function') {
     throw new ExperimentationError('UNSUPPORTED_HOST', 'The native DA SDK daFetch action is required.');
   }
@@ -185,7 +186,7 @@ export function createDaExperimentationAdapter({ context, actions } = {}) {
       if (await getSource(destination, 'prepareVariant', true)) {
         throw new ExperimentationError('DESTINATION_EXISTS', 'The challenger destination already exists. Do not overwrite it.', { operation: 'prepareVariant' });
       }
-      const target = pageIdentity({ ...page, path: destination });
+      const target = pageIdentity({ ...page, path: destination, view });
       variantIntent = { baseline, target };
       return {
         destinationPath: destination,
@@ -259,7 +260,7 @@ export function createDaExperimentationAdapter({ context, actions } = {}) {
         )
       ));
       const challenger = await readSavedPage('verifyExperiment', pageIdentity({
-        ...page, path: intent.expected.challengerPath,
+        ...page, path: intent.expected.challengerPath, view,
       }));
       if (challenger.experiment) {
         throw new ExperimentationError('READBACK_MISMATCH', 'Remove page Experiment rows from the native challenger before verifying configuration.', { operation: 'verifyExperiment' });

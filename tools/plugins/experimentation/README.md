@@ -99,6 +99,11 @@ from SDK context, not the code fork. `mountExperimentation(root, adapter)` is
 the UI entry point. The adapter only uses `actions.daFetch` for source GETs.
 The functions below are application helpers, not added DA SDK methods.
 
+Both native `canvas` and legacy `edit` SDK views are accepted with explicit
+organization, site/repository and safe document path. Other views remain
+invalid. Control and challenger editor links retain the accepted native view;
+Canvas authoring does not switch back to the legacy editor.
+
 | Helper | Input | Result |
 |---|---|---|
 | `readPage` | none | Saved snapshot |

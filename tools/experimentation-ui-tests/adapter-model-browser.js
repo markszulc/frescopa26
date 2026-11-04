@@ -89,7 +89,7 @@ await check('a full-page challenger candidate strips only page-level Experiment 
   equal(updated.querySelectorAll('main > div').length, 2, 'Both sections remain');
 });
 
-function host(replies) {
+function host(replies, context = page) {
   const requests = [];
   const actions = {
     daFetch: async (url, options) => {
@@ -104,10 +104,62 @@ function host(replies) {
     },
   };
   return {
-    adapter: createDaExperimentationAdapter({ context: page, actions }),
+    adapter: createDaExperimentationAdapter({ context, actions }),
     requests,
   };
 }
+
+await check('accepts the native Canvas host payload and preserves its editor route', async () => {
+  const context = {
+    org: 'markszulc',
+    repo: 'frescopa26',
+    site: 'frescopa26',
+    path: '/beverages/coffee',
+    view: 'canvas',
+  };
+  const { adapter, requests } = host([
+    {}, {}, { status: 404 }, {}, { body: prepareVariantSource(source) },
+    {}, { body: prepareExperimentSource(source, draft, context) },
+    { body: prepareVariantSource(source) },
+  ], context);
+  const snapshot = await adapter.readPage();
+  equal(snapshot.page.editorUrl, 'https://da.live/canvas#/markszulc/frescopa26/beverages/coffee', 'Canvas control route');
+  equal(requests[0].url, 'https://admin.da.live/source/markszulc/frescopa26/beverages/coffee.html', 'Explicit Canvas identity drives source GET');
+  const copy = await adapter.prepareVariant({
+    destinationPath: '/beverages/coffee-challenger', expectedRevision: null,
+  });
+  equal(copy.editorUrl, snapshot.page.editorUrl, 'Copy opens the Canvas control');
+  const verified = await adapter.verifyVariant({
+    destinationPath: '/beverages/coffee-challenger', expectedRevision: null,
+  });
+  equal(verified.page.editorUrl, 'https://da.live/canvas#/markszulc/frescopa26/beverages/coffee-challenger', 'Verified copy stays in Canvas');
+  const configuration = await adapter.prepareExperiment({ draft, expectedRevision: null });
+  equal(configuration.editorUrl, snapshot.page.editorUrl, 'Metadata handoff stays in Canvas');
+  equal((await adapter.verifyExperiment()).page.editorUrl, snapshot.page.editorUrl, 'Config readback keeps Canvas identity');
+  equal(requests.every(({ options }) => options.method === 'GET'), true, 'Canvas operations never write native source');
+});
+
+await check('accepts explicit legacy edit context and rejects invalid native identity or views', async () => {
+  const context = { ...page, site: page.repo, view: 'edit' };
+  const { adapter } = host([{}], context);
+  equal((await adapter.readPage()).page.editorUrl, 'https://da.live/edit#/markszulc/frescopa26/drafts/control', 'Legacy edit route preserved');
+  const invalid = [
+    { ...context, view: 'browse' }, { ...context, view: 'preview' },
+    { ...context, view: 'canvas/other' }, { ...context, view: '' },
+    { ...context, view: null }, { ...context, view: false },
+    { ...context, repo: 'another-site' }, { ...context, org: undefined },
+    { ...context, repo: undefined, site: undefined }, { ...context, path: undefined },
+  ];
+  const actions = { daFetch: () => { throw new Error('Invalid context must not fetch'); } };
+  for (const candidate of invalid) {
+    await rejects(() => createDaExperimentationAdapter({ context: candidate, actions }), 'INVALID_CONTEXT');
+  }
+  for (const path of ['/beverages/../coffee', '/beverages/%2e%2e/coffee', '//other/page', 'https://other.example/page']) {
+    await rejects(() => createDaExperimentationAdapter({
+      context: { ...context, view: 'canvas', path }, actions,
+    }), 'INVALID_PATH');
+  }
+});
 
 await check('reads the content namespace through SDK daFetch and exposes honest capabilities', async () => {
   const { adapter, requests } = host([{ headers: { etag: '"server-1"' } }]);

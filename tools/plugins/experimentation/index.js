@@ -26,7 +26,7 @@ function editorUrl(page, path) {
   const url = safeUrl(page.editorUrl);
   if (!url || path === page.path) return url;
   const editor = new URL(url);
-  if (editor.origin !== 'https://da.live' || editor.pathname !== '/edit') return '';
+  if (editor.origin !== 'https://da.live' || !['/edit', '/canvas'].includes(editor.pathname)) return '';
   editor.hash = `/${page.org}/${page.repo}${path}`;
   return editor.href;
 }
