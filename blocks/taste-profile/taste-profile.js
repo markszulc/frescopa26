@@ -19,8 +19,16 @@
  * chart with toggle buttons that morph the shape and swap the readout.
  */
 
-const AXES = ['Strength', 'Body', 'Sweetness', 'Smoothness', 'Warmth', 'Crema'];
+const ENGLISH_AXES = ['Strength', 'Body', 'Sweetness', 'Smoothness', 'Warmth', 'Crema'];
 
+const LOCALIZED_AXES = new Map([
+  ['de', ['Stärke', 'Körper', 'Süße', 'Sanftheit', 'Wärme', 'Crema']],
+  ['jp', ['強さ', 'コク', '甘さ', 'なめらかさ', '温かさ', 'クレマ']],
+  ['ko', ['강도', '바디감', '단맛', '부드러움', '온기', '크레마']],
+]);
+
+const pathPrefix = window.location.pathname.split('/')[1];
+const AXES = LOCALIZED_AXES.get(pathPrefix) || ENGLISH_AXES;
 // Point-list labels from the source. Each list item flattens to
 // "<Label> <description>" during import; we split it back into a label +
 // description so the two-column layout can be restored.
