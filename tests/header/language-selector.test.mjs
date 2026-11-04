@@ -17,9 +17,8 @@ test('switches every language pair, preserving page paths, queries, and anchors'
         const pathname = source.prefix ? `/${source.prefix}${page}` : page || '/';
         const location = { pathname, search: '?coffee=espresso&size=2', hash: '#details' };
         assert.equal(getLanguage(pathname), source);
-        const suffix = page === '/' ? '' : page;
-        let expected = target.prefix ? `/${target.prefix}${suffix}` : page || '/';
-        if (target === source) expected = pathname;
+        const suffix = page || '/';
+        const expected = target.prefix ? `/${target.prefix}${suffix}` : suffix;
         assert.equal(getLanguageHref(target, location), `${expected}${location.search}${location.hash}`);
       });
     });
@@ -35,11 +34,21 @@ test('recognizes only complete leading language segments', () => {
 });
 
 test('switching to the current language leaves the URL unchanged', () => {
-  ['/', '/machines', '/jp', '/jp/', '/cn/machines'].forEach((pathname) => {
+  ['/', '/machines', '/jp/', '/cn/machines'].forEach((pathname) => {
     const location = { pathname, search: '?q=coffee', hash: '#details' };
     assert.equal(
       getLanguageHref(getLanguage(pathname), location),
       `${pathname}${location.search}${location.hash}`,
     );
+  });
+});
+
+test('home destinations include a trailing slash for every language', () => {
+  ['/', '/de', '/de/', '/jp', '/jp/'].forEach((pathname) => {
+    const location = { pathname, search: '?ref=nav', hash: '#welcome' };
+    LANGUAGES.forEach((language) => {
+      const expected = language.prefix ? `/${language.prefix}/` : '/';
+      assert.equal(getLanguageHref(language, location), `${expected}?ref=nav#welcome`);
+    });
   });
 });
