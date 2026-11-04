@@ -17,6 +17,26 @@ module.exports = {
   },
   overrides: [
     {
+      files: ['tools/experimentation-ui-tests/*.{js,mjs}'],
+      rules: {
+        'import/extensions': ['error', { js: 'always', mjs: 'always' }],
+        'no-restricted-syntax': 'off',
+        'no-await-in-loop': 'off',
+      },
+    },
+    {
+      files: ['tools/experimentation-ui-tests/*.mjs'],
+      env: { node: true },
+    },
+    {
+      files: ['tools/plugins/experimentation/index.js'],
+      rules: {
+        'import/no-unresolved': ['error', {
+          ignore: ['^https://da\\.live/nx/utils/sdk\\.js$'],
+        }],
+      },
+    },
+    {
       files: ['tools/experimentation-demo/*.{js,mjs}'],
       rules: {
         'import/extensions': ['error', { js: 'always', mjs: 'always' }],
