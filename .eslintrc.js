@@ -38,7 +38,7 @@ module.exports = {
       },
     },
     {
-      files: ['tools/plugins/helloworld/*.js'],
+      files: ['tools/plugins/helloworld/*.js', 'tools/plugins/contextual-experimentation/*.js'],
       rules: {
         // These modules are resolved by the plugin's browser import map and DA host.
         'import/no-unresolved': ['error', {

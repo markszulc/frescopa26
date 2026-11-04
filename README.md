@@ -62,3 +62,70 @@ pages appear, including any indexed templates or demos.
 1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
 1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
 1. Open the `{repo}` directory in your favorite IDE and start coding :)
+
+## Experimentation
+
+The Adobe experimentation engine is vendored unchanged from
+[`adobe/aem-experimentation`, branch `main`](https://github.com/adobe/aem-experimentation/tree/df007dd7647e559db7f09f3357c9dbdf81c4f91d)
+at commit `df007dd7647e559db7f09f3357c9dbdf81c4f91d` (version 2.0.0).
+Its Apache license is in `plugins/experimentation/LICENSE.md`. The former `v2`
+branch was merged into `main`; use `main` for future updates. Update the three
+files in `plugins/experimentation/src/` together, retain the license, update
+this revision, and rerun validation.
+
+`scripts/experiment-loader.js` runs the eager phase before main content
+decoration and the lazy phase after blocks load. Ordinary pages without
+experiment, campaign, or audience metadata do not load the engine.
+Section metadata is detected before decoration removes it. In DA canvas
+previews the engine also loads on pages without experiments so the authoring
+panel can request its configuration. Runtime failures are logged without
+preventing the rest of the site from rendering.
+
+The production hostname is `main--frescopa26--sudo-buddy.aem.live` in
+`scripts/scripts.js`; update it when adding a custom production domain.
+The lazy Sidekick simulation UI is limited to preview/development and is
+disabled inside DA canvas, where the dedicated panel owns the UI. No experiment
+is authored, published, or activated by installing this code. Optional RUM
+sampling, audience definitions, and consent integration are unchanged.
+For a consent-gated experiment, author `Experiment Requires Consent: true`
+and connect your consent manager using the upstream engine's consent API.
+
+### DA contextual authoring adapter
+
+The adapter at
+`/tools/plugins/contextual-experimentation/contextual-experimentation.html`
+loads the production Contextual Experimentation MFE. It supplies the current
+DA page, the DA session's IMS token, and the authorized Adobe IMS organization ID
+entered in the panel. Tokens are held only in memory and passed in the MFE URL
+fragment, not query strings or browser storage. Never paste tokens into site
+configuration or source files.
+
+After deploying this code branch, add a row to the site's DA `library` sheet
+at <https://da.live/config#/sudo-buddy/frescopa26>, preserving existing rows:
+
+| title | path |
+|-------|------|
+| Contextual Experimentation | /tools/plugins/contextual-experimentation/contextual-experimentation.html |
+
+For local plugin development, set that row's `ref` to `local` and open
+<https://da.live/canvas?ref=local#/sudo-buddy/frescopa26/index> with `aem up`
+running. Use Layout or Split view so the canvas preview exists. **The canvas
+preview must also run the deployed runtime code**: `ref=local` alone only loads
+the plugin from localhost, not the canvas site's scripts.
+
+The adapter relays actual engine configuration, same-site variant navigation,
+and experiment hover highlighting. DA's currently available host protocol does
+not expose selector-based selection or temporary DOM preview APIs. Those
+operations are not implemented; this is not yet a full contextual authoring
+integration. Save document changes before navigating to another variant.
+Production MFE authentication and backend access require an entitled IMS
+organization and must be verified in DA after deployment; local checks do not
+establish that end-to-end connection.
+
+### Validation
+
+```sh
+node --test tests/scripts/experimentation.test.mjs
+npm run lint
+npx stylelint "tools/plugins/contextual-experimentation/*.css"
+```
