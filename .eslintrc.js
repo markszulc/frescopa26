@@ -17,6 +17,25 @@ module.exports = {
   },
   overrides: [
     {
+      files: ['tools/experimentation-demo/*.{js,mjs}'],
+      rules: {
+        'import/extensions': ['error', { js: 'always', mjs: 'always' }],
+        'no-console': ['error', { allow: ['log', 'error'] }],
+      },
+    },
+    {
+      files: ['tools/experimentation-demo/*.mjs'],
+      env: { node: true },
+    },
+    {
+      files: ['tools/experimentation-demo/browser.js', 'tools/experimentation-demo/fixtures.mjs'],
+      rules: {
+        // DOM cases and staged CLI proposals must run serially.
+        'no-restricted-syntax': 'off',
+        'no-await-in-loop': 'off',
+      },
+    },
+    {
       files: [
         'blocks/discover-coffee-machines/*.js',
         'blocks/find-coffee-by-taste/*.js',
