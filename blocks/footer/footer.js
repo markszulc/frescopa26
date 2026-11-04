@@ -1,5 +1,8 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { loadLocalizedFragment } from '../fragment/localized-fragment.js';
+import { getLanguage, loadLanguages } from '../../scripts/languages.js';
+import getNewsletterLabels from './newsletter.js';
 
 /**
  * loads and decorates the footer
@@ -8,12 +11,13 @@ import { loadFragment } from '../fragment/fragment.js';
 export default async function decorate(block) {
   // load footer as fragment
   const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/fragments/footer';
-  const fragment = await loadFragment(footerPath);
+  const languages = await loadLanguages();
+  const { fragment, path: footerPath } = await loadLocalizedFragment('/fragments/footer', footerMeta, window.location, loadFragment, 'Footer', languages);
 
   // decorate footer DOM
   block.textContent = '';
   const footer = document.createElement('div');
+  footer.lang = getLanguage(footerPath, languages).code;
   while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
 
   // label sections: brand (with newsletter form), link columns, and legal bar
@@ -30,12 +34,17 @@ export default async function decorate(block) {
   if (brand) {
     const signup = document.createElement('form');
     signup.className = 'footer-signup';
+    const labels = getNewsletterLabels(window.location.pathname, brand.dataset);
+    signup.lang = labels.lang;
     signup.innerHTML = `
-      <label for="footer-email">A little warmth in your inbox.</label>
+      <label for="footer-email"></label>
       <div class="footer-signup-row">
-        <input id="footer-email" type="email" placeholder="you@example.com" autocomplete="email">
-        <button type="submit" class="button">Sign up</button>
+        <input id="footer-email" type="email" autocomplete="email">
+        <button type="submit" class="button"></button>
       </div>`;
+    signup.querySelector('label').textContent = labels.newsletterLabel;
+    signup.querySelector('input').placeholder = labels.newsletterPlaceholder;
+    signup.querySelector('button').textContent = labels.newsletterButton;
     signup.addEventListener('submit', (e) => e.preventDefault());
     brand.append(signup);
   }

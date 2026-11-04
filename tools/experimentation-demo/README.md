@@ -123,6 +123,14 @@ focused content/runtime proof, not a full storefront or live authoring test.
 The real site's Commerce paths are left intact; their authenticated services are
 not evaluated by this local proof.
 
+The existing upstream regression suites run separately with
+`node --test tests/**/*.test.mjs`. They refer to
+`content/placeholders/languages.json` and `content/placeholders/search.json`,
+which are not included in the current upstream checkout. Their fixed starter
+dataset is not interchangeable with the published sheets. Authoritative local
+fixtures are required before those suites can finish. `npm test` above covers
+the experimentation integration and offline helpers, not those upstream suites.
+
 ## Authoring and publication limits
 
 The DA content namespace remains `markszulc/frescopa26`, not the fork owner.

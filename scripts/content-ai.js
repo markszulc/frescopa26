@@ -1,3 +1,5 @@
+import { getLanguage, loadLanguages } from './languages.js';
+
 export function isSafeUrl(url) {
   if (!url) return false;
   try {
@@ -21,24 +23,81 @@ export function resolveSearchResult(item) {
   };
 }
 
+function matchesLocale(value, code) {
+  if (typeof value !== 'string' || !value.trim()) return false;
+  try {
+    const actual = new Intl.Locale(value.trim().replace(/_/g, '-')).maximize();
+    const expected = new Intl.Locale(code).maximize();
+    return actual.language === expected.language && actual.script === expected.script;
+  } catch (error) {
+    if (!(error instanceof RangeError)) throw error;
+    return false;
+  }
+}
+
+function matchesLanguage(item, language, languages) {
+  const result = item.data ? item : { data: { metadata: item.metadata, source: item.source } };
+  const metadata = result.data.metadata || {};
+  const locales = [metadata.language, metadata.locale]
+    .filter((value) => value != null && value !== '');
+  if (locales.length) return locales.every((value) => matchesLocale(value, language.code));
+
+  const { url } = resolveSearchResult(result);
+  if (!isSafeUrl(url)) return false;
+  const { pathname } = new URL(url, window.location.origin);
+  return getLanguage(pathname, languages).code === language.code;
+}
+
+async function getSearchLanguage() {
+  const languages = await loadLanguages();
+  return { languages, language: getLanguage(window.location.pathname, languages) };
+}
+
+export async function filterSearchResults(data) {
+  if (!Array.isArray(data.results)
+    || data.results.some((item) => !item || typeof item !== 'object')) {
+    throw new Error('Content AI search returned invalid results');
+  }
+  const { language, languages } = await getSearchLanguage();
+  return {
+    ...data,
+    unfilteredResultCount: data.results.length,
+    results: data.results.filter((item) => matchesLanguage(item, language, languages)),
+  };
+}
+
+export async function filterSearchAnswer(data) {
+  if (typeof data.result !== 'string'
+    || (data.hits != null && (!Array.isArray(data.hits)
+      || data.hits.some((hit) => !hit || typeof hit !== 'object')))) {
+    throw new Error('Content AI returned an invalid answer');
+  }
+  const { language, languages } = await getSearchLanguage();
+  const hits = data.hits || [];
+  const matchingHits = hits.filter((hit) => matchesLanguage(hit, language, languages));
+  // Removing citations cannot remove foreign-language content from a generated answer.
+  if (data.result.trim() && (!hits.length || matchingHits.length !== hits.length)) {
+    throw new Error(`Content AI summary is not grounded exclusively in ${language.code} content`);
+  }
+  return { ...data, hits: matchingHits };
+}
+
 export async function fetchSearchAnswer(baseUrl, contentSource, contentSourceType, query, signal) {
+  const { language } = await getSearchLanguage();
+  const scope = language.prefix
+    ? `pages under /${language.prefix}/`
+    : 'English pages without a language folder prefix';
   const resp = await fetch(`${baseUrl}/gensearch`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     signal,
     body: JSON.stringify({
       contentSource: { name: contentSource, type: contentSourceType },
-      query,
+      query: `${query}\n\nRespond in ${language.code}. Use only ${language.code} content from ${scope}.`,
     }),
   });
   if (!resp.ok) throw new Error(`Content AI request failed: ${resp.status}`);
-  const data = await resp.json();
-  if (typeof data.result !== 'string'
-    || (data.hits != null && (!Array.isArray(data.hits)
-      || data.hits.some((hit) => !hit || typeof hit !== 'object')))) {
-    throw new Error('Content AI returned an invalid answer');
-  }
-  return data;
+  return filterSearchAnswer(await resp.json());
 }
 
 function escapeHtml(str) {
@@ -121,10 +180,5 @@ export async function fetchSearchResults(
     }),
   });
   if (!resp.ok) throw new Error(`Content AI search failed: ${resp.status}`);
-  const data = await resp.json();
-  if (!Array.isArray(data.results)
-    || data.results.some((item) => !item || typeof item !== 'object')) {
-    throw new Error('Content AI search returned invalid results');
-  }
-  return data;
+  return filterSearchResults(await resp.json());
 }

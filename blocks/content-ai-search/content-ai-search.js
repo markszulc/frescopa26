@@ -2,6 +2,8 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import {
   fetchSearchAnswer,
   fetchSearchResults,
+  filterSearchAnswer,
+  filterSearchResults,
   isSafeUrl,
   renderMarkdownSummary,
   resolveSearchResult,
@@ -17,14 +19,14 @@ async function fetchMockAnswer() {
   const url = `${window.hlx.codeBasePath}/blocks/content-ai-search/mock-answer.json`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Failed to load mock answer: ${resp.status}`);
-  return resp.json();
+  return filterSearchAnswer(await resp.json());
 }
 
 async function fetchMockResults() {
   const url = `${window.hlx.codeBasePath}/blocks/content-ai-search/mock-results.json`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Failed to load mock results: ${resp.status}`);
-  return resp.json();
+  return filterSearchResults(await resp.json());
 }
 
 function toggleShow(el, show) {
@@ -34,7 +36,7 @@ function toggleShow(el, show) {
 }
 
 function resolveMetadataUrl(meta) {
-  return (meta && (meta.url || meta.source)) || '';
+  return resolveSearchResult({ data: { metadata: meta } }).url;
 }
 
 function labelFromUrl(url) {
@@ -427,7 +429,7 @@ export default function decorate(block) {
       empty.className = 'cmp-content-ai-search__empty';
       empty.textContent = message || 'No results found.';
       resultsList.append(empty);
-      loadMoreButton.hidden = true;
+      loadMoreButton.hidden = !nextCursor;
       return;
     }
     visibleResults.forEach((item) => resultsList.append(renderResultItem(item, resultsLayout)));
@@ -471,7 +473,7 @@ export default function decorate(block) {
     if (append) {
       allResults = deduplicateResults(allResults.concat(newResults));
       const cursorAdvanced = data.cursor && data.cursor !== cursor;
-      nextCursor = (cursorAdvanced && newResults.length) ? data.cursor : null;
+      nextCursor = cursorAdvanced ? data.cursor : null;
     } else {
       allResults = deduplicateResults(newResults);
       nextCursor = data.cursor || null;
@@ -501,7 +503,7 @@ export default function decorate(block) {
       storeResults(data, null, false);
       // The server returns the configured results size per page, so that raw count is
       // the target to restore after duplicates are dropped.
-      pageSize = (data.results || []).length;
+      pageSize = data.unfilteredResultCount ?? (data.results || []).length;
       visibleCount = pageSize;
       try {
         await topUpResults(requestId, query, pageSize);

@@ -1,34 +1,35 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { LANGUAGES } from '../../blocks/header/language-selector.js';
+import { LANGUAGES } from '../fixtures/languages.js';
 import {
   getNavigationPath, getNavigationTool, loadNavigation,
 } from '../../blocks/header/navigation.js';
 
 const locationFor = (pathname) => new URL(pathname, 'https://frescopa.coffee');
+const loadNav = (meta, location, loader) => loadNavigation(meta, location, loader, LANGUAGES);
 
 test('uses the language navigation for home and deep pages', () => {
   LANGUAGES.forEach(({ prefix }) => {
     const expected = prefix ? `/${prefix}/fragments/nav` : '/fragments/nav';
     ['', '/', '/machines/atelier'].forEach((page) => {
       const location = locationFor(prefix ? `/${prefix}${page}` : page || '/');
-      assert.equal(getNavigationPath('', location), expected);
-      assert.equal(getNavigationPath('/fragments/nav', location), expected);
+      assert.equal(getNavigationPath('', location, LANGUAGES), expected);
+      assert.equal(getNavigationPath('/fragments/nav', location, LANGUAGES), expected);
     });
   });
 });
 
 test('preserves custom Nav metadata and ignores partial language prefixes', () => {
   const location = locationFor('/de/machines');
-  assert.equal(getNavigationPath('/de/fragments/special-nav', location), '/de/fragments/special-nav');
-  assert.equal(getNavigationPath('/fragments/shared-nav', location), '/fragments/shared-nav');
-  assert.equal(getNavigationPath('', locationFor('/deutsch')), '/fragments/nav');
+  assert.equal(getNavigationPath('/de/fragments/special-nav', location, LANGUAGES), '/de/fragments/special-nav');
+  assert.equal(getNavigationPath('/fragments/shared-nav', location, LANGUAGES), '/fragments/shared-nav');
+  assert.equal(getNavigationPath('', locationFor('/deutsch'), LANGUAGES), '/fragments/nav');
 });
 
 test('loads the localized fragment without requesting English', async () => {
   const requests = [];
   const fragment = {};
-  const result = await loadNavigation('', locationFor('/de/'), async (path) => {
+  const result = await loadNav('', locationFor('/de/'), async (path) => {
     requests.push(path);
     return fragment;
   });
@@ -40,7 +41,7 @@ test('warns and uses shared navigation if a localized fragment is missing', asyn
   const warning = t.mock.method(console, 'warn', () => {});
   const requests = [];
   const fragment = {};
-  const result = await loadNavigation('', locationFor('/jp/'), async (path) => {
+  const result = await loadNav('', locationFor('/jp/'), async (path) => {
     requests.push(path);
     return path === '/fragments/nav' ? fragment : null;
   });
@@ -53,7 +54,7 @@ test('warns and uses shared navigation if a localized fragment is missing', asyn
 test('reports missing custom fragments without silently replacing them', async () => {
   const requests = [];
   await assert.rejects(
-    loadNavigation('/de/fragments/custom', locationFor('/de/'), async (path) => {
+    loadNav('/de/fragments/custom', locationFor('/de/'), async (path) => {
       requests.push(path);
       return null;
     }),
@@ -64,11 +65,11 @@ test('reports missing custom fragments without silently replacing them', async (
 
 test('reports missing English navigation and propagates network errors', async () => {
   await assert.rejects(
-    loadNavigation('', locationFor('/'), async () => null),
+    loadNav('', locationFor('/'), async () => null),
     /Navigation fragment could not be loaded from \/fragments\/nav/,
   );
   await assert.rejects(
-    loadNavigation('', locationFor('/de/'), async () => { throw new Error('Network failed'); }),
+    loadNav('', locationFor('/de/'), async () => { throw new Error('Network failed'); }),
     /Network failed/,
   );
 });

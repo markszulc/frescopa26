@@ -2,7 +2,8 @@ import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { fetchPlaceholders, CUSTOMER_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/commerce.js';
-import decorateLanguageSelector, { getLanguage } from './language-selector.js';
+import decorateLanguageSelector from './language-selector.js';
+import { getLanguage, loadLanguages } from '../../scripts/languages.js';
 import { loadNavigation, getNavigationTool } from './navigation.js';
 
 // media query match that indicates mobile/tablet width
@@ -453,13 +454,15 @@ async function decorateAccount(link, navLabels) {
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  const { fragment, path: navPath } = await loadNavigation(navMeta, window.location, loadFragment);
+  const languages = await loadLanguages();
+  const navigation = await loadNavigation(navMeta, window.location, loadFragment, languages);
+  const { fragment, path: navPath } = navigation;
 
   // decorate nav DOM
   block.textContent = '';
   const nav = document.createElement('nav');
   nav.id = 'nav';
-  nav.lang = getLanguage(navPath).code;
+  nav.lang = getLanguage(navPath, languages).code;
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
   const classes = ['brand', 'sections', 'tools'];
@@ -541,7 +544,7 @@ export default async function decorate(block) {
       if (key === 'cart') decorateMiniCart(link);
       if (key === 'account') decorateAccount(link, navLabels);
     });
-    decorateLanguageSelector(navTools);
+    decorateLanguageSelector(navTools, languages);
   }
 
   // hamburger for mobile
