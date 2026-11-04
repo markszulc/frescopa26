@@ -78,7 +78,11 @@ decoration and the lazy phase after blocks load. Ordinary pages without
 experiment, campaign, or audience metadata do not load the engine.
 Section metadata is detected before decoration removes it. In DA canvas
 previews the engine also loads on pages without experiments so the authoring
-panel can request its configuration. Runtime failures are logged without
+panel can request its configuration. The preview and plugin communicate over
+a same-origin BroadcastChannel scoped to the page and a random, per-tab
+sessionStorage identifier. This works with DA's Shadow DOM frames, which are
+not listed in `parent.frames`. No credentials are sent through this channel.
+Runtime failures are logged without
 preventing the rest of the site from rendering.
 
 The production hostname is `main--frescopa26--sudo-buddy.aem.live` in
@@ -111,7 +115,11 @@ For local plugin development, set that row's `ref` to `local` and open
 <https://da.live/canvas?ref=local#/sudo-buddy/frescopa26/index> with `aem up`
 running. Use Layout or Split view so the canvas preview exists. **The canvas
 preview must also run the deployed runtime code**: `ref=local` alone only loads
-the plugin from localhost, not the canvas site's scripts.
+the plugin from localhost, not the canvas site's scripts. The preview bridge
+requires the deployed plugin and preview to share an origin; use a feature
+branch deployed to AEM for end-to-end testing, rather than `ref=local`.
+Open `https://da.live/canvas?ref={branch}#/sudo-buddy/frescopa26/index`
+to load both the canvas and the registered plugin from that code branch.
 
 The adapter relays actual engine configuration, same-site variant navigation,
 and experiment hover highlighting. DA's currently available host protocol does

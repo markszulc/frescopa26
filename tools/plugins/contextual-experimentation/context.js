@@ -1,5 +1,4 @@
 export const MFE_ORIGIN = 'https://experience.adobe.com';
-export const BRIDGE_MESSAGE = 'da:contextual-experimentation';
 
 export function getPageContext(context) {
   const {
