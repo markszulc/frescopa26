@@ -757,15 +757,17 @@ header nav .nav-tools .nav-language {
 }
 
 header nav .nav-tools .nav-language-button {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 6px;
+  min-width: 44px;
   min-height: 44px;
   margin: 0;
-  border: 1px solid transparent;
+  border: 0;
   border-radius: var(--r-pill);
-  padding: 0 10px;
+  padding: 0;
   background: none;
   color: var(--ink);
   font-family: var(--font-body);
@@ -860,11 +862,11 @@ header nav .nav-tools .nav-language-menu a[aria-current='true']::after {
 }
 
 header nav .nav-tools .nav-language-label,
-header nav .nav-tools .nav-language-region {
+header nav .nav-tools .nav-language-tagline {
   display: block;
 }
 
-header nav .nav-tools .nav-language-region {
+header nav .nav-tools .nav-language-tagline {
   margin-top: 2px;
   color: var(--language-muted);
   font-size: var(--body-font-size-xs);
@@ -901,7 +903,6 @@ body:has(main > .section:first-child .hero.block) header nav .nav-tools .nav-lan
 @media (width >= 600px) {
   header nav .nav-tools .nav-language-button {
     gap: 8px;
-    padding: 0 14px;
   }
 
   header nav .nav-tools .nav-language-chevron {

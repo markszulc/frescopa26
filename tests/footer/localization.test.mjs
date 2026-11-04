@@ -1,23 +1,22 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { LANGUAGES } from '../../blocks/header/language-selector.js';
+import { LANGUAGES } from '../fixtures/languages.js';
 import {
   getLocalizedFragmentPath, loadLocalizedFragment,
 } from '../../blocks/fragment/localized-fragment.js';
 
 const DEFAULT_PATH = '/fragments/footer';
 const locationFor = (pathname) => new URL(pathname, 'https://frescopa.coffee');
-const loadFooter = (metadata, location, loader) => loadLocalizedFragment(
-  DEFAULT_PATH, metadata, location, loader, 'Footer',
-);
+const loadFooter = (metadata, location, loader) => loadLocalizedFragment(DEFAULT_PATH, metadata, location, loader, 'Footer', LANGUAGES);
 
 test('resolves footer fragments for every language on home and deep pages', () => {
   LANGUAGES.forEach(({ prefix }) => {
     const expected = prefix ? `/${prefix}${DEFAULT_PATH}` : DEFAULT_PATH;
     ['', '/', '/machines/atelier'].forEach((page) => {
       const location = locationFor(prefix ? `/${prefix}${page}` : page || '/');
-      assert.equal(getLocalizedFragmentPath(DEFAULT_PATH, '', location), expected);
-      assert.equal(getLocalizedFragmentPath(DEFAULT_PATH, DEFAULT_PATH, location), expected);
+      assert.equal(getLocalizedFragmentPath(DEFAULT_PATH, '', location, LANGUAGES), expected);
+      const path = getLocalizedFragmentPath(DEFAULT_PATH, DEFAULT_PATH, location, LANGUAGES);
+      assert.equal(path, expected);
     });
   });
 });
@@ -25,14 +24,14 @@ test('resolves footer fragments for every language on home and deep pages', () =
 test('preserves explicit Footer overrides and ignores partial language prefixes', () => {
   const location = locationFor('/de/');
   assert.equal(
-    getLocalizedFragmentPath(DEFAULT_PATH, '/de/fragments/campaign-footer', location),
+    getLocalizedFragmentPath(DEFAULT_PATH, '/de/fragments/campaign-footer', location, LANGUAGES),
     '/de/fragments/campaign-footer',
   );
   assert.equal(
-    getLocalizedFragmentPath(DEFAULT_PATH, '/fragments/shared-footer', location),
+    getLocalizedFragmentPath(DEFAULT_PATH, '/fragments/shared-footer', location, LANGUAGES),
     '/fragments/shared-footer',
   );
-  assert.equal(getLocalizedFragmentPath(DEFAULT_PATH, '', locationFor('/deutsch')), DEFAULT_PATH);
+  assert.equal(getLocalizedFragmentPath(DEFAULT_PATH, '', locationFor('/deutsch'), LANGUAGES), DEFAULT_PATH);
 });
 
 test('loads a translated footer without fetching English', async () => {
