@@ -1,119 +1,133 @@
 ---
 name: aem-content-variants
-description: Prepare a Frescopa26 section challenger in DA/Experience Workspace. Change only the first Atelier Hero headline or first Coffee card heading/body, preserve the complete selected section, and require exact approval, fresh source and independent readback before native writes. Does not configure experiments or activate traffic.
+description: Create or update reusable AEM/Edge Delivery content variants, page copies, sections, blocks and fragments. Discover the site's source model and approved editable fields, preserve everything outside the requested change, and verify saved source plus real delivery. Does not implicitly configure experiments, publish or activate.
 ---
 
-# Prepare one Frescopa26 content challenger
+# Create reusable content variants
 
-Use this workflow for a content proposal or an explicitly approved native
-authoring operation. These instructions are self-contained. They do not
-grant tools, permissions, installation, or host UI compatibility.
+Use this workflow for ordinary content alternatives, experiment challengers,
+audience/campaign experiences, or reusable fragments. Work with the supplied
+site, pages and block types. Do not assume a particular brand, hero, card
+count, destination, variant count or text-only change.
 
-## Confirm the resource and available operations
+These instructions are self-contained. They grant no tools, permissions,
+installation or host UI compatibility.
 
-The content namespace is DA org `markszulc`, site `frescopa26`. The expected
-homepage source is `/index.html`; independently confirm that identity
-through an entitled source read. The editor reference is
-`https://da.live/canvas#/markszulc/frescopa26/index`, and the public delivery
-reference is `https://main--frescopa26--markszulc.aem.page/`.
+## Resolve the request and source model
 
-The GitHub actor or fork owner is not a DA identity. Do not derive a source
-locator from a rendered URL or invent a JCR path. A readable page does not
-prove create, write, preview, or publish permission.
+Use supplied information first. Establish the missing decisions with focused
+questions, one at a time:
 
-Inspect the tools actually available in this conversation. Establish
-their supported read/create/save/readback operations and effects. Do not
-invent tool names, extract credentials, or assume a shell is available.
-If the entitled route is unavailable, prepare a draft only.
+- Actual authoring host, content org/site/repository, source resource and
+  approved destination. Code ownership and delivery URLs are not authoring
+  identity or write permission.
+- Purpose: ordinary page copy, full-page experience, section, selected block,
+  fragment, or update to an existing variant. An existing resource update
+  needs an explicit target and baseline; creation must not overwrite it.
+- Number of variants, requested differences and constraints. Text, links,
+  CTA labels/destinations, images, block options, layout or structure may
+  change when explicitly requested and supported by the site's block model.
+- Project policy: naming, destination folder, localization, accessibility,
+  assets, required metadata and protected business content. Apply these as
+  inputs, not restrictions hardcoded into this skill.
 
-## Supported content changes
+Inspect the available entitled read/create/save/readback operations and
+their effects. Do not invent tool names, APIs, credentials or a shell.
+If source or write access is unavailable, prepare an honest no-write draft.
+Creation wizards, duplicate actions and autosave may write before an explicit
+Save. Obtain exact scope approval before entering a potentially mutating
+flow; do not use it as read-only capability discovery.
 
-Choose exactly one target. Missing, changed, ambiguous or unsupported
-baseline content stops the workflow:
+Independently read the complete saved source, relevant metadata, selected
+block's authoring model and decorator behavior. Resolve repeated blocks
+unambiguously from source evidence; a generic class or DOM position alone
+is not an authoritative writable locator.
 
-| Target | Allowed change | Preserve |
-|---|---|---|
-| First Atelier Hero | Headline only, originally `Every morning, perfected.` | Complete body, image and attributes, eyebrow `Meet the Atelier`, CTA markup and `/machines/atelier`, section metadata, later cafe Hero |
-| First Coffee product | Heading `The house pour` and its description only | Complete `This week, for you` eyebrow, `New favourites, found for you.` h2 and intro, all three `cards-product` rows, category, images and attributes, prices and CTA markup/behavior, Tea and Juice cards, Hero and its configuration |
+Distinguish native authoring source, including table-shaped or body-fragment
+source, from delivered plain sections and decorated/rendered HTML. Use a
+supported transformation only after verifying its input/output contract.
+Do not treat rendered markup as canonical source, assume a missing `main`,
+or discard default section content to fit a validator.
 
-The first Hero has two raw rows: image and rich-text content. Its text cell
-contains eyebrow, h1, body and CTA. Do not target every `.hero` or change
-the Hero body.
+## Choose the correct variant shape
 
-The product block is authored static content. Its decorator makes the
-category a badge and accepts merged or separate price/CTA paragraphs.
-Paragraph reserialization is allowed only if paragraph attributes, inline
-markup, actual price, CTA label and behavior remain unchanged. Preserve
-unrelated text, links and attributes; do not use formatting as permission
-to change them.
+For regular content copies, retain the requested page/fragment structure.
+For runtime-swapped content, inspect the installed engine's actual version,
+options, extraction and decoration behavior before choosing the export:
 
-## Prepare the challenger
+| Intended use | Required check |
+|---|---|
+| Full-page replacement | Complete delivered `main` and approved page content; verify which head metadata the engine does or does not replace |
+| Section replacement | Exact selected section, including default text and unrelated section metadata; confirm the runtime's section extraction |
+| Block/selector fragment | Exact target selector, stable matching source, expected inner/outer replacement and project redecoration callback |
+| Redirect experience | Complete destination page and approved final URL; it is not an inline section substitute |
+| Code-only experiment | No dummy content copies; return that content authoring is unnecessary and hand off the code requirement |
 
-1. Independently read the complete saved source baseline, including other
-   sections and experiment settings. Record the actual org/site/path,
-   supported version/freshness evidence, and exact selected section.
-2. State the actual input representation: DA source body fragment/body,
-   delivered plain sections, or delivered `main`-wrapped HTML. Do not
-   interpret source fragments as if they already contained `main`.
-   Unsupported source tables or decorated markup require a qualified
-   transformation before continuing. Never silently validate the whole
-   page or strip its default section content.
-3. Prepare one complete content-only selected section. Keep unrelated
-   section metadata, but do not inherit page or section experiment rows.
-   Control configuration remains on control.
-4. Compare the candidate against the entire selected baseline section.
-   Only the allowed text fields may differ. The product h2 and intro,
-   categories, three cards, prices, CTA and image attributes must survive.
-   Preserve the rest of the original source document unchanged.
-5. Keep destination names, paths and IDs visibly proposed until created
-   and independently read back. Do not overwrite control or an existing
-   challenger to bypass a missing-record stop.
+As a reference, `adobe/aem-experimentation` v2.0.0 commit
+`1079f967fb2e5c54a7471de957ea6b880bb574d0` copies `main` inner HTML
+for pages, the first `main > div` inner HTML for sections, and matching
+selector inner HTML for fragments, with a first-section fallback.
+For that section mode, deliver one complete selected section as the first
+and only `main > div`. For fragments, prove the intended match and do not
+rely on a fallback that silently substitutes unrelated content.
+Other versions or integrations must be checked rather than assumed.
 
-The supported public engine reference is `adobe/aem-experimentation`
-v2.0.0, commit `1079f967fb2e5c54a7471de957ea6b880bb574d0`.
-Its section replacement reads the first delivered `main > div` inner HTML.
-Require the challenger delivery to contain exactly one complete section
-as that first and only direct `main > div`. A whole-page copy is unsuitable
-for this section workflow. A source-only check does not prove delivery.
+## Prepare and compare variants
 
-## Native save gate
+1. Capture actual source identity, complete baseline, source representation
+   and supported freshness/version evidence. A copied filename is not a
+   saved resource; a local hash is not a native version token.
+2. Propose destinations and exact edits for each requested variant. Compare
+   the complete affected source, including siblings, default text, assets,
+   links, metadata and existing routing/experiment configuration.
+3. Keep all unrequested text, attributes, links, images, prices, behavior
+   and other sections unchanged. When the request intentionally changes
+   one of these, show that change explicitly instead of treating it as
+   always immutable or silently broadening scope.
+4. Preserve block authoring contracts, semantic structure, accessibility
+   and asset handling. If a native editor reserializes markup, compare
+   both preserved attributes/content and decorator behavior. Unsupported
+   transformations stop the write.
+5. Inspect inherited experiment, audience and campaign settings. Propose
+   what to retain or remove for the intended purpose. Content-only
+   section/fragment challengers must not inherit recursive experiment
+   configuration. Do not silently duplicate live targeting or strip
+   unrelated configuration from an ordinary page copy.
+6. Show a per-variant diff, preservation evidence and unresolved
+   prerequisites. Keep proposed paths and IDs visibly proposed.
 
-Show the exact destination, full affected document diff, approved text,
-preserved values, supported freshness precondition, and operation effects.
-Obtain explicit approval for this specific authoring operation.
-Registration approval, prior proposals, or another stage's approval do
-not authorize a content write.
+## Save only within exact approval
+
+Show the destination, full affected document scope, edits, preservation
+requirements, actual freshness precondition and operation effects. Obtain
+approval for that exact content operation. Registration, configuration,
+preview-publication, site publishing and activation are separate boundaries.
 
 Immediately before saving, re-read source and enforce the connector's
-supported version check. Changed source stops the write. A local hash or
-snapshot is not proof of atomic conditional-write support. Do not invent
-ETags or overwrite semantics; stop if the approved baseline cannot be
-honored safely.
+supported version check. Changed source stops the write. Do not invent
+ETag, atomicity or overwrite guarantees; stop if the approved baseline
+cannot be honored safely.
 
 Perform only the approved operation. Record actual outcome/resource
-identities, independently read saved source, and compare the complete
-preservation scope. An echoed write payload is not readback. Inspect real
-delivered challenger extraction and unchanged control content/settings
-through available read-only tools. Any preview-publication or site
-publishing operation needs a separate exact approval.
+identities and independently read saved source. An echoed write payload is
+not readback. Then inspect real delivery, correct runtime extraction where
+applicable, and the complete approved preservation scope. If making
+delivery available requires preview-publication, obtain separate approval.
 
-No experiment configuration, activation, permission change, connector
-installation, audience personalization, Target operation, new renderer,
-or assumption of Universal Editor support is part of this skill.
+## Handoff and stops
 
-## Output and stop conditions
+A no-write proposal returns `status: draft`, `backend_written: false`,
+purpose/scope, source/baseline evidence, proposed destinations, per-variant
+changes, preserved values and unresolved prerequisites.
 
-For a no-write proposal, return `status: draft`, `backend_written: false`,
-exact proposed copy, actual baseline identity/evidence, proposed
-destination, preserved values and unresolved prerequisites. These flags
-describe the current operation, not a fictional saved resource.
+Only a confirmed native save and independent saved-state plus real-rendered
+readback can yield a `verified` content handoff. Include actual identities,
+approved scope, observed output and evidence; distinguish saved-only state
+from delivery-verified state.
 
-Only a confirmed native save plus independent saved-state and real
-rendered readback can yield a `verified` authoring handoff. Include the
-actual resource, approved scope, operation outcome and both readbacks.
-The next configuration skill must still obtain its own approval.
-
-Missing records, stale state, unsupported shapes, failed readback or an
-unknown write outcome stop further writes. Do not retry blindly, create
-duplicates, fabricate receipts, reconstruct historical records, or label
-an uncertain write as a no-write draft.
+Missing records, ambiguous targets, changed baselines, unsupported
+transforms, failed readback or an unknown outcome stop further writes.
+Do not retry blindly, create duplicates, fabricate receipts, reconstruct
+historical state or label an uncertain write as a no-write draft.
+Experiment configuration, code deployment and activation are not implicit
+parts of content authoring.

@@ -1,109 +1,153 @@
 ---
 name: aem-experimentation-configure
-description: Prepare one inactive Frescopa26 DA section experiment with one control and one challenger at 50/50. Require verified challenger delivery, exact approval, fresh source and independent readback before native configuration. Does not author copy, publish site content or activate traffic.
+description: Create, inspect or update AEM experimentation configuration across page, section and fragment scopes. Support multiple variants, allocation, labels, lifecycle, targeting, consent, conversion and resolution options supported by the installed engine, including audience/campaign experiences. Require exact approval and independent readback for writes.
 ---
 
-# Propose one independent section experiment
+# Configure reusable experimentation and experiences
 
-These instructions are self-contained. Registration does not supply a
-connector, install the engine or qualify DA UI compatibility.
+Use this skill for supported AEM experimentation-engine configuration,
+including experiment and audience/campaign experiences. Do not restrict the
+site, block type, number of challengers, allocation or scope to an example.
+These self-contained instructions do not grant tools, deploy code, register
+connectors or establish host UI compatibility.
 
-## Resolve inputs
+## Discover the actual contract
 
-Content belongs to DA org `markszulc`, site `frescopa26`. Independently
-confirm the expected homepage source `/index.html`, real delivery URL,
-unambiguous target and available entitled operations. Do not use the code
-fork owner as a DA identity or derive source paths from delivery URLs.
+Resolve the authoring host, content identity, control page, exact target,
+create/update intent, installed engine/version, project initialization
+options and available entitled operations. Read the actual saved source,
+configuration and referenced resources. Do not derive author paths from
+rendered URLs or use runtime inspection objects as write APIs.
+Determine side effects before entering any creation or copy flow: some
+interfaces may create resources before Save. Such entry requires upfront
+scope approval and is not read-only discovery.
 
-Require an actual saved challenger, its approved copy and source identity,
-independent saved-state readback, and real delivered extraction evidence.
-Proposed paths, public page access and an echoed payload are insufficient.
-A single-section challenger must deliver exactly one direct `main > div`:
-the pinned v2 section renderer copies that first section's inner HTML.
-Do not use a whole-page clone.
+Use documentation and implementation for the installed version. Build a
+capability map for each requested field: authoring representation, applicable
+scope, parser/runtime behavior, required code integration, and readback
+evidence. The catalogue below is a starting point, not an exhaustive
+allowlist or permission to write an ignored property. Include verified
+project extensions; flag unsupported or unverified combinations explicitly.
 
-Use the first Atelier Hero section or the product section
-`New favourites, found for you.`. Use distinct experiment IDs. Hero changes
-are headline-only; retain its complete body. Product changes are limited
-to the first Coffee card heading/body. Preserve the complete section h2,
-intro and eyebrow, all three cards, categories, images/attributes,
-prices/CTA and the Hero/configuration. Do not change content in this skill.
+Useful public reference:
+[`adobe/aem-experimentation` v2.0.0](https://github.com/adobe/aem-experimentation/tree/1079f967fb2e5c54a7471de957ea6b880bb574d0),
+especially its `documentation/experiments.md`, `audiences.md`,
+`campaigns.md`, `README.md` and `src/index.js`. Do not force this version
+onto a different deployment.
 
-The host is DA/Experience Workspace, without AEM Author or Universal
-Editor. No SDK simulation setting proves a working host UI. Inspect
-available tools; do not invent authoring endpoints from runtime methods
-such as `loadEager` or `window.hlx.experiments`.
+## Choose scope and delivery
 
-## Prepare inactive metadata
-
-The public contract is
-[`adobe/aem-experimentation` v2.0.0](https://github.com/adobe/aem-experimentation/blob/1079f967fb2e5c54a7471de957ea6b880bb574d0/documentation/experiments.md#section-level-experiments).
-Prepare these rows in the selected control's `Section Metadata`:
-
-| Key | Value |
+| Scope | Authoring and runtime requirements |
 |---|---|
-| Experiment | Exact approved experiment identity |
-| Experiment Variants | One verified challenger delivery URL |
-| Experiment Split | `50` |
-| Experiment Status | `Inactive` |
+| Page | Page metadata for the installed namespaces; one page-level experiment where supported; complete main replacement or supported redirect |
+| Section | Metadata on the exact selected section; independent identities; complete selected-section delivery with the runtime's verified extraction |
+| Fragment/block | Published manifest and exact page/selector matching; selector stability before/after decoration; correct extraction and project redecoration |
+| Code-only | Numeric challenger count where supported; existing deployed behavior for generated variant classes/keys; no fake content URL |
 
-The split lists challenger percentages. One challenger at 50 leaves
-50 for control. Do not write `50,50` or put a control URL in the variant
-list. Inactive is explicit because the runtime otherwise defaults to
-active. Activation is a separate operation outside this skill.
+For the v2 reference, page replacement copies `main` inner HTML; section
+replacement copies the first `main > div` inner HTML. Fragment replacement
+looks for the configured selector before falling back to the first section.
+Do not rely on an accidental fallback. A whole-page export is not a valid
+section challenger. Inspect the resolved page before its section rules:
+page-level audience/experiment/campaign replacement can change which
+sections and configuration exist.
 
-Require a distinct control/challenger path on the same approved delivery
-origin, without query-dependent or fragment-dependent challenger
-references. Confirm the connector's accepted metadata representation.
-Keep experiment rows on control, never on the challenger or in page
-metadata.
+## Configuration catalogue
 
-Reject existing experiment rows on the selected target, duplicate IDs
-elsewhere in the document, missing records or ambiguous scope. Do not
-replace an existing experiment as part of creating a new one.
+Use actual project prefixes rather than assuming these default labels.
 
-## Native configuration gate
+| Capability | Default representation and checks |
+|---|---|
+| Identity and display | `Experiment`; `Experiment Label` where consumed; normalize IDs with the installed engine and detect collisions without confusing display labels with IDs |
+| Content or code variants | `Experiment Variants`: ordered challenger references, or numeric code-only challenger count; control is separate, not an extra URL |
+| Variant labels | `Experiment Variant Names` or manifest `Name` where supported; preserve order and use actual runtime variant keys such as `challenger-2`, not display labels, for forcing |
+| Allocation | `Experiment Split`: ordered challenger percentages; omitted values use that version's default; control receives the remainder; support unequal/decimal shares and explicit zero-control designs |
+| Status | `Experiment Status`; verify supported active/inactive values and current state; new proposals default inactive where supported, while updates preserve state unless a change is requested |
+| Schedule | `Experiment Start Date` and `Experiment End Date`; validate ordering, explicit timezone and boundary behavior |
+| Targeting | `Experiment Audience`/`Experiment Audiences`; refer only to actual registered audience predicates; verify OR semantics and use a separately implemented predicate for AND logic |
+| Consent | `Experiment Requires Consent`; preserve policy and inspect the existing consent integration; do not grant consent or create a CMP integration through metadata |
+| Resolution | `Experiment Resolution`: supported replacement or redirect behavior; verify scope and approved destination |
+| Optimization | `Experiment Optimizing Target` where consumed; distinguish a parsed value from an implemented optimization policy or measured goal |
+| Conversions | `Conversion Name` and the installed conversion/RUM integration; do not invent conversion events, analytics endpoints or reporting capability |
+| Selector manifests | `Experiment Manifest`; exact supported schema including `Page`, `Experiment`, `Variant`, `Selector`, `Url`, `Split`, `Name` and supported shared properties |
+| Audience experiences | `Audience: <name>` mappings, `Audience Manifest`, and `Audience Resolution` where supported; actual predicate definitions are project code, not metadata-created audiences |
+| Campaign experiences | `Campaign: <name>` mappings, `Campaign Manifest`, `Campaign Audience`/`Campaign Audiences`, and `Campaign Resolution` where supported; inspect both the configured campaign parameter and `utm_campaign` |
 
-1. Independently read the complete current source and its actual
-   freshness/version evidence. Distinguish DA raw source from delivered
-   sections or `main`-wrapped HTML. Unsupported source formats require
-   a qualified transformation; do not silently substitute whole-page
-   behavior or infer a writable locator from a DOM selector.
-2. Establish the supported save operation and whether it also previews,
-   publishes or activates. Show the exact org/site/path, selected section,
-   full affected document diff, challenger/readback evidence, inactive
-   50/50 allocation and preservation scope.
-3. Obtain exact approval for this configuration write. Authoring,
-   registration and previous approvals do not transfer. Stop if the
-   operation's effects are unknown or require unapproved coupled actions.
-4. Immediately re-read and apply the connector's supported version check.
-   Changed source stops the write. A local hash/snapshot is not an
-   atomic precondition. Do not invent ETag or overwrite guarantees;
-   stop if the approved baseline cannot be honored safely.
-5. Perform only the approved operation. Capture actual returned identities
-   and outcome, independently read the saved configuration, and verify
-   every metadata value plus unchanged page/other-experiment scope.
-6. Inspect real rendered configuration and challenger extraction.
-   Preview-publication or site publishing requires its own separate
-   approval. Hand actual verified records to read-only preview only
-   after saved-state and rendered checks succeed.
+Validate one split per challenger, finite percentages in [0, 100], sum at
+most 100 and an explicit derived control share. If no split is requested,
+show the engine's proposed default and all resulting shares. Do not pad,
+truncate or silently fix an inconsistent list merely because a parser does.
+Do not force 50/50 or limit every experiment to one challenger.
 
-## Output and stops
+Verify every referenced content resource, delivered extraction, accepted
+URL/origin handling and intended locale. The v2 reference reduces many
+references to same-origin pathnames; a cross-origin URL is not proof that
+the other origin's content will be fetched.
 
-A no-write proposal returns `status: draft`, `backend_written: false`,
-actual baseline identity, proposed metadata/destination, explicit 50/50
-allocation, preservation evidence and unresolved prerequisites.
-Proposed identities remain visibly proposed.
+For manifests, verify schema, page filtering, selector cardinality,
+variant order, grouping, shared values and actual published JSON response.
+Do not assume query-selected sheets survive a runtime that fetches only
+the pathname. Preserve unrelated rows and avoid overlapping targets.
 
-Only confirmed native configuration plus independent saved-state and
-real rendered readback yields `verified`. Include actual IDs, locators,
-approved scope, supported precondition, operation outcome and readbacks.
+## Separate authoring settings from code prerequisites
 
-A timeout, missing record, failed readback or unknown outcome stops
-further writes. Do not retry blindly, create replacement records,
-fabricate receipts, reconstruct historical state, or call an uncertain
-write a no-write draft.
+Inspect project options including `audiences`, `audiencesMetaTagPrefix`,
+`audiencesQueryParameter`, `campaignsMetaTagPrefix`,
+`campaignsQueryParameter`, `experimentsMetaTagPrefix`,
+`experimentsQueryParameter`, `prodHost`, `isProd`, the actual redecoration
+callback and `simulationUI`. Include storage/persistence settings only if
+the installed version consumes them.
 
-No content editing, site publishing, activation, permissions,
-installation, audience/Target personalization, new renderer or UI
-implementation is part of this skill.
+These are not all author-editable metadata. Missing predicates, code-only
+behavior, conversion integration, host adapters or callbacks require a
+separate reviewed code change, not fabricated metadata. No option
+automatically installs a UI in a different host.
+
+Verify documentation/source disagreements. At the v2 reference, section
+metadata keys are hyphenated while some experiment properties expect
+camelCase; multiword dates, labels and consent settings therefore need
+scope-specific proof. The code calls `decorateFunction` despite a README
+example using `decorationFunction`. A documented option is not verified
+when the actual parser ignores it. Report that feature/scope as blocked
+without silently dropping it or narrowing all other supported features.
+
+Runtime outputs such as `selectedVariant`, `run`, `resolvedAudiences` and
+`servedExperience` are readback evidence, not authoring inputs.
+
+## Propose, approve, save and verify
+
+1. Clarify only missing behavioral decisions, one question at a time.
+   Read the complete current source/configuration and actual freshness
+   evidence. For updates, identify exactly what changes and preserve
+   every unrequested field, other experiment and content resource.
+2. Show the complete proposed metadata/manifest diff, capability map,
+   scope, identities, variant references, all derived allocations,
+   lifecycle/targeting/consent effects and code prerequisites. A draft
+   must expose unverified references rather than invent saved resources.
+3. For a native write, require actual verified content references where
+   needed and exact operation/resource approval. Explain whether save
+   also previews, publishes or affects live targeting. Updating active
+   configuration is a live-impacting change even without a status edit.
+4. Re-read immediately before writing and enforce supported version
+   checks. Changed state stops the write. Do not invent ETag/atomicity
+   guarantees or treat local hashes as native preconditions.
+5. Perform only the approved operation. Independently read saved
+   configuration, manifest delivery and real runtime resolution.
+   Verify each requested field, all shares, references, applicability
+   and unchanged scope. Echoed payloads are not readback.
+6. Publishing, activation or reactivation require separate explicit
+   approval. Audience/campaign mappings may have no inactive state;
+   never invent one. Keep them draft-only until their actual delivery
+   effects and approved staging mechanism are understood.
+
+Return no-write proposals as `status: draft`, `backend_written: false`,
+with actual baseline evidence, proposed configuration, supported/blocked
+features and unresolved prerequisites. Confirmed writes must report their
+real outcome and distinguish saved-only from rendered-verified state.
+Only independent saved-state plus real runtime/readback evidence earns
+`verified`.
+
+Missing records, ambiguous scope, unsupported fields, changed state,
+failed readback or an unknown outcome stop the affected write. Do not
+retry blindly, fabricate receipts, reconstruct historical state or
+present an uncertain operation as a no-write success.
