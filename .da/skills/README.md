@@ -5,11 +5,23 @@ configuration and read-only preview across sites and block types. Site
 identity, block structure, editable fields, project policy and runtime
 capabilities are inputs. Registering them does not grant tool access.
 
+The repository layout is:
+
+```text
+.da/skills/aem-content-variants/skill.md
+.da/skills/aem-experimentation-configure/skill.md
+.da/skills/aem-experimentation-preview/skill.md
+```
+
+The lowercase `skill.md` filenames and `.da/skills/` location follow the
+proposed DA discovery convention being tested. Their presence does not
+establish that the active DA assistant has loaded them.
+
 | Skill | Reusable scope |
 |---|---|
-| [aem-content-variants](aem-content-variants/SKILL.md) | Regular page copies, any supported block/section, reusable fragments and full-page or selector-based experiences |
-| [aem-experimentation-configure](aem-experimentation-configure/SKILL.md) | Version-aware experiment, audience and campaign configuration across page, section and fragment scopes |
-| [aem-experimentation-preview](aem-experimentation-preview/SKILL.md) | Standalone read-only content/experience preview, arbitrary actual variant keys and relevant multi-experiment interactions |
+| [aem-content-variants](aem-content-variants/skill.md) | Regular page copies, any supported block/section, reusable fragments and full-page or selector-based experiences |
+| [aem-experimentation-configure](aem-experimentation-configure/skill.md) | Version-aware experiment, audience and campaign configuration across page, section and fragment scopes |
+| [aem-experimentation-preview](aem-experimentation-preview/skill.md) | Standalone read-only content/experience preview, arbitrary actual variant keys and relevant multi-experiment interactions |
 
 No skill depends on a shell, Python helper, fixtures or sibling reference
 files. They do not impose a brand, hero/card template, one challenger,
@@ -46,7 +58,35 @@ The existing Frescopa26 offline helper and fixtures are site-specific
 evidence in the separate runtime integration. They are not a generic
 validator or an installation dependency for these skills.
 
-## Discover and register through the supported host
+## Test repository discovery
+
+1. Confirm which GitHub repository and ref the intended site/assistant
+   actually reads. Verify that ref contains these three files and record
+   its commit. A file on this fork's PR branch is not proof that the
+   upstream site's assistant can see it. Do not change site settings or
+   assume a merge/branch switch is authorized.
+2. Start a fresh DA assistant conversation. Before pasting or attaching
+   any skill content, inspect the available skill list/slash menu or use
+   the host's supported discovery mechanism for these exact names.
+3. Begin with `aem-experimentation-preview`. Ask for a no-write
+   description of the loaded skill's scope and its source/version where
+   observable. Repeating the requested skill name in ordinary chat does
+   not establish that the repository file was loaded.
+4. Prepare a no-write proposal. Confirm `draft`,
+   `backend_written: false`, the discovered site/source identity,
+   requested block/scope, available settings and explicit blocked
+   features. Verify that an unrelated block type or multi-variant split
+   does not trigger a demo-only restriction.
+5. Record the actual discovery result, repository/ref evidence and
+   limits. If no skill appears, report repository discovery as
+   unverified or unavailable. Do not move the source files elsewhere to
+   conceal a failed discovery check.
+
+No automatic discovery has been verified by this PR. Repository discovery,
+manual skill registration, connector access and successful authoring are
+separate checks.
+
+## Manual registration fallback
 
 The [official Experience Workspace assistant documentation](https://www.aem.live/docs/ew/authoring/assistant)
 links **Manage Coworker** from the assistant's plus menu.
@@ -58,8 +98,8 @@ The public DA client
 [`fetchSkills()` implementation](https://github.com/adobe/da-nx/blob/7444db0c09543f81a056a54c72d70a9dd6ac43f4/nx2/blocks/chat-ao/utils/skills.js)
 requests skills for the
 [resolved Coworker manifest](https://github.com/adobe/da-nx/blob/7444db0c09543f81a056a54c72d70a9dd6ac43f4/nx2/blocks/chat-ao/utils/manifest.js).
-This establishes client-side registered-skill discovery, not automatic
-loading of `.da/skills/<id>/skill.md` from GitHub.
+This establishes client-side registered-skill discovery. It does not by
+itself establish automatic loading of these repository files.
 
 Some [feature onboarding documentation](https://www.aem.live/docs/ew/administering/agentic-plugins)
 also refers to `https://da.live/apps/skills#/<org>/<site>` and config-write
@@ -69,7 +109,7 @@ The schema editor is not the documented Skills Editor.
 1. In the intended DA/Experience Workspace organization, open the
    assistant's plus menu and **Manage Coworker**. Confirm the
    administrator-approved registration scope.
-2. Supply one complete `SKILL.md` through the supported creation flow,
+2. Supply one complete `skill.md` through the supported creation flow,
    preserving its name. Paste or attach only if that flow supports it.
    Do not assume ZIP import, a storage API or GitHub synchronization.
 3. Review the saved draft against the complete source. Preserve the
@@ -89,11 +129,11 @@ The schema editor is not the documented Skills Editor.
 
 Stop if approved scope, registration receipt or fresh-session discovery
 cannot be verified. No registration has been performed by this PR.
-Merging these files does not install them.
+Do not treat merging these files alone as proof of installation.
 
 ## Example registration prompt
 
-Attach or paste one complete `SKILL.md`, then use:
+For the manual fallback, attach or paste one complete `skill.md`, then use:
 
 > Prepare a reusable skill from these instructions. Preserve its exact
 > name and safety gates. Keep site identity, block structure, allowed
