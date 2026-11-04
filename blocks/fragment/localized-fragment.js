@@ -1,14 +1,21 @@
-import { getLanguage } from '../header/language-selector.js';
+import { getLanguage } from '../../scripts/languages.js';
 
-export function getLocalizedFragmentPath(defaultPath, metadata, location) {
+export function getLocalizedFragmentPath(defaultPath, metadata, location, languages) {
   const authoredPath = metadata ? new URL(metadata, location).pathname : defaultPath;
   if (authoredPath !== defaultPath) return authoredPath;
-  const { prefix } = getLanguage(location.pathname);
+  const { prefix } = getLanguage(location.pathname, languages);
   return prefix ? `/${prefix}${defaultPath}` : defaultPath;
 }
 
-export async function loadLocalizedFragment(defaultPath, metadata, location, loadFragment, label) {
-  const path = getLocalizedFragmentPath(defaultPath, metadata, location);
+export async function loadLocalizedFragment(
+  defaultPath,
+  metadata,
+  location,
+  loadFragment,
+  label,
+  languages,
+) {
+  const path = getLocalizedFragmentPath(defaultPath, metadata, location, languages);
   const fragment = await loadFragment(path);
   if (fragment) return { fragment, path };
 

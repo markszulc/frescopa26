@@ -1,7 +1,7 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { loadLocalizedFragment } from '../fragment/localized-fragment.js';
-import { getLanguage } from '../header/language-selector.js';
+import { getLanguage, loadLanguages } from '../../scripts/languages.js';
 
 /**
  * loads and decorates the footer
@@ -10,12 +10,13 @@ import { getLanguage } from '../header/language-selector.js';
 export default async function decorate(block) {
   // load footer as fragment
   const footerMeta = getMetadata('footer');
-  const { fragment, path: footerPath } = await loadLocalizedFragment('/fragments/footer', footerMeta, window.location, loadFragment, 'Footer');
+  const languages = await loadLanguages();
+  const { fragment, path: footerPath } = await loadLocalizedFragment('/fragments/footer', footerMeta, window.location, loadFragment, 'Footer', languages);
 
   // decorate footer DOM
   block.textContent = '';
   const footer = document.createElement('div');
-  footer.lang = getLanguage(footerPath).code;
+  footer.lang = getLanguage(footerPath, languages).code;
   while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
 
   // label sections: brand (with newsletter form), link columns, and legal bar

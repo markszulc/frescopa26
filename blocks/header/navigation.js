@@ -2,12 +2,12 @@ import { getLocalizedFragmentPath, loadLocalizedFragment } from '../fragment/loc
 
 const DEFAULT_NAV_PATH = '/fragments/nav';
 
-export function getNavigationPath(navMeta, location) {
-  return getLocalizedFragmentPath(DEFAULT_NAV_PATH, navMeta, location);
+export function getNavigationPath(navMeta, location, languages) {
+  return getLocalizedFragmentPath(DEFAULT_NAV_PATH, navMeta, location, languages);
 }
 
-export async function loadNavigation(navMeta, location, loadFragment) {
-  return loadLocalizedFragment(DEFAULT_NAV_PATH, navMeta, location, loadFragment, 'Navigation');
+export async function loadNavigation(navMeta, location, loadFragment, languages) {
+  return loadLocalizedFragment(DEFAULT_NAV_PATH, navMeta, location, loadFragment, 'Navigation', languages);
 }
 
 export function getNavigationTool(href, label, location) {

@@ -1,47 +1,9 @@
-export const LANGUAGES = [
-  {
-    prefix: '', code: 'en', label: 'English', region: 'United Kingdom',
-  },
-  {
-    prefix: 'fr', code: 'fr', label: 'Français', region: 'France',
-  },
-  {
-    prefix: 'de', code: 'de', label: 'Deutsch', region: 'Deutschland',
-  },
-  {
-    prefix: 'es', code: 'es', label: 'Español', region: 'España',
-  },
-  {
-    prefix: 'it', code: 'it', label: 'Italiano', region: 'Italia',
-  },
-  {
-    prefix: 'jp', code: 'ja', label: '日本語', region: '日本',
-  },
-  {
-    prefix: 'kr', code: 'ko', label: '한국어', region: '대한민국',
-  },
-  {
-    prefix: 'cn', code: 'zh-Hans', label: '简体中文', region: '中国大陆',
-  },
-];
+import { getLanguage, getLanguageHref, getLocalizedLanguages } from '../../scripts/languages.js';
 
-export function getLanguage(pathname) {
-  const prefix = pathname.split('/')[1];
-  return LANGUAGES.find((language) => language.prefix === prefix) || LANGUAGES[0];
-}
-
-export function getLanguageHref(language, location) {
-  const current = getLanguage(location.pathname);
-  const pagePath = current.prefix
-    ? location.pathname.slice(current.prefix.length + 1)
-    : location.pathname;
-  const suffix = pagePath || '/';
-  const pathname = language.prefix ? `/${language.prefix}${suffix}` : suffix;
-  return `${pathname}${location.search}${location.hash}`;
-}
-
-export default function decorateLanguageSelector(navTools) {
-  const current = getLanguage(window.location.pathname);
+export default function decorateLanguageSelector(navTools, languages) {
+  const locale = getLanguage(window.location.pathname, languages).code;
+  const options = getLocalizedLanguages(languages, locale);
+  const current = getLanguage(window.location.pathname, options);
   const item = document.createElement('li');
   item.className = 'nav-language';
 
@@ -58,7 +20,7 @@ export default function decorateLanguageSelector(navTools) {
       <ellipse cx="12" cy="12" rx="4" ry="9"></ellipse>
       <path d="M3 12h18"></path>
     </svg>
-    <span>${(current.prefix || 'en').toUpperCase()}</span>
+    <span>${(current.prefix || current.code).toUpperCase()}</span>
     <svg class="nav-language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path>
     </svg>`;
@@ -68,11 +30,11 @@ export default function decorateLanguageSelector(navTools) {
   menu.className = 'nav-language-menu';
   menu.setAttribute('popover', 'auto');
   menu.setAttribute('aria-label', labels.languages || 'Languages');
-  LANGUAGES.forEach((language) => {
+  options.forEach((language) => {
     const option = document.createElement('li');
     const link = document.createElement('a');
-    link.href = getLanguageHref(language, window.location);
-    link.lang = language.code;
+    link.href = getLanguageHref(language, window.location, languages);
+    link.lang = locale;
     link.hreflang = language.code;
     if (language === current) link.setAttribute('aria-current', 'true');
     const label = document.createElement('span');
@@ -112,7 +74,7 @@ export default function decorateLanguageSelector(navTools) {
     if (open) {
       // Refresh links in case the page's query or anchor changed after header loading.
       menu.querySelectorAll('a').forEach((link, index) => {
-        link.href = getLanguageHref(LANGUAGES[index], window.location);
+        link.href = getLanguageHref(options[index], window.location, languages);
       });
       positionMenu();
       window.addEventListener('resize', positionMenu);
