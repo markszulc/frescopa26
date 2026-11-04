@@ -6,6 +6,9 @@ import {
   renderMarkdownSummary,
   resolveSearchResult,
 } from '../../scripts/content-ai.js';
+import { loadLanguages } from '../../scripts/languages.js';
+import { getResultSection, labelFromPath } from './search-results.js';
+import { formatSearchText, getSearchContent, loadSearchContent } from './search-content.js';
 
 const SEARCH_DELAY = 250;
 const SEARCH_TIMEOUT = 15000;
@@ -15,23 +18,6 @@ const MAX_SEARCH_PAGES = 3;
 
 const SEARCH_ICON = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2" stroke-linecap="round"></path></svg>';
 const CLOCK_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l2.5 1.5" stroke-linecap="round"></path></svg>';
-
-const RECENT = ['atelier mini', 'cold brew beans', 'nearest café'];
-const POPULAR = ['bean subscription', 'flavour dna', 'espresso blend', 'gift sets'];
-const TRENDING = [
-  {
-    name: 'The Atelier',
-    price: '$2,199',
-    href: '/machines/atelier',
-    img: '/media_1a775c161149ea61e50ce787b6c0adb646148c6ca.jpg',
-  },
-  {
-    name: 'Morning Blend coffee',
-    price: 'from $10',
-    href: '/beverages/coffee',
-    img: '/media_126153dedaaab1e3fdd811716e201bae4bcfcf30f.jpg',
-  },
-];
 
 let overlay;
 let modal;
@@ -50,6 +36,13 @@ let searchRequestId = 0;
 let searchConfig;
 let summaryController;
 let summaryRequestId = 0;
+let contentRequestId = 0;
+let searchContent;
+let searchLanguages;
+
+function text(key, values = {}) {
+  return formatSearchText(searchContent.labels[key], values);
+}
 
 async function getSearchConfig(signal) {
   if (searchConfig) return searchConfig;
@@ -74,20 +67,14 @@ async function getSearchConfig(signal) {
   return searchConfig;
 }
 
-function labelFromPath(path) {
-  let label = path;
-  try {
-    label = decodeURIComponent(path);
-  } catch (error) {
-    console.warn('Content AI result has an invalid encoded path', error);
-  }
-  return label.replace(/[-_]+/g, ' ')
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-function normalizeResults(items) {
+function normalizeResults(items, languages) {
   const seen = new Set();
   const rows = [];
+  const navigationLinks = [...document.querySelectorAll('header .nav-sections a[href]')]
+    .map((link) => ({
+      pathname: new URL(link.href).pathname,
+      label: link.textContent,
+    }));
   items.forEach((item) => {
     const { url, title } = resolveSearchResult(item);
     if (!isSafeUrl(url)) {
@@ -102,9 +89,10 @@ function normalizeResults(items) {
     if (seen.has(identity)) return;
     seen.add(identity);
     const segments = parsed.pathname.split('/').filter(Boolean);
+    const section = getResultSection(parsed.pathname, languages, navigationLinks);
     rows.push({
-      label: title || labelFromPath(segments.at(-1) || 'Home'),
-      sub: segments.length > 1 ? `in ${labelFromPath(segments[0])}` : '',
+      label: title || (section ? labelFromPath(segments.at(-1)) : text('home-label')),
+      sub: section ? text('result-location', { section }) : '',
       href: parsed.origin === window.location.origin
         ? `${parsed.pathname}${parsed.search}` : parsed.href,
     });
@@ -128,25 +116,25 @@ function resultRow({ label, sub, href }) {
 
 function showMessage(message, retry = false) {
   resultsPanel.textContent = '';
-  const text = document.createElement('p');
-  text.className = 'search-empty';
-  text.textContent = message;
-  resultsPanel.append(text);
+  const messageElement = document.createElement('p');
+  messageElement.className = 'search-empty';
+  messageElement.textContent = message;
+  resultsPanel.append(messageElement);
   if (retry) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'search-chip';
     button.dataset.searchRetry = '';
-    button.textContent = 'Try again';
+    button.textContent = text('retry-search');
     resultsPanel.append(button);
   }
 }
 
 function showSummaryMessage(message, retry = false) {
   summaryText.textContent = '';
-  const text = document.createElement('p');
-  text.textContent = message;
-  summaryText.append(text);
+  const messageElement = document.createElement('p');
+  messageElement.textContent = message;
+  summaryText.append(messageElement);
   summarySources.textContent = '';
   summarySources.hidden = true;
   summaryDisclaimer.hidden = true;
@@ -155,7 +143,7 @@ function showSummaryMessage(message, retry = false) {
     button.type = 'button';
     button.className = 'search-chip';
     button.dataset.summaryRetry = '';
-    button.textContent = 'Retry AI summary';
+    button.textContent = text('retry-summary');
     summaryText.append(button);
   }
 }
@@ -178,8 +166,9 @@ function renderSummarySources(hits) {
     const link = document.createElement('a');
     link.className = 'search-chip';
     link.href = href;
-    link.textContent = title || labelFromPath(parsed.pathname.split('/').filter(Boolean).at(-1)
-      || 'Home');
+    const section = getResultSection(parsed.pathname, searchLanguages, []);
+    link.textContent = title || (section
+      ? labelFromPath(parsed.pathname.split('/').filter(Boolean).at(-1)) : text('home-label'));
     summarySources.append(link);
   });
   summarySources.hidden = !summarySources.childElementCount;
@@ -193,7 +182,7 @@ async function renderSummary(query, requestId, config) {
   summaryController = controller;
   const timeout = setTimeout(() => controller.abort(), SUMMARY_TIMEOUT);
   summaryPanel.setAttribute('aria-busy', 'true');
-  showSummaryMessage('Generating AI summary…');
+  showSummaryMessage(text('generating-summary'));
   try {
     const {
       baseUrl, contentSource, contentSourceType, disclaimer,
@@ -210,15 +199,17 @@ async function renderSummary(query, requestId, config) {
     if (data.result.trim()) {
       summaryText.innerHTML = renderMarkdownSummary(data.result);
       renderSummarySources(data.hits || []);
-      summaryDisclaimer.textContent = disclaimer;
-      summaryDisclaimer.hidden = !disclaimer;
+      const localizedDisclaimer = searchContent.labels['summary-disclaimer']
+        ?? (searchContent.locale === 'en' ? disclaimer : '');
+      summaryDisclaimer.textContent = localizedDisclaimer;
+      summaryDisclaimer.hidden = !localizedDisclaimer;
     } else {
-      showSummaryMessage('No AI summary is available for this search.');
+      showSummaryMessage(text('summary-empty'));
     }
   } catch (error) {
     if (requestId !== searchRequestId || summaryId !== summaryRequestId) return;
     console.error('Navigation AI summary failed', error);
-    showSummaryMessage('The AI summary is unavailable right now.', true);
+    showSummaryMessage(text('summary-error'), true);
   } finally {
     clearTimeout(timeout);
     if (requestId === searchRequestId && summaryId === summaryRequestId) {
@@ -245,7 +236,11 @@ async function renderResults(query, requestId) {
   const timeout = setTimeout(() => controller.abort(), SEARCH_TIMEOUT);
   let config;
   try {
-    config = await getSearchConfig(controller.signal);
+    const [loadedConfig, languages] = await Promise.all([
+      getSearchConfig(controller.signal),
+      loadLanguages(),
+    ]);
+    config = loadedConfig;
     if (requestId !== searchRequestId) return;
     const { baseUrl, contentSource, contentSourceType } = config;
     renderSummary(query, requestId, config);
@@ -265,19 +260,19 @@ async function renderResults(query, requestId) {
       );
       if (requestId !== searchRequestId) return;
       items.push(...data.results);
-      rows = normalizeResults(items);
+      rows = normalizeResults(items, languages);
       if (rows.length >= RESULTS_LIMIT || !data.cursor || data.cursor === cursor) break;
       cursor = data.cursor;
     }
     resultsPanel.textContent = '';
-    if (!rows.length) showMessage(`No results for “${query}”`);
+    if (!rows.length) showMessage(text('no-results', { query }));
     else rows.slice(0, RESULTS_LIMIT).forEach((row) => resultsPanel.append(resultRow(row)));
   } catch (error) {
     if (requestId !== searchRequestId) return;
     console.error('Navigation search failed', error);
-    showMessage('Search is unavailable right now. Please try again.', true);
+    showMessage(text('search-error'), true);
     if (!config) {
-      showSummaryMessage('The AI summary is unavailable right now.', true);
+      showSummaryMessage(text('summary-error'), true);
       summaryPanel.setAttribute('aria-busy', 'false');
     }
   } finally {
@@ -297,8 +292,8 @@ function render() {
   resultsPanel.hidden = !hasQuery;
   summaryPanel.hidden = !hasQuery;
   if (hasQuery) {
-    showMessage('Searching…');
-    showSummaryMessage('Generating AI summary…');
+    showMessage(text('searching'));
+    showSummaryMessage(text('generating-summary'));
     summaryPanel.setAttribute('aria-busy', 'true');
     resultsPanel.setAttribute('aria-busy', 'true');
     const requestId = searchRequestId;
@@ -308,7 +303,7 @@ function render() {
 
 function getFocusable() {
   return [...modal.querySelectorAll('a[href], button, input, [tabindex]:not([tabindex="-1"])')]
-    .filter((el) => !el.hidden && el.offsetParent !== null);
+    .filter((el) => !el.hidden && !el.disabled && el.offsetParent !== null);
 }
 
 function trapFocus(e) {
@@ -338,6 +333,7 @@ function onKeydown(e) {
 
 function close() {
   if (!overlay || !overlay.classList.contains('is-open')) return;
+  contentRequestId += 1;
   cancelSearch();
   overlay.classList.remove('is-open');
   overlay.inert = true;
@@ -355,12 +351,20 @@ function close() {
   if (restore && typeof restore.focus === 'function') restore.focus();
 }
 
-function chip(text, withClock) {
+function chip(labelText, withClock) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'search-chip';
-  btn.dataset.query = text;
-  btn.innerHTML = `${withClock ? `<span class="search-chip-icon">${CLOCK_ICON}</span>` : ''}<span>${text}</span>`;
+  btn.dataset.query = labelText;
+  if (withClock) {
+    const icon = document.createElement('span');
+    icon.className = 'search-chip-icon';
+    icon.innerHTML = CLOCK_ICON;
+    btn.append(icon);
+  }
+  const label = document.createElement('span');
+  label.textContent = labelText;
+  btn.append(label);
   return btn;
 }
 
@@ -368,50 +372,77 @@ function trendingItem(item) {
   const a = document.createElement('a');
   a.className = 'search-trending-item';
   a.href = item.href;
-  const picture = createOptimizedPicture(item.img, '', false, [{ width: '160' }]);
-  picture.classList.add('search-trending-thumb');
-  const img = picture.querySelector('img');
-  if (img) {
-    img.width = 56;
-    img.height = 56;
-    img.addEventListener('error', () => { picture.classList.add('is-empty'); });
+  if (item.img) {
+    const picture = createOptimizedPicture(item.img, '', false, [{ width: '160' }]);
+    picture.classList.add('search-trending-thumb');
+    const img = picture.querySelector('img');
+    if (img) {
+      img.width = 56;
+      img.height = 56;
+      img.addEventListener('error', () => { picture.classList.add('is-empty'); });
+    }
+    a.append(picture);
   }
-  a.append(picture);
-  a.insertAdjacentHTML('beforeend', `
-    <span class="search-trending-name">${item.name}</span>
-    <span class="search-trending-price">${item.price}</span>`);
+  const name = document.createElement('span');
+  name.className = 'search-trending-name';
+  name.textContent = item.name;
+  const price = document.createElement('span');
+  price.className = 'search-trending-price';
+  price.textContent = item.price;
+  a.append(name, price);
   return a;
 }
 
 function group(title) {
   const section = document.createElement('section');
   section.className = 'search-group';
-  section.innerHTML = `<p class="search-group-title">${title}</p>`;
+  const heading = document.createElement('p');
+  heading.className = 'search-group-title';
+  heading.textContent = title;
+  section.append(heading);
   return section;
 }
 
 function renderDefault() {
   defaultPanel.textContent = '';
 
-  const recent = group('Recent');
+  const recent = group(text('recent-title'));
   const recentChips = document.createElement('div');
   recentChips.className = 'search-chips';
-  RECENT.forEach((t) => recentChips.append(chip(t, true)));
+  searchContent.recent.forEach((t) => recentChips.append(chip(t, true)));
   recent.append(recentChips);
 
-  const popular = group('Popular searches');
+  const popular = group(text('popular-title'));
   const popularChips = document.createElement('div');
   popularChips.className = 'search-chips';
-  POPULAR.forEach((t) => popularChips.append(chip(t, false)));
+  searchContent.popular.forEach((t) => popularChips.append(chip(t, false)));
   popular.append(popularChips);
 
-  const trending = group('Trending now');
+  const trending = group(text('trending-title'));
   const trendingList = document.createElement('div');
   trendingList.className = 'search-trending';
-  TRENDING.forEach((item) => trendingList.append(trendingItem(item)));
+  searchContent.trending.forEach((item) => trendingList.append(trendingItem(item)));
   trending.append(trendingList);
 
-  defaultPanel.append(recent, popular, trending);
+  if (searchContent.recent.length) defaultPanel.append(recent);
+  if (searchContent.popular.length) defaultPanel.append(popular);
+  if (searchContent.trending.length) defaultPanel.append(trending);
+}
+
+function applySearchContent() {
+  modal.lang = searchContent.locale;
+  defaultPanel.removeAttribute('lang');
+  modal.setAttribute('aria-label', text('dialog-label'));
+  input.placeholder = text('input-placeholder');
+  input.setAttribute('aria-label', text('input-label'));
+  const closeButton = overlay.querySelector('.search-esc');
+  closeButton.textContent = text('close-text');
+  closeButton.setAttribute('aria-label', text('close-label'));
+  summaryPanel.setAttribute('aria-label', text('summary-title'));
+  summaryPanel.querySelector('.search-group-title').textContent = text('summary-title');
+  summarySources.setAttribute('aria-label', text('sources-label'));
+  resultsPanel.setAttribute('aria-label', text('results-label'));
+  renderDefault();
 }
 
 function buildOverlay() {
@@ -428,7 +459,7 @@ function buildOverlay() {
         <button class="search-esc" type="button" aria-label="Close search">ESC</button>
       </div>
       <div class="search-body">
-        <div class="search-default"></div>
+        <div class="search-default" aria-live="polite"></div>
         <section class="search-summary" role="status" aria-live="polite"
           aria-label="AI summary" hidden>
           <p class="search-group-title">AI summary</p>
@@ -450,8 +481,6 @@ function buildOverlay() {
   summarySources = overlay.querySelector('.search-summary-sources');
   summaryDisclaimer = overlay.querySelector('.search-summary-disclaimer');
 
-  renderDefault();
-
   input.addEventListener('input', (event) => {
     if (!event.isComposing) render();
     else cancelSearch();
@@ -466,6 +495,11 @@ function buildOverlay() {
     }
   });
   defaultPanel.addEventListener('click', (e) => {
+    if (e.target.closest('[data-content-retry]')) {
+      // eslint-disable-next-line no-use-before-define
+      openSearch(lastFocused);
+      return;
+    }
     const c = e.target.closest('.search-chip');
     if (!c) return;
     input.value = c.dataset.query;
@@ -497,15 +531,47 @@ function open(trigger) {
   document.addEventListener('keydown', onKeydown);
   input.value = '';
   render();
-  input.focus();
+  (input.disabled ? overlay.querySelector('.search-esc') : input).focus();
 }
 
 /**
  * Opens the modal search overlay, building it on first call.
  * @param {Element} trigger element to restore focus to on close
  */
-export default function openSearch(trigger) {
+export default async function openSearch(trigger) {
   loadCSS(`${window.hlx.codeBasePath}/blocks/search/search.css`);
   if (!overlay) buildOverlay();
+  contentRequestId += 1;
+  const requestId = contentRequestId;
+  searchContent = undefined;
+  input.disabled = true;
+  defaultPanel.lang = 'en';
+  defaultPanel.textContent = 'Loading search…';
+  defaultPanel.setAttribute('aria-busy', 'true');
   open(trigger);
+  try {
+    const [languages, locales] = await Promise.all([loadLanguages(), loadSearchContent()]);
+    if (requestId !== contentRequestId) return;
+    searchLanguages = languages;
+    searchContent = getSearchContent(locales, window.location.pathname, languages);
+    applySearchContent();
+    input.disabled = false;
+    input.focus();
+  } catch (error) {
+    if (requestId !== contentRequestId) return;
+    console.error('Search modal content failed', error);
+    defaultPanel.textContent = '';
+    const message = document.createElement('p');
+    message.className = 'search-empty';
+    message.textContent = 'Search content could not be loaded. Please try again.';
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.className = 'search-chip';
+    retry.dataset.contentRetry = '';
+    retry.textContent = 'Retry loading search';
+    defaultPanel.append(message, retry);
+    retry.focus();
+  } finally {
+    if (requestId === contentRequestId) defaultPanel.setAttribute('aria-busy', 'false');
+  }
 }
