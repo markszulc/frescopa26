@@ -19,7 +19,7 @@ const responseFor = (data) => new Response(JSON.stringify(data), {
   headers: { 'Content-Type': 'application/json' },
 });
 
-test('starter sheet has all eight languages and all 64 translated names', () => {
+test('starter sheet has 64 localized labels and native coffee taglines', () => {
   assert.equal(rows.length, 64);
   assert.equal(LANGUAGES.length, 8);
   LANGUAGES.forEach(({ code }) => {
@@ -28,25 +28,45 @@ test('starter sheet has all eight languages and all 64 translated names', () => 
     options.forEach((option) => {
       assert.ok(option.translations[code]);
       assert.equal(option.label, option.translations[code].label);
-      assert.equal(option.region, option.translations[code].region);
+      assert.equal(option.tagline, option.translations[code].tagline);
+      assert.equal(option.tagline, option.translations.en.tagline);
     });
   });
   assert.equal(getLocalizedLanguages(LANGUAGES, 'en')[2].label, 'German');
   assert.equal(getLocalizedLanguages(LANGUAGES, 'de')[0].label, 'Englisch');
   assert.equal(getLocalizedLanguages(LANGUAGES, 'ja')[2].label, 'ドイツ語');
+  assert.equal(getLocalizedLanguages(LANGUAGES, 'ja')[2].tagline, 'Erst Kaffee. Dann alles andere.');
+  assert.equal(getLocalizedLanguages(LANGUAGES, 'de')[5].tagline, 'まずはコーヒー、話はそれから。');
+});
+
+test('accepts the complete English, German and Japanese Tagline sample', () => {
+  const codes = ['en', 'de', 'ja'];
+  const sample = rows.filter((row) => codes.includes(row.Locale) && codes.includes(row.Code));
+  assert.equal(sample.length, 9);
+  const languages = parseLanguageRows(sample);
+  assert.equal(languages.length, 3);
+  const japanese = getLocalizedLanguages(languages, 'ja');
+  assert.deepEqual(japanese.map(({ label }) => label), ['英語', 'ドイツ語', '日本語']);
+  assert.equal(japanese[2].tagline, 'まずはコーヒー、話はそれから。');
+});
+
+test('requires Tagline instead of the old Region column', () => {
+  assert.throws(() => parseLanguageRows([{
+    Locale: 'en', Path: '/', Code: 'en', Label: 'English', Region: 'United Kingdom',
+  }]), /Tagline is required/);
 });
 
 test('adding a language in content updates selector, navigation and footer routing', () => {
   const languages = parseLanguageRows([
     rootRow,
     {
-      Locale: 'en', Path: '/pt/', Code: 'pt', Label: 'Portuguese', Region: 'Portugal',
+      Locale: 'en', Path: '/pt/', Code: 'pt', Label: 'Portuguese', Tagline: 'Primeiro, café!',
     },
     {
-      Locale: 'pt', Path: '/', Code: 'en', Label: 'Inglês', Region: 'Reino Unido',
+      Locale: 'pt', Path: '/', Code: 'en', Label: 'Inglês', Tagline: 'But first, coffee.',
     },
     {
-      Locale: 'pt', Path: '/pt/', Code: 'pt', Label: 'Português', Region: 'Portugal',
+      Locale: 'pt', Path: '/pt/', Code: 'pt', Label: 'Português', Tagline: 'Primeiro, café!',
     },
   ]);
   const location = new URL('https://frescopa.coffee/pt/machines?ref=nav#details');
@@ -72,16 +92,17 @@ test('trims cells, canonicalizes locale codes, and ignores authored blank rows',
   const languages = parseLanguageRows([
     {},
     {
-      ...rootRow, Locale: ' EN ', Path: ' / ', Code: ' EN ', Label: ' English ',
+      ...rootRow, Locale: ' EN ', Path: ' / ', Code: ' EN ', Label: ' English ', Tagline: ' Coffee! ',
     },
     {
-      Locale: 'en', Path: '/cn/', Code: 'zh-hans', Label: 'Chinese', Region: 'China',
+      Locale: 'en', Path: '/cn/', Code: 'zh-hans', Label: 'Chinese', Tagline: '先喝咖啡，再聊人生。',
     },
     {
-      Locale: 'zh-hans', Path: '/', Code: 'en', Label: '英语', Region: '英国',
+      Locale: 'zh-hans', Path: '/', Code: 'en', Label: '英语', Tagline: 'But first, coffee.',
     },
   ]);
   assert.equal(languages[0].translations.en.label, 'English');
+  assert.equal(languages[0].translations.en.tagline, 'Coffee!');
   assert.equal(languages[1].code, 'zh-Hans');
   assert.equal(languages[0].translations['zh-Hans'].label, '英语');
 });
@@ -100,7 +121,7 @@ test('rejects malformed rows, unsafe paths and invalid language codes', () => {
   [null, [], 'not a row'].forEach((row) => {
     assert.throws(() => parseLanguageRows([row]), /must be an object/);
   });
-  ['Locale', 'Path', 'Code', 'Label', 'Region'].forEach((field) => {
+  ['Locale', 'Path', 'Code', 'Label', 'Tagline'].forEach((field) => {
     assert.throws(() => parseLanguageRows([{ ...rootRow, [field]: '' }]), new RegExp(`${field} is required`));
   });
   ['//evil.test', '/de/machines', '/..', '/DE/', '/de?x', 'de', 'https://example.com'].forEach((Path) => {

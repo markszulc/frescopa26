@@ -18,7 +18,7 @@ export function parseLanguageRows(rows) {
       throw new Error(`Language sheet row ${index + 1} must be an object.`);
     }
     if (!Object.values(row).some((value) => String(value).trim())) return null;
-    const fields = ['Locale', 'Path', 'Code', 'Label', 'Region'];
+    const fields = ['Locale', 'Path', 'Code', 'Label', 'Tagline'];
     fields.forEach((field) => {
       if (typeof row[field] !== 'string' || !row[field].trim()) {
         throw new Error(`Language sheet row ${index + 1}: ${field} is required.`);
@@ -33,7 +33,7 @@ export function parseLanguageRows(rows) {
       code: canonicalLocale(row.Code.trim(), 'Code', index + 1),
       locale: canonicalLocale(row.Locale.trim(), 'Locale', index + 1),
       label: row.Label.trim(),
-      region: row.Region.trim(),
+      tagline: row.Tagline.trim(),
     };
   }).filter(Boolean);
 
@@ -59,7 +59,7 @@ export function parseLanguageRows(rows) {
     if (language.translations[entry.locale]) {
       throw new Error(`Language sheet has duplicate ${entry.locale} translations for /${entry.prefix}.`);
     }
-    language.translations[entry.locale] = { label: entry.label, region: entry.region };
+    language.translations[entry.locale] = { label: entry.label, tagline: entry.tagline };
   });
   return languages;
 }

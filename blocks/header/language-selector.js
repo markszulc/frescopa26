@@ -20,7 +20,6 @@ export default function decorateLanguageSelector(navTools, languages) {
       <ellipse cx="12" cy="12" rx="4" ry="9"></ellipse>
       <path d="M3 12h18"></path>
     </svg>
-    <span>${(current.prefix || current.code).toUpperCase()}</span>
     <svg class="nav-language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path>
     </svg>`;
@@ -40,10 +39,11 @@ export default function decorateLanguageSelector(navTools, languages) {
     const label = document.createElement('span');
     label.className = 'nav-language-label';
     label.textContent = language.label;
-    const region = document.createElement('span');
-    region.className = 'nav-language-region';
-    region.textContent = language.region;
-    link.append(label, region);
+    const tagline = document.createElement('span');
+    tagline.className = 'nav-language-tagline';
+    tagline.lang = language.code;
+    tagline.textContent = language.tagline;
+    link.append(label, tagline);
     option.append(link);
     menu.append(option);
   });

@@ -757,10 +757,12 @@ header nav .nav-tools .nav-language {
 }
 
 header nav .nav-tools .nav-language-button {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-width: 44px;
   min-height: 44px;
   margin: 0;
   border: 1px solid transparent;
@@ -860,11 +862,11 @@ header nav .nav-tools .nav-language-menu a[aria-current='true']::after {
 }
 
 header nav .nav-tools .nav-language-label,
-header nav .nav-tools .nav-language-region {
+header nav .nav-tools .nav-language-tagline {
   display: block;
 }
 
-header nav .nav-tools .nav-language-region {
+header nav .nav-tools .nav-language-tagline {
   margin-top: 2px;
   color: var(--language-muted);
   font-size: var(--body-font-size-xs);
