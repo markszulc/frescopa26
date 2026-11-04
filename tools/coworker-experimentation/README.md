@@ -9,12 +9,13 @@ authoring remains unqualified; enabling a UE extension alone does not qualify it
 Content belongs to **`markszulc/frescopa26`**. The GitHub fork
 `ramboz/frescopa26` does not change the DA namespace or establish DA permissions.
 
+These offline helpers support the local runtime proof. Skill definitions and
+registration are handled separately in
+[markszulc/frescopa26#43](https://github.com/markszulc/frescopa26/pull/43).
+
 | File | Purpose |
 |---|---|
 | [contract.md](contract.md) | Content model, source identity, format boundaries, and approval/readback gates |
-| [Variant skill](skills/aem-content-variants/SKILL.md) | Draft the selected section's copy without changing unrelated content |
-| [Configuration skill](skills/aem-experimentation-configure/SKILL.md) | Propose one independent section experiment at 50/50 |
-| [Preview skill](skills/aem-experimentation-preview/SKILL.md) | Standalone, read-only forced-variant preview |
 | [presenter.md](presenter.md) | Proposed copy and gated rehearsal instructions |
 | `scripts/experimentation.py` | Python standard-library helper |
 | `tests/` | Focused offline model, preservation, URL, and CLI checks |
@@ -94,7 +95,7 @@ an independent delivered readback; it does not prove that extraction works.
 Paired preview requires `--paired-compatible`. This records a caller
 assertion after runtime-specific evidence. The helper performs no browser,
 native authoring, DA-host UI handshake, random-allocation, or runtime compatibility
-test. Keep this bundle together; no skills have been installed.
+test. No skill installation or registration is part of this helper.
 
 The [integrated local proof](../experimentation-demo/README.md) runs this CLI
 against the site's actual captured content, inactive metadata and exact served
