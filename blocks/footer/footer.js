@@ -2,6 +2,7 @@ import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { loadLocalizedFragment } from '../fragment/localized-fragment.js';
 import { getLanguage, loadLanguages } from '../../scripts/languages.js';
+import getNewsletterLabels from './newsletter.js';
 
 /**
  * loads and decorates the footer
@@ -33,16 +34,17 @@ export default async function decorate(block) {
   if (brand) {
     const signup = document.createElement('form');
     signup.className = 'footer-signup';
+    const labels = getNewsletterLabels(window.location.pathname, brand.dataset);
+    signup.lang = labels.lang;
     signup.innerHTML = `
-      <label for="footer-email">A little warmth in your inbox.</label>
+      <label for="footer-email"></label>
       <div class="footer-signup-row">
-        <input id="footer-email" type="email" placeholder="you@example.com" autocomplete="email">
-        <button type="submit" class="button">Sign up</button>
+        <input id="footer-email" type="email" autocomplete="email">
+        <button type="submit" class="button"></button>
       </div>`;
-    const labels = brand.dataset;
-    if (labels.newsletterLabel) signup.querySelector('label').textContent = labels.newsletterLabel;
-    if (labels.newsletterPlaceholder) signup.querySelector('input').placeholder = labels.newsletterPlaceholder;
-    if (labels.newsletterButton) signup.querySelector('button').textContent = labels.newsletterButton;
+    signup.querySelector('label').textContent = labels.newsletterLabel;
+    signup.querySelector('input').placeholder = labels.newsletterPlaceholder;
+    signup.querySelector('button').textContent = labels.newsletterButton;
     signup.addEventListener('submit', (e) => e.preventDefault());
     brand.append(signup);
   }
