@@ -10,5 +10,6 @@ stardust/
 postinstall.js
 build.mjs
 tools/experimentation-demo/
+tools/experimentation-ui-tests/
 tools/coworker-experimentation/
 drafts/experimentation-runtime/
