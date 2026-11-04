@@ -9,3 +9,6 @@ stardust/
 *.map
 postinstall.js
 build.mjs
+tools/experimentation-demo/
+tools/coworker-experimentation/
+drafts/experimentation-runtime/

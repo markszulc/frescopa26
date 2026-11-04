@@ -19,6 +19,7 @@ import {
   initializeCommerce,
   loadErrorPage,
 } from './commerce.js';
+import { runExperimentation, runExperimentationLazy } from './experiment-loader.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -363,6 +364,7 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    await runExperimentation(doc);
     try {
       await initializeCommerce();
       commerceReady = true;
@@ -407,6 +409,7 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
+  await runExperimentationLazy(doc);
   decorateScrollReveal(main);
 
   const { hash } = window.location;
