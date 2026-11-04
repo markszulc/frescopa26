@@ -60,5 +60,7 @@ Hero/settings remain unchanged outside the approved edits.
 
 Reset only approved, recorded resources against their real saved baseline,
 using the supported route and a fresh approval. Missing records or unknown
-outcomes stop reset. Fixture checks do not qualify native authoring, the
-pending UE extension, live traffic, or experiment results.
+outcomes stop reset. Fixture checks do not qualify native authoring, DA-native
+UI compatibility, live traffic, or experiment results. The EDS site uses
+DA/Experience Workspace. DA host-adapter feasibility is under investigation;
+enabling a UE extension alone does not establish a working UI there.

@@ -38,7 +38,10 @@ proof on the exact integrated v2 runtime/page:
 ```
 
 That flag is a caller assertion, not a runtime test or native qualification.
-The helper makes no paired-support or UE-handshake claim.
+The helper makes no paired-support or DA-host UI handshake claim. The runtime's
+`simulationUI: 'universal-editor'` setting is the SDK's host-provided/no-Sidekick
+mode only. DA-native UI compatibility is under investigation; the setting does
+not establish a working DA/Experience Workspace UI.
 
 Stale experiment controls are replaced. Repeated supported language/UTM
 labels and simple section fragments are retained. Credentials, unknown

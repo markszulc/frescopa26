@@ -1,8 +1,10 @@
 # Frescopa26 offline DA helpers
 
 This bundle prepares copy checks, section metadata proposals, and read-only
-preview links for Frescopa26. It has no network or write command. Native DA
-authoring and the Contextual Experimentation UE extension remain unqualified.
+preview links for Frescopa26. It has no network or write command. The site uses
+EDS with DA/Experience Workspace, without AEM Author or Universal Editor.
+DA-native UI and host-adapter compatibility are under investigation. Native DA
+authoring remains unqualified; enabling a UE extension alone does not qualify it.
 
 Content belongs to **`markszulc/frescopa26`**. The GitHub fork
 `ramboz/frescopa26` does not change the DA namespace or establish DA permissions.
@@ -91,7 +93,7 @@ an independent delivered readback; it does not prove that extraction works.
 
 Paired preview requires `--paired-compatible`. This records a caller
 assertion after runtime-specific evidence. The helper performs no browser,
-native authoring, UE handshake, random-allocation, or runtime compatibility
+native authoring, DA-host UI handshake, random-allocation, or runtime compatibility
 test. Keep this bundle together; no skills have been installed.
 
 The [integrated local proof](../experimentation-demo/README.md) runs this CLI
@@ -99,4 +101,6 @@ against the site's actual captured content, inactive metadata and exact served
 exports. It exercises paired links through the pinned v2 engine and real block
 decorators. Run `npm test` from the repository root for the combined checks.
 This local evidence does not establish DA permissions, authenticated source
-shape, extension enablement or a remote branch preview.
+shape, DA-native UI compatibility or a remote branch preview. The runtime's
+`simulationUI: 'universal-editor'` setting is the SDK's host-provided/no-Sidekick
+mode only. It does not supply a working DA UI.

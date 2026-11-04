@@ -59,9 +59,16 @@ are outside this bundle.
 
 ## Native binding remains gated
 
+The site uses EDS with DA/Experience Workspace. It does not use AEM Author or
+Universal Editor. DA-native UI and host-adapter compatibility are under
+investigation. Enabling a UE extension alone does not establish that it can
+run in this host. The runtime's `simulationUI: 'universal-editor'` setting
+selects the SDK's host-provided/no-Sidekick mode only; it is not a working DA UI.
+Native authoring remains unqualified.
+
 The actual source is DA. Its entitled connector and approved write scope
-must be established before apply mode. The pending Contextual Experimentation
-UE extension is a separate prerequisite; a code import does not enable it.
+must be established before apply mode. A code import does not grant that access
+or implement a host adapter.
 
 The official [Source API](https://docs.da.live/developers/api/source) documents
 raw `GET /source/{org}/{repo}/{path}`. It documents `POST` file creation at
@@ -113,7 +120,7 @@ missing configuration.
 Forced assignment is simulated. Real rendering, configured allocation and
 measured performance are separate evidence. Paired overrides require proof
 on the exact integrated runtime. `--paired-compatible` records only the
-caller's assertion and does not qualify native DA or UE behavior.
+caller's assertion and does not qualify native DA authoring or host UI behavior.
 
 The [integrated local proof](../experimentation-demo/README.md) covers the exact
 local paths and both proposed IDs with inactive metadata. The pinned engine's

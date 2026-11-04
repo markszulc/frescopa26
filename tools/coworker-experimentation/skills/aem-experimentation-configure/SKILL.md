@@ -6,7 +6,8 @@ description: Propose one inactive Frescopa DA section experiment with one challe
 # Configure one independent section
 
 Read [contract.md](../../contract.md). The offline helper does not write
-source or establish native DA/UE access.
+source or establish native DA access or host UI compatibility. DA-native UI and
+host-adapter compatibility are under investigation for DA/Experience Workspace.
 
 An executable handoff requires actual DA org/repo/path, an unambiguous
 section target, a verified saved challenger and real delivered URL, first

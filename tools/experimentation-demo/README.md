@@ -1,9 +1,10 @@
 # Frescopa experimentation runtime
 
 The site now runs the AEM experimentation v2 engine before Commerce initialization
-and page decoration. Authors can replace a section while keeping the site's
-existing block decorators. The Contextual Experimentation UE extension is
-**PENDING**. This change does not install or register it.
+and page decoration. The engine can replace a section while keeping the site's
+existing block decorators. This site uses EDS with DA/Experience Workspace.
+It does not use AEM Author or Universal Editor. DA-native UI and host-adapter
+compatibility are under investigation. Native authoring remains unqualified.
 
 The runtime is pinned to the public
 [v2.0.0 source](https://github.com/adobe/aem-experimentation/tree/1079f967fb2e5c54a7471de957ea6b880bb574d0).
@@ -25,10 +26,14 @@ engine download. Preview pages run the real eager engine even without metadata,
 so `hlx:experimentation-get-config` returns its actual empty configuration.
 Loader failures are logged and do not install a substitute empty-config listener.
 
-The loader uses `simulationUI: 'universal-editor'`. The UE extension owns its UI;
-the plugin does not fetch the Sidekick simulation panel. No Sidekick registration,
-DA admin configuration, RUM sampling, consent defaults, global audiences or
-telemetry configuration are changed.
+The loader currently uses `simulationUI: 'universal-editor'` as the SDK's
+host-provided/no-Sidekick mode only. It suppresses the SDK's Sidekick simulation
+panel and leaves UI delivery to a host. It does not provide a working DA UI or
+establish that a Universal Editor extension can run in DA/Experience Workspace.
+Enabling that extension alone does not qualify DA compatibility. Runtime routing
+is unchanged while the DA-native UI and host-adapter options are investigated.
+No Sidekick registration, DA admin configuration, RUM sampling, consent defaults,
+global audiences or telemetry configuration are changed.
 
 ## Local reproduction
 
@@ -141,9 +146,10 @@ serving through `.hlxignore`.
 
 A later authoring step needs section metadata and single-section challenger
 pages in that namespace. Keep the existing default heading/intro in the product
-challenger. The public homepage has no experiment metadata yet. Extension
-availability and real authoring readback still need verification after the team
-enables the extension.
+challenger. The public homepage has no experiment metadata yet. DA-native UI and
+host-adapter compatibility require separate evidence before any UI integration.
+The SDK config readback exercised here does not qualify a DA authoring UI or a
+native authoring roundtrip.
 
 The official DA Source documentation shows a body with empty header/footer and
 main containing section divs. The offline `da-source` mode accepts that explicit
