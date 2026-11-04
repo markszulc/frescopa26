@@ -1,5 +1,7 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { loadLocalizedFragment } from '../fragment/localized-fragment.js';
+import { getLanguage } from '../header/language-selector.js';
 
 /**
  * loads and decorates the footer
@@ -8,12 +10,12 @@ import { loadFragment } from '../fragment/fragment.js';
 export default async function decorate(block) {
   // load footer as fragment
   const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/fragments/footer';
-  const fragment = await loadFragment(footerPath);
+  const { fragment, path: footerPath } = await loadLocalizedFragment('/fragments/footer', footerMeta, window.location, loadFragment, 'Footer');
 
   // decorate footer DOM
   block.textContent = '';
   const footer = document.createElement('div');
+  footer.lang = getLanguage(footerPath).code;
   while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
 
   // label sections: brand (with newsletter form), link columns, and legal bar
@@ -36,6 +38,10 @@ export default async function decorate(block) {
         <input id="footer-email" type="email" placeholder="you@example.com" autocomplete="email">
         <button type="submit" class="button">Sign up</button>
       </div>`;
+    const labels = brand.dataset;
+    if (labels.newsletterLabel) signup.querySelector('label').textContent = labels.newsletterLabel;
+    if (labels.newsletterPlaceholder) signup.querySelector('input').placeholder = labels.newsletterPlaceholder;
+    if (labels.newsletterButton) signup.querySelector('button').textContent = labels.newsletterButton;
     signup.addEventListener('submit', (e) => e.preventDefault());
     brand.append(signup);
   }
