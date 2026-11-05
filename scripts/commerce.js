@@ -14,6 +14,8 @@ import {
 } from './aem.js';
 import initializeDropins from './initializers/index.js';
 
+export const COMMERCE_ENABLED = false;
+
 let consentGranted = false;
 
 /** Returns the latest upstream consent notification for this document. */
