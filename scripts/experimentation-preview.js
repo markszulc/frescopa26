@@ -1,4 +1,4 @@
-const MESSAGE = 'da:contextual-experimentation';
+import createPreviewChannel, { BRIDGE_MESSAGE } from './experimentation-channel.js';
 
 export function getExperimentConfig(namespace, prodHost) {
   return JSON.parse(JSON.stringify({
@@ -11,7 +11,7 @@ export function getExperimentConfig(namespace, prodHost) {
 }
 
 export default function connectAuthorPreview({ prodHost }) {
-  const allowedOrigins = new Set([window.location.origin, 'http://localhost:3000']);
+  const channel = createPreviewChannel(window.location.href);
   const highlights = new Map();
   const clearHighlight = () => {
     highlights.forEach(({ value, priority }, element) => {
@@ -22,9 +22,7 @@ export default function connectAuthorPreview({ prodHost }) {
   };
 
   const onMessage = (event) => {
-    if (!allowedOrigins.has(event.origin) || !event.source || event.source === window
-      || event.source.parent !== window.parent
-      || event.data?.type !== MESSAGE || event.data?.response) return;
+    if (event.data?.type !== BRIDGE_MESSAGE || event.data?.response) return;
     const { requestId, action, selector } = event.data;
     if (typeof requestId !== 'string') return;
     let result;
@@ -46,18 +44,21 @@ export default function connectAuthorPreview({ prodHost }) {
         clearHighlight();
         result = true;
       } else return;
-      event.source.postMessage({
-        type: MESSAGE, response: true, requestId, result,
-      }, event.origin);
+      channel.postMessage({
+        type: BRIDGE_MESSAGE, response: true, requestId, result,
+      });
     } catch {
-      event.source.postMessage({
-        type: MESSAGE, response: true, requestId, error: 'Preview action failed.',
-      }, event.origin);
+      channel.postMessage({
+        type: BRIDGE_MESSAGE, response: true, requestId, error: 'Preview action failed.',
+      });
     }
   };
-  window.addEventListener('message', onMessage);
-  return () => {
-    window.removeEventListener('message', onMessage);
+  channel.onmessage = onMessage;
+  const disconnect = () => {
+    channel.close();
+    window.removeEventListener('pagehide', disconnect);
     clearHighlight();
   };
+  window.addEventListener('pagehide', disconnect, { once: true });
+  return disconnect;
 }

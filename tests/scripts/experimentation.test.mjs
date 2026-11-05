@@ -6,13 +6,15 @@ import {
   runExperimentation,
   runExperimentationLazy,
 } from '../../scripts/experiment-loader.js';
-import { getExperimentConfig } from '../../scripts/experimentation-preview.js';
+import connectAuthorPreview, { getExperimentConfig } from '../../scripts/experimentation-preview.js';
+import createPreviewChannel, { BRIDGE_MESSAGE } from '../../scripts/experimentation-channel.js';
 import {
   MFE_ORIGIN,
   getPageContext,
   getEditorHash,
   getMfeUrl,
   isMfeMessage,
+  rememberImsOrganization,
 } from '../../tools/plugins/contextual-experimentation/context.js';
 
 const page = getPageContext({
@@ -130,6 +132,65 @@ test('MFE credentials travel only in the production iframe fragment', () => {
   assert.throws(() => getMfeUrl({ token: 'test', imsOrg: 'invalid' }), /organization ID/);
 });
 
+test('organization input remembers valid submissions and prefills later forms', (t) => {
+  const previousWindow = globalThis.window;
+  t.after(() => {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  });
+  const values = new Map();
+  globalThis.window = {
+    localStorage: {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, value),
+    },
+  };
+  const input = { value: '', form: new EventTarget() };
+  rememberImsOrganization(input);
+  input.value = ' 123ABC@AdobeOrg ';
+  input.form.dispatchEvent(new Event('submit'));
+  assert.deepEqual([...values.values()], ['123ABC@AdobeOrg']);
+
+  const reopened = { value: '', form: new EventTarget() };
+  rememberImsOrganization(reopened);
+  assert.equal(reopened.value, '123ABC@AdobeOrg');
+  reopened.value = '456DEF@AdobeOrg';
+  reopened.form.dispatchEvent(new Event('submit'));
+  assert.deepEqual([...values.values()], ['456DEF@AdobeOrg']);
+  reopened.value = 'invalid';
+  reopened.form.dispatchEvent(new Event('submit'));
+  assert.deepEqual([...values.values()], ['456DEF@AdobeOrg']);
+
+  values.forEach((value, key) => values.set(key, 'invalid'));
+  const invalidSaved = { value: '', form: new EventTarget() };
+  rememberImsOrganization(invalidSaved);
+  assert.equal(invalidSaved.value, '');
+});
+
+test('blocked or full browser storage does not prevent organization form submission', (t) => {
+  const previousWindow = globalThis.window;
+  t.after(() => {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  });
+  globalThis.window = {
+    get localStorage() { throw new Error('Storage access denied'); },
+  };
+  const input = { value: '123ABC@AdobeOrg', form: new EventTarget() };
+  assert.doesNotThrow(() => rememberImsOrganization(input));
+  assert.doesNotThrow(() => input.form.dispatchEvent(new Event('submit')));
+
+  globalThis.window = {
+    localStorage: {
+      getItem: () => null,
+      setItem: () => { throw new Error('Storage quota exceeded'); },
+    },
+  };
+  const fullStorage = { value: '123ABC@AdobeOrg', form: new EventTarget() };
+  assert.doesNotThrow(() => rememberImsOrganization(fullStorage));
+  assert.doesNotThrow(() => fullStorage.form.dispatchEvent(new Event('submit')));
+});
+
 test('MFE messages require both the production origin and the actual iframe window', () => {
   const frame = { contentWindow: {} };
   const event = {
@@ -156,4 +217,82 @@ test('preview configuration excludes unrelated runtime namespace fields', () => 
   assert.deepEqual(config.experiments, namespace.experiments);
   config.experiments[0].config.id = 'changed';
   assert.equal(namespace.experiments[0].config.id, 'hero');
+});
+
+test('preview transport works without enumerated frames and isolates pages and tabs', async (t) => {
+  const previousWindow = globalThis.window;
+  const previousDocument = globalThis.document;
+  const channels = [];
+  let disconnect;
+  t.after(() => {
+    disconnect?.();
+    channels.forEach((channel) => channel.close());
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+    if (previousDocument === undefined) delete globalThis.document;
+    else globalThis.document = previousDocument;
+  });
+  const storage = () => {
+    const values = new Map();
+    return {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, value),
+    };
+  };
+  const outline = { value: '1px dotted red', priority: 'important' };
+  const marker = {
+    style: {
+      getPropertyValue: () => outline.value,
+      getPropertyPriority: () => outline.priority,
+      setProperty: (name, value, priority) => { Object.assign(outline, { value, priority }); },
+    },
+  };
+  const win = {
+    location: new URL(`${page.origin}/index?controller=parent&quick-edit=on`),
+    parent: { frames: { length: 0 } },
+    sessionStorage: storage(),
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    hlx: { experimentation: { version: '2.0.0' }, experiments: [], unrelated: 'not-for-panel' },
+  };
+  globalThis.window = win;
+  globalThis.document = { querySelectorAll: () => [marker] };
+  disconnect = connectAuthorPreview({ prodHost: 'www.example.com' });
+  const client = createPreviewChannel(`${page.origin}/`);
+  const otherPage = createPreviewChannel(`${page.origin}/other`);
+  const currentStorage = win.sessionStorage;
+  win.sessionStorage = storage();
+  const otherTab = createPreviewChannel(page.pageUrl);
+  win.sessionStorage = currentStorage;
+  channels.push(client, otherPage, otherTab);
+  let leakedMessages = 0;
+  otherPage.onmessage = () => { leakedMessages += 1; };
+  otherTab.onmessage = () => { leakedMessages += 1; };
+  const request = (action, details = {}) => new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    const timer = setTimeout(() => reject(new Error('Preview did not respond')), 2000);
+    client.onmessage = ({ data }) => {
+      if (!data.response || data.requestId !== requestId) return;
+      clearTimeout(timer);
+      if (data.error) reject(new Error(data.error));
+      else resolve(data.result);
+    };
+    client.postMessage({
+      type: BRIDGE_MESSAGE, requestId, action, ...details,
+    });
+  });
+  const config = await request('config');
+  assert.equal(config.experimentation.version, '2.0.0');
+  assert.deepEqual(config.experiments, []);
+  assert.equal(config.unrelated, undefined);
+  await request('highlight', { selector: '.experiment-check' });
+  assert.equal(outline.value, '2px solid #3b63fb');
+  await request('clear');
+  assert.deepEqual(outline, { value: '1px dotted red', priority: 'important' });
+  await request('highlight', { selector: '.experiment-check' });
+  disconnect();
+  assert.deepEqual(outline, { value: '1px dotted red', priority: 'important' });
+  await new Promise((resolve) => { setTimeout(resolve, 25); });
+  assert.equal(leakedMessages, 0);
+  assert.throws(() => createPreviewChannel('http://localhost:3000/index'), /same code branch/);
 });

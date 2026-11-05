@@ -1,10 +1,13 @@
-import {
+import createPreviewChannel, {
   BRIDGE_MESSAGE,
+} from '../../../scripts/experimentation-channel.js';
+import {
   MFE_ORIGIN,
   getPageContext,
   getEditorHash,
   getMfeUrl,
   isMfeMessage,
+  rememberImsOrganization,
 } from './context.js';
 
 const form = document.querySelector('#connect');
@@ -12,9 +15,11 @@ const frame = document.querySelector('#experimentation');
 const status = document.querySelector('#status');
 const button = form.querySelector('button');
 const pending = new Map();
+rememberImsOrganization(form.querySelector('[name="imsOrg"]'));
 let page;
 let actions;
 let latestConfig;
+let channel;
 
 function showError(error) {
   status.hidden = false;
@@ -24,22 +29,21 @@ function showError(error) {
 function requestPreview(action, details = {}) {
   return new Promise((resolve, reject) => {
     const requestId = crypto.randomUUID();
-    const targets = new Set();
     const timer = setTimeout(() => {
       pending.delete(requestId);
       reject(new Error('The canvas runtime did not respond. Open Layout or Split view and check that this code branch includes the experimentation runtime.'));
     }, 10000);
     pending.set(requestId, {
-      resolve, reject, timer, targets,
+      resolve, reject, timer,
     });
-    for (let i = 0; i < window.parent.frames.length; i += 1) {
-      const target = window.parent.frames[i];
-      if (target !== window) {
-        targets.add(target);
-        target.postMessage({
-          type: BRIDGE_MESSAGE, requestId, action, ...details,
-        }, page.origin);
-      }
+    try {
+      channel.postMessage({
+        type: BRIDGE_MESSAGE, requestId, action, ...details,
+      });
+    } catch (error) {
+      clearTimeout(timer);
+      pending.delete(requestId);
+      reject(error);
     }
   });
 }
@@ -53,15 +57,6 @@ function sendConfig(config) {
 }
 
 window.addEventListener('message', async (event) => {
-  const request = pending.get(event.data?.requestId);
-  if (page && event.origin === page.origin && event.data?.type === BRIDGE_MESSAGE
-    && event.data.response && request?.targets.has(event.source)) {
-    pending.delete(event.data.requestId);
-    clearTimeout(request.timer);
-    if (event.data.error) request.reject(new Error(event.data.error));
-    else request.resolve(event.data.result);
-    return;
-  }
   if (!page || !isMfeMessage(event, frame)) return;
   try {
     if (event.data.type === 'ue:request-fresh-config') {
@@ -94,12 +89,23 @@ async function init() {
   page = getPageContext(host.context);
   ({ actions } = host);
   if (!host.token) throw new Error('Sign in to DA, then reopen this panel.');
+  channel = createPreviewChannel(page.pageUrl);
+  channel.onmessage = (event) => {
+    const request = pending.get(event.data?.requestId);
+    if (event.data?.type !== BRIDGE_MESSAGE || !event.data.response || !request) return;
+    pending.delete(event.data.requestId);
+    clearTimeout(request.timer);
+    if (event.data.error) request.reject(new Error(event.data.error));
+    else request.resolve(event.data.result);
+  };
   status.textContent = `Page: ${page.pageUrl}`;
   button.disabled = false;
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     button.disabled = true;
+    status.hidden = false;
+    status.textContent = 'Connecting to the canvas runtime...';
     try {
       latestConfig = await requestPreview('config');
       frame.src = getMfeUrl({
@@ -122,12 +128,11 @@ async function init() {
 init().catch(showError);
 
 window.addEventListener('pagehide', () => {
-  if (page) {
-    for (let i = 0; i < window.parent.frames.length; i += 1) {
-      window.parent.frames[i].postMessage({
-        type: BRIDGE_MESSAGE, requestId: crypto.randomUUID(), action: 'clear',
-      }, page.origin);
-    }
+  if (channel) {
+    channel.postMessage({
+      type: BRIDGE_MESSAGE, requestId: crypto.randomUUID(), action: 'clear',
+    });
+    channel.close();
   }
   pending.forEach(({ timer, reject }) => {
     clearTimeout(timer);
