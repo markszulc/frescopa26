@@ -1,7 +1,9 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { fetchPlaceholders, CUSTOMER_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/commerce.js';
+import {
+  COMMERCE_ENABLED, fetchPlaceholders, CUSTOMER_PATH, CUSTOMER_LOGIN_PATH,
+} from '../../scripts/commerce.js';
 import decorateLanguageSelector from './language-selector.js';
 import { getLanguage, loadLanguages } from '../../scripts/languages.js';
 import { loadNavigation, getNavigationTool } from './navigation.js';
@@ -524,6 +526,10 @@ export default async function decorate(block) {
     navTools.querySelectorAll('a').forEach((link) => {
       const label = link.textContent.trim();
       const key = getNavigationTool(link.getAttribute('href') || '', label, window.location);
+      if (!COMMERCE_ENABLED && ['account', 'cart'].includes(key)) {
+        link.remove();
+        return;
+      }
       const icon = toolIcons[key];
       if (!icon) return;
       link.setAttribute('aria-label', label);

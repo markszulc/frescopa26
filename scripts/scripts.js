@@ -14,6 +14,7 @@ import {
   toClassName,
 } from './aem.js';
 import {
+  COMMERCE_ENABLED,
   loadCommerceEager,
   loadCommerceLazy,
   initializeCommerce,
@@ -378,12 +379,14 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     experimentationReady = await runExperimentation(doc, experimentationConfig);
-    try {
-      await initializeCommerce();
-      commerceReady = true;
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Error initializing commerce configuration:', e);
+    if (COMMERCE_ENABLED) {
+      try {
+        await initializeCommerce();
+        commerceReady = true;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error initializing commerce configuration:', e);
+      }
     }
     decorateMain(main);
     // Only commerce pages need a working config; other pages keep rendering without it.
@@ -395,7 +398,7 @@ async function loadEager(doc) {
         console.error('Error loading commerce:', e);
         loadErrorPage(418);
       }
-    } else if (main.querySelector('.product-details')) {
+    } else if (COMMERCE_ENABLED && main.querySelector('.product-details')) {
       loadErrorPage(418);
     }
     document.body.classList.add('appear');

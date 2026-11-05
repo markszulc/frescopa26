@@ -65,6 +65,41 @@ pages appear, including any indexed templates or demos.
 
 ## Experimentation
 
+### Demo prerequisites
+
+This repository runs as a **non-commerce, English-only DA experimentation demo**.
+`COMMERCE_ENABLED` in `scripts/commerce.js` is false: page startup does not fetch
+`/config.json`, and account/cart tools are not offered in the header. Existing
+commerce blocks remain in the repository but are not configured for this demo.
+Enable commerce only after supplying genuine public storefront configuration.
+
+`placeholders/languages.json` supplies the English row required by the shared
+header/footer. This is deliberately a static demo configuration. To move language
+management into DA, publish an authored sheet at `/placeholders/languages`, then
+remove the static JSON file so it cannot shadow the authored data.
+
+Navigation and footer content must also be authored and previewed in DA at
+`/fragments/nav` and `/fragments/footer`, or selected through the page's `nav`
+and `footer` metadata. The English sheet does not create these fragments.
+
+The DA palette compatibility stylesheet is adapted from Apache-2.0-licensed
+[`adobe/da-nx`](https://github.com/adobe/da-nx/blob/main/blocks/edit/da-palette/da-palette.css)
+and scoped to its Shadow DOM host. Quick edit preserves existing import-map
+mappings and initializes once per preview document. A remaining ProseMirror
+`TextSelection` warning is an upstream DA editor diagnostic, not proof of an
+experimentation connection failure.
+
+### Reusable agent skill
+
+The [DA contextual experimentation skill](.github/skills/da-contextual-experimentation/SKILL.md)
+documents the setup and validation workflow for other users. Copilot discovers
+it in `.github/skills`; check availability with `/skills`. To use it in another
+repository, copy the skill directory and port the integration files it lists,
+preserving their licenses and adapting the site context. The skill is guidance,
+not a bundled copy of the MFE or an automatic deployment.
+
+### Runtime
+
 The Adobe experimentation engine is vendored unchanged from
 [`adobe/aem-experimentation`, branch `main`](https://github.com/adobe/aem-experimentation/tree/df007dd7647e559db7f09f3357c9dbdf81c4f91d)
 at commit `df007dd7647e559db7f09f3357c9dbdf81c4f91d` (version 2.0.0).
@@ -138,7 +173,8 @@ establish that end-to-end connection.
 ### Validation
 
 ```sh
-node --test tests/scripts/experimentation.test.mjs
+node --test tests/scripts/experimentation.test.mjs tests/scripts/quick-edit.test.mjs
 npm run lint
+npx eslint tests/scripts/experimentation.test.mjs tests/scripts/quick-edit.test.mjs
 npx stylelint "tools/plugins/contextual-experimentation/*.css"
 ```
