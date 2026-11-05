@@ -62,3 +62,49 @@ pages appear, including any indexed templates or demos.
 1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
 1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
 1. Open the `{repo}` directory in your favorite IDE and start coding :)
+
+## DA contextual experimentation UI
+
+The optional panel at
+`/tools/plugins/contextual-experimentation/contextual-experimentation.html`
+embeds Adobe's production Contextual Experimentation MFE in DA Experience
+Workspace. It uses this repository's **existing experimentation runtime**;
+the runtime, commerce configuration, language content, palette, and quick-edit
+implementation are not replaced.
+
+After deploying the integration, add this row to the site's DA `library` sheet
+at `https://da.live/config#/{owner}/{repo}`, preserving existing entries:
+
+| title | path |
+|-------|------|
+| Contextual Experimentation | /tools/plugins/contextual-experimentation/contextual-experimentation.html |
+
+Open `https://da.live/canvas?ref={branch}#/{owner}/{repo}/{page}` in Layout or Split
+view and select **Contextual Experimentation**. The plugin and preview must run
+on the same deployed code branch. Enter an entitled Adobe IMS organization ID;
+the DA session supplies the in-memory token. No organization or credential is
+hardcoded. Only valid submitted organization IDs are remembered in origin-scoped
+localStorage; tokens stay in memory and travel in the production MFE's URL
+fragment, not query strings or storage.
+
+The preview bridge reads genuine runtime configuration and supports highlighting
+and validated same-site navigation. Its page/session-scoped BroadcastChannel
+works with DA's Shadow DOM iframes without enumerating `parent.frames`. The
+bridge reports `main--frescopa26--markszulc.aem.live` as the production hostname;
+adapt that value in `scripts/scripts.js` when porting to another site/domain.
+Existing engine loading and experiment allocation behavior are unchanged.
+
+Selector editing, temporary DOM previews, and unsupported DA save actions are
+not implemented. Save changes before navigating between variants. Installation
+does not create, publish, activate, or stop any experiment. A complete MFE
+Save/Activate/Stop UI run and analytics ingestion require separate validation.
+
+The [reusable skill](.github/skills/da-contextual-experimentation/SKILL.md)
+documents safe setup, portability, and testing.
+
+```sh
+npm test
+npm run lint
+npx stylelint "tools/plugins/contextual-experimentation/*.css"
+git diff --check
+```

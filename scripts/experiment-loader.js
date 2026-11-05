@@ -9,6 +9,13 @@ export function isExperimentationPreview({ hostname } = window.location) {
     || hostname.endsWith('.preview.da.live');
 }
 
+export function isAuthorPreview(location, embedded = false) {
+  const url = new URL(location);
+  return embedded && url.searchParams.get('controller') === 'parent'
+    && url.searchParams.has('quick-edit')
+    && (url.hostname.endsWith('.preview.da.live') || url.hostname === 'localhost');
+}
+
 const experimentationConfig = {
   isProd: () => !isExperimentationPreview(),
   simulationUI: 'universal-editor',
