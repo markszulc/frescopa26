@@ -19,7 +19,11 @@ import {
   initializeCommerce,
   loadErrorPage,
 } from './commerce.js';
-import { runExperimentation, runExperimentationLazy } from './experiment-loader.js';
+import {
+  isAuthorPreview,
+  runExperimentation,
+  runExperimentationLazy,
+} from './experiment-loader.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -462,7 +466,16 @@ export async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+const pageLoaded = loadPage();
+
+if (isAuthorPreview(window.location.href, window.parent !== window)) {
+  pageLoaded.then(async () => {
+    const namespace = window.aem || window.hlx;
+    if (!namespace?.experimentation) return;
+    const { default: connectAuthorPreview } = await import('./experimentation-preview.js');
+    connectAuthorPreview({ prodHost: 'main--frescopa26--markszulc.aem.live' });
+  });
+}
 
 (() => {
   const hasQE = new URL(window.location.href).searchParams.has('quick-edit');
