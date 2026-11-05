@@ -1,5 +1,26 @@
 export const MFE_ORIGIN = 'https://experience.adobe.com';
 
+const IMS_ORG_STORAGE_KEY = 'da:contextual-experimentation:ims-org';
+const IMS_ORG_PATTERN = /^[a-z0-9]+@AdobeOrg$/i;
+
+export function rememberImsOrganization(input) {
+  try {
+    const saved = window.localStorage.getItem(IMS_ORG_STORAGE_KEY);
+    if (IMS_ORG_PATTERN.test(saved)) input.value = saved;
+  } catch {
+    // Keep manual entry available when browser storage is blocked.
+  }
+  input.form.addEventListener('submit', () => {
+    const imsOrg = input.value.trim();
+    if (!IMS_ORG_PATTERN.test(imsOrg)) return;
+    try {
+      window.localStorage.setItem(IMS_ORG_STORAGE_KEY, imsOrg);
+    } catch {
+      // Connecting still works when storage is full or blocked.
+    }
+  });
+}
+
 export function getPageContext(context) {
   const {
     org, repo, site = repo, branch, path = '/',
@@ -29,7 +50,7 @@ export function getEditorHash(href, context) {
 export function getMfeUrl({
   pageUrl, origin, token, imsOrg,
 }) {
-  if (!token || !/^[a-z0-9]+@AdobeOrg$/i.test(imsOrg)) {
+  if (!token || !IMS_ORG_PATTERN.test(imsOrg)) {
     throw new Error('Sign in to DA and supply a valid Adobe IMS organization ID.');
   }
   const url = new URL(

@@ -104,6 +104,11 @@ entered in the panel. Tokens are held only in memory and passed in the MFE URL
 fragment, not query strings or browser storage. Never paste tokens into site
 configuration or source files.
 
+Valid organization IDs are saved to origin-scoped browser localStorage when
+the form is submitted and prefilled when the panel is reopened. Enter a new ID
+and submit to replace it. Each code branch has its own origin, so enter the ID
+once per branch/browser. If storage is unavailable, manual entry still works.
+
 After deploying this code branch, add a row to the site's DA `library` sheet
 at <https://da.live/config#/sudo-buddy/frescopa26>, preserving existing rows:
 

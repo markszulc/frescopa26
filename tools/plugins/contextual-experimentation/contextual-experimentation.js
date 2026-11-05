@@ -7,6 +7,7 @@ import {
   getEditorHash,
   getMfeUrl,
   isMfeMessage,
+  rememberImsOrganization,
 } from './context.js';
 
 const form = document.querySelector('#connect');
@@ -14,6 +15,7 @@ const frame = document.querySelector('#experimentation');
 const status = document.querySelector('#status');
 const button = form.querySelector('button');
 const pending = new Map();
+rememberImsOrganization(form.querySelector('[name="imsOrg"]'));
 let page;
 let actions;
 let latestConfig;

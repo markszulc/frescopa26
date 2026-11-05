@@ -14,6 +14,7 @@ import {
   getEditorHash,
   getMfeUrl,
   isMfeMessage,
+  rememberImsOrganization,
 } from '../../tools/plugins/contextual-experimentation/context.js';
 
 const page = getPageContext({
@@ -129,6 +130,65 @@ test('MFE credentials travel only in the production iframe fragment', () => {
   assert.equal(data.pageUrl, page.pageUrl);
   assert.equal(data.imsToken, 'test-token-not-a-credential');
   assert.throws(() => getMfeUrl({ token: 'test', imsOrg: 'invalid' }), /organization ID/);
+});
+
+test('organization input remembers valid submissions and prefills later forms', (t) => {
+  const previousWindow = globalThis.window;
+  t.after(() => {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  });
+  const values = new Map();
+  globalThis.window = {
+    localStorage: {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, value),
+    },
+  };
+  const input = { value: '', form: new EventTarget() };
+  rememberImsOrganization(input);
+  input.value = ' 123ABC@AdobeOrg ';
+  input.form.dispatchEvent(new Event('submit'));
+  assert.deepEqual([...values.values()], ['123ABC@AdobeOrg']);
+
+  const reopened = { value: '', form: new EventTarget() };
+  rememberImsOrganization(reopened);
+  assert.equal(reopened.value, '123ABC@AdobeOrg');
+  reopened.value = '456DEF@AdobeOrg';
+  reopened.form.dispatchEvent(new Event('submit'));
+  assert.deepEqual([...values.values()], ['456DEF@AdobeOrg']);
+  reopened.value = 'invalid';
+  reopened.form.dispatchEvent(new Event('submit'));
+  assert.deepEqual([...values.values()], ['456DEF@AdobeOrg']);
+
+  values.forEach((value, key) => values.set(key, 'invalid'));
+  const invalidSaved = { value: '', form: new EventTarget() };
+  rememberImsOrganization(invalidSaved);
+  assert.equal(invalidSaved.value, '');
+});
+
+test('blocked or full browser storage does not prevent organization form submission', (t) => {
+  const previousWindow = globalThis.window;
+  t.after(() => {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  });
+  globalThis.window = {
+    get localStorage() { throw new Error('Storage access denied'); },
+  };
+  const input = { value: '123ABC@AdobeOrg', form: new EventTarget() };
+  assert.doesNotThrow(() => rememberImsOrganization(input));
+  assert.doesNotThrow(() => input.form.dispatchEvent(new Event('submit')));
+
+  globalThis.window = {
+    localStorage: {
+      getItem: () => null,
+      setItem: () => { throw new Error('Storage quota exceeded'); },
+    },
+  };
+  const fullStorage = { value: '123ABC@AdobeOrg', form: new EventTarget() };
+  assert.doesNotThrow(() => rememberImsOrganization(fullStorage));
+  assert.doesNotThrow(() => fullStorage.form.dispatchEvent(new Event('submit')));
 });
 
 test('MFE messages require both the production origin and the actual iframe window', () => {
