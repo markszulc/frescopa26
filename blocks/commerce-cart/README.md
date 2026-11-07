@@ -17,9 +17,21 @@ The Commerce Cart block renders a comprehensive shopping cart interface with pro
 | `enable-item-remove` | string | `'true'` | Enables remove item functionality | No | Shows/hides remove item buttons |
 | `enable-estimate-shipping` | string | `'false'` | Enables shipping estimation functionality | No | Shows/hides shipping estimation section |
 | `start-shopping-url` | string | `''` | URL for "Start Shopping" button when cart is empty | No | Sets destination for empty cart CTA |
-| `checkout-url` | string | `''` | URL for checkout button | No | Sets destination for checkout action |
+| `checkout-url` | string | `''` | URL for checkout button | No | Sets destination for checkout action. The Checkout button only renders when this is set |
 | `enable-updating-product` | string | `'false'` | Enables product editing via mini-PDP modal | No | Shows/hides edit buttons for configurable products |
 | `undo-remove-item` | string | `'false'` | Enables undo functionality when removing items | No | Shows/hides undo option after item removal |
+
+### Page Heading and Breadcrumb
+
+The page title and breadcrumb are authored as default content in the same section, above the block:
+
+```
+Home / Your bag        <- paragraph; becomes the breadcrumb ("Home" may be linked)
+Your bag               <- Heading 1
+[Commerce Cart block]
+```
+
+`decorateCartBreadcrumb` in `scripts/scripts.js` turns a paragraph containing `/` directly above that `h1` into the shared `.page-breadcrumb` nav. Set `hide-heading` to `true` when authoring a heading, so the drop-in's "Shopping Cart (n)" heading isn't shown as well.
 
 <!-- ### URL Parameters
 

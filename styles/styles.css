@@ -739,7 +739,9 @@ main .section:has(.account-signin) .default-content-wrapper > p:first-child {
 
 main .section.alt > .default-content-wrapper:first-child > h1,
 /* stylelint-disable-next-line no-descending-specificity */
-main .section:has(.account-signin) .default-content-wrapper > h1 {
+main .section:has(.account-signin) .default-content-wrapper > h1,
+/* stylelint-disable-next-line no-descending-specificity */
+main .section:has(.commerce-cart) .default-content-wrapper > h1 {
   margin: 0.6rem 0 0;
   font-family: var(--font-display);
   font-size: var(--fs-h2);

@@ -69,14 +69,22 @@ export default async function decorate(block) {
   let currentNotification = null;
 
   // Layout
+  const continueURL = rootLink(startShoppingURL || '/');
   const fragment = document.createRange().createContextualFragment(`
     <div class="cart__notification"></div>
     <div class="cart__wrapper">
       <div class="cart__left-column">
         <div class="cart__list"></div>
+        <a class="cart__continue" href="${continueURL}">Continue shopping</a>
       </div>
       <div class="cart__right-column">
-        <div class="cart__order-summary"></div>
+        <div class="cart__summary-card">
+          <div class="cart__order-summary"></div>
+          <p class="cart__secure">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            <span>Secure checkout · free returns within 30 days</span>
+          </p>
+        </div>
         <div class="cart__gift-options"></div>
       </div>
     </div>
@@ -84,6 +92,7 @@ export default async function decorate(block) {
     <div class="cart__empty-cart"></div>
   `);
 
+  const $continue = fragment.querySelector('.cart__continue');
   const $wrapper = fragment.querySelector('.cart__wrapper');
   const $notification = fragment.querySelector('.cart__notification');
   const $list = fragment.querySelector('.cart__list');
@@ -319,6 +328,7 @@ export default async function decorate(block) {
       toggleEmptyCart(isCartEmpty(cartData));
 
       const isEmpty = !cartData || cartData.totalQuantity < 1;
+      $continue.hidden = isEmpty;
       $giftOptions.style.display = isEmpty || enableGiftOptions !== 'true' ? 'none' : '';
       $rightColumn.style.display = isEmpty ? 'none' : '';
 
