@@ -26,6 +26,7 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
+import { readBlockConfig, toClassName } from '../../scripts/aem.js';
 import {
   rootLink,
   setJsonLd,
@@ -81,7 +82,64 @@ function formatNumericAttributeValue(value) {
   return new Intl.NumberFormat(document.documentElement.lang).format(Number(trimmed));
 }
 
+const TRUST_ICONS = {
+  delivery: '<path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z" stroke-linejoin="round"></path><circle cx="7" cy="18" r="1.6"></circle><circle cx="17.5" cy="18" r="1.6"></circle>',
+  guarantee: '<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke-linejoin="round"></path><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>',
+  returns: '<path d="M4 12a8 8 0 1 1 2.3 5.6" stroke-linecap="round"></path><path d="M4 6v5h5" stroke-linecap="round" stroke-linejoin="round"></path>',
+};
+
+const STAR_PATH = 'M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z';
+
+/**
+ * Picks a trust-badge icon from the badge text (delivery, returns or guarantee).
+ */
+function trustIcon(text) {
+  const l = text.toLowerCase();
+  let key = 'guarantee';
+  if (/deliver|set it up|ship/.test(l)) key = 'delivery';
+  else if (/return|send it back|trial|refund/.test(l)) key = 'returns';
+  return `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">${TRUST_ICONS[key]}</svg>`;
+}
+
+/**
+ * Reads the authored trust badges: the second cell of the "Trust" row, one badge
+ * per list item or paragraph.
+ */
+function readTrustBadges(block) {
+  const row = [...block.querySelectorAll(':scope > div')]
+    .find((r) => toClassName(r.children[0]?.textContent) === 'trust');
+  const cell = row?.children[1];
+  if (!cell) return [];
+  const items = cell.querySelectorAll('li, p');
+  const texts = items.length ? [...items].map((el) => el.textContent) : [cell.textContent];
+  return texts.map((t) => t.trim()).filter(Boolean);
+}
+
+function getAttributeValue(product, id) {
+  if (!id) return '';
+  const attr = product?.attributes?.find((a) => a.id === id || a.name === id);
+  return attr?.value != null ? String(attr.value).trim() : '';
+}
+
+function formatMoney(amount, currency, fractionDigits = 2) {
+  return new Intl.NumberFormat(document.documentElement.lang || 'en-US', {
+    style: 'currency',
+    currency: currency || 'USD',
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(amount);
+}
+
 export default async function decorate(block) {
+  const {
+    'eyebrow-attribute': eyebrowAttribute = 'product_type',
+    'rating-attribute': ratingAttribute = 'rating',
+    'review-count-attribute': reviewCountAttribute = 'review_count',
+    'finance-min-price': financeMinPrice = '500',
+    'finance-months': financeMonths = '12',
+  } = readBlockConfig(block);
+  const trustBadges = readTrustBadges(block);
+
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
@@ -106,20 +164,28 @@ export default async function decorate(block) {
         <div class="product-details__gallery"></div>
       </div>
       <div class="product-details__right-column">
+        <p class="product-details__eyebrow" hidden></p>
         <div class="product-details__header"></div>
-        <div class="product-details__price"></div>
+        <p class="product-details__rating" hidden></p>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
+        <div class="product-details__pricing">
+          <div class="product-details__price"></div>
+          <span class="product-details__finance" hidden></span>
+        </div>
         <div class="product-details__gift-card-options"></div>
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
-          <div class="product-details__quantity"></div>
-          <div class="product-details__buttons">
-            <div class="product-details__buttons__add-to-cart"></div>
-            <div class="product-details__buttons__add-to-wishlist"></div>
+          <div class="product-details__actions">
+            <div class="product-details__quantity"></div>
+            <div class="product-details__buttons">
+              <div class="product-details__buttons__add-to-cart"></div>
+              <div class="product-details__buttons__add-to-wishlist"></div>
+            </div>
           </div>
           <div class="product-details__add-to-cart-status" role="status" aria-live="polite"></div>
         </div>
+        <ul class="product-details__trust" hidden></ul>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
       </div>
@@ -143,6 +209,52 @@ export default async function decorate(block) {
   const $addToCartStatus = fragment.querySelector('.product-details__add-to-cart-status');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $eyebrow = fragment.querySelector('.product-details__eyebrow');
+  const $rating = fragment.querySelector('.product-details__rating');
+  const $finance = fragment.querySelector('.product-details__finance');
+  const $trust = fragment.querySelector('.product-details__trust');
+
+  trustBadges.forEach((text) => {
+    const li = document.createElement('li');
+    li.innerHTML = trustIcon(text);
+    li.append(document.createTextNode(text));
+    $trust.append(li);
+  });
+  $trust.hidden = !trustBadges.length;
+
+  // Eyebrow, rating and finance line follow the current product/variant data
+  const renderMerchandising = (data) => {
+    const eyebrow = getAttributeValue(data, eyebrowAttribute);
+    $eyebrow.textContent = eyebrow;
+    $eyebrow.hidden = !eyebrow;
+
+    const rating = parseFloat(getAttributeValue(data, ratingAttribute));
+    const reviews = parseInt(getAttributeValue(data, reviewCountAttribute), 10);
+    $rating.replaceChildren();
+    $rating.hidden = !(rating > 0);
+    if (rating > 0) {
+      const value = Math.min(rating, 5);
+      const filled = Math.round(value);
+      const stars = document.createElement('span');
+      stars.className = 'product-details__stars';
+      stars.setAttribute('aria-hidden', 'true');
+      stars.innerHTML = Array.from({ length: 5 }, (_, i) => `<svg class="${i < filled ? 'is-filled' : ''}" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="${STAR_PATH}"/></svg>`).join('');
+      const reviewsLabel = reviews > 0 ? ` · ${reviews} ${reviews === 1 ? 'review' : 'reviews'}` : '';
+      const text = document.createElement('span');
+      text.textContent = `${value.toFixed(1)}${reviewsLabel}`;
+      $rating.setAttribute('aria-label', `Rated ${value.toFixed(1)} out of 5${reviews > 0 ? `, ${reviews} reviews` : ''}`);
+      $rating.append(stars, text);
+    }
+
+    const final = data?.prices?.final;
+    const amount = final?.amount ?? final?.minimumAmount;
+    const months = parseInt(financeMonths, 10);
+    const showFinance = amount >= parseFloat(financeMinPrice) && months > 0;
+    $finance.hidden = !showFinance;
+    $finance.textContent = showFinance
+      ? `or ${formatMoney(Math.ceil(amount / months), final.currency, 0)}/mo for ${months} months`
+      : '';
+  };
 
   block.replaceChildren(fragment);
 
@@ -197,11 +309,11 @@ export default async function decorate(block) {
       slots: gallerySlots,
     })($galleryMobile),
 
-    // Gallery (Desktop)
+    // Gallery (Desktop): main image with a row of thumbnails beneath
     pdpRendered.render(ProductGallery, {
-      controls: 'thumbnailsColumn',
+      controls: 'thumbnailsRow',
       arrows: true,
-      peak: true,
+      peak: false,
       gap: 'small',
       loop: false,
       videos: true, // Display videos if available
@@ -257,7 +369,6 @@ export default async function decorate(block) {
   // Configuration – Button - Add to Cart
   const addToCart = await UI.render(Button, {
     children: labels.Global?.AddProductToCart,
-    icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
       const buttonActionText = isUpdateMode
         ? labels.Global?.UpdatingInCart
@@ -346,6 +457,7 @@ export default async function decorate(block) {
   events.on('pdp/data', (data) => {
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
+    renderMerchandising(data);
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {

@@ -6,9 +6,27 @@ The Product Details block provides comprehensive product detail page functionali
 
 ## Integration
 
-<!-- ### Block Configuration
+### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses dynamic product data and URL parameters. -->
+All settings are optional. Product pages share one block, so these apply to every product.
+
+| Configuration Key | Type | Default | Description |
+|-------------------|------|---------|-------------|
+| `eyebrow-attribute` | string | `'product_type'` | Product attribute shown as the small uppercase eyebrow above the title. Hidden when the product has no value. |
+| `rating-attribute` | string | `'rating'` | Product attribute holding the average rating (0–5). The star row is hidden when the product has no value. |
+| `review-count-attribute` | string | `'review_count'` | Product attribute holding the number of reviews, shown after the rating ("4.8 · 214 reviews"). |
+| `finance-min-price` | number | `500` | The "or $X/mo for N months" line only shows for products at or above this price. |
+| `finance-months` | number | `12` | Number of months used for the finance line (price ÷ months, rounded up to whole currency units). |
+| `trust` | list | none | Reassurance lines shown under Add to cart, one per list item or paragraph. The icon (delivery, returns or guarantee) is picked from the wording. Nothing is shown unless authored. |
+
+The eyebrow, rating and review-count attributes are only included in product data when they are set as **visible on the product page** (`visible_in_pdp`) in Commerce, so they will also appear in the "Details" list.
+
+### Layout
+
+- **Desktop:** gallery on the left (rounded main image with up to four square thumbnails beneath; scroll arrows appear only when there are more), buy panel on the right.
+- **Mobile:** a single column with the swipeable gallery under the title.
+- **Variations:** colour swatches render as round chips, image swatches as rounded tiles, text swatches as pills and other options as a pill-shaped dropdown. Selected values get the terracotta ring (colour/image) or a burgundy fill (text). Out-of-stock values are dimmed.
+- The SKU stays in the markup for assistive technology but is visually hidden.
 
 ### URL Parameters
 
