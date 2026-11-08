@@ -15,6 +15,7 @@ Block configuration is read via `readBlockConfig(block)`.
 | `pageSize` | Number of products per page. Defaults to `9` if not set or invalid. |
 | `Hide Result Count` | Frescopa addition. `true` hides the result count label. |
 | `Hide Sort` | Frescopa addition. `true` hides the sort selector (it is not rendered). When both are hidden, the toolbar row is removed. |
+| `Hide Pagination` | Frescopa addition. `true` hides the pagination (it is not rendered). Only the first `pageSize` products are shown, and any `page` URL parameter is ignored, so raise `pageSize` to show more. |
 
 ## Integration
 

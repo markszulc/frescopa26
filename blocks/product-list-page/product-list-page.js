@@ -65,6 +65,7 @@ async function resolveCategoryPath(value) {
  *   pageSize          | 9
  *   Hide Result Count | true
  *   Hide Sort         | true
+ *   Hide Pagination   | true (shows the first pageSize products only)
  * With no category the block is a search page that reads ?q= from the URL.
  */
 export default async function decorate(block) {
@@ -74,8 +75,10 @@ export default async function decorate(block) {
   const pageSize = parseInt(config.pagesize, 10) || 9;
   const hideResultCount = isTrue(config['hide-result-count']);
   const hideSort = isTrue(config['hide-sort']);
+  const hidePagination = isTrue(config['hide-pagination']);
   block.classList.toggle('product-list-page--hide-count', hideResultCount);
   block.classList.toggle('product-list-page--hide-sort', hideSort);
+  block.classList.toggle('product-list-page--hide-pagination', hidePagination);
 
   // "Category" wins over the boilerplate's "urlPath" row
   const categoryPath = config.category
@@ -110,6 +113,9 @@ export default async function decorate(block) {
   }
 
   const searchState = getSearchStateFromUrl(new URL(window.location.href));
+  // Without pagination there is no way to move between pages, so always show
+  // the first one (ignores a ?page= left in the URL).
+  if (hidePagination) searchState.currentPage = 1;
 
   // Default visibility filter for all of our requests
   const visibilityFilter = { attribute: 'visibility', in: ['Search', 'Catalog, Search'] };
@@ -206,8 +212,8 @@ export default async function decorate(block) {
     // Sort By (not rendered at all when hidden)
     hideSort ? null : provider.render(SortBy, {})($productSort),
 
-    // Pagination
-    provider.render(Pagination, {
+    // Pagination (not rendered at all when hidden)
+    hidePagination ? null : provider.render(Pagination, {
       onPageChange: () => {
         // scroll to the top of the page
         window.scrollTo({ top: 0, behavior: 'smooth' });
