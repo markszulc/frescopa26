@@ -156,10 +156,10 @@
 .product-list-page .product-discovery-product-list__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 1.8rem;
 }
 
-/* card, as cards-coffee */
+/* card, as cards-coffee (values measured from /beverages/coffee) */
 .product-list-page .dropin-product-item-card {
   display: flex;
   flex-direction: column;
@@ -180,7 +180,7 @@
 .product-list-page .plp-card-media {
   display: block;
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   background-color: var(--paper-3);
   overflow: hidden;
 }
@@ -210,7 +210,8 @@
   text-align: center;
 }
 
-/* body: title on top, price and action on one foot row */
+/* body: category, title, description and option chips on top; price and
+   action on one foot row at the bottom */
 .product-list-page .dropin-product-item-card__content {
   display: grid;
   flex: 1 1 auto;
@@ -224,10 +225,32 @@
   padding: 1.4rem;
 }
 
+/* the drop-in's title slot holds .plp-card-info */
 .product-list-page .dropin-product-item-card__title {
   grid-area: title;
   align-self: start;
   margin: 0;
+}
+
+/* reset the drop-in's bold title text so only the title is bold */
+.product-list-page .plp-card-info {
+  display: flex;
+  flex-direction: column;
+  font-weight: 400;
+}
+
+.product-list-page .plp-card-category {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 400;
+  line-height: var(--lh-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.product-list-page .plp-card-title {
+  margin: 0.4rem 0 0;
   font-family: var(--font-display);
   font-size: var(--fs-h4);
   font-weight: 700;
@@ -236,14 +259,52 @@
   color: var(--burgundy);
 }
 
-.product-list-page .dropin-product-item-card__title a:any-link {
+.product-list-page .plp-card-info > .plp-card-title:first-child {
+  margin-top: 0;
+}
+
+.product-list-page .plp-card-title a:any-link {
   color: inherit;
   text-decoration: none;
 }
 
-.product-list-page .dropin-product-item-card__title a:hover {
+.product-list-page .plp-card-title a:hover {
   text-decoration: underline;
   text-underline-offset: 0.15em;
+}
+
+.product-list-page .plp-card-desc {
+  margin: 0.7rem 0 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+
+/* option values as format chips (Cream · Charcoal · Terracotta) */
+.product-list-page .plp-card-formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-list-page .plp-card-formats li {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.product-list-page .plp-card-desc[hidden],
+.product-list-page .plp-card-formats[hidden] {
+  display: none;
 }
 
 /* the drop-in nests two price wrappers; only the outer one is the grid item */
@@ -252,15 +313,12 @@
   margin: 0;
 }
 
-.product-list-page .dropin-product-item-card__price a:any-link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.product-list-page .dropin-product-item-card__price .dropin-price {
+.product-list-page .plp-card-price {
   font-family: var(--font-display);
   font-size: var(--fs-h4);
   font-weight: 700;
+  line-height: var(--lh-body);
+  white-space: nowrap;
   color: var(--ink);
 }
 
@@ -282,11 +340,11 @@
   align-items: flex-end;
 }
 
-/* "Add to cart →" / "Choose options →", as the coffee cards' CTA */
+/* "Add to cart→" / "Choose options→", as the coffee cards' CTA */
 .product-list-page .plp-card-action {
   display: inline-flex;
   align-items: center;
-  gap: 0.4em;
+  gap: 0.1em;
   margin: 0;
   border: 0;
   padding: 0;
@@ -424,7 +482,8 @@
 /* authored options: hide the result count, the sort selector, the pagination */
 .product-list-page.product-list-page--hide-count .search__result-info,
 .product-list-page.product-list-page--hide-sort .search__product-sort,
-.product-list-page.product-list-page--hide-pagination .search__pagination {
+.product-list-page.product-list-page--hide-pagination .search__pagination,
+.product-list-page.product-list-page--single-page .search__pagination {
   display: none;
 }
 
