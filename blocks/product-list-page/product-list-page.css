@@ -4,15 +4,10 @@
  * pills for sort, filters and pagination.
  */
 
+/* small screens: one column in source order; hidden parts take no space */
 .product-list-page .search__wrapper {
-  display: grid;
-  grid-template-areas:
-    "result-info"
-    "view-facets"
-    "facets"
-    "product-sort"
-    "product-list"
-    "pagination";
+  display: flex;
+  flex-direction: column;
   gap: 1.25rem;
   font-family: var(--font-body);
   color: var(--ink);
@@ -430,12 +425,13 @@
   height: 1rem;
 }
 
-/* ---- empty state ---- */
-.product-list-page.product-list-page--empty .search__wrapper {
-  grid-template-areas: "product-list";
-  grid-template-columns: 1fr;
+/* authored options: hide the result count and/or the sort selector */
+.product-list-page.product-list-page--hide-count .search__result-info,
+.product-list-page.product-list-page--hide-sort .search__product-sort {
+  display: none;
 }
 
+/* ---- empty state ---- */
 .product-list-page.product-list-page--empty .search__result-info,
 .product-list-page.product-list-page--empty .search__view-facets,
 .product-list-page.product-list-page--empty .search__facets,
@@ -460,6 +456,7 @@
 /* ---- desktop: filters column, toolbar row ---- */
 @media (width >= 900px) {
   .product-list-page .search__wrapper {
+    display: grid;
     grid-template-areas:
       "result-info product-sort"
       "facets product-list"
@@ -488,6 +485,26 @@
       "product-list product-list"
       "pagination pagination";
     grid-template-columns: 1fr auto;
+  }
+
+  /* nothing to show but the products */
+  .product-list-page.product-list-page--empty .search__wrapper {
+    grid-template-areas: "product-list";
+    grid-template-columns: 1fr;
+  }
+
+  /* result count and sort both hidden: no toolbar row */
+  .product-list-page.product-list-page--hide-count.product-list-page--hide-sort .search__wrapper {
+    grid-template-areas:
+      "facets product-list"
+      ". pagination";
+  }
+
+  .product-list-page.product-list-page--hide-count.product-list-page--hide-sort.product-list-page--no-facets .search__wrapper {
+    grid-template-areas:
+      "product-list"
+      "pagination";
+    grid-template-columns: 1fr;
   }
 
   .product-list-page .product-discovery-product-list__grid {

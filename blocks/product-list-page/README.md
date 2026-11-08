@@ -10,8 +10,11 @@ Block configuration is read via `readBlockConfig(block)`.
 
 | Option   | Effect |
 |----------|--------|
-| `urlpath` | When set, the block runs in **category page** mode: it filters by `categoryPath` and shows all products in that category. When absent, the block runs in **search page** mode and uses the `q` URL parameter as the search phrase. The value is also stored on the block as `data-urlpath` for use by other blocks (e.g. enrichment). |
+| `Category` | Frescopa addition. The category to list: its URL key (`coffee-pods`), its name (`Coffee Pods`) or its full path (`frescopa/coffee-pods`). A key or name is looked up in the Catalog Service to get the full path. An unknown value logs a console warning and shows the empty state. Takes precedence over `urlpath`. |
+| `urlpath` | When set (and `Category` is not), the block runs in **category page** mode: it filters by `categoryPath` and shows all products in that category. When neither is set, the block runs in **search page** mode and uses the `q` URL parameter as the search phrase. The resolved path is also stored on the block as `data-urlpath` for use by other blocks (e.g. enrichment). |
 | `pageSize` | Number of products per page. Defaults to `9` if not set or invalid. |
+| `Hide Result Count` | Frescopa addition. `true` hides the result count label. |
+| `Hide Sort` | Frescopa addition. `true` hides the sort selector (it is not rendered). When both are hidden, the toolbar row is removed. |
 
 ## Integration
 

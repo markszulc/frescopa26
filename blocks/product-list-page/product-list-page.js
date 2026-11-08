@@ -17,23 +17,70 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 // AEM
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
+import { CS_FETCH_GRAPHQL, fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
+
+const isTrue = (value) => /^(true|yes|on|1)$/i.test(String(value ?? '').trim());
+
+/**
+ * Resolves an authored category to the full Catalog Service path the
+ * categoryPath filter needs. Accepts a full path ("frescopa/coffee-pods"), a
+ * URL key ("coffee-pods") or a category name ("Coffee Pods"). Unknown values
+ * are used as a path, which shows the empty state rather than the whole catalog.
+ * @param {string} value The authored category
+ * @returns {Promise<string>} The category path
+ */
+async function resolveCategoryPath(value) {
+  const wanted = value.trim().replace(/^\/+|\/+$/g, '');
+  try {
+    const { data } = await CS_FETCH_GRAPHQL.fetchGraphQl(
+      'query PLP_CATEGORIES { categories { name urlKey urlPath } }',
+      { method: 'GET' },
+    );
+    const categories = (data?.categories || []).filter((c) => c?.urlPath);
+    const lower = wanted.toLowerCase();
+    const match = categories.find((c) => c.urlPath.toLowerCase() === lower)
+      || categories.find((c) => c.urlKey?.toLowerCase() === lower)
+      || categories.find((c) => c.name?.trim().toLowerCase() === lower);
+    if (match) return match.urlPath;
+    console.warn(`product-list-page: category "${wanted}" was not found in the catalog`);
+  } catch (error) {
+    console.warn(`product-list-page: could not look up category "${wanted}"`, error);
+  }
+  return wanted;
+}
 
 /**
  * Frescopa catalogue, based on the Commerce boilerplate's product-list-page.
  * Changes from the boilerplate: Frescopa card styling (see the CSS), a named
  * placeholder when a product has no image, a text "Add to cart" action with a
  * live status (no wishlist toggle), and the search phrase is set as text.
+ *
+ * Block rows (all optional):
+ *   Category          | coffee-pods (URL key, name, or full path)
+ *   urlPath           | frescopa/coffee-pods (boilerplate row, still supported)
+ *   pageSize          | 9
+ *   Hide Result Count | true
+ *   Hide Sort         | true
+ * With no category the block is a search page that reads ?q= from the URL.
  */
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
   const config = readBlockConfig(block);
   const pageSize = parseInt(config.pagesize, 10) || 9;
+  const hideResultCount = isTrue(config['hide-result-count']);
+  const hideSort = isTrue(config['hide-sort']);
+  block.classList.toggle('product-list-page--hide-count', hideResultCount);
+  block.classList.toggle('product-list-page--hide-sort', hideSort);
+
+  // "Category" wins over the boilerplate's "urlPath" row
+  const categoryPath = config.category
+    ? await resolveCategoryPath(config.category)
+    : config.urlpath;
 
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__wrapper">
@@ -58,8 +105,8 @@ export default async function decorate(block) {
 
   // Add url path back to the block for enrichment, incase enrichment block is
   // executed after the plp block and block config is not available
-  if (config.urlpath) {
-    block.dataset.urlpath = config.urlpath;
+  if (categoryPath) {
+    block.dataset.urlpath = categoryPath;
   }
 
   const searchState = getSearchStateFromUrl(new URL(window.location.href));
@@ -74,7 +121,7 @@ export default async function decorate(block) {
   window.history.replaceState({}, '', normalizedUrl.toString());
 
   // Request search based on the page type on block load
-  if (config.urlpath) {
+  if (categoryPath) {
     // If it's a category page...
     await search({
       phrase: '', // search all products in the category
@@ -82,7 +129,7 @@ export default async function decorate(block) {
       pageSize,
       sort: searchState?.sort?.length ? searchState.sort : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
-        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        { attribute: 'categoryPath', eq: categoryPath }, // Add category filter
         // Always add visibility filter to the request
         visibilityFilter,
         ...userFilters,
@@ -156,8 +203,8 @@ export default async function decorate(block) {
   };
 
   await Promise.all([
-    // Sort By
-    provider.render(SortBy, {})($productSort),
+    // Sort By (not rendered at all when hidden)
+    hideSort ? null : provider.render(SortBy, {})($productSort),
 
     // Pagination
     provider.render(Pagination, {
