@@ -498,6 +498,11 @@
   margin-top: var(--spacing-xsmall);
 }
 
+/* The drop-in always renders a "Details" heading; hide it when no attributes are listed */
+.product-details__attributes:not(:has(li)) {
+  display: none;
+}
+
 .product-details .pdp-attributes__title {
   font-family: var(--heading-font-family);
   font-size: var(--fs-h4, 1.2rem);
