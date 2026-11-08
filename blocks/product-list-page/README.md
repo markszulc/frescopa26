@@ -17,6 +17,18 @@ Block configuration is read via `readBlockConfig(block)`.
 | `Hide Sort` | Frescopa addition. `true` hides the sort selector (it is not rendered). When both are hidden, the toolbar row is removed. |
 | `Hide Pagination` | Frescopa addition. `true` hides the pagination (it is not rendered). Only the first `pageSize` products are shown, and any `page` URL parameter is ignored, so raise `pageSize` to show more. |
 
+## Product cards (Frescopa)
+
+Cards match the Frescopa coffee cards (`cards-coffee`): square image (or a named placeholder when the product has no image), category eyebrow, title, short description, option chips, and a foot with the price and the action.
+
+- **Eyebrow:** the name of the block's category (products don't carry their own category in the Catalog Service). No eyebrow on search pages.
+- **Short description and options:** the drop-in's search query doesn't return them, so the block fetches both for the visible products in one batched Catalog Service request (`PLP_PRODUCT_DETAILS`). The short description is reduced to plain text.
+- **Chips:** the option values of a complex product, when there is more than one (e.g. Cream · Charcoal · Terracotta).
+- **Price:** whole amounts drop the cents (`$10`, `$3.99`). Complex products with more than one option value, or a price range, show `from $X`.
+- **Action:** simple products get **Add to cart**. Complex products (and gift cards) link to the PDP: **Choose options** when there is more than one option value, otherwise **View product**. Labels: `Global.AddProductToCart`, `Global.SelectProductOptions`, `Global.ViewProduct`.
+- **Card heading level:** one below the nearest heading above the block.
+- **Pagination** is hidden when all results fit on one page.
+
 ## Integration
 
 ### URL Parameters

@@ -27,13 +27,15 @@ const isTrue = (value) => /^(true|yes|on|1)$/i.test(String(value ?? '').trim());
 
 /**
  * Resolves an authored category to the full Catalog Service path the
- * categoryPath filter needs. Accepts a full path ("frescopa/coffee-pods"), a
- * URL key ("coffee-pods") or a category name ("Coffee Pods"). Unknown values
- * are used as a path, which shows the empty state rather than the whole catalog.
+ * categoryPath filter needs, plus its display name. Accepts a full path
+ * ("frescopa/coffee-pods"), a URL key ("coffee-pods") or a category name
+ * ("Coffee Pods"). Unknown values are used as a path, which shows the empty
+ * state rather than the whole catalog.
  * @param {string} value The authored category
- * @returns {Promise<string>} The category path
+ * @param {boolean} [warnIfMissing] Log a console warning when not found
+ * @returns {Promise<{path: string, name: string}>} The category
  */
-async function resolveCategoryPath(value) {
+async function resolveCategory(value, warnIfMissing = true) {
   const wanted = value.trim().replace(/^\/+|\/+$/g, '');
   try {
     const { data } = await CS_FETCH_GRAPHQL.fetchGraphQl(
@@ -45,12 +47,85 @@ async function resolveCategoryPath(value) {
     const match = categories.find((c) => c.urlPath.toLowerCase() === lower)
       || categories.find((c) => c.urlKey?.toLowerCase() === lower)
       || categories.find((c) => c.name?.trim().toLowerCase() === lower);
-    if (match) return match.urlPath;
-    console.warn(`product-list-page: category "${wanted}" was not found in the catalog`);
+    if (match) return { path: match.urlPath, name: match.name?.trim() || '' };
+    if (warnIfMissing) console.warn(`product-list-page: category "${wanted}" was not found in the catalog`);
   } catch (error) {
     console.warn(`product-list-page: could not look up category "${wanted}"`, error);
   }
-  return wanted;
+  return { path: wanted, name: '' };
+}
+
+/** Strips HTML from Commerce rich text without executing or rendering it. */
+function stripHtml(html) {
+  if (!html) return '';
+  const doc = new DOMParser().parseFromString(String(html), 'text/html');
+  doc.body.querySelectorAll('script, style, template, noscript').forEach((el) => el.remove());
+  return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
+/** "$10", "$2,199", "$3.99": whole amounts drop the cents, as on the coffee cards. */
+function formatPrice(amount) {
+  if (!amount || typeof amount.value !== 'number' || !amount.currency) return '';
+  const whole = Number.isInteger(amount.value);
+  try {
+    return new Intl.NumberFormat(document.documentElement.lang || undefined, {
+      style: 'currency',
+      currency: amount.currency,
+      ...(whole ? { minimumFractionDigits: 0, maximumFractionDigits: 0 } : {}),
+    }).format(amount.value);
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * The drop-in's search query doesn't fetch short descriptions, and it drops
+ * product options. Fetch both for the visible products in one batched
+ * Catalog Service request: product slots render together, so requests made
+ * in the same tick share one call.
+ */
+const DETAILS_QUERY = `query PLP_PRODUCT_DETAILS($skus: [String]) {
+  products(skus: $skus) {
+    sku
+    shortDescription
+    ... on ComplexProductView {
+      options { title values { title } }
+    }
+  }
+}`;
+const detailsCache = new Map();
+let detailsQueue = [];
+function getProductDetails(sku) {
+  if (!detailsCache.has(sku)) {
+    detailsCache.set(sku, new Promise((resolve) => {
+      detailsQueue.push({ sku, resolve });
+      if (detailsQueue.length === 1) {
+        setTimeout(async () => {
+          const batch = detailsQueue;
+          detailsQueue = [];
+          const bySku = new Map();
+          try {
+            const { data } = await CS_FETCH_GRAPHQL.fetchGraphQl(DETAILS_QUERY, {
+              method: 'GET',
+              variables: { skus: batch.map((b) => b.sku) },
+            });
+            (data?.products || []).forEach((p) => p?.sku && bySku.set(p.sku.toLowerCase(), p));
+          } catch (error) {
+            console.warn('product-list-page: could not load product details', error);
+          }
+          batch.forEach((b) => b.resolve(bySku.get(b.sku.toLowerCase()) || null));
+        }, 0);
+      }
+    }));
+  }
+  return detailsCache.get(sku);
+}
+
+/** Option values a shopper can choose between, e.g. ["Cream", "Charcoal"]. */
+function optionValues(details) {
+  return (details?.options || [])
+    .flatMap((option) => (option?.values || []).map((v) => v?.title?.trim()))
+    .filter(Boolean);
 }
 
 /**
@@ -80,10 +155,27 @@ export default async function decorate(block) {
   block.classList.toggle('product-list-page--hide-sort', hideSort);
   block.classList.toggle('product-list-page--hide-pagination', hidePagination);
 
-  // "Category" wins over the boilerplate's "urlPath" row
-  const categoryPath = config.category
-    ? await resolveCategoryPath(config.category)
-    : config.urlpath;
+  // "Category" wins over the boilerplate's "urlPath" row. Both are looked up
+  // so the cards can show the category name (products don't carry one).
+  let categoryPath = '';
+  let categoryName = '';
+  if (config.category || config.urlpath) {
+    const category = await resolveCategory(config.category || config.urlpath, !!config.category);
+    categoryPath = category.path;
+    categoryName = category.name;
+  }
+
+  // Card titles sit one level below the nearest heading above the block.
+  // querySelectorAll returns document order, so stop at the block itself
+  const headingsAbove = [];
+  [...document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main .product-list-page')]
+    .some((el) => {
+      if (el === block) return true;
+      if (/^H[1-5]$/.test(el.tagName)) headingsAbove.push(el);
+      return false;
+    });
+  const parentLevel = Number(headingsAbove.at(-1)?.tagName.slice(1)) || 1;
+  const cardHeading = `h${Math.min(parentLevel + 1, 6)}`;
 
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__wrapper">
@@ -162,10 +254,13 @@ export default async function decorate(block) {
 
   const addToCartText = labels.Global?.AddProductToCart || 'Add to cart';
   const addingText = labels.Global?.AddingToCart || 'Adding…';
+  const chooseOptionsText = labels.Global?.SelectProductOptions || 'Choose options';
+  const viewProductText = labels.Global?.ViewProduct || 'View product';
 
   /**
-   * "Add to cart →" for simple products, "Choose options →" (a link to the
-   * PDP) for products that need configuring first.
+   * "Add to cart" for simple products. Products that can't be added from the
+   * card link to the PDP: "Choose options" when there is more than one option
+   * value to choose from, otherwise "View product".
    */
   const getAddToCartAction = (product) => {
     const productName = product.name || product.sku;
@@ -173,8 +268,14 @@ export default async function decorate(block) {
       const link = document.createElement('a');
       link.className = 'plp-card-action';
       link.href = getProductLink(product.urlKey, product.sku);
-      link.textContent = labels.Global?.SelectProductOptions || 'Choose options';
-      link.setAttribute('aria-label', `${link.textContent}: ${productName}`);
+      const setLabel = (text) => {
+        link.textContent = text;
+        link.setAttribute('aria-label', `${text}: ${productName}`);
+      };
+      setLabel(chooseOptionsText);
+      getProductDetails(product.sku).then((details) => {
+        if (optionValues(details).length <= 1) setLabel(viewProductText);
+      });
       return link;
     }
     const button = document.createElement('button');
@@ -274,7 +375,7 @@ export default async function decorate(block) {
             img.sizes = '(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw';
             img.alt = image.label?.trim() || product.name || '';
             img.width = 400;
-            img.height = 300;
+            img.height = 400;
             img.loading = 'lazy';
             anchorWrapper.append(img);
             ctx.replaceWith(anchorWrapper);
@@ -290,6 +391,75 @@ export default async function decorate(block) {
               height: defaultImageProps.height,
             },
           });
+        },
+        ProductName: (ctx) => {
+          const { product } = ctx;
+          const info = document.createElement('div');
+          info.className = 'plp-card-info';
+
+          if (categoryName) {
+            const category = document.createElement('span');
+            category.className = 'plp-card-category';
+            category.textContent = categoryName;
+            info.append(category);
+          }
+
+          const title = document.createElement(cardHeading);
+          title.className = 'plp-card-title';
+          const link = document.createElement('a');
+          link.href = getProductLink(product.urlKey, product.sku);
+          link.textContent = product.name || product.sku;
+          title.append(link);
+          info.append(title);
+
+          const desc = document.createElement('p');
+          desc.className = 'plp-card-desc';
+          desc.hidden = true;
+          const formats = document.createElement('ul');
+          formats.className = 'plp-card-formats';
+          formats.hidden = true;
+          info.append(desc, formats);
+
+          getProductDetails(product.sku).then((details) => {
+            const text = stripHtml(details?.shortDescription || product.shortDescription);
+            if (text) {
+              desc.textContent = text;
+              desc.hidden = false;
+            }
+            const values = optionValues(details);
+            if (values.length > 1) {
+              values.forEach((value) => {
+                const li = document.createElement('li');
+                li.textContent = value;
+                formats.append(li);
+              });
+              formats.hidden = false;
+            }
+          });
+          ctx.replaceWith(info);
+        },
+        ProductPrice: (ctx) => {
+          const { product } = ctx;
+          const price = document.createElement('span');
+          price.className = 'plp-card-price';
+          const complex = product.typename === 'ComplexProductView';
+          const amount = complex
+            ? product.priceRange?.minimum?.final?.amount
+            : product.price?.final?.amount;
+          price.textContent = formatPrice(amount);
+          if (complex && price.textContent) {
+            const max = product.priceRange?.maximum?.final?.amount?.value;
+            const fromText = labels.Dropin?.PriceRange?.from?.label || 'from';
+            // "from" when the price can change with the shopper's choices
+            const addFrom = () => { price.textContent = `${fromText} ${formatPrice(amount)}`; };
+            if (typeof max === 'number' && max > amount.value) addFrom();
+            else {
+              getProductDetails(product.sku).then((details) => {
+                if (optionValues(details).length > 1) addFrom();
+              });
+            }
+          }
+          ctx.replaceWith(price);
         },
         ProductActions: (ctx) => {
           const actionsWrapper = document.createElement('div');
@@ -320,6 +490,9 @@ export default async function decorate(block) {
     const totalCount = payload.result?.totalCount || 0;
 
     block.classList.toggle('product-list-page--empty', totalCount === 0);
+    // one page of results: no pagination to show
+    const perPage = payload.request?.pageSize || pageSize;
+    block.classList.toggle('product-list-page--single-page', totalCount <= perPage);
 
     // Results Info. The phrase comes from the URL, so it is set as text.
     $resultInfo.textContent = '';
