@@ -131,7 +131,7 @@
 .product-details .pdp-header__title {
   margin: 0 0 0.6rem;
   font-family: var(--heading-font-family);
-  font-size: var(--fs-h1);
+  font-size: var(--fs-h2);
   font-weight: 800;
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);

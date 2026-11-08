@@ -1,0 +1,489 @@
+/* Block: product-list-page
+ * Commerce catalogue (Product Discovery drop-in), styled to match the
+ * Frescopa coffee catalogue: cards-coffee product cards and machine-filter
+ * pills for sort, filters and pagination.
+ */
+
+.product-list-page .search__wrapper {
+  display: grid;
+  grid-template-areas:
+    "result-info"
+    "view-facets"
+    "facets"
+    "product-sort"
+    "product-list"
+    "pagination";
+  gap: 1.25rem;
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+/* ---- toolbar: result count, sort, filters toggle ---- */
+.product-list-page .search__result-info {
+  grid-area: result-info;
+  align-self: center;
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.product-list-page .search__result-info strong {
+  font-weight: 600;
+  color: var(--burgundy);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.product-list-page .search__view-facets {
+  grid-area: view-facets;
+}
+
+.product-list-page .search__product-sort {
+  grid-area: product-sort;
+}
+
+/* pill buttons and the sort select, as in machine-filter */
+.product-list-page .plp-filters-button,
+.product-list-page .search__product-sort .dropin-picker__select {
+  position: relative;
+  padding: 0.5em 1.1em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint),
+    background-color var(--dur-1) var(--ease-quint);
+}
+
+.product-list-page .plp-filters-button:hover,
+.product-list-page .search__product-sort .dropin-picker__select:hover {
+  border-color: var(--burgundy);
+  color: var(--burgundy);
+}
+
+.product-list-page .plp-filters-button[aria-expanded="true"] {
+  border-color: var(--burgundy);
+  background-color: var(--burgundy);
+  color: var(--cream);
+}
+
+.product-list-page .plp-filters-button[data-count]::after {
+  content: attr(data-count);
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.4em;
+  height: 1.4em;
+  margin-left: 0.5em;
+  border-radius: var(--r-pill);
+  background-color: var(--terracotta);
+  color: var(--cream);
+  font-size: 0.75em;
+}
+
+.product-list-page .plp-filters-button:focus-visible,
+.product-list-page .search__product-sort .dropin-picker__select:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* sort: a pill select with its label kept for screen readers only */
+.product-list-page .search__product-sort .dropin-picker {
+  display: inline-block;
+  position: relative;
+  width: auto;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.product-list-page .search__product-sort .dropin-picker__select.dropin-picker__select--floating {
+  height: auto;
+  min-width: 13rem;
+  padding: 0.5em 2.4em 0.5em 1.1em;
+  appearance: none;
+}
+
+.product-list-page .search__product-sort .dropin-picker__floatingLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.product-list-page .search__product-sort .dropin-picker svg {
+  position: absolute;
+  top: 50%;
+  right: 0.9em;
+  width: 1em;
+  height: 1em;
+  transform: translateY(-50%);
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+/* ---- facets ---- */
+.product-list-page .search__facets {
+  grid-area: facets;
+  display: none;
+}
+
+.product-list-page .search__facets--visible {
+  display: block;
+}
+
+/* no facets configured in Commerce: no filters UI at all */
+.product-list-page.product-list-page--no-facets .search__view-facets,
+.product-list-page.product-list-page--no-facets .search__facets {
+  display: none;
+}
+
+/* ---- product grid ---- */
+.product-list-page .search__product-list {
+  grid-area: product-list;
+}
+
+.product-list-page .product-discovery-product-list__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* card, as cards-coffee */
+.product-list-page .dropin-product-item-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background-color: var(--paper);
+  overflow: hidden;
+}
+
+.product-list-page .dropin-product-item-card__image-container,
+.product-list-page .dropin-product-item-card__image {
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+.product-list-page .plp-card-media {
+  display: block;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background-color: var(--paper-3);
+  overflow: hidden;
+}
+
+.product-list-page .plp-card-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* no image in Commerce: named placeholder, as on the coffee page */
+.product-list-page .plp-card-media--placeholder {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--paper-2), var(--paper-3));
+  text-decoration: none;
+}
+
+.product-list-page .plp-card-placeholder-label {
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  color: var(--burgundy);
+  text-align: center;
+}
+
+/* body: title on top, price and action on one foot row */
+.product-list-page .dropin-product-item-card__content {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template:
+    "title title" 1fr
+    "price action" auto
+    / auto 1fr;
+  align-items: baseline;
+  gap: 1.2rem 1rem;
+  margin: 0;
+  padding: 1.4rem;
+}
+
+.product-list-page .dropin-product-item-card__title {
+  grid-area: title;
+  align-self: start;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--burgundy);
+}
+
+.product-list-page .dropin-product-item-card__title a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-list-page .dropin-product-item-card__title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* the drop-in nests two price wrappers; only the outer one is the grid item */
+.product-list-page .dropin-product-item-card__content > .dropin-product-item-card__price {
+  grid-area: price;
+  margin: 0;
+}
+
+.product-list-page .dropin-product-item-card__price a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-list-page .dropin-product-item-card__price .dropin-price {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.product-list-page .dropin-product-item-card__content > .dropin-product-item-card__action {
+  grid-area: action;
+  justify-self: end;
+  width: auto;
+  margin: 0;
+}
+
+.product-list-page .product-discovery-product-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.product-list-page .plp-card-action-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* "Add to cart →" / "Choose options →", as the coffee cards' CTA */
+.product-list-page .plp-card-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--terracotta);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.product-list-page .plp-card-action::after {
+  content: "→";
+  transition: transform var(--dur-1) var(--ease-quint);
+}
+
+.product-list-page .plp-card-action:hover {
+  color: var(--terracotta-deep);
+}
+
+.product-list-page .plp-card-action:hover::after {
+  transform: translateX(3px);
+}
+
+.product-list-page .plp-card-action:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.product-list-page .plp-card-action:disabled {
+  color: var(--ink-soft);
+  cursor: default;
+  opacity: 0.7;
+}
+
+.product-list-page .plp-card-action:disabled::after {
+  content: none;
+}
+
+.product-list-page .plp-card-status {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.product-list-page .plp-card-status:empty {
+  display: none;
+}
+
+/* ---- pagination: pills ---- */
+.product-list-page .search__pagination {
+  grid-area: pagination;
+}
+
+.product-list-page .dropin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.product-list-page .dropin-pagination_list {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-list-page .dropin-pagination_list-item {
+  display: flex;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.product-list-page .dropin-pagination_list-item.dropin-pagination_list-item--active {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+
+  /* the drop-in rings the current page with an outline; the filled pill does that here */
+  outline: none;
+}
+
+.product-list-page .dropin-pagination_list-item button,
+.product-list-page .dropin-pagination-arrow {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.4rem;
+  height: 2.4rem;
+  padding: 0 0.8em;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--paper);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-1) var(--ease-quint),
+    color var(--dur-1) var(--ease-quint),
+    background-color var(--dur-1) var(--ease-quint);
+}
+
+.product-list-page .dropin-pagination_list-item button:hover,
+.product-list-page .dropin-pagination-arrow:hover {
+  border-color: var(--burgundy);
+  color: var(--burgundy);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.product-list-page .dropin-pagination_list-item--active button {
+  border-color: var(--burgundy);
+  background-color: var(--burgundy);
+  color: var(--cream);
+  cursor: default;
+}
+
+.product-list-page .dropin-pagination-arrow--disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.product-list-page .dropin-pagination-arrow svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ---- empty state ---- */
+.product-list-page.product-list-page--empty .search__wrapper {
+  grid-template-areas: "product-list";
+  grid-template-columns: 1fr;
+}
+
+.product-list-page.product-list-page--empty .search__result-info,
+.product-list-page.product-list-page--empty .search__view-facets,
+.product-list-page.product-list-page--empty .search__facets,
+.product-list-page.product-list-page--empty .search__product-sort,
+.product-list-page.product-list-page--empty .search__pagination {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-list-page .plp-card-action::after {
+    transition: none;
+  }
+}
+
+/* ---- tablet ---- */
+@media (width >= 600px) {
+  .product-list-page .product-discovery-product-list__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---- desktop: filters column, toolbar row ---- */
+@media (width >= 900px) {
+  .product-list-page .search__wrapper {
+    grid-template-areas:
+      "result-info product-sort"
+      "facets product-list"
+      ". pagination";
+    grid-template-columns: 240px 1fr;
+    gap: 1.5rem 2rem;
+  }
+
+  .product-list-page .search__view-facets {
+    display: none;
+  }
+
+  .product-list-page .search__facets {
+    display: block;
+  }
+
+  .product-list-page .search__product-sort {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* no facets: the grid uses the full width */
+  .product-list-page.product-list-page--no-facets .search__wrapper {
+    grid-template-areas:
+      "result-info product-sort"
+      "product-list product-list"
+      "pagination pagination";
+    grid-template-columns: 1fr auto;
+  }
+
+  .product-list-page .product-discovery-product-list__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
