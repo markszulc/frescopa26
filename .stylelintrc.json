@@ -1,5 +1,7 @@
 {
-  "extends": ["stylelint-config-standard"],
+  "extends": [
+    "stylelint-config-standard"
+  ],
   "overrides": [
     {
       "files": [
@@ -22,6 +24,14 @@
       ],
       "rules": {
         "media-feature-range-notation": "prefix",
+        "selector-class-pattern": null
+      }
+    },
+    {
+      "files": [
+        "blocks/product-list-page/**/*.css"
+      ],
+      "rules": {
         "selector-class-pattern": null
       }
     }

@@ -96,6 +96,7 @@ module.exports = {
         'blocks/commerce-cart/**/*.js',
         'blocks/commerce-mini-cart/**/*.js',
         'blocks/commerce-login/**/*.js',
+        'blocks/product-list-page/**/*.js',
         'blocks/commerce-create-account/**/*.js',
         'blocks/commerce-confirm-account/**/*.js',
         'blocks/modal/**/*.js',
