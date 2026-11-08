@@ -96,10 +96,17 @@
 }
 
 /* sort: a pill select with its label kept for screen readers only */
+
+/* The drop-in's wrapper paints a square background and clips its content,
+   which showed as a pale box behind the pill and cut the focus ring down to
+   its corners. The pill is drawn on the select itself, so the wrapper stays
+   transparent and unclipped. */
 .product-list-page .search__product-sort .dropin-picker {
   display: inline-block;
   position: relative;
   width: auto;
+  background: none;
+  overflow: visible;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
