@@ -12,9 +12,21 @@ const FAQ_ENDPOINT = 'https://www.frescopa.coffee/faq-data';
 const SKU_RE = /^[A-Za-z0-9_-]{1,40}$/;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+// Read the SKU from the block's rows/cells rather than its flattened text.
+// Published HTML has whitespace between cells ("SKU CSM6001"), but the
+// da.live canvas re-renders the block with none ("SKUCSM6001"), which a
+// text match can't split. Cells don't care about whitespace.
 function readSku(block) {
-  const text = block.textContent.replace(/\s+/g, ' ').trim();
-  const sku = text.match(/SKU\s+(\S+)/i)?.[1];
+  const rows = [...block.children];
+  let sku = null;
+
+  rows.some((row) => {
+    const cells = [...row.children].map((c) => c.textContent.trim());
+    if (cells.length >= 2 && /^sku$/i.test(cells[0])) [, sku] = cells;
+    else if (cells.length === 1 && SKU_RE.test(cells[0])) [sku] = cells; // bare SKU, no label
+    return Boolean(sku);
+  });
+
   return sku && SKU_RE.test(sku) ? sku : null;
 }
 
