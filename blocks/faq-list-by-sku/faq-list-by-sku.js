@@ -1,32 +1,34 @@
 // blocks/faq-list-by-sku/faq-list-by-sku.js
 //
-// Standalone FAQ block. No dependency on any other block.
+// Standalone FAQ block. Two authoring shapes arrive here, both standard EDS
+// block-table markup:
 //
-// Live site: the edge function has already rendered the finished markup
-// (data-ssr="inlined"), so this does nothing. Preview, da.live and localhost
-// don't go through the edge function, so here the block fetches the FAQs and
-// builds the same markup itself. Keep buildFaqItems() in step with
-// renderFaqs() in the edge function's faq.js.
+//   1. SKU row:  | SKU | CSM6001 |
+//      What authors write, and what preview, da.live and localhost serve.
+//      The block fetches the FAQs, turns them into Q/A rows, then decorates.
+//
+//   2. Q/A rows: | question | answer |  (one row per FAQ)
+//      What the edge function serves on the live site, having already
+//      swapped the SKU row for the FAQ content. The block just decorates.
+//
+// Either way the same decorateFaqs() builds the final DOM, so there's one
+// renderer and the live and preview output can't drift apart.
 
 const FAQ_ENDPOINT = 'https://www.frescopa.coffee/faq-data';
 const SKU_RE = /^[A-Za-z0-9_-]{1,40}$/;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-// Read the SKU from the block's rows/cells rather than its flattened text.
-// Published HTML has whitespace between cells ("SKU CSM6001"), but the
-// da.live canvas re-renders the block with none ("SKUCSM6001"), which a
-// text match can't split. Cells don't care about whitespace.
-function readSku(block) {
-  const rows = [...block.children];
-  let sku = null;
+const cellsOf = (row) => [...row.children].map((c) => c.textContent.trim());
 
-  rows.some((row) => {
-    const cells = [...row.children].map((c) => c.textContent.trim());
+// Read the SKU from the block's rows/cells rather than flattened text: the
+// da.live canvas renders cells with no whitespace between them.
+function readSku(block) {
+  let sku = null;
+  [...block.children].some((row) => {
+    const cells = cellsOf(row);
     if (cells.length >= 2 && /^sku$/i.test(cells[0])) [, sku] = cells;
-    else if (cells.length === 1 && SKU_RE.test(cells[0])) [sku] = cells; // bare SKU, no label
     return Boolean(sku);
   });
-
   return sku && SKU_RE.test(sku) ? sku : null;
 }
 
@@ -55,54 +57,77 @@ function chevron() {
   return wrap;
 }
 
-function buildFaqItems(sku, items) {
+// Q/A data -> block-table rows, the same shape the edge function serves
+function toRows(items) {
+  return items.map((it) => {
+    const row = document.createElement('div');
+    const q = document.createElement('div');
+    q.textContent = it.question ?? '';
+    const a = document.createElement('div');
+    const p = document.createElement('p');
+    p.textContent = it.answer?.plaintext ?? '';
+    a.append(p);
+    row.append(q, a);
+    return row;
+  });
+}
+
+let groupSeq = 0;
+
+// The one renderer: block-table Q/A rows -> details/summary accordion
+function decorateFaqs(block) {
+  groupSeq += 1;
+  const groupName = `faq-${groupSeq}`; // shared name = native single-open group
+
   const list = document.createElement('div');
   list.className = 'faq-items';
 
-  items.forEach((it, i) => {
+  [...block.children].forEach((row) => {
+    const [qCell, aCell] = row.children;
+    const question = qCell?.textContent.trim();
+    if (!question) return;
+
     const details = document.createElement('details');
     details.className = 'faq-item';
-    details.name = `faq-${sku}`; // shared name = native single-open group
-    if (i === 0) details.open = true;
+    details.name = groupName;
+    if (!list.children.length) details.open = true;
 
     const summary = document.createElement('summary');
     summary.className = 'faq-summary';
     const label = document.createElement('span');
     label.className = 'faq-label';
     const text = document.createElement('span');
-    text.textContent = it.question ?? '';
+    text.textContent = question;
     label.append(text);
     summary.append(label, chevron());
 
     const body = document.createElement('div');
     body.className = 'faq-body';
-    const p = document.createElement('p');
-    p.textContent = it.answer?.plaintext ?? '';
-    body.append(p);
+    // Move the answer's own nodes across so any formatting in the cell survives
+    if (aCell) body.append(...aCell.childNodes);
 
     details.append(summary, body);
     list.append(details);
   });
 
-  return list;
-}
-
-// Done already if the edge rendered it or an earlier decorate() claimed it
-function alreadyRendered(block) {
-  return Boolean(block.dataset.ssr) || Boolean(block.querySelector(':scope > .faq-items'));
+  block.replaceChildren(list);
 }
 
 export default async function decorate(block) {
-  if (alreadyRendered(block)) return;
-  block.dataset.ssr = 'pending'; // claim the block so a second decorate() bails out
+  // Already decorated (e.g. decorate() called twice on the same element)
+  if (block.querySelector(':scope > .faq-items') || block.dataset.faqState) return;
 
   const sku = readSku(block);
+
+  // No SKU row: these are Q/A rows from the edge function (or hand-authored)
   if (!sku) {
-    message(block, 'Add a product SKU to this block to show its FAQs.');
+    const hasQaRows = [...block.children].some((row) => cellsOf(row).length >= 2);
+    if (hasQaRows) decorateFaqs(block);
+    else message(block, 'Add a product SKU to this block to show its FAQs.');
     return;
   }
 
-  block.dataset.sku = sku;
+  block.dataset.faqState = 'loading'; // claim the block while the fetch runs
   message(block, `Loading FAQs for ${sku}…`);
 
   try {
@@ -113,11 +138,13 @@ export default async function decorate(block) {
       message(block, `No FAQs found for SKU ${sku}.`);
       return;
     }
-    block.replaceChildren(buildFaqItems(sku, items));
-    block.dataset.ssr = 'client';
+    block.replaceChildren(...toRows(items));
+    decorateFaqs(block);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn('faq-list-by-sku: could not load FAQs', e);
     message(block, `Couldn’t load FAQs for ${sku}.`);
+  } finally {
+    delete block.dataset.faqState;
   }
 }
