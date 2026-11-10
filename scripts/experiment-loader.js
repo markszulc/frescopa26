@@ -23,6 +23,7 @@ const experimentationConfig = {
 
 function hasExperimentationMetadata(doc) {
   return doc.head.querySelector('[name^="experiment"], [name^="campaign-"], [name^="audience-"], [property^="campaign:"], [property^="audience:"]')
+    || doc.querySelector('main > div[data-experiment]')
     || [...doc.querySelectorAll('.section-metadata > div > div:first-child')]
       .some((cell) => /^(experiment|campaign|audience)(?:$|[-\s:])/i.test(cell.textContent.trim()));
 }

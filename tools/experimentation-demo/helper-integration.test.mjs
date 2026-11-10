@@ -4,7 +4,7 @@ import createFixtures from './fixtures.mjs';
 
 test('real helper CLI produces inactive site metadata, validated exports and paired preview URLs', async () => {
   const { pages, proof } = await createFixtures('http://127.0.0.1:3001');
-  assert.ok(pages.get('control').includes('Experiment Status'));
+  assert.ok(pages.get('control').includes('data-experiment-status="Inactive"'));
   assert.equal(proof.hero.metadata['Experiment Status'], 'Inactive');
   assert.equal(proof.cards.metadata['Experiment Status'], 'Inactive');
   assert.deepEqual(proof.cards.sections.hero, proof.hero.metadata);

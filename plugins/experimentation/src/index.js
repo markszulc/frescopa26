@@ -242,7 +242,6 @@ export function getAllMetadata(scope, keyFn = toCamelCase) {
  * @param {String} scope The scope/prefix for the metadata
  * @returns a map of key/value pairs for the given scope
  */
-// eslint-disable-next-line no-unused-vars
 function getAllDataAttributes(el, scope) {
   return el.getAttributeNames()
     .filter((attr) => attr === `data-${scope}` || attr.startsWith(`data-${scope}-`))
@@ -630,11 +629,28 @@ async function applyAllModifications(
     debug('page', type, pageNS);
   }
 
-  // Section-level modifications
-  let sectionMetadata;
+  // Section-level modifications. Exported section attributes take precedence over
+  // legacy metadata blocks when both representations exist on the same section.
+  const sectionsWithDataMetadata = new Set();
+  await Promise.all([...document.querySelectorAll('main > div')]
+    .map(async (section) => {
+      if (!section.hasAttribute(`data-${type}`)) return;
+      const sectionMetadata = getAllDataAttributes(section, type);
+      sectionsWithDataMetadata.add(section);
+      const sectionNS = await modificationsHandler(
+        section,
+        sectionMetadata,
+      );
+      if (sectionNS) {
+        sectionNS.type = 'section';
+        debug('section', type, sectionNS);
+        configs.push(sectionNS);
+      }
+    }));
   await Promise.all([...document.querySelectorAll('.section-metadata')]
+    .filter((sm) => !sectionsWithDataMetadata.has(sm.parentElement))
     .map(async (sm) => {
-      sectionMetadata = getAllSectionMeta(sm, type);
+      const sectionMetadata = getAllSectionMeta(sm, type);
       const sectionNS = await modificationsHandler(
         sm.parentElement,
         sectionMetadata,
