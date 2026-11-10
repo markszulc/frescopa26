@@ -137,6 +137,43 @@ async function checkInactive() {
   assert(!sessionStorage.getItem('unified-decisioning-experiments'), 'Inactive traffic creates no variant assignment');
 }
 
+async function checkLegacy() {
+  const main = await mainFrom('legacy');
+  document.body.append(main);
+  await runExperimentation(document);
+  assert(window.hlx.experiments.length === 2, 'Legacy section metadata remains supported');
+}
+
+async function checkPartialAttributes() {
+  const main = await mainFrom('partial');
+  document.body.append(main);
+  await runExperimentation(document);
+  assert(window.hlx.experiments.length === 2, 'Partial exported attributes do not suppress complete legacy metadata');
+}
+
+async function checkMixed() {
+  const main = await mainFrom('mixed');
+  document.body.append(main);
+  await runExperimentation(document);
+  assert(window.hlx.experiments.length === 2, 'Mixed metadata registers each section once');
+  window.hlx.experiments.forEach(({ config }) => {
+    assert(config.status === 'Inactive' && !config.run, 'Exported attributes take precedence over legacy metadata');
+  });
+  assert(!performance.getEntriesByType('resource').some(({ name }) => /\/(hero|cards)-challenger$/.test(name)), 'Inactive exported metadata does not fetch challengers');
+}
+
+async function checkCustomPrefix() {
+  const main = await mainFrom('custom');
+  document.body.append(main);
+  const { loadEager } = await import('../../plugins/experimentation/src/index.js');
+  await loadEager(document, {
+    experimentsMetaTagPrefix: 'test-experiment',
+    experimentsQueryParameter: 'test-experiment',
+    simulationUI: false,
+  });
+  assert(window.hlx.experiments.length === 2, 'Configured prefixes discover exported section metadata');
+}
+
 async function checkProduction() {
   document.body.append(await mainFrom('original'));
   await runExperimentation(document);
@@ -146,6 +183,26 @@ async function checkProduction() {
     'No experimentation download for an uninstrumented production page',
   );
   assert(!window.hlx.experimentation, 'No production authoring handshake initialization');
+}
+
+async function checkProductionMetadata() {
+  document.body.append(await mainFrom('control'));
+  await runExperimentation(document);
+  assert(window.hlx.experiments.length === 2, 'Production discovers exported experiment metadata');
+  assert(
+    performance.getEntriesByType('resource').some(({ name }) => name.includes('/plugins/experimentation/')),
+    'Production imports the engine when exported experiment metadata is present',
+  );
+}
+
+async function checkProductionOutsideMetadata() {
+  document.body.dataset.experiment = 'not-a-section';
+  document.body.append(await mainFrom('original'));
+  await runExperimentation(document);
+  assert(
+    !performance.getEntriesByType('resource').some(({ name }) => name.includes('/plugins/experimentation/')),
+    'Production ignores exported experiment attributes outside direct main sections',
+  );
 }
 
 async function checkGeometry() {
@@ -208,9 +265,15 @@ try {
   const mode = new URLSearchParams(window.location.search).get('mode');
   if (mode === 'variants') await checkVariants();
   else if (mode === 'inactive') await checkInactive();
+  else if (mode === 'legacy') await checkLegacy();
+  else if (mode === 'partial') await checkPartialAttributes();
+  else if (mode === 'mixed') await checkMixed();
+  else if (mode === 'custom-prefix') await checkCustomPrefix();
   else if (mode === 'empty') await checkEmpty();
   else if (mode === 'error') await checkError();
   else if (mode === 'production') await checkProduction();
+  else if (mode === 'production-metadata') await checkProductionMetadata();
+  else if (mode === 'production-outside-metadata') await checkProductionOutsideMetadata();
   else if (mode === 'geometry') await checkGeometry();
   else throw new Error(`Unknown test mode: ${mode}`);
   document.documentElement.dataset.result = 'passed';

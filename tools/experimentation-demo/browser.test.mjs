@@ -45,8 +45,14 @@ async function checkBrowser(mode, failEngine = false, hostname = '127.0.0.1') {
 
 test('real v2 preserves site content across all four section-variant combinations', () => checkBrowser('variants'));
 test('unforced visitor traffic keeps inactive helper-generated drafts on control', () => checkBrowser('inactive'));
+test('real v2 accepts legacy section metadata', () => checkBrowser('legacy'));
+test('partial exported attributes preserve complete legacy metadata', () => checkBrowser('partial'));
+test('exported section attributes take precedence over legacy metadata without duplication', () => checkBrowser('mixed'));
+test('real v2 honors configured prefixes for exported section metadata', () => checkBrowser('custom-prefix'));
 test('preview with no experiments responds using the actual v2 config handshake', () => checkBrowser('empty'));
 test('a failed engine import is reported without a fake empty config', () => checkBrowser('error', true));
 test('DA preview iframe gets the real empty-config handshake', () => checkBrowser('empty', false, 'main--frescopa26--markszulc.preview.da.live'));
 test('production without experiments downloads neither engine nor simulation UI', () => checkBrowser('production', true, 'main--frescopa26--markszulc.aem.live'));
+test('production with exported experiment metadata imports the engine', () => checkBrowser('production-metadata', false, 'main--frescopa26--markszulc.aem.live'));
+test('production ignores exported metadata outside direct sections', () => checkBrowser('production-outside-metadata', true, 'main--frescopa26--markszulc.aem.live'));
 test('real site headline is above the fold and Coffee card is visible after scrolling', () => checkBrowser('geometry'));

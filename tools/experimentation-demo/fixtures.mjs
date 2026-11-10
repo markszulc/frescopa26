@@ -28,6 +28,14 @@ function addExperiment(section, metadata) {
   return `${section.slice(0, end)}<div class="section-metadata">${rows}</div>${section.slice(end)}`;
 }
 
+function addExperimentAttributes(section, metadata) {
+  const attributes = Object.entries(metadata).map(([key, value]) => {
+    const name = key.toLowerCase().replaceAll(/\s+/g, '-');
+    return `data-${name}="${value}"`;
+  }).join(' ');
+  return section.replace('<div', `<div ${attributes}`);
+}
+
 export function deliveredExport(section, head = '') {
   return `<!doctype html><html><head>${head}</head><body><header></header><main>${section}</main><footer></footer></body></html>`;
 }
@@ -119,9 +127,40 @@ export default async function createFixtures(origin = 'http://127.0.0.1:3001') {
       head,
       pages: new Map([
         ['original', original],
-        ['control', original
+        ['legacy', original
           .replace(hero, addExperiment(hero, heroMetadata.metadata))
           .replace(cards, addExperiment(cards, cardsMetadata.metadata))],
+        ['partial', original
+          .replace(
+            hero,
+            addExperiment(hero.replace('<div', '<div data-experiment-status="Inactive"'), heroMetadata.metadata),
+          )
+          .replace(
+            cards,
+            addExperiment(cards.replace('<div', '<div data-experiment-status="Inactive"'), cardsMetadata.metadata),
+          )],
+        ['control', original
+          .replace(hero, addExperimentAttributes(hero, heroMetadata.metadata))
+          .replace(cards, addExperimentAttributes(cards, cardsMetadata.metadata))],
+        ['custom', original
+          .replace(hero, addExperimentAttributes(hero, heroMetadata.metadata))
+          .replace(cards, addExperimentAttributes(cards, cardsMetadata.metadata))
+          .replaceAll('data-experiment', 'data-test-experiment')],
+        ['mixed', original
+          .replace(
+            hero,
+            addExperiment(
+              addExperimentAttributes(hero, heroMetadata.metadata),
+              { ...heroMetadata.metadata, 'Experiment Status': 'Active' },
+            ),
+          )
+          .replace(
+            cards,
+            addExperiment(
+              addExperimentAttributes(cards, cardsMetadata.metadata),
+              { ...cardsMetadata.metadata, 'Experiment Status': 'Active' },
+            ),
+          )],
         ['hero-challenger', heroChallenger],
         ['cards-challenger', cardsChallenger],
       ]),
