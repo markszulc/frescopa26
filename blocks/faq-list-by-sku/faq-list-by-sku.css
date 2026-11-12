@@ -1,15 +1,15 @@
 /* blocks/faq-list-by-sku/faq-list-by-sku.css
    Standalone styles, matching the look of the accordion block. */
 
-.faq-list-by-sku .faq-items {
+:is(.faq-list-by-sku, .content-fragment) .faq-items {
   max-width: var(--content-narrow);
 }
 
-.faq-list-by-sku .faq-item {
+:is(.faq-list-by-sku, .content-fragment) .faq-item {
   border-bottom: 1px solid var(--line);
 }
 
-.faq-list-by-sku .faq-summary {
+:is(.faq-list-by-sku, .content-fragment) .faq-summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,37 +23,37 @@
   color: var(--burgundy);
 }
 
-.faq-list-by-sku .faq-summary::-webkit-details-marker {
+:is(.faq-list-by-sku, .content-fragment) .faq-summary::-webkit-details-marker {
   display: none;
 }
 
-.faq-list-by-sku .faq-label {
+:is(.faq-list-by-sku, .content-fragment) .faq-label {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.faq-list-by-sku .faq-summary:hover .faq-label {
+:is(.faq-list-by-sku, .content-fragment) .faq-summary:hover .faq-label {
   color: var(--terracotta-deep);
 }
 
-.faq-list-by-sku .faq-chevron {
+:is(.faq-list-by-sku, .content-fragment) .faq-chevron {
   flex-shrink: 0;
   display: inline-flex;
   color: var(--terracotta);
   transition: transform 0.25s var(--ease-quint);
 }
 
-.faq-list-by-sku .faq-item[open] .faq-chevron {
+:is(.faq-list-by-sku, .content-fragment) .faq-item[open] .faq-chevron {
   transform: rotate(180deg);
 }
 
-.faq-list-by-sku .faq-body {
+:is(.faq-list-by-sku, .content-fragment) .faq-body {
   padding: 0 0 1.4rem;
 }
 
-.faq-list-by-sku .faq-body p,
-.faq-list-by-sku .faq-message {
+:is(.faq-list-by-sku, .content-fragment) .faq-body p,
+:is(.faq-list-by-sku, .content-fragment) .faq-message {
   margin: 0;
   color: var(--ink-soft);
   line-height: var(--lh-body);

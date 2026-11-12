@@ -58,7 +58,7 @@ function chevron() {
 }
 
 // Q/A data -> block-table rows, the same shape the edge function serves
-function toRows(items) {
+export function toRows(items) {
   return items.map((it) => {
     const row = document.createElement('div');
     const q = document.createElement('div');
@@ -75,7 +75,7 @@ function toRows(items) {
 let groupSeq = 0;
 
 // The one renderer: block-table Q/A rows -> details/summary accordion
-function decorateFaqs(block) {
+export function decorateFaqs(block) {
   groupSeq += 1;
   const groupName = `faq-${groupSeq}`; // shared name = native single-open group
 
