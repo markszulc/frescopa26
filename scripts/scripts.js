@@ -1,6 +1,4 @@
 import {
-  loadHeader,
-  loadFooter,
   decorateIcons,
   decorateSections,
   decorateBlocks,
@@ -10,6 +8,8 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  decorateBlock,
+  loadBlock,
   readBlockConfig,
   toClassName,
 } from './aem.js';
@@ -215,6 +215,30 @@ function decorateScrollReveal(main) {
       observer.observe(el);
     });
   });
+}
+
+async function loadHeader(header) {
+  const headerBlock = buildBlock('header', '');
+  const existingHeaderBlock = header.querySelector(':scope > .header');
+  if (existingHeaderBlock) {
+    existingHeaderBlock.replaceWith(headerBlock);
+  } else {
+    header.append(headerBlock);
+  }
+  decorateBlock(headerBlock);
+  return loadBlock(headerBlock);
+}
+
+async function loadFooter(footer) {
+  const footerBlock = buildBlock('footer', '');
+  const existingFooterBlock = footer.querySelector(':scope > .footer');
+  if (existingFooterBlock) {
+    existingFooterBlock.replaceWith(footerBlock);
+  } else {
+    footer.append(footerBlock);
+  }
+  decorateBlock(footerBlock);
+  return loadBlock(footerBlock);
 }
 
 /**
