@@ -1,6 +1,14 @@
 // add functionality that requires user consent here (analytics, martech, etc.)
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getUserTokenCookie } from './initializers/index.js';
+import { loadScript } from './aem.js';
+
+function loadGoogleTagManager() {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+  loadScript('https://www.googletagmanager.com/gtm.js?id=GTM-KXGJ236P', { async: '' })
+    .catch((error) => console.warn('Error loading Google Tag Manager', error));
+}
 
 async function initAnalytics() {
   try {
@@ -62,6 +70,8 @@ async function initAnalytics() {
 
 if (document.prerendering) {
   document.addEventListener('prerenderingchange', initAnalytics, { once: true });
+  document.addEventListener('prerenderingchange', loadGoogleTagManager, { once: true });
 } else {
   initAnalytics();
+  loadGoogleTagManager();
 }
