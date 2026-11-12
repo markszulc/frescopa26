@@ -7,7 +7,8 @@ let consentedLoaded = false;
  * are not loaded. This stands in for a real CMP (OneTrust, etc.) and can be
  * swapped out later.
  *
- * The default can be overridden with a query parameter for testing:
+ * The default can be overridden with a query parameter for testing. The choice
+ * is persisted in localStorage so it survives page transitions:
  *   ?consent=accept   grant consent (loads consented.js)
  *   ?consent=decline  decline consent (default behavior)
  *
@@ -16,10 +17,20 @@ let consentedLoaded = false;
 function hasConsent() {
   const consent = new URLSearchParams(window.location.search).get('consent');
   if (consent !== null) {
-    return ['accept', 'true', '1', 'yes'].includes(consent.toLowerCase());
+    const granted = ['accept', 'true', '1', 'yes'].includes(consent.toLowerCase());
+    try {
+      localStorage.setItem('consent', granted ? 'accept' : 'decline');
+    } catch (e) {
+      // storage unavailable, fall back to this page only
+    }
+    return granted;
   }
-  // default: decline
-  return false;
+  try {
+    return localStorage.getItem('consent') === 'accept';
+  } catch (e) {
+    // default: decline
+    return false;
+  }
 }
 
 /**
