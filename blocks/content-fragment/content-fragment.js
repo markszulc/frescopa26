@@ -1,6 +1,65 @@
 import { decorateFaqs, toRows } from '../faq-list-by-sku/faq-list-by-sku.js';
 
 const FAQ_ENDPOINT = 'https://www.frescopa.coffee/faq-data-by-path';
+const AUTHOR_ENDPOINT = 'https://author-p137825-e1511252.adobeaemcloud.com/content/_cq_graphql/frescopa/endpoint.json';
+const FAQ_QUERY = `query getFaqsByPaths($filter: FaqModelFilter) {
+  faqList(filter: $filter) {
+    items {
+      _path
+      question
+      answer { plaintext }
+    }
+  }
+}`;
+
+export function isAuthoringContext(
+  location = window.location,
+  referrer = document.referrer,
+) {
+  return /(^|\.)(da\.live|experience\.adobe\.com)$/i.test(location.hostname)
+    || [referrer, ...Array.from(location.ancestorOrigins || [])].some((url) => (
+      /^https:\/\/([a-z0-9-]+\.)*(da\.live|experience\.adobe\.com)([/:]|$)/i.test(url)
+    ));
+}
+
+async function fetchFaqs(paths) {
+  const authoring = isAuthoringContext();
+  const params = new URLSearchParams();
+  paths.forEach((path) => params.append('path', path));
+  const response = await fetch(authoring ? AUTHOR_ENDPOINT : `${FAQ_ENDPOINT}?${params}`, authoring ? {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      query: FAQ_QUERY,
+      variables: {
+        filter: {
+          _path: {
+            _logOp: 'OR',
+            _expressions: paths.map((value) => ({ value, _operator: 'EQUALS' })),
+          },
+        },
+      },
+    }),
+  } : undefined);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const json = await response.json();
+  const items = authoring ? json?.data?.faqList?.items : json?.items;
+  if ((authoring && json?.errors?.length) || !Array.isArray(items) || items.some((item) => {
+    if (!item) return true;
+    const { question, answer, _path: path } = item;
+    return typeof question !== 'string' || typeof answer?.plaintext !== 'string'
+      || (authoring && typeof path !== 'string');
+  })) {
+    throw new Error('Invalid FAQ response');
+  }
+  if (!authoring) return items;
+  const byPath = new Map(items.map((item) => {
+    const { _path: path } = item;
+    return [path, item];
+  }));
+  return paths.filter((path) => byPath.has(path)).map((path) => byPath.get(path));
+}
 
 function message(block, text) {
   const p = document.createElement('p');
@@ -31,20 +90,11 @@ export default async function decorate(block) {
     return;
   }
 
-  const params = new URLSearchParams();
-  paths.forEach((path) => params.append('path', path));
   block.dataset.faqState = 'loading';
   message(block, 'Loading FAQs...');
 
   try {
-    const response = await fetch(`${FAQ_ENDPOINT}?${params}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const { items } = await response.json();
-    if (!Array.isArray(items) || items.some((item) => (
-      !item || typeof item.question !== 'string' || typeof item.answer?.plaintext !== 'string'
-    ))) {
-      throw new Error('Invalid FAQ response');
-    }
+    const items = await fetchFaqs(paths);
     if (!items.length) {
       message(block, 'No FAQs found for these content fragments.');
       return;
