@@ -53,6 +53,15 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
     label.append(select);
     const form = doc.createElement('form');
     const draft = drafts.get(selected);
+    const readOnly = Boolean(draft && !draft.snapshot.etag);
+    const notice = doc.createElement('p');
+    notice.id = `fragment-readonly-${reference.id}`;
+    notice.className = 'fragment-readonly';
+    notice.setAttribute('role', 'status');
+    notice.hidden = !readOnly;
+    notice.textContent = 'Read-only: AEM is not exposing the ETag header required for safe saves. '
+      + 'An AEM administrator must add Access-Control-Expose-Headers: ETag to its CORS policy. '
+      + 'For now, use the Edit link above to make changes in AEM.';
     const saveButton = doc.createElement('button');
     saveButton.type = 'submit';
     saveButton.textContent = 'Save to AEM';
@@ -70,7 +79,9 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
           if (field.type === 'long-text') input.rows = 5;
           else input.type = 'text';
           input.value = draft.values.get(field.name);
-          input.disabled = pending || !draft.snapshot.etag;
+          input.disabled = pending;
+          input.readOnly = readOnly;
+          if (readOnly) input.setAttribute('aria-describedby', notice.id);
           input.addEventListener('input', () => {
             draft.values.set(field.name, input.value);
             saveButton.disabled = !canSave();
@@ -98,11 +109,11 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
     reload.disabled = pending;
     const status = doc.createElement('p');
     status.setAttribute('role', 'status');
-    status.textContent = message || (draft && !draft.snapshot.etag
-      ? 'Read-only: AEM CORS must expose ETag and allow PATCH/If-Match before fields can be saved.'
+    status.textContent = message || (readOnly ? ''
       : 'Changes are saved to AEM author only, not published. Reload the page preview after saving.');
+    status.hidden = !status.textContent;
     form.append(saveButton, reload);
-    content.replaceChildren(label, form, status);
+    content.replaceChildren(notice, label, form, status);
     select.addEventListener('change', () => {
       selected = select.value;
       message = '';

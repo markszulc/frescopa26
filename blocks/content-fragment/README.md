@@ -122,6 +122,9 @@ and preflight requests, and the `Authorization`, `Content-Type`, `If-Match`, and
 `CSRF-Token` request headers. Its CORS response must **expose `ETag`** (for example
 `Access-Control-Expose-Headers: ETag`). Without a readable ETag the extension
 allows viewing but disables field editing and reports usage writes as blocked.
+The read-only explanation appears above the fields, which remain focusable for
+selecting and copying text. Focus outlines apply to individual controls, not
+the entire fragment-list container.
 It does not use wildcard ETags or unguarded writes as a fallback.
 
 ## Fragment page-usage metadata

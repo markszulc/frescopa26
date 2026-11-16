@@ -274,6 +274,17 @@
   resize: vertical;
 }
 
+.content-fragment-panel .fragment-editor .fragment-readonly {
+  padding: 12px;
+  border-left: 3px solid var(--s2-yellow-1000, #9b7800);
+  background: var(--s2-gray-100, #e9e9e9);
+}
+
+.content-fragment-panel .fragment-editor input:read-only,
+.content-fragment-panel .fragment-editor textarea:read-only {
+  background: var(--s2-gray-100, #e9e9e9);
+}
+
 .content-fragment-panel .fragment-editor pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;

@@ -124,6 +124,7 @@
         const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
         const { showStatus } = createPanel(doc);
         assert(!doc.querySelector('caption'), 'row selection instruction removed');
+        assert(!doc.querySelector('.table-scroll').hasAttribute('tabindex'), 'list wrapper does not steal focus from fields');
         showStatus('', { state: 'inventory', paths: [path, secondPath] });
         assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'initially collapsed');
         showStatus('Connected', {
@@ -316,7 +317,13 @@
         doc.body.replaceChildren(readOnly.element);
         readOnly.open();
         await tick();
-        assert(doc.querySelector('input').disabled && readOnly.element.textContent.includes('Read-only'), 'unexposed ETag keeps fields read-only with configuration guidance');
+        const readOnlyInput = doc.querySelector('input');
+        const notice = doc.querySelector('.fragment-readonly');
+        assert(readOnlyInput.readOnly && !readOnlyInput.disabled, 'unexposed ETag allows focusing and copying, but not editing');
+        assert(!notice.hidden && notice.textContent.includes('Access-Control-Expose-Headers: ETag'), 'configuration requirement visible above fields');
+        assert(Boolean(notice.compareDocumentPosition(readOnlyInput) & Node.DOCUMENT_POSITION_FOLLOWING), 'read-only explanation precedes inputs');
+        assert(readOnlyInput.getAttribute('aria-describedby') === notice.id, 'read-only explanation associated with fields');
+        assert(doc.querySelector('button[type="submit"]').disabled, 'missing ETag still prevents unsafe saves');
         readOnly.disconnect();
       });
 
