@@ -14,3 +14,10 @@
   opacity: 0.7;
   cursor: help;
 }
+
+/* Outline rather than border, so swapping to author content causes no layout shift. */
+.content-fragment[data-faq-source="published"] {
+  border-radius: 8px;
+  outline: 1.5px solid rgb(128 128 128 / 35%);
+  outline-offset: 0.75rem;
+}
