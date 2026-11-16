@@ -11,7 +11,7 @@
     <script type="module">
       import decorate, { isAuthoringContext } from '../../blocks/content-fragment/content-fragment.js';
       import decorateSku from '../../blocks/faq-list-by-sku/faq-list-by-sku.js';
-      import { connectAuthorFaqs, fetchAuthorFaqs, fetchAuthorFragmentStatuses, highlightAuthorFragment, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
+      import { connectAuthorFaqs, fetchAuthorCsrfToken, fetchAuthorFaqs, fetchAuthorFragmentStatuses, highlightAuthorFragment, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
       import createPreviewChannel from '../../scripts/experimentation-channel.js';
       import createPanel from '../../tools/plugins/content-fragment/panel.js';
       import connectContentAdvisor, { fetchAdvisorOrganization, placeFragmentPaths } from '../../tools/plugins/content-fragment/advisor.js';
@@ -30,6 +30,14 @@
         { _id: id, question: 'First question?', answer: { plaintext: 'First answer.' } },
         { _id: 'de0c30b0-4745-47fa-b55d-d605cc4f5dde', question: 'Second question?', answer: { plaintext: '<b>Plain text answer.</b>' } },
       ];
+      const authorItem = (item, fragmentPath) => ({
+        id: item._id,
+        path: fragmentPath,
+        fields: [
+          { name: 'question', type: 'text', values: [item.question] },
+          { name: 'answer', type: 'long-text', mimeType: 'text/plain', values: [item.answer.plaintext] },
+        ],
+      });
       const assert = (condition, message) => {
         if (!condition) throw new Error(message);
       };
@@ -667,51 +675,65 @@
         }
       });
 
-      await test('author GraphQL uses bearer authentication, path filters and authored order', async () => {
+      await test('author reads use authenticated GET lookups without GraphQL POST or CSRF, preserving authored order', async () => {
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
         const block = fixture(`<div><div>${path}<br>${secondPath}<br>${path}</div></div>`);
         let requests = 0;
         window.fetch = async (url, options) => {
           requests += 1;
-          assert(options.headers.Authorization === 'Bearer test-ims-token', 'IMS bearer on both requests');
+          assert(options.headers.Authorization === 'Bearer test-ims-token', 'IMS bearer on every lookup');
           assert(options.credentials === 'omit', 'no cross-site session cookies');
-          if (requests === 1) {
-            assert(String(url) === 'https://author-p137825-e1511252.adobeaemcloud.com/libs/granite/csrf/token.json', 'author CSRF endpoint');
-            assert(options.cache === 'no-store', 'fresh authenticated token');
-            return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
-          }
-          assert(url === 'https://author-p137825-e1511252.adobeaemcloud.com/content/_cq_graphql/frescopa/endpoint.json', 'author endpoint');
-          assert(options.method === 'POST', 'authenticated POST');
-          assert(options.headers['Content-Type'] === 'application/json', 'JSON request');
-          assert(options.headers['CSRF-Token'] === 'test-csrf-token', 'CSRF token on POST');
-          const { query, variables } = JSON.parse(options.body);
-          assert(query.includes('faqList(filter: $filter)'), 'GraphQL filter applied');
-          assert(query.includes('_id'), 'fragment UUID requested');
-          assert(JSON.stringify(variables.filter._path) === JSON.stringify({
-            _logOp: 'OR',
-            _expressions: [path, secondPath].map((value) => ({ value, _operator: 'EQUALS' })),
-          }), 'unique typed path expressions');
-          return { ok: true, json: async () => ({ data: { faqList: { items: [
-            { ...items[1], _path: secondPath },
-            { ...items[0], _path: path },
-            { ...items[0], _path: '/content/dam/unrequested' },
-          ] } } }) };
+          const request = new URL(url);
+          assert(request.origin + request.pathname === 'https://author-p137825-e1511252.adobeaemcloud.com/adobe/sites/cf/fragments', 'supported management lookup endpoint');
+          assert(options.method === 'GET' && !options.body && !options.headers['CSRF-Token'], 'reading needs no POST or CSRF request');
+          assert(options.cache === 'no-store', 'fresh author content');
+          const requested = request.searchParams.get('path');
+          assert([path, secondPath].includes(requested) && request.searchParams.get('limit') === '1', 'exact requested path, not an unbounded listing');
+          if (requested === path) await new Promise(resolve => setTimeout(resolve, 25));
+          return { ok: true, json: async () => ({ items: [
+            authorItem(items[requested === path ? 0 : 1], requested),
+            authorItem(items[0], '/content/dam/unrequested'),
+          ] }) };
         };
         await Promise.all([decorate(block), decorate(block)]);
-        assert(requests === 2, 'one token request and one GraphQL request');
+        assert(requests === 2, 'one GET per unique path, no token or GraphQL request');
         assert(JSON.stringify([...block.querySelectorAll('.faq-label')].map((el) => el.textContent)) === JSON.stringify(items.map((item) => item.question)), 'requested results in authored order');
+      });
+
+      await test('management lookups preserve plain text, normalize HTML and distinguish missing fragments', async () => {
+        const plain = '  Keep spaces\nand line breaks.  ';
+        const html = '<p>One &amp; <strong>two</strong></p><p>Three<br>four</p><script>not content<\/script>';
+        for (const [mimeType, value, expected] of [
+          ['text/plain', plain, plain],
+          ['text/html', html, 'One & two\nThree\nfour'],
+        ]) {
+          const fragment = authorItem(items[0], path);
+          fragment.fields[1] = { name: 'answer', type: 'long-text', mimeType, values: [value] };
+          window.fetch = async () => ({ ok: true, json: async () => ({ items: [fragment] }) });
+          const [result] = await fetchAuthorFaqs([path], accessToken);
+          assert(result.answer.plaintext === expected, 'expected plaintext shape without executing markup');
+        }
+        for (const entries of [[], [authorItem(items[0], secondPath)]]) {
+          window.fetch = async () => ({ ok: true, json: async () => ({ items: entries }) });
+          assert((await fetchAuthorFaqs([path], accessToken)).length === 0, 'missing exact path never displays another fragment');
+        }
+        for (const fields of [
+          [],
+          [{ name: 'question', type: 'text', values: ['Question'] }, { name: 'answer', type: 'long-text', values: [null] }],
+          [{ name: 'question', type: 'text', values: ['Question'] }, { name: 'answer', type: 'long-text', mimeType: 'application/json', values: ['{}'] }],
+        ]) {
+          window.fetch = async () => ({ ok: true, json: async () => ({ items: [{ ...authorItem(items[0], path), fields }] }) });
+          let failure;
+          try { await fetchAuthorFaqs([path], accessToken); } catch (error) { failure = error; }
+          assert(failure?.message === 'Invalid author FAQ response.', 'incompatible model fields fail explicitly');
+        }
       });
 
       await test('author results retain UUIDs and reject missing or malformed UUIDs', async () => {
         for (const uuid of [id, undefined, 'not-a-uuid']) {
-          window.fetch = async (url) => {
-            if (String(url).endsWith('/libs/granite/csrf/token.json')) {
-              return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
-            }
-            return { ok: true, json: async () => ({ data: { faqList: { items: [
-              { ...items[0], _path: path, _id: uuid },
-            ] } } }) };
-          };
+          window.fetch = async () => ({ ok: true, json: async () => ({
+            items: [authorItem({ ...items[0], _id: uuid }, path)],
+          }) });
           let result;
           let failure;
           try {
@@ -734,12 +756,9 @@
             accessToken = token;
             window.fetch = async (url, options) => {
               assert(options.headers.Authorization === `Bearer ${token}`, 'current token on every request');
-              if (String(url).endsWith('/libs/granite/csrf/token.json')) {
-                return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
-              }
-              return { ok: true, json: async () => ({ data: { faqList: { items: [
-                { ...items[0], _path: path, token: 'must-not-leak' },
-              ] } } }) };
+              return { ok: true, json: async () => ({ items: [
+                { ...authorItem(items[0], path), token: 'must-not-leak' },
+              ] }) };
             };
             const block = fixture(`<div><div>${path}</div></div>`);
             await decorate(block);
@@ -768,14 +787,9 @@
         assert(block.textContent.includes('Sign in to DA'), 'actionable guidance');
         assert(block.querySelector('button')?.textContent === 'Retry author connection', 'retry offered');
         accessToken = 'test-ims-token';
-        window.fetch = async (url) => {
-          if (String(url).endsWith('/libs/granite/csrf/token.json')) {
-            return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
-          }
-          return { ok: true, json: async () => ({ data: { faqList: { items: [
-            { ...items[0], _path: path },
-          ] } } }) };
-        };
+        window.fetch = async () => ({
+          ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
+        });
         block.querySelector('button').click();
         await new Promise((resolve, reject) => {
           const observer = new MutationObserver(() => {
@@ -797,14 +811,9 @@
       await test('a panel opened after decoration begins completes the pending request', async (disconnect) => {
         disconnect();
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
-        window.fetch = async (url) => {
-          if (String(url).endsWith('/libs/granite/csrf/token.json')) {
-            return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
-          }
-          return { ok: true, json: async () => ({ data: { faqList: { items: [
-            { ...items[0], _path: path },
-          ] } } }) };
-        };
+        window.fetch = async () => ({
+          ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
+        });
         const block = fixture(`<div><div>${path}</div></div>`);
         const loading = decorate(block);
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -850,8 +859,7 @@
         }
       });
 
-      await test('CSRF failures prevent the author POST and published fallback', async () => {
-        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+      await test('CSRF failures remain explicit for fragment mutations', async () => {
         const responses = [
           async () => ({ ok: false, status: 403 }),
           async () => ({ ok: true, json: async () => ({}) }),
@@ -866,19 +874,17 @@
             assert(String(url).endsWith('/libs/granite/csrf/token.json'), 'only CSRF endpoint requested');
             return response();
           };
-          const block = fixture(`<div><div>${path}</div></div>`);
-          await decorate(block);
-          assert(requests === 1, 'no POST or published fallback');
-          assert(block.querySelector('.faq-message')?.textContent.startsWith('Could not'), 'explicit token error');
-          assert(!block.dataset.faqState, 'loading state cleared');
+          let failure;
+          try { await fetchAuthorCsrfToken(accessToken); } catch (error) { failure = error; }
+          assert(requests === 1 && failure?.message, 'mutation token failure explicit');
         }
       });
 
       await test('author failures never fall back to the Edge Function', async () => {
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://experience.adobe.com/' });
         const responses = [
-          async () => ({ ok: true, json: async () => ({ errors: [{ message: 'Denied' }], data: { faqList: { items: [] } } }) }),
-          async () => ({ ok: true, json: async () => ({ data: { faqList: { items } } }) }),
+          async () => ({ ok: true, json: async () => ({ items: 'invalid' }) }),
+          async () => ({ ok: true, json: async () => ({ items: [{ ...authorItem(items[0], path), fields: {} }] }) }),
           async () => ({ ok: false, status: 401 }),
           async () => ({ ok: false, status: 403 }),
           async () => { throw new Error('Network failed'); },
@@ -887,14 +893,11 @@
           let requests = 0;
           window.fetch = async (url) => {
             requests += 1;
-            if (String(url).endsWith('/libs/granite/csrf/token.json')) {
-              return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
-            }
             return response();
           };
           const block = fixture(`<div><div>${path}</div></div>`);
           await decorate(block);
-          assert(requests === 2, 'no published-content fallback');
+          assert(requests === 1, 'no published-content fallback');
           assert(block.querySelector('.faq-message')?.textContent.startsWith('Could not'), 'explicit author error');
           assert(!block.dataset.faqState, 'loading state cleared');
         }

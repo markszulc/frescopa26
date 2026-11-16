@@ -3,16 +3,6 @@ import createAuthorHighlighter from './author-highlight.js';
 
 const MESSAGE = 'da:content-fragment';
 export const AUTHOR_ORIGIN = 'https://author-p137825-e1511252.adobeaemcloud.com';
-const FAQ_QUERY = `query getFaqsByPaths($filter: FaqModelFilter) {
-  faqList(filter: $filter) {
-    items {
-      _path
-      _id
-      question
-      answer { plaintext }
-    }
-  }
-}`;
 
 export function validatePaths(paths) {
   if (!Array.isArray(paths) || !paths.length || paths.some((path) => (
@@ -131,49 +121,51 @@ export async function fetchAuthorCsrfToken(accessToken) {
 
 export async function fetchAuthorFaqs(paths, accessToken) {
   validatePaths(paths);
-  const token = await fetchAuthorCsrfToken(accessToken);
-  const headers = { Authorization: `Bearer ${accessToken}` };
-  const response = await fetch(`${AUTHOR_ORIGIN}/content/_cq_graphql/frescopa/endpoint.json`, {
-    method: 'POST',
-    credentials: 'omit',
-    cache: 'no-store',
-    headers: { ...headers, 'Content-Type': 'application/json', 'CSRF-Token': token },
-    body: JSON.stringify({
-      query: FAQ_QUERY,
-      variables: {
-        filter: {
-          _path: {
-            _logOp: 'OR',
-            _expressions: [...new Set(paths)].map((value) => ({ value, _operator: 'EQUALS' })),
-          },
-        },
-      },
-    }),
-  });
-  if (!response.ok) {
-    throw new Error(`Author FAQ request returned HTTP ${response.status}. Check DA sign-in and AEM permissions.`);
+  if (typeof accessToken !== 'string' || !accessToken.trim()) {
+    throw new Error('Sign in to DA and reopen the Content Fragment panel.');
   }
-  const json = await response.json();
-  const items = json?.data?.faqList?.items;
-  if (json?.errors?.length || !Array.isArray(items) || items.some((item) => {
-    if (!item) return true;
-    const {
-      _path: path, _id: id, question, answer,
-    } = item;
-    return typeof path !== 'string' || typeof question !== 'string'
-      || typeof id !== 'string' || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id)
-      || typeof answer?.plaintext !== 'string';
-  })) {
-    throw new Error('Invalid author FAQ response.');
-  }
-  const byPath = new Map(items.map(({
-    _path: path, _id: id, question, answer,
-  }) => (
-    [path, {
-      _path: path, _id: id, question, answer: { plaintext: answer.plaintext },
-    }]
-  )));
-  return [...new Set(paths)].filter((path) => byPath.has(path)).map((path) => byPath.get(path));
+  const items = await Promise.all([...new Set(paths)].map(async (path) => {
+    const query = new URLSearchParams({ path, limit: '1' });
+    const response = await fetch(`${AUTHOR_ORIGIN}/adobe/sites/cf/fragments?${query}`, {
+      method: 'GET',
+      credentials: 'omit',
+      cache: 'no-store',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!response.ok) {
+      throw new Error(`Author FAQ request returned HTTP ${response.status}. Check DA sign-in and AEM permissions.`);
+    }
+    const json = await response.json();
+    if (!Array.isArray(json?.items)) throw new Error('Invalid author FAQ response.');
+    const fragment = json.items.find((item) => item?.path === path);
+    if (!fragment) return null;
+    if (!Array.isArray(fragment.fields)) throw new Error('Invalid author FAQ response.');
+    const question = fragment.fields.find((field) => field?.name === 'question');
+    const answer = fragment.fields.find((field) => field?.name === 'answer');
+    if (typeof fragment.id !== 'string'
+      || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(fragment.id)
+      || question?.type !== 'text' || question.multiple
+      || !Array.isArray(question.values) || question.values.length !== 1
+      || typeof question.values[0] !== 'string'
+      || answer?.type !== 'long-text' || answer.multiple
+      || !Array.isArray(answer.values) || answer.values.length > 1
+      || answer.values.some((value) => typeof value !== 'string')
+      || (answer.mimeType && !['text/plain', 'text/html'].includes(answer.mimeType))) {
+      throw new Error('Invalid author FAQ response.');
+    }
+    let plaintext = answer.values[0] ?? '';
+    if (answer.mimeType === 'text/html') {
+      const doc = new DOMParser().parseFromString(plaintext, 'text/html');
+      doc.querySelectorAll('script, style').forEach((element) => element.remove());
+      doc.querySelectorAll('br').forEach((element) => element.replaceWith('\n'));
+      doc.querySelectorAll('p, div, li').forEach((element) => element.append('\n'));
+      plaintext = doc.body.textContent.trim();
+    }
+    return {
+      _path: path, _id: fragment.id, question: question.values[0], answer: { plaintext },
+    };
+  }));
+  return items.filter(Boolean);
 }
 
 export async function fetchAuthorFragmentStatuses(items, accessToken) {
