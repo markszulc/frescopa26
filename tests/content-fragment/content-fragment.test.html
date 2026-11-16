@@ -57,6 +57,10 @@
         };
         setTimeout(check, 0);
       });
+      // Simulates a browser without an AEM author sign-in, so blocks fall back to the panel.
+      const withoutSession = (handler) => async (url, options = {}) => (
+        options.credentials === 'include' ? { ok: false, status: 401 } : handler(url, options)
+      );
       const test = async (name, run) => {
         const disconnect = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
         try {
@@ -779,7 +783,7 @@
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
         const block = fixture(`<div><div>${path}<br>${secondPath}<br>${path}</div></div>`);
         let requests = 0;
-        window.fetch = async (url, options) => {
+        window.fetch = withoutSession(async (url, options) => {
           requests += 1;
           assert(options.headers.Authorization === 'Bearer test-ims-token', 'IMS bearer on every lookup');
           assert(options.credentials === 'omit', 'no cross-site session cookies');
@@ -794,7 +798,7 @@
             authorItem(items[requested === path ? 0 : 1], requested),
             authorItem(items[0], '/content/dam/unrequested'),
           ] }) };
-        };
+        });
         await Promise.all([decorate(block), decorate(block)]);
         await settled(block);
         assert(requests === 2, 'one GET per unique path, no token or GraphQL request');
@@ -855,12 +859,12 @@
         try {
           for (const token of ['test-ims-token', 'refreshed-ims-token']) {
             accessToken = token;
-            window.fetch = async (url, options) => {
+            window.fetch = withoutSession(async (url, options) => {
               assert(options.headers.Authorization === `Bearer ${token}`, 'current token on every request');
               return { ok: true, json: async () => ({ items: [
                 { ...authorItem(items[0], path), token: 'must-not-leak' },
               ] }) };
-            };
+            });
             const block = fixture(`<div><div>${path}</div></div>`);
             await decorate(block);
             await settled(block);
@@ -879,10 +883,10 @@
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
         accessToken = '';
         let requests = 0;
-        window.fetch = async () => {
+        window.fetch = withoutSession(async () => {
           requests += 1;
           throw new Error('Unexpected request');
-        };
+        });
         const block = fixture(`<div><div>${path}</div></div>`);
         await decorate(block);
         await settled(block);
@@ -890,9 +894,9 @@
         assert(block.textContent.includes('Sign in to DA'), 'actionable guidance');
         assert(block.querySelector('button')?.textContent === 'Retry author connection', 'retry offered');
         accessToken = 'test-ims-token';
-        window.fetch = async () => ({
+        window.fetch = withoutSession(async () => ({
           ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
-        });
+        }));
         block.querySelector('button').click();
         await new Promise((resolve, reject) => {
           const observer = new MutationObserver(() => {
@@ -914,15 +918,16 @@
       await test('author loading never blocks decoration, guides authors, and completes when the panel opens later', async (disconnect) => {
         disconnect();
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
-        window.fetch = async () => ({
+        window.fetch = withoutSession(async () => ({
           ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
-        });
+        }));
         const block = fixture(`<div><div>${path}</div></div>`);
         const started = performance.now();
         await decorate(block);
         assert(performance.now() - started < 1000 && block.dataset.faqState === 'loading', 'decorate returns while waiting for the panel');
         await new Promise((resolve) => setTimeout(resolve, 2300));
-        assert(block.textContent.includes('Open the Content Fragment panel'), 'waiting guidance replaces indefinite loading');
+        assert(block.textContent.includes('Sign in to AEM author, or open the Content Fragment panel'), 'waiting guidance replaces indefinite loading');
+        assert(block.querySelector('button')?.textContent === 'Sign in to AEM author', 'sign-in action offered while waiting');
         const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
         try {
           await settled(block);
@@ -935,6 +940,42 @@
         removed.remove();
         await settled(removed, 3000);
         assert(!removed.querySelector('button'), 'removed blocks stop waiting silently');
+      });
+
+      await test('AEM author sign-in loads FAQs without the panel or DA token and shares results with the panel', async (disconnect) => {
+        disconnect();
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        accessToken = '';
+        let signedIn = false;
+        let sessionRequests = 0;
+        window.fetch = async (url, options = {}) => {
+          assert(options.credentials === 'include' && !options.headers?.Authorization, 'cookie-only request, no DA token');
+          sessionRequests += 1;
+          return signedIn
+            ? { ok: true, json: async () => ({ items: [authorItem(items[0], path)] }) }
+            : { ok: false, status: 401 };
+        };
+        const block = fixture(`<div><div>${path}</div></div>`);
+        await decorate(block);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        assert(block.dataset.faqState === 'loading' && sessionRequests === 1, 'signed-out session waits instead of failing');
+        signedIn = true;
+        window.dispatchEvent(new Event('focus'));
+        await settled(block);
+        assert(block.querySelectorAll('details').length === 1, 'returning after AEM sign-in renders without retry');
+        const reports = [];
+        const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, (text, details) => reports.push(details));
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          const connected = reports.find(({ state }) => state === 'connected');
+          assert(connected?.items[0]._id === id && connected.paths[0] === path, 'panel receives sanitized results for Edit links and status');
+        } finally {
+          closePanel();
+        }
+        const second = fixture(`<div><div>${path}</div></div>`);
+        await decorate(second);
+        await settled(second);
+        assert(second.querySelectorAll('details').length === 1 && sessionRequests === 3, 'signed-in pages load immediately');
       });
 
       await test('broker rejects invalid paths and does not answer other pages', async () => {
@@ -1002,10 +1043,10 @@
         ];
         for (const response of responses) {
           let requests = 0;
-          window.fetch = async (url) => {
+          window.fetch = withoutSession(async () => {
             requests += 1;
             return response();
-          };
+          });
           const block = fixture(`<div><div>${path}</div></div>`);
           await decorate(block);
           await settled(block);

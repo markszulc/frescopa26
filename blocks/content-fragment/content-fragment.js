@@ -104,14 +104,20 @@ export default async function decorate(block) {
     return;
   }
 
-  const { requestAuthorFaqs, registerAuthorFragments } = await import('../../scripts/content-fragment-author.js');
+  const { AUTHOR_ORIGIN, loadAuthorFaqs, registerAuthorFragments } = await import('../../scripts/content-fragment-author.js');
   registerAuthorFragments(block, paths);
-  // The panel may not be open yet, so author content loads in the background
-  // instead of holding back the section (and LCP) until the broker responds.
-  renderFaqs(block, paths, () => requestAuthorFaqs(paths, window.location.href, {
+  // Author content loads in the background so it never holds back the section (and LCP).
+  renderFaqs(block, paths, () => loadAuthorFaqs(paths, {
     isActive: () => block.isConnected,
     onWaiting: () => {
-      if (block.dataset.faqState) message(block, 'Open the Content Fragment panel to load FAQs from AEM author.');
+      if (!block.dataset.faqState) return;
+      message(block, 'Sign in to AEM author, or open the Content Fragment panel, to load FAQs.');
+      const signIn = document.createElement('button');
+      signIn.type = 'button';
+      signIn.textContent = 'Sign in to AEM author';
+      // Workspace blocks link navigation in the preview, so open the sign-in explicitly.
+      signIn.addEventListener('click', () => window.open(`${AUTHOR_ORIGIN}/ui`, '_blank', 'noopener'));
+      block.append(signIn);
     },
   }), () => decorate(block));
 }

@@ -52,10 +52,21 @@ Use the **experience** column, not **format**, for `fullsize-dialog`. Reload
 Workspace after changing the library registration.
 
 Open the page in DA canvas using Layout or Split view and select **Content
-Fragment** from the tool panel. The panel brokers author requests for the preview.
-Author loading never delays page rendering: blocks show **Loading FAQs...**, then
-ask authors to open the Content Fragment panel if it is not connected after two
-seconds. They keep waiting and render automatically when the panel opens.
+Fragment** from the tool panel. In Workspace, blocks first load FAQs with the
+browser's **AEM author sign-in** (the AEM `login-token` cookie, sent with
+`credentials: 'include'` to the author's GET lookup API). This works without the
+panel and uses each author's own AEM permissions. If there is no sign-in, the
+panel brokers requests with the DA token instead.
+Author loading never delays page rendering: blocks show **Loading FAQs...**, then,
+after two seconds without either connection, offer **Sign in to AEM author**
+(which opens the author in a new tab) and ask authors to open the panel. They keep
+waiting and render automatically when the panel opens or when the author returns
+to the Workspace tab after signing in. Results loaded with the sign-in are shared
+with the panel (UUIDs and fields only, never credentials), so its list, Edit links
+and publication status still work.
+Cookie loading needs third-party cookies for the AEM author host (Safari and
+Firefox block them by default), and AEM CORS must allow credentials for the
+preview origin (`supportscredentials: true`, with an explicit origin match).
 The panel and preview must use the same code branch/origin. If an author request
 fails, select **Retry author connection** in the block. The panel shows
 connection/fetch errors explicitly.
