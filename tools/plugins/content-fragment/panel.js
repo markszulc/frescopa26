@@ -15,7 +15,8 @@ export default function createPanel(doc = document, onHighlight = null) {
     const focused = doc.activeElement;
     const selection = typeof focused?.selectionStart === 'number'
       ? [focused.selectionStart, focused.selectionEnd] : null;
-    const focusedPath = doc.activeElement?.classList.contains('fragment-toggle')
+    const focusedControl = focused?.classList.contains('fragment-status') ? '.fragment-status' : '.fragment-toggle';
+    const focusedPath = focused?.matches('.fragment-toggle, .fragment-status')
       ? doc.activeElement.closest('.fragment-row').dataset.path : undefined;
     editors.forEach((editor, path) => {
       if (editor.id !== fragments.get(path)?.id) {
@@ -79,22 +80,22 @@ export default function createPanel(doc = document, onHighlight = null) {
         definition.textContent = value;
         list.append(term, definition);
       };
-      const info = doc.createElement('button');
-      info.type = 'button';
-      info.className = 'fragment-info';
-      info.textContent = 'i';
-      info.title = 'Fragment information';
-      info.setAttribute('aria-label', 'Fragment information');
-      info.setAttribute('aria-expanded', 'false');
+      const light = doc.createElement('button');
+      light.type = 'button';
+      light.className = 'fragment-status';
+      light.dataset.state = fragment.status;
+      light.setAttribute('aria-label', fragment.status);
+      light.setAttribute('aria-expanded', 'false');
       const popover = doc.createElement('div');
       popover.id = `fragment-info-${index}`;
       popover.className = 'fragment-info-popover';
       popover.setAttribute('popover', 'auto');
       popover.setAttribute('role', 'dialog');
       popover.setAttribute('aria-label', 'Fragment information');
-      info.setAttribute('popovertarget', popover.id);
-      info.setAttribute('aria-controls', popover.id);
-      info.setAttribute('aria-haspopup', 'dialog');
+      light.setAttribute('popovertarget', popover.id);
+      light.setAttribute('popovertargetaction', 'show');
+      light.setAttribute('aria-controls', popover.id);
+      light.setAttribute('aria-haspopup', 'dialog');
       const metadata = doc.createElement('dl');
       addField('Publication status', fragment.status, metadata);
       if (fragment.publicationError) addField('Publication error', fragment.publicationError, metadata);
@@ -102,9 +103,9 @@ export default function createPanel(doc = document, onHighlight = null) {
       popover.append(metadata);
       popover.addEventListener('beforetoggle', (event) => {
         const open = event.newState === 'open';
-        info.setAttribute('aria-expanded', String(open));
+        light.setAttribute('aria-expanded', String(open));
         if (!open) return;
-        const rect = info.getBoundingClientRect();
+        const rect = light.getBoundingClientRect();
         const view = doc.defaultView;
         const width = Math.min(280, view.innerWidth - 32);
         const top = Math.max(16, Math.min(rect.bottom + 8, view.innerHeight - 180));
@@ -112,12 +113,37 @@ export default function createPanel(doc = document, onHighlight = null) {
         popover.style.top = `${top}px`;
         popover.style.maxHeight = `${Math.max(0, view.innerHeight - top - 16)}px`;
       });
+      let closeTimer;
+      const showInformation = () => {
+        clearTimeout(closeTimer);
+        if (popover.isConnected && doc.defaultView && !popover.matches(':popover-open')) {
+          popover.showPopover({ source: light });
+        }
+      };
+      const closeInformation = () => {
+        clearTimeout(closeTimer);
+        closeTimer = setTimeout(() => {
+          if (popover.isConnected && popover.matches(':popover-open')
+            && !light.matches(':hover') && !popover.matches(':hover')
+            && doc.activeElement !== light && !popover.contains(doc.activeElement)) {
+            popover.hidePopover();
+          }
+        }, 200);
+      };
+      [light, popover].forEach((target) => {
+        target.addEventListener('pointerenter', (event) => {
+          if (event.pointerType !== 'touch') showInformation();
+        });
+        target.addEventListener('pointerleave', closeInformation);
+        target.addEventListener('focusout', closeInformation);
+      });
+      light.addEventListener('focus', showInformation);
       if (!editor && fragment.question !== undefined) addField('Question', fragment.question);
       if (!editor && fragment.answer !== undefined) addField('Answer', fragment.answer);
       if (!editor && fragment.question === undefined && fragment.answer === undefined) {
         addField('Fields', 'Fragment fields are not available. Load the fragment successfully to view them.');
       }
-      details.append(info, popover, fields);
+      details.append(fields);
       if (editor) {
         details.append(editor.element);
         if (expandedPath === path) editor.open();
@@ -154,14 +180,7 @@ export default function createPanel(doc = document, onHighlight = null) {
       location.textContent = path;
       content.append(toggle, location);
       const status = doc.createElement('td');
-      const light = doc.createElement('span');
-      light.className = 'fragment-status';
-      light.dataset.state = fragment.status;
-      light.setAttribute('role', 'img');
-      light.setAttribute('aria-label', fragment.status);
-      light.title = fragment.publicationError
-        ? `${fragment.status}: ${fragment.publicationError}` : fragment.status;
-      status.append(light);
+      status.append(light, popover);
       const action = doc.createElement('td');
       const edit = doc.createElement(fragment.id ? 'a' : 'button');
       edit.textContent = 'Edit';
@@ -194,7 +213,7 @@ export default function createPanel(doc = document, onHighlight = null) {
       if (selection) focused.setSelectionRange(...selection);
     } else if (focusedPath) {
       [...doc.querySelectorAll('.fragment-row')]
-        .find((row) => row.dataset.path === focusedPath)?.querySelector('.fragment-toggle').focus();
+        .find((row) => row.dataset.path === focusedPath)?.querySelector(focusedControl).focus();
     }
   };
 

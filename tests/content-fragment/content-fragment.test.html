@@ -100,8 +100,8 @@
         });
         assert(doc.querySelector('#connection-state').textContent === 'Connected', 'actual connection state');
         const rows = doc.querySelectorAll('.fragment-row');
-        assert(rows[0].children[1].textContent === '' && rows[0].querySelector('.fragment-status').getAttribute('aria-label') === 'Checking publication', 'loading content does not imply publication');
-        assert(rows[0].querySelector('.fragment-status').title === 'Checking publication', 'status tooltip');
+        assert(rows[0].querySelector('.fragment-status').textContent === '' && rows[0].querySelector('.fragment-status').getAttribute('aria-label') === 'Checking publication', 'loading content does not imply publication');
+        assert(rows[0].querySelector('.fragment-info-popover').textContent.includes('Checking publication'), 'status available in popover');
         assert(rows[1].querySelector('.fragment-status').dataset.state === 'Not found', 'missing result still listed');
         assert(rows[1].querySelector('td:last-child button').disabled, 'missing result cannot open incorrect editor');
         assert(!rows[0].querySelector('img'), 'fragment title treated as text');
@@ -117,7 +117,7 @@
           assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === label, `publication state ${status}`);
         }
         showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'UNKNOWN', publicationError: 'HTTP 403' }] });
-        assert(doc.querySelector('.fragment-status').title.includes('HTTP 403'), 'publication failure tooltip');
+        assert(doc.querySelector('.fragment-info-popover').textContent.includes('HTTP 403'), 'publication failure popover');
         assert(!doc.querySelector('#publication-status').hidden && doc.querySelector('#publication-status').textContent.includes('HTTP 403'), 'publication failure visible without opening connection details');
         showStatus('Denied', { state: 'error', paths: [path] });
         assert(doc.querySelector('#connection-state').textContent === 'Connection error', 'error not shown as connected');
@@ -144,14 +144,14 @@
         const firstDetails = rows[0].nextElementSibling;
         assert(!firstDetails.hidden && rows[0].querySelector('button').getAttribute('aria-expanded') === 'true', 'title expands details accessibly');
         assert(firstDetails.textContent.includes('First question?') && firstDetails.textContent.includes('First answer.'), 'question and answer fields shown');
-        const info = firstDetails.querySelector('.fragment-info');
-        const popover = firstDetails.querySelector('.fragment-info-popover');
+        const info = rows[0].querySelector('.fragment-status');
+        const popover = rows[0].querySelector('.fragment-info-popover');
         assert(popover.textContent.includes(id) && popover.getAttribute('popover') === 'auto', 'fragment UUID moved into a dismissible popover');
         assert(info.getAttribute('popovertarget') === popover.id && info.getAttribute('aria-expanded') === 'false', 'information hidden until its accessible button is activated');
-        assert(!firstDetails.querySelector('dl:not(.fragment-info-popover dl)').textContent.includes(id), 'fragment UUID not shown with editable fields');
+        assert(!firstDetails.textContent.includes(id) && !doc.querySelector('.fragment-info'), 'metadata and separate information icon removed from fields');
         showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'PUBLISHED' }] });
         rows = doc.querySelectorAll('.fragment-row');
-        assert(!rows[0].nextElementSibling.hidden && rows[0].nextElementSibling.textContent.includes('Published'), 'publication update preserves open details');
+        assert(!rows[0].nextElementSibling.hidden && rows[0].querySelector('.fragment-info-popover').textContent.includes('Published'), 'publication update preserves open details');
         rows[1].querySelector('.fragment-path').click();
         assert(rows[0].nextElementSibling.hidden && !rows[1].nextElementSibling.hidden, 'whole row opens and closes previous details');
         const secondDetails = rows[1].nextElementSibling;
@@ -168,29 +168,38 @@
         assert(rows[2].nextElementSibling.textContent.includes('Fragment fields are not available'), 'unavailable fields explicit');
         showStatus('', { state: 'publication', items: [{ _path: `${path}-missing`, publicationStatus: 'UNKNOWN', publicationError: 'HTTP 403' }] });
         const unavailable = doc.querySelectorAll('.fragment-details-row')[2];
-        assert(!unavailable.hidden && unavailable.textContent.includes('Publication unknown') && unavailable.textContent.includes('HTTP 403'), 'expanded publication failure explicit');
+        const failureDetails = unavailable.previousElementSibling.querySelector('.fragment-info-popover');
+        assert(!unavailable.hidden && failureDetails.textContent.includes('Publication unknown') && failureDetails.textContent.includes('HTTP 403'), 'publication failure available independently of expanded fields');
         showStatus('', { state: 'inventory', paths: [path] });
         showStatus('', { state: 'inventory', paths: [path, `${path}-missing`] });
         assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'removed fragment cannot resurrect expanded state');
       });
 
-      await test('fragment information opens a native popover without toggling the accordion', async () => {
+      await test('traffic light hover and focus expose fragment information without expanding or highlighting', async () => {
         const markup = new DOMParser().parseFromString(panelMarkup, 'text/html');
         const panel = fixture(`<main>${markup.querySelector('main').innerHTML}</main>`, 'content-fragment content-fragment-panel');
-        const { showStatus, disconnect } = createPanel(document);
+        let highlights = 0;
+        const { showStatus, disconnect } = createPanel(document, () => { highlights += 1; });
         showStatus('', { state: 'inventory', paths: [path] });
         showStatus('', { state: 'connected', paths: [path], items: [{ ...items[0], _path: path }] });
         showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'MODIFIED' }] });
-        panel.querySelector('.fragment-toggle').click();
         const popover = panel.querySelector('.fragment-info-popover');
-        const info = panel.querySelector('.fragment-info');
+        const info = panel.querySelector('.fragment-status');
         assert(getComputedStyle(popover).display === 'none', 'metadata initially hidden');
-        info.click();
-        assert(popover.matches(':popover-open') && info.getAttribute('aria-expanded') === 'true', 'native information button opens popover accessibly');
+        info.dispatchEvent(new PointerEvent('pointerenter', { pointerType: 'mouse' }));
+        assert(popover.matches(':popover-open') && info.getAttribute('aria-expanded') === 'true', 'hovering traffic light opens information accessibly');
         assert(popover.textContent.includes('Published (modified)') && popover.textContent.includes(id), 'popover shows current publication status and UUID');
-        assert(!panel.querySelector('.fragment-details-row').hidden, 'information interaction does not collapse fields');
+        assert(panel.querySelector('.fragment-details-row').hidden && highlights === 0, 'hover does not expand fields or highlight preview');
+        info.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'mouse' }));
+        await new Promise(resolve => setTimeout(resolve, 250));
+        assert(!popover.matches(':popover-open'), 'information closes after pointer leaves');
         info.click();
-        assert(!popover.matches(':popover-open') && info.getAttribute('aria-expanded') === 'false', 'information button closes popover');
+        assert(popover.matches(':popover-open') && highlights === 0 && panel.querySelector('.fragment-details-row').hidden, 'touch or keyboard activation also opens information without selecting row');
+        popover.hidePopover();
+        info.dispatchEvent(new Event('focus'));
+        assert(popover.matches(':popover-open'), 'keyboard focus shows the same information');
+        popover.hidePopover();
+        assert(info.getAttribute('aria-expanded') === 'false', 'dismissal updates accessible state');
         disconnect();
       });
 
@@ -495,7 +504,7 @@
         edit.addEventListener('click', event => event.preventDefault());
         edit.click();
         assert(selections === 1, 'Edit does not trigger block selection');
-        await activate(rows[1].querySelector('.fragment-status'));
+        await activate(rows[1].querySelector('.fragment-path'));
         assert(first.style.outline === 'red dashed 1px' && first.style.getPropertyPriority('outline') === 'important', 'previous inline outline and priority restored');
         assert(second.style.outline === shared.style.outline && second.style.outline.includes('59, 99, 251'), 'selection moves to the other references');
         assert(scrolled.length === 2 && scrolled[1].element === second, 'new first reference scrolled');

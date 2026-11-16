@@ -131,8 +131,7 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
     reload.disabled = pending;
     const status = doc.createElement('p');
     status.setAttribute('role', 'status');
-    status.textContent = message || (readOnly ? ''
-      : 'Changes are saved to AEM author only, not published. Reload the page preview after saving.');
+    status.textContent = message;
     status.hidden = !status.textContent;
     form.append(saveButton, reload);
     content.replaceChildren(notice, label, form, status);

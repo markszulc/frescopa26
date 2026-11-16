@@ -242,20 +242,6 @@
   margin-bottom: 0;
 }
 
-.content-fragment-panel .fragment-info {
-  display: block;
-  width: 24px;
-  height: 24px;
-  margin: 0 0 12px auto;
-  padding: 0;
-  border: 1px solid currentcolor;
-  border-radius: 50%;
-  background: none;
-  color: inherit;
-  font: bold 16px / 1 serif;
-  cursor: pointer;
-}
-
 .content-fragment-panel .fragment-info-popover {
   position: fixed;
   width: min(280px, calc(100vw - 32px));
@@ -354,13 +340,25 @@
 }
 
 .content-fragment-panel .fragment-status {
-  display: inline-block;
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--s2-yellow-1000, #9b7800);
+  cursor: help;
+}
+
+.content-fragment-panel .fragment-status::before {
   width: 12px;
   height: 12px;
   border: 1px solid currentcolor;
   border-radius: 50%;
   background: currentcolor;
-  color: var(--s2-yellow-1000, #9b7800);
+  content: '';
 }
 
 .content-fragment-panel .fragment-status[data-state="Published"] {

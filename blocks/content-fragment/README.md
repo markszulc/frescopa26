@@ -70,13 +70,16 @@ header through CORS. Green means **Published**, amber means **Published
 published** (new, draft, or unpublished). Waiting/checking states are amber.
 Metadata failures show **Publication unknown**, with a visible error; they never
 imply that a fragment is unpublished or prevent FAQ rendering.
-Each indicator has a descriptive tooltip and accessible status label.
-Select anywhere on a fragment row (or focus its title control and use Enter/Space)
+Hover over a traffic light to show its publication status and UUID in a small
+popover, without opening the accordion or highlighting the preview. Keyboard
+focus and tapping the traffic light also show this information. The popover
+stays open while hovered or focused; close it with Escape or an outside click.
+Each indicator has an accessible status label.
+Select elsewhere on a fragment row (or focus its title control and use Enter/Space)
 to expand its details, outline every block referencing that path in the preview,
 and scroll the first into view. The single-open accordion shows the fragment's
-fields from AEM author. A small circled **i** opens a popover containing the UUID
-and publication status. Close it with Escape or an outside click. Unavailable
-fields or publication metadata have explicit error messages.
+fields from AEM author. Unavailable fields or publication metadata have explicit
+error messages.
 Selecting another fragment closes the previous details, moves the highlight,
 and restores the previous outlines. Selecting the same row again collapses it.
 Open details stay expanded when publication metadata updates.
