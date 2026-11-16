@@ -12,12 +12,7 @@ export function isAuthoringContext(
     ));
 }
 
-async function fetchFaqs(paths, block) {
-  if (isAuthoringContext()) {
-    const { requestAuthorFaqs, registerAuthorFragments } = await import('../../scripts/content-fragment-author.js');
-    registerAuthorFragments(block, paths);
-    return requestAuthorFaqs(paths);
-  }
+async function fetchPublishedFaqs(paths) {
   const params = new URLSearchParams();
   paths.forEach((path) => params.append('path', path));
   const response = await fetch(`${FAQ_ENDPOINT}?${params}`);
@@ -48,6 +43,46 @@ export function readPaths(block) {
   return [...new Set(text.join('\n').trim().split(/\s+/).filter(Boolean))];
 }
 
+async function renderFaqs(block, paths, load, retry) {
+  block.dataset.faqState = 'loading';
+  message(block, 'Loading FAQs...');
+
+  try {
+    const items = await load();
+    if (!items.length) {
+      message(block, 'No FAQs found for these content fragments.');
+      return;
+    }
+    block.replaceChildren(...toRows(items));
+    decorateFaqs(block);
+  } catch (error) {
+    if (error.name === 'AuthorRequestCancelled') return;
+    // eslint-disable-next-line no-console
+    console.warn('content-fragment: could not load FAQs', error);
+    message(block, 'Could not load FAQs for these content fragments.');
+    if (isAuthoringContext()) {
+      const guidance = document.createElement('p');
+      guidance.textContent = error.message;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = 'Retry author connection';
+      button.addEventListener('click', () => {
+        block.replaceChildren(...paths.map((path) => {
+          const row = document.createElement('div');
+          const cell = document.createElement('div');
+          cell.textContent = path;
+          row.append(cell);
+          return row;
+        }));
+        retry();
+      }, { once: true });
+      block.append(guidance, button);
+    }
+  } finally {
+    delete block.dataset.faqState;
+  }
+}
+
 export default async function decorate(block) {
   if (block.querySelector(':scope > .faq-items') || block.dataset.faqState) return;
 
@@ -64,39 +99,19 @@ export default async function decorate(block) {
   }
 
   block.dataset.faqState = 'loading';
-  message(block, 'Loading FAQs...');
-
-  try {
-    const items = await fetchFaqs(paths, block);
-    if (!items.length) {
-      message(block, 'No FAQs found for these content fragments.');
-      return;
-    }
-    block.replaceChildren(...toRows(items));
-    decorateFaqs(block);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn('content-fragment: could not load FAQs', error);
-    message(block, 'Could not load FAQs for these content fragments.');
-    if (isAuthoringContext()) {
-      const guidance = document.createElement('p');
-      guidance.textContent = error.message;
-      const retry = document.createElement('button');
-      retry.type = 'button';
-      retry.textContent = 'Retry author connection';
-      retry.addEventListener('click', () => {
-        block.replaceChildren(...paths.map((path) => {
-          const row = document.createElement('div');
-          const cell = document.createElement('div');
-          cell.textContent = path;
-          row.append(cell);
-          return row;
-        }));
-        decorate(block);
-      }, { once: true });
-      block.append(guidance, retry);
-    }
-  } finally {
-    delete block.dataset.faqState;
+  if (!isAuthoringContext()) {
+    await renderFaqs(block, paths, () => fetchPublishedFaqs(paths));
+    return;
   }
+
+  const { requestAuthorFaqs, registerAuthorFragments } = await import('../../scripts/content-fragment-author.js');
+  registerAuthorFragments(block, paths);
+  // The panel may not be open yet, so author content loads in the background
+  // instead of holding back the section (and LCP) until the broker responds.
+  renderFaqs(block, paths, () => requestAuthorFaqs(paths, window.location.href, {
+    isActive: () => block.isConnected,
+    onWaiting: () => {
+      if (block.dataset.faqState) message(block, 'Open the Content Fragment panel to load FAQs from AEM author.');
+    },
+  }), () => decorate(block));
 }

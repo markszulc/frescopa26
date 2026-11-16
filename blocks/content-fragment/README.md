@@ -52,10 +52,13 @@ Use the **experience** column, not **format**, for `fullsize-dialog`. Reload
 Workspace after changing the library registration.
 
 Open the page in DA canvas using Layout or Split view and select **Content
-Fragment** from the tool panel. Keep that panel open while fetching author FAQs.
-The panel and preview must use the same code branch/origin. Requests wait up
-to 15 seconds for the panel; if it is opened later, select **Retry author
-connection** in the block. The panel shows connection/fetch errors explicitly.
+Fragment** from the tool panel. The panel brokers author requests for the preview.
+Author loading never delays page rendering: blocks show **Loading FAQs...**, then
+ask authors to open the Content Fragment panel if it is not connected after two
+seconds. They keep waiting and render automatically when the panel opens.
+The panel and preview must use the same code branch/origin. If an author request
+fails, select **Retry author connection** in the block. The panel shows
+connection/fetch errors explicitly.
 Opening the panel does not modify the DA document or publish content. It records
 observed page usage in fragment metadata as described below.
 

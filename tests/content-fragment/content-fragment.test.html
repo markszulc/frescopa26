@@ -48,6 +48,15 @@
         document.body.append(block);
         return block;
       };
+      const settled = (block, timeout = 5000) => new Promise((resolve, reject) => {
+        const started = Date.now();
+        const check = () => {
+          if (!block.dataset.faqState) resolve();
+          else if (Date.now() - started > timeout) reject(new Error('Author content did not settle'));
+          else setTimeout(check, 20);
+        };
+        setTimeout(check, 0);
+      });
       const test = async (name, run) => {
         const disconnect = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
         try {
@@ -787,6 +796,7 @@
           ] }) };
         };
         await Promise.all([decorate(block), decorate(block)]);
+        await settled(block);
         assert(requests === 2, 'one GET per unique path, no token or GraphQL request');
         assert(JSON.stringify([...block.querySelectorAll('.faq-label')].map((el) => el.textContent)) === JSON.stringify(items.map((item) => item.question)), 'requested results in authored order');
       });
@@ -853,6 +863,7 @@
             };
             const block = fixture(`<div><div>${path}</div></div>`);
             await decorate(block);
+            await settled(block);
             assert(block.querySelectorAll('details').length === 1, 'author result rendered');
           }
           assert(messages.length > 0, 'observed real channel messages');
@@ -874,6 +885,7 @@
         };
         const block = fixture(`<div><div>${path}</div></div>`);
         await decorate(block);
+        await settled(block);
         assert(requests === 0, 'no anonymous author or edge request');
         assert(block.textContent.includes('Sign in to DA'), 'actionable guidance');
         assert(block.querySelector('button')?.textContent === 'Retry author connection', 'retry offered');
@@ -899,22 +911,30 @@
         assert(block.querySelectorAll('details').length === 1, 'retry restored paths and rendered FAQs');
       });
 
-      await test('a panel opened after decoration begins completes the pending request', async (disconnect) => {
+      await test('author loading never blocks decoration, guides authors, and completes when the panel opens later', async (disconnect) => {
         disconnect();
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
         window.fetch = async () => ({
           ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
         });
         const block = fixture(`<div><div>${path}</div></div>`);
-        const loading = decorate(block);
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        const started = performance.now();
+        await decorate(block);
+        assert(performance.now() - started < 1000 && block.dataset.faqState === 'loading', 'decorate returns while waiting for the panel');
+        await new Promise((resolve) => setTimeout(resolve, 2300));
+        assert(block.textContent.includes('Open the Content Fragment panel'), 'waiting guidance replaces indefinite loading');
         const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
         try {
-          await loading;
-          assert(block.querySelectorAll('details').length === 1, 'late panel connection rendered FAQs');
+          await settled(block);
+          assert(block.querySelectorAll('details').length === 1, 'late panel connection rendered FAQs without retry');
         } finally {
           closePanel();
         }
+        const removed = fixture(`<div><div>${secondPath}</div></div>`);
+        await decorate(removed);
+        removed.remove();
+        await settled(removed, 3000);
+        assert(!removed.querySelector('button'), 'removed blocks stop waiting silently');
       });
 
       await test('broker rejects invalid paths and does not answer other pages', async () => {
@@ -988,6 +1008,7 @@
           };
           const block = fixture(`<div><div>${path}</div></div>`);
           await decorate(block);
+          await settled(block);
           assert(requests === 1, 'no published-content fallback');
           assert(block.querySelector('.faq-message')?.textContent.startsWith('Could not'), 'explicit author error');
           assert(!block.dataset.faqState, 'loading state cleared');

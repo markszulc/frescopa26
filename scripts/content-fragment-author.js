@@ -285,28 +285,43 @@ export function highlightAuthorFragment(path, pageUrl = window.location.href) {
   });
 }
 
-export function requestAuthorFaqs(paths, pageUrl = window.location.href) {
+export class AuthorRequestCancelled extends Error {
+  name = 'AuthorRequestCancelled';
+}
+
+/**
+ * Waits, without a deadline, for the Content Fragment panel to broker the request.
+ * @param {string[]} paths Fragment paths
+ * @param {string} pageUrl Preview page URL
+ * @param {{onWaiting?: Function, isActive?: Function, waitingAfter?: number}} options
+ */
+export function requestAuthorFaqs(paths, pageUrl = window.location.href, {
+  onWaiting = () => {}, isActive = () => true, waitingAfter = 2000,
+} = {}) {
   validatePaths(paths);
   const channel = createPreviewChannel(pageUrl);
   return new Promise((resolve, reject) => {
     const requestId = crypto.randomUUID();
     let connected = false;
-    let timeout;
+    let waiting;
     let poll;
+    let cancel;
     const finish = (error, items) => {
-      clearTimeout(timeout);
+      clearTimeout(waiting);
       clearInterval(poll);
+      window.removeEventListener('pagehide', cancel);
       channel.close();
       if (error) reject(error);
       else resolve(items);
     };
-    timeout = setTimeout(() => finish(new Error(
-      'Open the Content Fragment panel in Workspace on this code branch, then retry.',
-    )), 15000);
-    const connect = () => channel.postMessage({
-      type: MESSAGE, action: 'connect', requestId,
-    });
-    poll = setInterval(connect, 500);
+    cancel = () => finish(new AuthorRequestCancelled('Author request cancelled.'));
+    window.addEventListener('pagehide', cancel, { once: true });
+    waiting = setTimeout(() => { if (!connected) onWaiting(); }, waitingAfter);
+    const connect = () => {
+      if (!isActive()) cancel();
+      else if (!connected) channel.postMessage({ type: MESSAGE, action: 'connect', requestId });
+    };
+    poll = setInterval(connect, 1000);
     channel.onmessage = ({ data }) => {
       if (data?.type !== MESSAGE || !data.response || data.requestId !== requestId) return;
       if (data.action === 'connect' && !connected) {
