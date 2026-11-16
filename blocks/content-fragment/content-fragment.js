@@ -22,6 +22,19 @@ export function isAuthoringContext(
     ));
 }
 
+async function getAuthorCsrfToken() {
+  const response = await fetch(new URL('/libs/granite/csrf/token.json', AUTHOR_ENDPOINT), {
+    credentials: 'include',
+    cache: 'no-store',
+  });
+  if (!response.ok) throw new Error(`Author CSRF token request returned HTTP ${response.status}`);
+  const { token } = await response.json();
+  if (typeof token !== 'string' || !token.trim()) {
+    throw new Error('Author CSRF token unavailable. Sign in to AEM author and allow author session cookies.');
+  }
+  return token;
+}
+
 async function fetchFaqs(paths) {
   const authoring = isAuthoringContext();
   const params = new URLSearchParams();
@@ -29,7 +42,10 @@ async function fetchFaqs(paths) {
   const response = await fetch(authoring ? AUTHOR_ENDPOINT : `${FAQ_ENDPOINT}?${params}`, authoring ? {
     method: 'POST',
     credentials: 'include',
-    headers: { 'content-type': 'application/json' },
+    headers: {
+      'content-type': 'application/json',
+      'CSRF-Token': await getAuthorCsrfToken(),
+    },
     body: JSON.stringify({
       query: FAQ_QUERY,
       variables: {

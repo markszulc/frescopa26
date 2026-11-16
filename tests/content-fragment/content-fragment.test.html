@@ -65,9 +65,15 @@
         let requests = 0;
         window.fetch = async (url, options) => {
           requests += 1;
+          if (requests === 1) {
+            assert(String(url) === 'https://author-p137825-e1511252.adobeaemcloud.com/libs/granite/csrf/token.json', 'author CSRF endpoint');
+            assert(options.credentials === 'include' && options.cache === 'no-store', 'fresh authenticated token');
+            return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
+          }
           assert(url === 'https://author-p137825-e1511252.adobeaemcloud.com/content/_cq_graphql/frescopa/endpoint.json', 'author endpoint');
           assert(options.method === 'POST' && options.credentials === 'include', 'authenticated POST');
           assert(options.headers['content-type'] === 'application/json', 'JSON request');
+          assert(options.headers['CSRF-Token'] === 'test-csrf-token', 'CSRF token on POST');
           const { query, variables } = JSON.parse(options.body);
           assert(query.includes('faqList(filter: $filter)'), 'GraphQL filter applied');
           assert(JSON.stringify(variables.filter._path) === JSON.stringify({
@@ -81,8 +87,32 @@
           ] } } }) };
         };
         await Promise.all([decorate(block), decorate(block)]);
-        assert(requests === 1, 'one author request');
+        assert(requests === 2, 'one token request and one GraphQL request');
         assert(JSON.stringify([...block.querySelectorAll('.faq-label')].map((el) => el.textContent)) === JSON.stringify(items.map((item) => item.question)), 'requested results in authored order');
+      });
+
+      await test('CSRF failures prevent the author POST and published fallback', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        const responses = [
+          async () => ({ ok: false, status: 403 }),
+          async () => ({ ok: true, json: async () => ({}) }),
+          async () => ({ ok: true, json: async () => ({ token: ' ' }) }),
+          async () => ({ ok: true, json: async () => ({ token: 123 }) }),
+          async () => { throw new Error('Network failed'); },
+        ];
+        for (const response of responses) {
+          let requests = 0;
+          window.fetch = async (url) => {
+            requests += 1;
+            assert(String(url).endsWith('/libs/granite/csrf/token.json'), 'only CSRF endpoint requested');
+            return response();
+          };
+          const block = fixture(`<div><div>${path}</div></div>`);
+          await decorate(block);
+          assert(requests === 1, 'no POST or published fallback');
+          assert(block.querySelector('.faq-message')?.textContent.startsWith('Could not'), 'explicit token error');
+          assert(!block.dataset.faqState, 'loading state cleared');
+        }
       });
 
       await test('author failures never fall back to the Edge Function', async () => {
@@ -91,14 +121,21 @@
           async () => ({ ok: true, json: async () => ({ errors: [{ message: 'Denied' }], data: { faqList: { items: [] } } }) }),
           async () => ({ ok: true, json: async () => ({ data: { faqList: { items } } }) }),
           async () => ({ ok: false, status: 401 }),
+          async () => ({ ok: false, status: 403 }),
           async () => { throw new Error('Network failed'); },
         ];
         for (const response of responses) {
           let requests = 0;
-          window.fetch = async () => { requests += 1; return response(); };
+          window.fetch = async (url) => {
+            requests += 1;
+            if (String(url).endsWith('/libs/granite/csrf/token.json')) {
+              return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
+            }
+            return response();
+          };
           const block = fixture(`<div><div>${path}</div></div>`);
           await decorate(block);
-          assert(requests === 1, 'no published-content fallback');
+          assert(requests === 2, 'no published-content fallback');
           assert(block.querySelector('.faq-message')?.textContent.startsWith('Could not'), 'explicit author error');
           assert(!block.dataset.faqState, 'loading state cleared');
         }

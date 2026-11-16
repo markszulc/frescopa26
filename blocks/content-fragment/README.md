@@ -15,9 +15,19 @@ including its preview subdomains), the block fetches directly from
 `https://author-p137825-e1511252.adobeaemcloud.com/content/_cq_graphql/frescopa/endpoint.json`.
 Embedded previews are detected using their ancestor origins or referrer from
 DA or `experience.adobe.com`. The block POSTs a GraphQL path filter using the
-existing AEM author session cookies. Authors must be signed in to AEM author;
-the author endpoint must allow credentialed cross-origin requests from the
-preview origin, and the browser must permit the author cookies.
+existing AEM author session cookies. Before each POST, it fetches a fresh token
+from `/libs/granite/csrf/token.json` on author and sends it in the `CSRF-Token`
+header, as required by AEM for authenticated POST requests.
+Authors must be signed in to AEM author; both endpoints must allow credentialed
+cross-origin requests from the actual preview origin, including the
+`Content-Type` and `CSRF-Token` request headers. The browser must permit the
+author cookies.
+
+If author requests return 403, check the failed request in browser Network tools:
+a missing/empty token indicates an unavailable author session; a GraphQL POST
+with a valid token may still be rejected by AEM permissions or the Sling Referrer
+Filter. Check AEM logs and the allowed preview origins rather than disabling
+CSRF protection.
 
 In all other contexts, the block calls
 `https://www.frescopa.coffee/faq-data-by-path` using one `path` query parameter per
