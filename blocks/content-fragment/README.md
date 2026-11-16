@@ -66,11 +66,16 @@ published** (new, draft, or unpublished). Waiting/checking states are amber.
 Metadata failures show **Publication unknown**, with a visible error; they never
 imply that a fragment is unpublished or prevent FAQ rendering.
 Each indicator has a descriptive tooltip and accessible status label.
-Select anywhere on a fragment row (or focus it and use Enter/Space) to outline every block
-referencing that path in the preview and scroll the first into view. Selecting
-another fragment moves the highlight and restores the previous outlines.
-The title is plain text; **Edit** remains a separate link and does not locate
-the fragment. Highlights begin fading at 6.5 seconds and clear at 7.5 seconds,
+Select anywhere on a fragment row (or focus its title control and use Enter/Space)
+to expand its details, outline every block referencing that path in the preview,
+and scroll the first into view. The single-open accordion shows the fragment's
+Question and Answer fields from AEM author, UUID, and publication status, with
+explicit messages when fields or publication metadata are unavailable.
+Selecting another fragment closes the previous details, moves the highlight,
+and restores the previous outlines. Selecting the same row again collapses it.
+Open details stay expanded when publication metadata updates.
+Titles retain their plain styling; **Edit** remains a separate link and does not
+expand or locate the fragment. Highlights begin fading at 6.5 seconds and clear at 7.5 seconds,
 including after preview block replacements. Reduced-motion users get no fade
 animation. Reloading the preview or unloading the panel also clears highlighting.
 Highlighting does not edit or save authored content.

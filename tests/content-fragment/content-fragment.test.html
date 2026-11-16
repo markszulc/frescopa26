@@ -79,7 +79,7 @@
         assert(doc.querySelector('#author-instance').href === 'https://author-p137825-e1511252.adobeaemcloud.com/', 'author instance link');
         assert(doc.querySelector('#page-path').textContent === '/drafts/fragmenttest', 'current page');
         showStatus('', { state: 'inventory', paths: [path, secondPath] });
-        assert(doc.querySelectorAll('tbody tr').length === 2, 'references listed before fetching');
+        assert(doc.querySelectorAll('.fragment-row').length === 2, 'references listed before fetching');
         assert(doc.querySelector('tbody td:last-child button').disabled && !doc.querySelector('tbody a'), 'no editor link without UUID');
         assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === 'Waiting', 'accessible waiting state');
         showStatus('Loading', { state: 'loading', paths: [path, secondPath] });
@@ -89,7 +89,7 @@
           items: [{ _path: path, _id: id, question: '<img src=x onerror=alert(1)>' }],
         });
         assert(doc.querySelector('#connection-state').textContent === 'Connected', 'actual connection state');
-        const rows = doc.querySelectorAll('tbody tr');
+        const rows = doc.querySelectorAll('.fragment-row');
         assert(rows[0].children[1].textContent === '' && rows[0].querySelector('.fragment-status').getAttribute('aria-label') === 'Checking publication', 'loading content does not imply publication');
         assert(rows[0].querySelector('.fragment-status').title === 'Checking publication', 'status tooltip');
         assert(rows[1].querySelector('.fragment-status').dataset.state === 'Not found', 'missing result still listed');
@@ -113,9 +113,50 @@
         assert(doc.querySelector('#connection-state').textContent === 'Connection error', 'error not shown as connected');
         assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === 'Failed', 'accessible failed traffic light');
         showStatus('', { state: 'inventory', paths: [secondPath] });
-        assert(doc.querySelectorAll('tbody tr').length === 1, 'removed references disappear');
+        assert(doc.querySelectorAll('.fragment-row').length === 1, 'removed references disappear');
         showStatus('', { state: 'inventory', paths: [] });
         assert(doc.querySelector('.table-scroll').hidden && !doc.querySelector('#empty-state').hidden, 'empty page state');
+      });
+
+      await test('fragment accordion exposes safe author fields and publication details with one open row', async () => {
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus } = createPanel(doc);
+        assert(!doc.querySelector('caption'), 'row selection instruction removed');
+        showStatus('', { state: 'inventory', paths: [path, secondPath] });
+        assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'initially collapsed');
+        showStatus('Connected', {
+          state: 'connected', paths: [path, secondPath],
+          items: [{ ...items[0], _path: path }, { ...items[1], _path: secondPath }],
+        });
+        let rows = doc.querySelectorAll('.fragment-row');
+        rows[0].querySelector('.fragment-toggle').click();
+        const firstDetails = rows[0].nextElementSibling;
+        assert(!firstDetails.hidden && rows[0].querySelector('button').getAttribute('aria-expanded') === 'true', 'title expands details accessibly');
+        assert(firstDetails.textContent.includes('First question?') && firstDetails.textContent.includes('First answer.'), 'question and answer fields shown');
+        assert(firstDetails.textContent.includes(id), 'fragment UUID shown');
+        showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'PUBLISHED' }] });
+        rows = doc.querySelectorAll('.fragment-row');
+        assert(!rows[0].nextElementSibling.hidden && rows[0].nextElementSibling.textContent.includes('Published'), 'publication update preserves open details');
+        rows[1].querySelector('.fragment-path').click();
+        assert(rows[0].nextElementSibling.hidden && !rows[1].nextElementSibling.hidden, 'whole row opens and closes previous details');
+        const secondDetails = rows[1].nextElementSibling;
+        assert(secondDetails.textContent.includes('<b>Plain text answer.</b>') && !secondDetails.querySelector('b'), 'answer rendered as text, not markup');
+        const edit = rows[1].querySelector('a');
+        edit.addEventListener('click', event => event.preventDefault());
+        edit.click();
+        assert(!secondDetails.hidden, 'Edit leaves accordion unchanged');
+        rows[1].querySelector('.fragment-toggle').click();
+        assert(secondDetails.hidden && rows[1].querySelector('button').getAttribute('aria-expanded') === 'false', 'same row collapses');
+        showStatus('', { state: 'inventory', paths: [path, secondPath, `${path}-missing`] });
+        rows = doc.querySelectorAll('.fragment-row');
+        rows[2].click();
+        assert(rows[2].nextElementSibling.textContent.includes('Fragment fields are not available'), 'unavailable fields explicit');
+        showStatus('', { state: 'publication', items: [{ _path: `${path}-missing`, publicationStatus: 'UNKNOWN', publicationError: 'HTTP 403' }] });
+        const unavailable = doc.querySelectorAll('.fragment-details-row')[2];
+        assert(!unavailable.hidden && unavailable.textContent.includes('Publication unknown') && unavailable.textContent.includes('HTTP 403'), 'expanded publication failure explicit');
+        showStatus('', { state: 'inventory', paths: [path] });
+        showStatus('', { state: 'inventory', paths: [path, `${path}-missing`] });
+        assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'removed fragment cannot resurrect expanded state');
       });
 
       await test('fragment selection highlights only referencing blocks, scrolls and restores outlines', async (disconnect) => {
@@ -141,7 +182,7 @@
           state: 'connected', paths: [path, secondPath],
           items: [{ ...items[0], _path: path }, { ...items[1], _path: secondPath }],
         });
-        const activate = (target, key) => new Promise((resolve, reject) => {
+        const activate = (target) => new Promise((resolve, reject) => {
           const message = doc.querySelector('#highlight-status');
           const observer = new MutationObserver(() => {
             clearTimeout(timer);
@@ -153,11 +194,10 @@
             reject(new Error('Missing highlight announcement'));
           }, 2000);
           observer.observe(message, { childList: true });
-          if (key) target.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
-          else target.click();
+          target.click();
         });
         const rows = doc.querySelectorAll('.fragment-row');
-        assert(rows[0].tabIndex === 0 && rows[0].querySelector('.fragment-name').tagName === 'STRONG', 'row keyboard-accessible with plain title');
+        assert(rows[0].querySelector('.fragment-toggle').type === 'button' && rows[0].querySelector('.fragment-name').tagName === 'STRONG', 'native keyboard-accessible control with plain title');
         assert((await activate(rows[0].querySelector('.fragment-path'))).startsWith('Highlighted 2 blocks in the preview.'), 'path area locates matching blocks');
         assert(first.style.outline === 'rgb(59, 99, 251) solid 2px' && shared.style.outline === first.style.outline, 'all matching blocks outlined');
         assert(!second.style.outline, 'unrelated block unchanged');
@@ -170,8 +210,8 @@
         assert(first.style.outline === 'red dashed 1px' && first.style.getPropertyPriority('outline') === 'important', 'previous inline outline and priority restored');
         assert(second.style.outline === shared.style.outline && second.style.outline.includes('59, 99, 251'), 'selection moves to the other references');
         assert(scrolled.length === 2 && scrolled[1].element === second, 'new first reference scrolled');
-        await activate(rows[1], 'Enter');
-        await activate(rows[1], ' ');
+        await activate(rows[1].querySelector('.fragment-toggle'));
+        await activate(rows[1].querySelector('.fragment-toggle'));
         const replacement = fixture('<div></div>');
         registerAuthorFragments(replacement, [secondPath]);
         second.remove();

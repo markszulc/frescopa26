@@ -2,18 +2,57 @@ import { AUTHOR_ORIGIN } from '../../../scripts/content-fragment-author.js';
 
 export default function createPanel(doc = document, onHighlight = null) {
   const fragments = new Map();
+  let expandedPath;
   const instance = doc.querySelector('#author-instance');
   instance.href = AUTHOR_ORIGIN;
   instance.textContent = new URL(AUTHOR_ORIGIN).hostname;
 
   const render = () => {
-    const rows = [...fragments].map(([path, fragment]) => {
+    const focusedPath = doc.activeElement?.classList.contains('fragment-toggle')
+      ? doc.activeElement.closest('.fragment-row').dataset.path : undefined;
+    const rows = [...fragments].flatMap(([path, fragment], index) => {
       const row = doc.createElement('tr');
       row.className = 'fragment-row';
+      row.dataset.path = path;
       const content = doc.createElement('td');
+      const toggle = doc.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'fragment-toggle';
+      toggle.id = `fragment-toggle-${index}`;
+      toggle.setAttribute('aria-expanded', String(expandedPath === path));
+      toggle.setAttribute('aria-controls', `fragment-details-${index}`);
       const name = doc.createElement('strong');
       name.className = 'fragment-name';
       name.textContent = fragment.question || path.split('/').pop();
+      toggle.append(name);
+      const detailsRow = doc.createElement('tr');
+      detailsRow.className = 'fragment-details-row';
+      detailsRow.hidden = expandedPath !== path;
+      const detailsCell = doc.createElement('td');
+      detailsCell.colSpan = 3;
+      const details = doc.createElement('div');
+      details.id = `fragment-details-${index}`;
+      details.setAttribute('role', 'region');
+      details.setAttribute('aria-labelledby', toggle.id);
+      const fields = doc.createElement('dl');
+      const addField = (label, value) => {
+        const term = doc.createElement('dt');
+        term.textContent = label;
+        const definition = doc.createElement('dd');
+        definition.textContent = value;
+        fields.append(term, definition);
+      };
+      addField('Publication status', fragment.status);
+      if (fragment.publicationError) addField('Publication error', fragment.publicationError);
+      if (fragment.id) addField('Fragment ID', fragment.id);
+      if (fragment.question !== undefined) addField('Question', fragment.question);
+      if (fragment.answer !== undefined) addField('Answer', fragment.answer);
+      if (fragment.question === undefined && fragment.answer === undefined) {
+        addField('Fields', 'Fragment fields are not available. Load the fragment successfully to view them.');
+      }
+      details.append(fields);
+      detailsCell.append(details);
+      detailsRow.append(detailsCell);
       const locate = async () => {
         const message = doc.querySelector('#highlight-status');
         try {
@@ -24,23 +63,23 @@ export default function createPanel(doc = document, onHighlight = null) {
         }
         message.hidden = false;
       };
-      if (typeof onHighlight === 'function') {
-        row.tabIndex = 0;
-        row.title = 'Locate referencing blocks in the page preview';
-        row.setAttribute('aria-label', `Locate ${name.textContent} in the page preview`);
-        row.addEventListener('click', (event) => {
-          if (!event.target.closest('a, button')) locate();
+      const activate = () => {
+        expandedPath = expandedPath === path ? undefined : path;
+        doc.querySelectorAll('.fragment-row').forEach((header) => {
+          const expanded = header.dataset.path === expandedPath;
+          header.querySelector('.fragment-toggle').setAttribute('aria-expanded', String(expanded));
+          header.nextElementSibling.hidden = !expanded;
         });
-        row.addEventListener('keydown', (event) => {
-          if (event.target !== row || !['Enter', ' '].includes(event.key)) return;
-          event.preventDefault();
-          locate();
-        });
-      }
+        if (typeof onHighlight === 'function') locate();
+      };
+      toggle.addEventListener('click', activate);
+      row.addEventListener('click', (event) => {
+        if (!event.target.closest('a, button')) activate();
+      });
       const location = doc.createElement('span');
       location.className = 'fragment-path';
       location.textContent = path;
-      content.append(name, location);
+      content.append(toggle, location);
       const status = doc.createElement('td');
       const light = doc.createElement('span');
       light.className = 'fragment-status';
@@ -67,16 +106,20 @@ export default function createPanel(doc = document, onHighlight = null) {
       }
       action.append(edit);
       row.append(content, status, action);
-      return row;
+      return [row, detailsRow];
     });
     doc.querySelector('#fragments').replaceChildren(...rows);
-    doc.querySelector('#fragment-count').textContent = String(rows.length);
+    doc.querySelector('#fragment-count').textContent = String(fragments.size);
     doc.querySelector('.table-scroll').hidden = !rows.length;
     doc.querySelector('#empty-state').hidden = Boolean(rows.length);
     const publication = doc.querySelector('#publication-status');
     const errors = [...fragments].filter(([, fragment]) => fragment.publicationError);
     publication.textContent = errors.map(([path, fragment]) => `${path}: ${fragment.publicationError}`).join('\n');
     publication.hidden = !errors.length;
+    if (focusedPath) {
+      [...doc.querySelectorAll('.fragment-row')]
+        .find((row) => row.dataset.path === focusedPath)?.querySelector('.fragment-toggle').focus();
+    }
   };
 
   const showStatus = (text, details = {}) => {
@@ -86,6 +129,7 @@ export default function createPanel(doc = document, onHighlight = null) {
       fragments.forEach((value, path) => {
         if (!current.has(path)) fragments.delete(path);
       });
+      if (!current.has(expandedPath)) expandedPath = undefined;
       paths.forEach((path) => {
         if (!fragments.has(path)) fragments.set(path, { status: 'Waiting' });
       });
@@ -115,8 +159,10 @@ export default function createPanel(doc = document, onHighlight = null) {
           waiting: 'Waiting', loading: 'Loading', connected: 'Connected', error: 'Connection error',
         }[state];
       }
-      const byPath = new Map(items.map(({ _path: path, _id: id, question }) => (
-        [path, { id, question }]
+      const byPath = new Map(items.map(({
+        _path: path, _id: id, question, answer,
+      }) => (
+        [path, { id, question, answer: answer?.plaintext }]
       )));
       paths.forEach((path) => {
         if (!fragments.has(path) && state !== 'loading') return;
@@ -126,6 +172,7 @@ export default function createPanel(doc = document, onHighlight = null) {
         fragments.set(path, {
           id: byPath.get(path)?.id || (state === 'connected' ? undefined : fragment.id),
           question: byPath.get(path)?.question || fragment.question,
+          answer: byPath.get(path)?.answer ?? fragment.answer,
           status,
         });
       });
