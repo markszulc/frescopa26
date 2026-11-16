@@ -9,24 +9,34 @@ export default function createPanel(doc = document, onHighlight = null) {
   const render = () => {
     const rows = [...fragments].map(([path, fragment]) => {
       const row = doc.createElement('tr');
+      row.className = 'fragment-row';
       const content = doc.createElement('td');
-      const name = doc.createElement('button');
-      name.type = 'button';
+      const name = doc.createElement('strong');
       name.className = 'fragment-name';
       name.textContent = fragment.question || path.split('/').pop();
-      name.disabled = typeof onHighlight !== 'function';
-      name.setAttribute('aria-label', `Highlight blocks referencing ${name.textContent} in the page preview`);
-      name.title = 'Highlight referencing blocks in the page preview';
-      name.addEventListener('click', async () => {
+      const locate = async () => {
         const message = doc.querySelector('#highlight-status');
         try {
           const count = await onHighlight(path);
-          message.textContent = `Highlighted ${count} ${count === 1 ? 'block' : 'blocks'} in the preview.`;
+          message.textContent = `Highlighted ${count} ${count === 1 ? 'block' : 'blocks'} in the preview. Highlight fades after 7.5 seconds.`;
         } catch (error) {
           message.textContent = error.message;
         }
         message.hidden = false;
-      });
+      };
+      if (typeof onHighlight === 'function') {
+        row.tabIndex = 0;
+        row.title = 'Locate referencing blocks in the page preview';
+        row.setAttribute('aria-label', `Locate ${name.textContent} in the page preview`);
+        row.addEventListener('click', (event) => {
+          if (!event.target.closest('a, button')) locate();
+        });
+        row.addEventListener('keydown', (event) => {
+          if (event.target !== row || !['Enter', ' '].includes(event.key)) return;
+          event.preventDefault();
+          locate();
+        });
+      }
       const location = doc.createElement('span');
       location.className = 'fragment-path';
       location.textContent = path;
@@ -37,7 +47,8 @@ export default function createPanel(doc = document, onHighlight = null) {
       light.dataset.state = fragment.status;
       light.setAttribute('role', 'img');
       light.setAttribute('aria-label', fragment.status);
-      light.title = fragment.status;
+      light.title = fragment.publicationError
+        ? `${fragment.status}: ${fragment.publicationError}` : fragment.status;
       status.append(light);
       const action = doc.createElement('td');
       const edit = doc.createElement(fragment.id ? 'a' : 'button');
@@ -62,6 +73,10 @@ export default function createPanel(doc = document, onHighlight = null) {
     doc.querySelector('#fragment-count').textContent = String(rows.length);
     doc.querySelector('.table-scroll').hidden = !rows.length;
     doc.querySelector('#empty-state').hidden = Boolean(rows.length);
+    const publication = doc.querySelector('#publication-status');
+    const errors = [...fragments].filter(([, fragment]) => fragment.publicationError);
+    publication.textContent = errors.map(([path, fragment]) => `${path}: ${fragment.publicationError}`).join('\n');
+    publication.hidden = !errors.length;
   };
 
   const showStatus = (text, details = {}) => {
@@ -75,6 +90,22 @@ export default function createPanel(doc = document, onHighlight = null) {
         if (!fragments.has(path)) fragments.set(path, { status: 'Waiting' });
       });
       doc.querySelector('#empty-state').textContent = 'No Content Fragments referenced on this page.';
+    } else if (state === 'publication') {
+      const labels = {
+        PUBLISHED: 'Published',
+        MODIFIED: 'Published (modified)',
+        NEW: 'Not published',
+        DRAFT: 'Not published',
+        UNPUBLISHED: 'Not published',
+        UNKNOWN: 'Publication unknown',
+      };
+      items.forEach(({ _path: path, publicationStatus, publicationError }) => {
+        const fragment = fragments.get(path);
+        if (fragment) {
+          fragment.status = labels[publicationStatus] || 'Publication unknown';
+          fragment.publicationError = publicationError;
+        }
+      });
     } else {
       if (text) doc.querySelector('#status').textContent = text;
       if (state) {
@@ -91,7 +122,7 @@ export default function createPanel(doc = document, onHighlight = null) {
         if (!fragments.has(path) && state !== 'loading') return;
         const fragment = fragments.get(path) || {};
         let status = { loading: 'Loading', error: 'Failed' }[state];
-        if (state === 'connected') status = byPath.has(path) ? 'Loaded' : 'Not found';
+        if (state === 'connected') status = byPath.has(path) ? 'Checking publication' : 'Not found';
         fragments.set(path, {
           id: byPath.get(path)?.id || (state === 'connected' ? undefined : fragment.id),
           question: byPath.get(path)?.question || fragment.question,

@@ -41,7 +41,7 @@ function message(block, text) {
   block.replaceChildren(p);
 }
 
-function readPaths(block) {
+export function readPaths(block) {
   const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
   const text = [];
   while (walker.nextNode()) text.push(walker.currentNode.textContent);

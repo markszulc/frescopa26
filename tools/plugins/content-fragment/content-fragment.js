@@ -1,7 +1,10 @@
 import DA_SDK from 'https://da.live/nx/utils/sdk.js';
-import { connectAuthorFaqs, highlightAuthorFragment } from '../../../scripts/content-fragment-author.js';
+import {
+  connectAuthorFaqs, fetchAuthorFragmentStatuses, highlightAuthorFragment,
+} from '../../../scripts/content-fragment-author.js';
 import { getPageContext } from '../contextual-experimentation/context.js';
 import createPanel from './panel.js';
+import connectContentAdvisor from './advisor.js';
 
 let pageUrl;
 const { showStatus, setPage } = createPanel(
@@ -32,9 +35,29 @@ async function init() {
   const page = getPageContext(host.context);
   pageUrl = page.pageUrl;
   setPage(page.pageUrl);
-  const disconnect = connectAuthorFaqs(page.pageUrl, () => token, showStatus);
+  let closed = false;
+  const generations = new Map();
+  const disconnect = connectAuthorFaqs(page.pageUrl, () => token, (text, details) => {
+    showStatus(text, details);
+    if (details.state === 'loading') {
+      details.paths.forEach((path) => generations.set(path, (generations.get(path) || 0) + 1));
+    }
+    if (details.state !== 'connected') return;
+    const current = new Map(details.paths.map((path) => [path, generations.get(path)]));
+    fetchAuthorFragmentStatuses(details.items, token).then((items) => {
+      if (!closed) {
+        showStatus('', {
+          state: 'publication',
+          items: items.filter(({ _path: path }) => current.get(path) === generations.get(path)),
+        });
+      }
+    });
+  });
+  const disconnectAdvisor = connectContentAdvisor(document, host, () => token);
   window.addEventListener('pagehide', () => {
+    closed = true;
     disconnect();
+    disconnectAdvisor();
     token = undefined;
     window.removeEventListener('message', updateToken, true);
   }, { once: true });

@@ -28,7 +28,8 @@ must have access to the author environment, FAQ fragments, and models.
 The existing same-origin preview channel scopes messages to the browser tab,
 code branch, and canonical page path. Only fragment paths, rendered FAQ data,
 and connection errors cross that channel; IMS/CSRF tokens never do. Tokens stay
-in panel memory and are sent only to the fixed author endpoints. DA's
+in panel memory and are supplied only to the fixed author endpoints and Adobe's
+Content Advisor. DA's
 parent-origin/window-validated token updates are used for subsequent requests.
 If access expires or is denied, reopen the panel/sign in and retry; requests
 never silently fall back to published content.
@@ -52,14 +53,23 @@ Opening the panel does not modify or publish authored content.
 The panel uses DA's Adobe-hosted Spectrum 2 tokens and Adobe Clean typography.
 **On This Page** appears first and lists unique Content Fragment paths currently
 referenced by the page, including missing or failed fragments. Traffic lights
-show green for loaded, amber for waiting/loading, and red for missing/failed
-fragments; each has a descriptive tooltip and accessible status label.
-Select a fragment name (or activate it with Enter/Space) to outline every block
+show actual publication state from the authenticated
+`GET /adobe/sites/cf/fragments/{uuid}` management API, independently of FAQ loading.
+This endpoint must also allow the panel's preview origin and `Authorization`
+header through CORS. Green means **Published**, amber means **Published
+(modified)** (author changes are not yet published), and red means **Not
+published** (new, draft, or unpublished). Waiting/checking states are amber.
+Metadata failures show **Publication unknown**, with a visible error; they never
+imply that a fragment is unpublished or prevent FAQ rendering.
+Each indicator has a descriptive tooltip and accessible status label.
+Select anywhere on a fragment row (or focus it and use Enter/Space) to outline every block
 referencing that path in the preview and scroll the first into view. Selecting
 another fragment moves the highlight and restores the previous outlines.
-Reloading the preview or unloading the panel clears it. Workspace can hide a
-closed panel without unloading it, so its highlight can remain until the next
-selection or preview reload. Highlighting does not edit or save authored content.
+The title is plain text; **Edit** remains a separate link and does not locate
+the fragment. Highlights begin fading at 6.5 seconds and clear at 7.5 seconds,
+including after preview block replacements. Reduced-motion users get no fade
+animation. Reloading the preview or unloading the panel also clears highlighting.
+Highlighting does not edit or save authored content.
 Highlight errors are shown below the table; Layout or Split view is required.
 **Author Connection** is collapsed by default. Expand it for the author hostname,
 service, authentication method, current page, request details, and troubleshooting.
@@ -69,6 +79,30 @@ the `mark-szulc` Experience Cloud organization route. Edit remains disabled unti
 a UUID is available. It does not save or publish content. Author-editor sign-in
 and permissions still apply. After saving edits, reload the preview to fetch
 the latest author content. Added or removed block references update the list.
+
+## Browse and place fragment paths
+
+**Browse with Content Advisor** loads Adobe's hosted Content Advisor, with its
+built-in **Content Fragments** experience enabled and selected. It uses the DA
+IMS token and the same author repository, initially browsing the FAQ folder.
+The organization must have Content Advisor access/provisioning for the panel's
+HTTPS preview origin. No custom fragment picker is used.
+
+Select one or more main-variation fragments and confirm the selection. If a
+one-column, path-based **Content Fragment** block is selected in DA, the panel
+adds the paths to that block, preserving existing paths and removing duplicates.
+It uses DA's live-document subscription and guarded `sendHTML` replacement:
+changes to the document or block selection during the write cause an explicit
+error instead of overwriting other content. Non-fragment blocks, question/answer
+blocks, and read-only documents are not replaced.
+
+With no block selected, the panel sends plain paths to the editor at the cursor
+using DA's `sendText` action. Authors choose the insertion point; no new block
+is automatically created. This legacy text action has no acknowledgement, so
+the panel reports that paths were sent, not that a save completed. Placement is
+an ordinary, undoable document edit; it does not explicitly save or publish.
+FAQ-model fragments are required by this block's renderer. Media assets and
+non-main variations are not inserted as fragment paths.
 
 Embedded authoring is detected through DA/Experience Workspace ancestors or
 referrers. Without a registered DA panel (for example a standalone preview or

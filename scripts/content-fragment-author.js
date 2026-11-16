@@ -14,7 +14,7 @@ const FAQ_QUERY = `query getFaqsByPaths($filter: FaqModelFilter) {
   }
 }`;
 
-function validatePaths(paths) {
+export function validatePaths(paths) {
   if (!Array.isArray(paths) || !paths.length || paths.some((path) => (
     typeof path !== 'string' || !/^\/content\/dam\/[A-Za-z0-9._/-]+$/.test(path)
     || path.split('/').slice(3).some((part) => !part || part === '.' || part === '..')
@@ -37,12 +37,23 @@ export function registerAuthorFragments(block, paths) {
   const referencingBlocks = (path) => blocksOnPage()
     .filter((element) => fragmentPaths.get(element)?.includes(path));
   let highlightedPath;
+  let fadeTimer;
+  let clearTimer;
+  let fading = false;
+  const clearHighlight = () => {
+    clearTimeout(fadeTimer);
+    clearTimeout(clearTimer);
+    highlightedPath = undefined;
+    fading = false;
+    highlights.clear();
+  };
   let lastPaths;
   const publish = (force = false) => {
     if (highlightedPath) {
       const blocks = referencingBlocks(highlightedPath);
       highlights.highlight(blocks);
-      if (!blocks.length) highlightedPath = undefined;
+      if (fading) highlights.fade();
+      if (!blocks.length) clearHighlight();
     }
     const fragments = blocksOnPage()
       .flatMap((element) => fragmentPaths.get(element) || []);
@@ -58,8 +69,7 @@ export function registerAuthorFragments(block, paths) {
     if (data?.type !== MESSAGE || data.response) return;
     if (data.action === 'inventory') publish(true);
     else if (data.action === 'clear-highlight') {
-      highlightedPath = undefined;
-      highlights.clear();
+      clearHighlight();
     } else if (data.action === 'highlight' && typeof data.requestId === 'string') {
       const reply = (result) => inventoryChannel.postMessage({
         type: MESSAGE, action: 'highlight', response: true, requestId: data.requestId, ...result,
@@ -68,8 +78,14 @@ export function registerAuthorFragments(block, paths) {
         validatePaths([data.path]);
         const blocks = referencingBlocks(data.path);
         if (!blocks.length) throw new Error('This fragment is no longer referenced in the preview. Reload the preview and try again.');
+        clearHighlight();
         highlightedPath = data.path;
         highlights.highlight(blocks);
+        fadeTimer = setTimeout(() => {
+          fading = true;
+          highlights.fade();
+        }, 6500);
+        clearTimer = setTimeout(clearHighlight, 7500);
         blocks[0].scrollIntoView({
           block: 'center',
           behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
@@ -86,7 +102,7 @@ export function registerAuthorFragments(block, paths) {
   });
   window.addEventListener('pagehide', () => {
     observer.disconnect();
-    highlights.clear();
+    clearHighlight();
     inventoryChannel.close();
     inventoryChannel = undefined;
   }, { once: true });
@@ -152,6 +168,34 @@ export async function fetchAuthorFaqs(paths, accessToken) {
     }]
   )));
   return [...new Set(paths)].filter((path) => byPath.has(path)).map((path) => byPath.get(path));
+}
+
+export async function fetchAuthorFragmentStatuses(items, accessToken) {
+  return Promise.all(items.map(async ({ _path: path, _id: id }) => {
+    try {
+      validatePaths([path]);
+      if (typeof accessToken !== 'string' || !accessToken.trim()) {
+        throw new Error('Sign in to DA and reopen the Content Fragment panel.');
+      }
+      if (typeof id !== 'string' || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id)) {
+        throw new Error('Invalid Content Fragment UUID.');
+      }
+      const response = await fetch(`${AUTHOR_ORIGIN}/adobe/sites/cf/fragments/${id}`, {
+        credentials: 'omit',
+        cache: 'no-store',
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!response.ok) throw new Error(`Publication status request returned HTTP ${response.status}. Check AEM access and CORS.`);
+      const fragment = await response.json();
+      if (fragment.id !== id || fragment.path !== path
+        || !['NEW', 'DRAFT', 'PUBLISHED', 'MODIFIED', 'UNPUBLISHED'].includes(fragment.status)) {
+        throw new Error('Invalid Content Fragment publication response.');
+      }
+      return { _path: path, publicationStatus: fragment.status };
+    } catch (error) {
+      return { _path: path, publicationStatus: 'UNKNOWN', publicationError: error.message };
+    }
+  }));
 }
 
 export function connectAuthorFaqs(pageUrl, getToken, onStatus) {

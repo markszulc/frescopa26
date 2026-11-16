@@ -26,7 +26,7 @@
         <p id="empty-state" class="description">Waiting for fragment references from the preview.</p>
         <div class="table-scroll" tabindex="0" role="region" aria-label="Content Fragments" hidden>
           <table>
-            <caption>Select a fragment name to highlight its blocks in the preview. Edit opens the new editor in a new tab.</caption>
+            <caption>Select a row to locate its blocks in the preview. The highlight fades after 7.5 seconds. Edit opens the editor in a new tab.</caption>
             <thead>
               <tr><th scope="col">Fragment</th><th scope="col">Status</th><th scope="col">Action</th></tr>
             </thead>
@@ -34,6 +34,16 @@
           </table>
         </div>
         <p id="highlight-status" class="description" role="status" aria-live="polite" hidden></p>
+        <p id="publication-status" class="description" role="status" aria-live="polite" hidden></p>
+      </section>
+
+      <section aria-labelledby="browse-heading">
+        <h2 id="browse-heading">Place a Content Fragment</h2>
+        <p class="description">Select a Content Fragment block to add a path, or place the cursor where you want to paste it.</p>
+        <button id="browse-fragments" type="button" disabled>Browse with Content Advisor</button>
+        <button id="close-advisor" type="button" hidden>Close browser</button>
+        <div id="content-advisor"></div>
+        <p id="insert-status" class="description" role="status" aria-live="polite"></p>
       </section>
 
       <details class="author-card">

@@ -195,25 +195,24 @@
 .content-fragment-panel .fragment-name {
   display: block;
   margin-bottom: 4px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--s2-blue-1000, #274dea);
-  font: inherit;
   font-weight: 700;
-  text-align: left;
-  text-decoration: underline;
-  text-underline-offset: 3px;
   overflow-wrap: anywhere;
+}
+
+.content-fragment-panel .fragment-row[tabindex] {
   cursor: pointer;
 }
 
-.content-fragment-panel .fragment-name:hover {
-  color: var(--s2-blue-1200, #1532ad);
+.content-fragment-panel .fragment-row[tabindex]:hover,
+.content-fragment-panel .fragment-row[tabindex]:focus-visible {
+  background: var(--s2-blue-100, #edf3fe);
 }
 
-.content-fragment-panel #highlight-status {
+.content-fragment-panel #highlight-status,
+.content-fragment-panel #publication-status,
+.content-fragment-panel #insert-status {
   margin-top: 12px;
+  overflow-wrap: anywhere;
 }
 
 .content-fragment-panel .fragment-path {
@@ -231,13 +230,30 @@
   color: var(--s2-yellow-1000, #9b7800);
 }
 
-.content-fragment-panel .fragment-status[data-state="Loaded"] {
+.content-fragment-panel .fragment-status[data-state="Published"] {
   color: var(--s2-green-1000, #126b38);
 }
 
 .content-fragment-panel .fragment-status[data-state="Failed"],
-.content-fragment-panel .fragment-status[data-state="Not found"] {
+.content-fragment-panel .fragment-status[data-state="Not found"],
+.content-fragment-panel .fragment-status[data-state="Not published"] {
   color: var(--s2-red-1000, #b40000);
+}
+
+.content-fragment-panel #browse-fragments,
+.content-fragment-panel #close-advisor {
+  padding: 8px 16px;
+  border: 1px solid var(--s2-gray-500, #8f8f8f);
+  border-radius: 20px;
+  background: var(--s2-gray-25, #fff);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.content-fragment-panel #content-advisor:not(:empty) {
+  height: 75vh;
+  min-height: 480px;
 }
 
 .content-fragment-panel button:disabled {
