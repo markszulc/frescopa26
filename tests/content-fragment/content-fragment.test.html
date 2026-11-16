@@ -48,18 +48,24 @@
         document.body.append(block);
         return block;
       };
-      const settled = (block, timeout = 5000) => new Promise((resolve, reject) => {
+      const waitFor = (condition, timeout = 5000) => new Promise((resolve, reject) => {
         const started = Date.now();
         const check = () => {
-          if (!block.dataset.faqState) resolve();
-          else if (Date.now() - started > timeout) reject(new Error('Author content did not settle'));
+          if (condition()) resolve();
+          else if (Date.now() - started > timeout) reject(new Error('Timed out waiting for the block'));
           else setTimeout(check, 20);
         };
         setTimeout(check, 0);
       });
-      // Simulates a browser without an AEM author sign-in, so blocks fall back to the panel.
-      const withoutSession = (handler) => async (url, options = {}) => (
-        options.credentials === 'include' ? { ok: false, status: 401 } : handler(url, options)
+      const settled = (block, timeout) => waitFor(() => !block.dataset.faqState, timeout);
+      const authorShown = (block) => waitFor(() => block.dataset.faqSource === 'author'
+        || Boolean(block.querySelector('button')));
+      const publishedItems = [{ _path: path, question: 'Published question?', answer: { plaintext: 'Published answer.' } }];
+      // Serves the published Edge Function endpoint, so tests can observe the author requests.
+      const withPublished = (handler, published = async () => ({
+        ok: true, json: async () => ({ items: publishedItems }),
+      })) => async (url, options = {}) => (
+        String(url).startsWith('https://www.frescopa.coffee/') ? published() : handler(url, options)
       );
       const test = async (name, run) => {
         const disconnect = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
@@ -783,7 +789,7 @@
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
         const block = fixture(`<div><div>${path}<br>${secondPath}<br>${path}</div></div>`);
         let requests = 0;
-        window.fetch = withoutSession(async (url, options) => {
+        window.fetch = withPublished(async (url, options) => {
           requests += 1;
           assert(options.headers.Authorization === 'Bearer test-ims-token', 'IMS bearer on every lookup');
           assert(options.credentials === 'omit', 'no cross-site session cookies');
@@ -800,7 +806,7 @@
           ] }) };
         });
         await Promise.all([decorate(block), decorate(block)]);
-        await settled(block);
+        await authorShown(block);
         assert(requests === 2, 'one GET per unique path, no token or GraphQL request');
         assert(JSON.stringify([...block.querySelectorAll('.faq-label')].map((el) => el.textContent)) === JSON.stringify(items.map((item) => item.question)), 'requested results in authored order');
       });
@@ -859,7 +865,7 @@
         try {
           for (const token of ['test-ims-token', 'refreshed-ims-token']) {
             accessToken = token;
-            window.fetch = withoutSession(async (url, options) => {
+            window.fetch = withPublished(async (url, options) => {
               assert(options.headers.Authorization === `Bearer ${token}`, 'current token on every request');
               return { ok: true, json: async () => ({ items: [
                 { ...authorItem(items[0], path), token: 'must-not-leak' },
@@ -867,7 +873,7 @@
             });
             const block = fixture(`<div><div>${path}</div></div>`);
             await decorate(block);
-            await settled(block);
+            await authorShown(block);
             assert(block.querySelectorAll('details').length === 1, 'author result rendered');
           }
           assert(messages.length > 0, 'observed real channel messages');
@@ -879,103 +885,89 @@
         }
       });
 
-      await test('missing IMS token prevents author requests and provides retry', async () => {
+      await test('missing IMS token keeps published content, and retry recovers when publish also fails', async () => {
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
         accessToken = '';
         let requests = 0;
-        window.fetch = withoutSession(async () => {
+        window.fetch = withPublished(async () => {
           requests += 1;
           throw new Error('Unexpected request');
         });
         const block = fixture(`<div><div>${path}</div></div>`);
         await decorate(block);
-        await settled(block);
-        assert(requests === 0, 'no anonymous author or edge request');
-        assert(block.textContent.includes('Sign in to DA'), 'actionable guidance');
-        assert(block.querySelector('button')?.textContent === 'Retry author connection', 'retry offered');
+        await waitFor(() => block.querySelector('.faq-source')?.title.includes('Sign in to DA'));
+        assert(requests === 0, 'no anonymous author request');
+        assert(block.querySelector('.faq-label')?.textContent === 'Published question?', 'published content stays visible');
+        const unavailable = fixture(`<div><div>${path}</div></div>`);
+        window.fetch = withPublished(async () => {
+          throw new Error('Unexpected request');
+        }, async () => ({ ok: false, status: 502 }));
+        await decorate(unavailable);
+        await authorShown(unavailable);
+        assert(unavailable.textContent.includes('Sign in to DA'), 'actionable guidance when nothing can be shown');
+        assert(unavailable.querySelector('button')?.textContent === 'Retry author connection', 'retry offered');
         accessToken = 'test-ims-token';
-        window.fetch = withoutSession(async () => ({
+        window.fetch = withPublished(async () => ({
           ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
         }));
-        block.querySelector('button').click();
-        await new Promise((resolve, reject) => {
-          const observer = new MutationObserver(() => {
-            if (block.querySelector('details')) {
-              clearTimeout(timer);
-              observer.disconnect();
-              resolve();
-            }
-          });
-          const timer = setTimeout(() => {
-            observer.disconnect();
-            reject(new Error('Retry did not render author FAQs'));
-          }, 3000);
-          observer.observe(block, { childList: true, subtree: true });
-        });
-        assert(block.querySelectorAll('details').length === 1, 'retry restored paths and rendered FAQs');
+        unavailable.querySelector('button').click();
+        await waitFor(() => unavailable.dataset.faqSource === 'author', 3000);
+        assert(unavailable.querySelectorAll('details').length === 1 && !unavailable.querySelector('.faq-source'), 'retry restored paths and rendered author FAQs');
       });
 
-      await test('author loading never blocks decoration, guides authors, and completes when the panel opens later', async (disconnect) => {
+      await test('authoring shows published content immediately with a subtle label, then swaps to author when the panel opens', async (disconnect) => {
         disconnect();
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
-        window.fetch = withoutSession(async () => ({
-          ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
-        }));
+        let authorRequests = 0;
+        window.fetch = withPublished(async () => {
+          authorRequests += 1;
+          return { ok: true, json: async () => ({ items: [authorItem(items[0], path)] }) };
+        });
         const block = fixture(`<div><div>${path}</div></div>`);
         const started = performance.now();
         await decorate(block);
-        assert(performance.now() - started < 1000 && block.dataset.faqState === 'loading', 'decorate returns while waiting for the panel');
-        await new Promise((resolve) => setTimeout(resolve, 2300));
-        assert(block.textContent.includes('Sign in to AEM author, or open the Content Fragment panel'), 'waiting guidance replaces indefinite loading');
-        assert(block.querySelector('button')?.textContent === 'Sign in to AEM author', 'sign-in action offered while waiting');
+        assert(performance.now() - started < 1000, 'decorate never waits for the panel');
+        await settled(block);
+        assert(block.dataset.faqSource === 'published' && authorRequests === 0, 'published source without the panel');
+        assert(block.querySelector('.faq-label')?.textContent === 'Published question?', 'published FAQs rendered');
+        const label = block.querySelector('.faq-source');
+        assert(label?.textContent === 'Published' && label.title.includes('Content Fragment panel'), 'subtle published label explains the source');
+        await decorate(block);
+        assert(block.querySelectorAll('.faq-source').length === 1, 're-decoration is idempotent');
         const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
         try {
-          await settled(block);
-          assert(block.querySelectorAll('details').length === 1, 'late panel connection rendered FAQs without retry');
+          await waitFor(() => block.dataset.faqSource === 'author');
+          assert(block.querySelector('.faq-label')?.textContent === items[0].question, 'author content replaces published');
+          assert(!block.querySelector('.faq-source') && authorRequests === 1, 'label removed once author content is shown');
         } finally {
           closePanel();
         }
-        const removed = fixture(`<div><div>${secondPath}</div></div>`);
-        await decorate(removed);
-        removed.remove();
-        await settled(removed, 3000);
-        assert(!removed.querySelector('button'), 'removed blocks stop waiting silently');
+        window.fetch = withPublished(async () => ({ ok: true, json: async () => ({ items: [] }) }), async () => ({
+          ok: true, json: async () => ({ items: [] }),
+        }));
+        const unpublished = fixture(`<div><div>${secondPath}</div></div>`);
+        await decorate(unpublished);
+        await settled(unpublished);
+        assert(unpublished.textContent.includes('not published yet') && unpublished.querySelector('.faq-source'), 'unpublished fragments explained without an error');
+        unpublished.remove();
+        await new Promise((resolve) => setTimeout(resolve, 1100));
+        assert(!unpublished.querySelector('button'), 'removed blocks stop waiting silently');
       });
 
-      await test('AEM author sign-in loads FAQs without the panel or DA token and shares results with the panel', async (disconnect) => {
-        disconnect();
+      await test('author results win even when they arrive before published content', async () => {
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
-        accessToken = '';
-        let signedIn = false;
-        let sessionRequests = 0;
-        window.fetch = async (url, options = {}) => {
-          assert(options.credentials === 'include' && !options.headers?.Authorization, 'cookie-only request, no DA token');
-          sessionRequests += 1;
-          return signedIn
-            ? { ok: true, json: async () => ({ items: [authorItem(items[0], path)] }) }
-            : { ok: false, status: 401 };
-        };
+        let releasePublished;
+        window.fetch = withPublished(async () => ({
+          ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
+        }), () => new Promise((resolve) => {
+          releasePublished = () => resolve({ ok: true, json: async () => ({ items: publishedItems }) });
+        }));
         const block = fixture(`<div><div>${path}</div></div>`);
         await decorate(block);
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        assert(block.dataset.faqState === 'loading' && sessionRequests === 1, 'signed-out session waits instead of failing');
-        signedIn = true;
-        window.dispatchEvent(new Event('focus'));
+        await waitFor(() => block.dataset.faqSource === 'author');
+        releasePublished();
         await settled(block);
-        assert(block.querySelectorAll('details').length === 1, 'returning after AEM sign-in renders without retry');
-        const reports = [];
-        const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, (text, details) => reports.push(details));
-        try {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          const connected = reports.find(({ state }) => state === 'connected');
-          assert(connected?.items[0]._id === id && connected.paths[0] === path, 'panel receives sanitized results for Edit links and status');
-        } finally {
-          closePanel();
-        }
-        const second = fixture(`<div><div>${path}</div></div>`);
-        await decorate(second);
-        await settled(second);
-        assert(second.querySelectorAll('details').length === 1 && sessionRequests === 3, 'signed-in pages load immediately');
+        assert(block.dataset.faqSource === 'author' && block.querySelector('.faq-label')?.textContent === items[0].question, 'late published response ignored');
       });
 
       await test('broker rejects invalid paths and does not answer other pages', async () => {
@@ -1032,7 +1024,7 @@
         }
       });
 
-      await test('author failures never fall back to the Edge Function', async () => {
+      await test('author failures keep published content visible and explain the error', async () => {
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://experience.adobe.com/' });
         const responses = [
           async () => ({ ok: true, json: async () => ({ items: 'invalid' }) }),
@@ -1043,15 +1035,15 @@
         ];
         for (const response of responses) {
           let requests = 0;
-          window.fetch = withoutSession(async () => {
+          window.fetch = withPublished(async () => {
             requests += 1;
             return response();
           });
           const block = fixture(`<div><div>${path}</div></div>`);
           await decorate(block);
-          await settled(block);
-          assert(requests === 1, 'no published-content fallback');
-          assert(block.querySelector('.faq-message')?.textContent.startsWith('Could not'), 'explicit author error');
+          await waitFor(() => block.querySelector('.faq-source')?.title.includes('could not be loaded'));
+          assert(requests === 1, 'one author attempt');
+          assert(block.dataset.faqSource === 'published' && block.querySelector('.faq-label')?.textContent === 'Published question?', 'published content kept');
           assert(!block.dataset.faqState, 'loading state cleared');
         }
       });

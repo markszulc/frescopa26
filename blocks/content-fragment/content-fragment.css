@@ -1,1 +1,16 @@
 @import url('../faq-list-by-sku/faq-list-by-sku.css');
+
+/* Authoring only: a quiet marker that the FAQs come from AEM publish, not author. */
+.content-fragment .faq-source {
+  width: fit-content;
+  margin: 0 0 0.25rem auto;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  cursor: help;
+}

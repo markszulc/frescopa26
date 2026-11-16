@@ -43,48 +43,111 @@ export function readPaths(block) {
   return [...new Set(text.join('\n').trim().split(/\s+/).filter(Boolean))];
 }
 
-async function renderFaqs(block, paths, load, retry) {
-  block.dataset.faqState = 'loading';
-  message(block, 'Loading FAQs...');
+function restorePaths(block, paths) {
+  block.replaceChildren(...paths.map((path) => {
+    const row = document.createElement('div');
+    const cell = document.createElement('div');
+    cell.textContent = path;
+    row.append(cell);
+    return row;
+  }));
+}
 
-  try {
-    const items = await load();
-    if (!items.length) {
-      message(block, 'No FAQs found for these content fragments.');
-      return;
-    }
+function showError(block, text, error, retry) {
+  message(block, text);
+  if (!isAuthoringContext()) return;
+  const guidance = document.createElement('p');
+  guidance.textContent = error.message;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = 'Retry author connection';
+  button.addEventListener('click', retry, { once: true });
+  block.append(guidance, button);
+}
+
+/**
+ * Renders FAQs and marks their source. Published content in authoring gets a
+ * subtle label, as it may not match the author's current fragments.
+ */
+function showFaqs(block, items, source) {
+  if (!items.length) {
+    message(block, source === 'published'
+      ? 'These content fragments are not published yet. Open the Content Fragment panel to see author content.'
+      : 'No FAQs found for these content fragments.');
+  } else {
     block.replaceChildren(...toRows(items));
     decorateFaqs(block);
+  }
+  if (source) block.dataset.faqSource = source;
+  if (source === 'published') {
+    const label = document.createElement('p');
+    label.className = 'faq-source';
+    label.textContent = 'Published';
+    label.title = 'Showing published content. Open the Content Fragment panel to see the latest author content.';
+    (block.querySelector(':scope > .faq-items') || block).prepend(label);
+  }
+}
+
+async function renderPublished(block, paths) {
+  block.dataset.faqState = 'loading';
+  message(block, 'Loading FAQs...');
+  try {
+    showFaqs(block, await fetchPublishedFaqs(paths));
   } catch (error) {
-    if (error.name === 'AuthorRequestCancelled') return;
     // eslint-disable-next-line no-console
     console.warn('content-fragment: could not load FAQs', error);
     message(block, 'Could not load FAQs for these content fragments.');
-    if (isAuthoringContext()) {
-      const guidance = document.createElement('p');
-      guidance.textContent = error.message;
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.textContent = 'Retry author connection';
-      button.addEventListener('click', () => {
-        block.replaceChildren(...paths.map((path) => {
-          const row = document.createElement('div');
-          const cell = document.createElement('div');
-          cell.textContent = path;
-          row.append(cell);
-          return row;
-        }));
-        retry();
-      }, { once: true });
-      block.append(guidance, button);
-    }
   } finally {
     delete block.dataset.faqState;
   }
 }
 
+/**
+ * Authoring: show published content straight away (no sign-in needed), then
+ * swap to author content whenever the Content Fragment panel brokers it.
+ */
+async function renderAuthoring(block, paths, retry) {
+  block.dataset.faqState = 'loading';
+  message(block, 'Loading FAQs...');
+  const { registerAuthorFragments, requestAuthorFaqs } = await import('../../scripts/content-fragment-author.js');
+  registerAuthorFragments(block, paths);
+  let authorLoaded = false;
+  let publishedError;
+
+  const published = fetchPublishedFaqs(paths).then((items) => {
+    if (!authorLoaded) showFaqs(block, items, 'published');
+  }, (error) => {
+    publishedError = error;
+    // eslint-disable-next-line no-console
+    console.warn('content-fragment: could not load published FAQs', error);
+    if (!authorLoaded) {
+      message(block, 'Could not load published FAQs. Open the Content Fragment panel to load author content.');
+      block.dataset.faqSource = 'published';
+    }
+  }).finally(() => { delete block.dataset.faqState; });
+
+  requestAuthorFaqs(paths, window.location.href, { isActive: () => block.isConnected })
+    .then((items) => {
+      authorLoaded = true;
+      showFaqs(block, items, 'author');
+    }, async (error) => {
+      if (error.name === 'AuthorRequestCancelled') return;
+      // eslint-disable-next-line no-console
+      console.warn('content-fragment: could not load author FAQs', error);
+      await published;
+      if (publishedError) {
+        showError(block, 'Could not load FAQs for these content fragments.', error, retry);
+        return;
+      }
+      // Keep the published content visible and explain why author content is missing.
+      const label = block.querySelector('.faq-source');
+      if (label) label.title = `Showing published content. Author content could not be loaded: ${error.message}`;
+    });
+}
+
 export default async function decorate(block) {
-  if (block.querySelector(':scope > .faq-items') || block.dataset.faqState) return;
+  if (block.querySelector(':scope > .faq-items') || block.dataset.faqState
+    || block.dataset.faqSource) return;
 
   const hasQaRows = [...block.children].every((row) => row.children.length >= 2);
   if (block.children.length && hasQaRows) {
@@ -98,26 +161,15 @@ export default async function decorate(block) {
     return;
   }
 
-  block.dataset.faqState = 'loading';
   if (!isAuthoringContext()) {
-    await renderFaqs(block, paths, () => fetchPublishedFaqs(paths));
+    await renderPublished(block, paths);
     return;
   }
-
-  const { AUTHOR_ORIGIN, loadAuthorFaqs, registerAuthorFragments } = await import('../../scripts/content-fragment-author.js');
-  registerAuthorFragments(block, paths);
-  // Author content loads in the background so it never holds back the section (and LCP).
-  renderFaqs(block, paths, () => loadAuthorFaqs(paths, {
-    isActive: () => block.isConnected,
-    onWaiting: () => {
-      if (!block.dataset.faqState) return;
-      message(block, 'Sign in to AEM author, or open the Content Fragment panel, to load FAQs.');
-      const signIn = document.createElement('button');
-      signIn.type = 'button';
-      signIn.textContent = 'Sign in to AEM author';
-      // Workspace blocks link navigation in the preview, so open the sign-in explicitly.
-      signIn.addEventListener('click', () => window.open(`${AUTHOR_ORIGIN}/ui`, '_blank', 'noopener'));
-      block.append(signIn);
-    },
-  }), () => decorate(block));
+  // Not awaited: author content arrives whenever the panel opens, so it must
+  // never hold back the section (and LCP).
+  renderAuthoring(block, paths, () => {
+    delete block.dataset.faqSource;
+    restorePaths(block, paths);
+    decorate(block);
+  });
 }

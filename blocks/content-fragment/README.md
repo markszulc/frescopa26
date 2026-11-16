@@ -11,8 +11,10 @@ fragment path per line in the cell (separate paragraphs or line breaks work):
 
 Paths may be together in one cell or in separate rows. Duplicate
 paths are requested only once. In Experience Workspace or DA (`da.live`,
-including its preview subdomains), the block uses the **Content Fragment** DA
-panel to fetch directly from AEM author in the browser. The panel obtains DA's
+including its preview subdomains), the block first shows **published** content
+from the Edge Function (no sign-in needed), then switches to AEM author content
+when the **Content Fragment** DA panel is open. The panel fetches directly from
+AEM author in the browser. The panel obtains DA's
 in-memory IMS token through the DA SDK and sends `Authorization: Bearer ...`
 to `https://author-p137825-e1511252.adobeaemcloud.com`. It omits session cookies,
 so no SameSite cookie change is needed.
@@ -35,8 +37,9 @@ and connection errors cross that channel; IMS/CSRF tokens never do. Tokens stay
 in panel memory and are supplied only to the fixed author endpoints and Adobe's
 Content Advisor. DA's
 parent-origin/window-validated token updates are used for subsequent requests.
-If access expires or is denied, reopen the panel/sign in and retry; requests
-never silently fall back to published content.
+If access expires or is denied, the block keeps showing published content and
+its **Published** label tooltip explains the author error; reopen the panel or
+sign in to DA to load author content.
 
 ## Enable author access in Workspace
 
@@ -52,24 +55,20 @@ Use the **experience** column, not **format**, for `fullsize-dialog`. Reload
 Workspace after changing the library registration.
 
 Open the page in DA canvas using Layout or Split view and select **Content
-Fragment** from the tool panel. In Workspace, blocks first load FAQs with the
-browser's **AEM author sign-in** (the AEM `login-token` cookie, sent with
-`credentials: 'include'` to the author's GET lookup API). This works without the
-panel and uses each author's own AEM permissions. If there is no sign-in, the
-panel brokers requests with the DA token instead.
-Author loading never delays page rendering: blocks show **Loading FAQs...**, then,
-after two seconds without either connection, offer **Sign in to AEM author**
-(which opens the author in a new tab) and ask authors to open the panel. They keep
-waiting and render automatically when the panel opens or when the author returns
-to the Workspace tab after signing in. Results loaded with the sign-in are shared
-with the panel (UUIDs and fields only, never credentials), so its list, Edit links
-and publication status still work.
-Cookie loading needs third-party cookies for the AEM author host (Safari and
-Firefox block them by default), and AEM CORS must allow credentials for the
-preview origin (`supportscredentials: true`, with an explicit origin match).
-The panel and preview must use the same code branch/origin. If an author request
-fails, select **Retry author connection** in the block. The panel shows
-connection/fetch errors explicitly.
+Fragment** from the tool panel.
+
+Loading never delays page rendering. In Workspace, each block immediately loads
+**published** FAQs from `GET /faq-data-by-path` (the same Edge Function the live
+site uses) and shows a small, muted **Published** label above them. Its tooltip
+explains that the content may not match the latest author changes. When the
+Content Fragment panel is open (now or later), the block swaps to author content
+and removes the label. Author results always win, even if they arrive before the
+published response. Fragments that are not yet published show "not published
+yet" with the label, rather than an error. If author loading fails, published
+content stays visible and the label tooltip shows the error. If both fail, the
+block shows the error with **Retry author connection**. The live site never
+shows the label.
+The panel and preview must use the same code branch/origin.
 Opening the panel does not modify the DA document or publish content. It records
 observed page usage in fragment metadata as described below.
 
@@ -227,9 +226,9 @@ rather than attempting anonymous or cookie-based requests.
 In all other contexts, the block calls
 `https://www.frescopa.coffee/faq-data-by-path` using one `path` query parameter per
 fragment. This Edge Function endpoint must allow cross-origin requests from
-preview and local development origins. Author results are limited to requested
-paths and displayed in authored order; author request failures show an error
-instead of falling back to published content.
+preview, `*.da.live` and local development origins. Author results are limited to
+requested paths and displayed in authored order; in Workspace, author request
+failures keep published content visible (see above).
 
 The returned `items` contain `question` and `answer.plaintext`. FAQs use the same
 renderer and styles as **FAQ List By SKU**: the first answer is open initially,

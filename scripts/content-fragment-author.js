@@ -15,16 +15,6 @@ export function validatePaths(paths) {
 
 let inventoryChannel;
 const fragmentPaths = new WeakMap();
-// Results loaded by blocks with the author's AEM sign-in, shared with the panel.
-const loadedFaqs = new Map();
-let publishInventory;
-
-export function recordAuthorFaqs(paths, items) {
-  paths.forEach((path) => {
-    loadedFaqs.set(path, items.find(({ _path: itemPath }) => itemPath === path) || null);
-  });
-  publishInventory?.();
-}
 
 export function registerAuthorFragments(block, paths) {
   validatePaths(paths);
@@ -58,16 +48,13 @@ export function registerAuthorFragments(block, paths) {
     const fragments = blocksOnPage()
       .flatMap((element) => fragmentPaths.get(element) || []);
     const pathsOnPage = [...new Set(fragments)];
-    const loadedPaths = pathsOnPage.filter((path) => loadedFaqs.has(path));
-    const items = loadedPaths.map((path) => loadedFaqs.get(path)).filter(Boolean);
-    const snapshot = JSON.stringify([pathsOnPage, loadedPaths, items]);
+    const snapshot = JSON.stringify(pathsOnPage);
     if (!force && snapshot === lastPaths) return;
     lastPaths = snapshot;
     inventoryChannel.postMessage({
-      type: MESSAGE, action: 'inventory', response: true, paths: pathsOnPage, loadedPaths, items,
+      type: MESSAGE, action: 'inventory', response: true, paths: pathsOnPage,
     });
   };
-  publishInventory = publish;
   inventoryChannel.onmessage = ({ data }) => {
     if (data?.type !== MESSAGE || data.response) return;
     if (data.action === 'inventory') publish(true);
@@ -108,7 +95,6 @@ export function registerAuthorFragments(block, paths) {
     clearHighlight();
     inventoryChannel.close();
     inventoryChannel = undefined;
-    publishInventory = undefined;
   }, { once: true });
   publish();
 }
@@ -133,18 +119,21 @@ export async function fetchAuthorCsrfToken(accessToken) {
   return token;
 }
 
-async function lookupAuthorFaqs(paths, auth) {
+export async function fetchAuthorFaqs(paths, accessToken) {
+  validatePaths(paths);
+  if (typeof accessToken !== 'string' || !accessToken.trim()) {
+    throw new Error('Sign in to DA and reopen the Content Fragment panel.');
+  }
   const items = await Promise.all([...new Set(paths)].map(async (path) => {
     const query = new URLSearchParams({ path, limit: '1' });
     const response = await fetch(`${AUTHOR_ORIGIN}/adobe/sites/cf/fragments?${query}`, {
       method: 'GET',
+      credentials: 'omit',
       cache: 'no-store',
-      ...auth,
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     if (!response.ok) {
-      const error = new Error(`Author FAQ request returned HTTP ${response.status}. Check DA sign-in and AEM permissions.`);
-      error.status = response.status;
-      throw error;
+      throw new Error(`Author FAQ request returned HTTP ${response.status}. Check DA sign-in and AEM permissions.`);
     }
     const json = await response.json();
     if (!Array.isArray(json?.items)) throw new Error('Invalid author FAQ response.');
@@ -177,27 +166,6 @@ async function lookupAuthorFaqs(paths, auth) {
     };
   }));
   return items.filter(Boolean);
-}
-
-export async function fetchAuthorFaqs(paths, accessToken) {
-  validatePaths(paths);
-  if (typeof accessToken !== 'string' || !accessToken.trim()) {
-    throw new Error('Sign in to DA and reopen the Content Fragment panel.');
-  }
-  return lookupAuthorFaqs(paths, {
-    credentials: 'omit',
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-}
-
-/** Reads with the browser's AEM author sign-in cookie; no DA token is involved. */
-export async function fetchAuthorFaqsWithSession(paths) {
-  validatePaths(paths);
-  return lookupAuthorFaqs(paths, { credentials: 'include' });
-}
-
-export function isAuthorSessionError(error) {
-  return error instanceof TypeError || [401, 403].includes(error?.status);
 }
 
 export async function fetchAuthorFragmentStatuses(items, accessToken) {
@@ -238,22 +206,6 @@ export function connectAuthorFaqs(pageUrl, getToken, onStatus) {
       try {
         if (data.paths.length) validatePaths(data.paths);
         onStatus('', { state: 'inventory', paths: data.paths });
-        const loadedPaths = Array.isArray(data.loadedPaths) ? data.loadedPaths : [];
-        const loadedItems = Array.isArray(data.items) ? data.items : [];
-        if (loadedPaths.length) {
-          validatePaths(loadedPaths);
-          if (loadedItems.some(({
-            _path: itemPath, _id: itemId, question, answer,
-          } = {}) => (
-            !loadedPaths.includes(itemPath) || typeof itemId !== 'string'
-            || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(itemId)
-            || typeof question !== 'string' || typeof answer?.plaintext !== 'string'))) {
-            throw new Error('Invalid FAQ content from the preview.');
-          }
-          onStatus(`Connected with your AEM author sign-in. Loaded ${loadedItems.length} FAQs.`, {
-            state: 'connected', paths: loadedPaths, items: loadedItems,
-          });
-        }
       } catch (error) {
         onStatus(error.message, { state: 'error' });
       }
@@ -385,48 +337,5 @@ export function requestAuthorFaqs(paths, pageUrl = window.location.href, {
       }
     };
     connect();
-  });
-}
-
-/**
- * Loads author FAQs with the browser's AEM author sign-in, falling back to the
- * Content Fragment panel broker. While waiting, returning to the tab (for example
- * after signing in to AEM author elsewhere) retries the sign-in.
- */
-export async function loadAuthorFaqs(paths, { onWaiting = () => {}, isActive = () => true } = {}) {
-  try {
-    const items = await fetchAuthorFaqsWithSession(paths);
-    recordAuthorFaqs(paths, items);
-    return items;
-  } catch (error) {
-    if (!isAuthorSessionError(error)) throw error;
-  }
-  let settled = false;
-  return new Promise((resolve, reject) => {
-    let retry;
-    const finish = (error, items) => {
-      if (settled) return;
-      settled = true;
-      document.removeEventListener('visibilitychange', retry);
-      window.removeEventListener('focus', retry);
-      if (error) reject(error);
-      else resolve(items);
-    };
-    retry = () => {
-      if (settled || document.visibilityState !== 'visible' || !isActive()) return;
-      fetchAuthorFaqsWithSession(paths).then((items) => {
-        if (settled) return;
-        recordAuthorFaqs(paths, items);
-        finish(null, items);
-      }, (error) => {
-        if (!isAuthorSessionError(error)) finish(error);
-      });
-    };
-    document.addEventListener('visibilitychange', retry);
-    window.addEventListener('focus', retry);
-    requestAuthorFaqs(paths, window.location.href, {
-      onWaiting,
-      isActive: () => !settled && isActive(),
-    }).then((items) => finish(null, items), (error) => finish(error));
   });
 }
