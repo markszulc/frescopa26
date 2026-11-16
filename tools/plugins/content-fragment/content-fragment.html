@@ -14,15 +14,32 @@
     <main>
       <header>
         <p class="eyebrow">AEM CONTENT</p>
-        <h1>Content fragments</h1>
-        <p class="description">Preview author content and open fragments for editing without leaving Workspace.</p>
+        <h1>Content Fragments</h1>
+        <p class="description">Preview and edit the Content Fragments referenced on this page.</p>
       </header>
 
-      <section class="author-card" aria-labelledby="author-heading">
+      <section aria-labelledby="fragments-heading">
         <div class="section-heading">
-          <h2 id="author-heading">Author connection</h2>
-          <span id="connection-state" class="connection-state" data-state="waiting">Connecting</span>
+          <h2 id="fragments-heading">On This Page</h2>
+          <span id="fragment-count" class="count" aria-label="Fragment count">0</span>
         </div>
+        <p id="empty-state" class="description">Waiting for fragment references from the preview.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Content Fragments" hidden>
+          <table>
+            <caption>Edit opens the new Content Fragment editor in a new tab.</caption>
+            <thead>
+              <tr><th scope="col">Fragment</th><th scope="col">Status</th><th scope="col">Action</th></tr>
+            </thead>
+            <tbody id="fragments"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <details class="author-card">
+        <summary>
+          <h2>Author Connection</h2>
+          <span id="connection-state" class="connection-state" data-state="waiting">Connecting</span>
+        </summary>
         <dl>
           <dt>Instance</dt>
           <dd><a id="author-instance" target="_blank" rel="noopener noreferrer"></a></dd>
@@ -34,30 +51,12 @@
           <dd id="page-path">Resolving page...</dd>
         </dl>
         <p id="status" role="status" aria-live="polite">Connecting to Experience Workspace...</p>
-      </section>
-
-      <section aria-labelledby="fragments-heading">
-        <div class="section-heading">
-          <h2 id="fragments-heading">On this page</h2>
-          <span id="fragment-count" class="count" aria-label="Fragment count">0</span>
-        </div>
-        <p id="empty-state" class="description">Waiting for fragment references from the preview.</p>
-        <div class="table-scroll" tabindex="0" role="region" aria-label="Content fragments" hidden>
-          <table>
-            <caption>Fragments referenced on this page. Edit links open AEM author in a new tab.</caption>
-            <thead>
-              <tr><th scope="col">Fragment</th><th scope="col">Status</th><th scope="col">Action</th></tr>
-            </thead>
-            <tbody id="fragments"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <aside class="help">
-        <h2>Working with author content</h2>
-        <p>Keep this panel open in Layout or Split view. If the preview shows an error, select <strong>Retry author connection</strong> in the block.</p>
-        <p>Edits open in a separate tab and require AEM author access. After saving, reload the preview to see your changes.</p>
-      </aside>
+        <aside class="help">
+          <h2>Working with author content</h2>
+          <p>Keep this panel open in Layout or Split view. If the preview shows an error, select <strong>Retry author connection</strong> in the block.</p>
+          <p>Edits open in a separate tab and require AEM author access. After saving, reload the preview to see your changes.</p>
+        </aside>
+      </details>
     </main>
   </body>
 </html>

@@ -18,14 +18,28 @@ export default function createPanel(doc = document) {
       location.textContent = path;
       content.append(name, location);
       const status = doc.createElement('td');
-      status.textContent = fragment.status;
+      const light = doc.createElement('span');
+      light.className = 'fragment-status';
+      light.dataset.state = fragment.status;
+      light.setAttribute('role', 'img');
+      light.setAttribute('aria-label', fragment.status);
+      light.title = fragment.status;
+      status.append(light);
       const action = doc.createElement('td');
-      const edit = doc.createElement('a');
-      edit.href = `${AUTHOR_ORIGIN}/editor.html${path}`;
+      const edit = doc.createElement(fragment.id ? 'a' : 'button');
       edit.textContent = 'Edit';
-      edit.target = '_blank';
-      edit.rel = 'noopener noreferrer';
-      edit.setAttribute('aria-label', `Edit ${name.textContent} in AEM author (opens in a new tab)`);
+      if (fragment.id) {
+        const editor = new URL('https://experience.adobe.com/');
+        editor.searchParams.set('repo', new URL(AUTHOR_ORIGIN).hostname);
+        editor.hash = `/@mark-szulc/aem/cf/editor/editor/${encodeURIComponent(fragment.id)}`;
+        edit.href = editor.href;
+        edit.target = '_blank';
+        edit.rel = 'noopener noreferrer';
+        edit.setAttribute('aria-label', `Edit ${name.textContent} in the Content Fragment editor (opens in a new tab)`);
+      } else {
+        edit.disabled = true;
+        edit.title = 'Fragment UUID unavailable. Load the fragment successfully to enable editing.';
+      }
       action.append(edit);
       row.append(content, status, action);
       return row;
@@ -46,7 +60,7 @@ export default function createPanel(doc = document) {
       paths.forEach((path) => {
         if (!fragments.has(path)) fragments.set(path, { status: 'Waiting' });
       });
-      doc.querySelector('#empty-state').textContent = 'No content fragments referenced on this page.';
+      doc.querySelector('#empty-state').textContent = 'No Content Fragments referenced on this page.';
     } else {
       if (text) doc.querySelector('#status').textContent = text;
       if (state) {
@@ -56,14 +70,17 @@ export default function createPanel(doc = document) {
           waiting: 'Waiting', loading: 'Loading', connected: 'Connected', error: 'Connection error',
         }[state];
       }
-      const byPath = new Map(items.map(({ _path: path, question }) => [path, question]));
+      const byPath = new Map(items.map(({ _path: path, _id: id, question }) => (
+        [path, { id, question }]
+      )));
       paths.forEach((path) => {
         if (!fragments.has(path) && state !== 'loading') return;
         const fragment = fragments.get(path) || {};
         let status = { loading: 'Loading', error: 'Failed' }[state];
         if (state === 'connected') status = byPath.has(path) ? 'Loaded' : 'Not found';
         fragments.set(path, {
-          question: byPath.get(path) || fragment.question,
+          id: byPath.get(path)?.id || (state === 'connected' ? undefined : fragment.id),
+          question: byPath.get(path)?.question || fragment.question,
           status,
         });
       });

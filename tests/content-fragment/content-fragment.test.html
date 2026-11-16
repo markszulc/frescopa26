@@ -11,7 +11,7 @@
     <script type="module">
       import decorate, { isAuthoringContext } from '../../blocks/content-fragment/content-fragment.js';
       import decorateSku from '../../blocks/faq-list-by-sku/faq-list-by-sku.js';
-      import { connectAuthorFaqs, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
+      import { connectAuthorFaqs, fetchAuthorFaqs, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
       import createPreviewChannel from '../../scripts/experimentation-channel.js';
       import createPanel from '../../tools/plugins/content-fragment/panel.js';
 
@@ -22,9 +22,10 @@
       let accessToken = 'test-ims-token';
       const path = '/content/dam/frescopa/en/faqs/do-i-have-to-buy-frescopa-pods';
       const secondPath = '/content/dam/frescopa/en/faqs/is-it-a-chore-to-clean';
+      const id = '043d7fee-d38d-4b46-951c-67ad0e0177f6';
       const items = [
-        { question: 'First question?', answer: { plaintext: 'First answer.' } },
-        { question: 'Second question?', answer: { plaintext: '<b>Plain text answer.</b>' } },
+        { _id: id, question: 'First question?', answer: { plaintext: 'First answer.' } },
+        { _id: 'de0c30b0-4745-47fa-b55d-d605cc4f5dde', question: 'Second question?', answer: { plaintext: '<b>Plain text answer.</b>' } },
       ];
       const assert = (condition, message) => {
         if (!condition) throw new Error(message);
@@ -70,28 +71,36 @@
       await test('panel shows instance, live fragment states and safe editor links', async () => {
         const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
         const { showStatus, setPage } = createPanel(doc);
+        const connection = doc.querySelector('details.author-card');
+        assert(!connection.open && connection.querySelector('summary').textContent.includes('Author Connection'), 'connection troubleshooting collapsed by default');
+        assert(Boolean(doc.querySelector('#fragments-heading').compareDocumentPosition(connection) & Node.DOCUMENT_POSITION_FOLLOWING), 'fragment list before connection details');
         setPage('https://main--frescopa26--markszulc.preview.da.live/drafts/fragmenttest');
         assert(doc.querySelector('#author-instance').href === 'https://author-p137825-e1511252.adobeaemcloud.com/', 'author instance link');
         assert(doc.querySelector('#page-path').textContent === '/drafts/fragmenttest', 'current page');
         showStatus('', { state: 'inventory', paths: [path, secondPath] });
         assert(doc.querySelectorAll('tbody tr').length === 2, 'references listed before fetching');
+        assert(doc.querySelector('tbody button').disabled && !doc.querySelector('tbody a'), 'no editor link without UUID');
+        assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === 'Waiting', 'accessible waiting state');
         showStatus('Loading', { state: 'loading', paths: [path, secondPath] });
+        assert(doc.querySelector('.fragment-status').dataset.state === 'Loading', 'loading traffic light');
         showStatus('Connected', {
           state: 'connected', paths: [path, secondPath],
-          items: [{ _path: path, question: '<img src=x onerror=alert(1)>' }],
+          items: [{ _path: path, _id: id, question: '<img src=x onerror=alert(1)>' }],
         });
         assert(doc.querySelector('#connection-state').textContent === 'Connected', 'actual connection state');
         const rows = doc.querySelectorAll('tbody tr');
-        assert(rows[0].children[1].textContent === 'Loaded', 'loaded result');
-        assert(rows[1].children[1].textContent === 'Not found', 'missing result still listed');
+        assert(rows[0].children[1].textContent === '' && rows[0].querySelector('.fragment-status').getAttribute('aria-label') === 'Loaded', 'traffic light replaces visible Loaded text accessibly');
+        assert(rows[0].querySelector('.fragment-status').title === 'Loaded', 'status tooltip');
+        assert(rows[1].querySelector('.fragment-status').dataset.state === 'Not found', 'missing result still listed');
+        assert(rows[1].querySelector('button').disabled, 'missing result cannot open incorrect editor');
         assert(!rows[0].querySelector('img'), 'fragment title treated as text');
         const edit = rows[0].querySelector('a');
-        assert(edit.href === `https://author-p137825-e1511252.adobeaemcloud.com/editor.html${path}`, 'direct fragment editor URL');
+        assert(edit.href === `https://experience.adobe.com/?repo=author-p137825-e1511252.adobeaemcloud.com#/@mark-szulc/aem/cf/editor/editor/${id}`, 'new editor URL uses actual fragment UUID');
         assert(edit.target === '_blank' && edit.rel.includes('noopener'), 'separate editor tab');
         assert(edit.getAttribute('aria-label').includes('opens in a new tab'), 'accessible action label');
         showStatus('Denied', { state: 'error', paths: [path] });
         assert(doc.querySelector('#connection-state').textContent === 'Connection error', 'error not shown as connected');
-        assert(doc.querySelector('tbody tr').children[1].textContent === 'Failed', 'failed fragment state');
+        assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === 'Failed', 'accessible failed traffic light');
         showStatus('', { state: 'inventory', paths: [secondPath] });
         assert(doc.querySelectorAll('tbody tr').length === 1, 'removed references disappear');
         showStatus('', { state: 'inventory', paths: [] });
@@ -144,6 +153,7 @@
           assert(options.headers['CSRF-Token'] === 'test-csrf-token', 'CSRF token on POST');
           const { query, variables } = JSON.parse(options.body);
           assert(query.includes('faqList(filter: $filter)'), 'GraphQL filter applied');
+          assert(query.includes('_id'), 'fragment UUID requested');
           assert(JSON.stringify(variables.filter._path) === JSON.stringify({
             _logOp: 'OR',
             _expressions: [path, secondPath].map((value) => ({ value, _operator: 'EQUALS' })),
@@ -157,6 +167,28 @@
         await Promise.all([decorate(block), decorate(block)]);
         assert(requests === 2, 'one token request and one GraphQL request');
         assert(JSON.stringify([...block.querySelectorAll('.faq-label')].map((el) => el.textContent)) === JSON.stringify(items.map((item) => item.question)), 'requested results in authored order');
+      });
+
+      await test('author results retain UUIDs and reject missing or malformed UUIDs', async () => {
+        for (const uuid of [id, undefined, 'not-a-uuid']) {
+          window.fetch = async (url) => {
+            if (String(url).endsWith('/libs/granite/csrf/token.json')) {
+              return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
+            }
+            return { ok: true, json: async () => ({ data: { faqList: { items: [
+              { ...items[0], _path: path, _id: uuid },
+            ] } } }) };
+          };
+          let result;
+          let failure;
+          try {
+            result = await fetchAuthorFaqs([path], accessToken);
+          } catch (error) {
+            failure = error;
+          }
+          if (uuid === id) assert(result?.[0]._id === id && !failure, 'UUID retained in sanitized result');
+          else assert(failure?.message === 'Invalid author FAQ response.', 'invalid UUID reported explicitly');
+        }
       });
 
       await test('refreshed token is used without sending credentials over the preview channel', async () => {

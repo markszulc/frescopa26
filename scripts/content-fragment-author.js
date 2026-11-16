@@ -6,6 +6,7 @@ const FAQ_QUERY = `query getFaqsByPaths($filter: FaqModelFilter) {
   faqList(filter: $filter) {
     items {
       _path
+      _id
       question
       answer { plaintext }
     }
@@ -99,14 +100,21 @@ export async function fetchAuthorFaqs(paths, accessToken) {
   const items = json?.data?.faqList?.items;
   if (json?.errors?.length || !Array.isArray(items) || items.some((item) => {
     if (!item) return true;
-    const { _path: path, question, answer } = item;
+    const {
+      _path: path, _id: id, question, answer,
+    } = item;
     return typeof path !== 'string' || typeof question !== 'string'
+      || typeof id !== 'string' || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id)
       || typeof answer?.plaintext !== 'string';
   })) {
     throw new Error('Invalid author FAQ response.');
   }
-  const byPath = new Map(items.map(({ _path: path, question, answer }) => (
-    [path, { _path: path, question, answer: { plaintext: answer.plaintext } }]
+  const byPath = new Map(items.map(({
+    _path: path, _id: id, question, answer,
+  }) => (
+    [path, {
+      _path: path, _id: id, question, answer: { plaintext: answer.plaintext },
+    }]
   )));
   return [...new Set(paths)].filter((path) => byPath.has(path)).map((path) => byPath.get(path));
 }

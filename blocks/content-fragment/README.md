@@ -50,11 +50,16 @@ connection** in the block. The panel shows connection/fetch errors explicitly.
 Opening the panel does not modify or publish authored content.
 
 The panel uses DA's Adobe-hosted Spectrum 2 tokens and Adobe Clean typography.
-Its connection card identifies the author hostname, service, authentication
-method, current page, and actual request state (waiting/loading/connected/error).
-The fragment table lists unique paths currently referenced by the page, including
-missing or failed fragments. Each **Edit** link opens the AEM content fragment
-editor in a new tab; it does not save or publish content. Author-editor sign-in
+**On This Page** appears first and lists unique Content Fragment paths currently
+referenced by the page, including missing or failed fragments. Traffic lights
+show green for loaded, amber for waiting/loading, and red for missing/failed
+fragments; each has a descriptive tooltip and accessible status label.
+**Author Connection** is collapsed by default. Expand it for the author hostname,
+service, authentication method, current page, request details, and troubleshooting.
+Each enabled **Edit** link opens the new Experience Cloud Content Fragment editor
+in a new tab, using the fragment's GraphQL `_id` UUID, the author repository, and
+the `mark-szulc` Experience Cloud organization route. Edit remains disabled until
+a UUID is available. It does not save or publish content. Author-editor sign-in
 and permissions still apply. After saving edits, reload the preview to fetch
 the latest author content. Added or removed block references update the list.
 
