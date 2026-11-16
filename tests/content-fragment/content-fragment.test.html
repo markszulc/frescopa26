@@ -11,10 +11,13 @@
     <script type="module">
       import decorate, { isAuthoringContext } from '../../blocks/content-fragment/content-fragment.js';
       import decorateSku from '../../blocks/faq-list-by-sku/faq-list-by-sku.js';
+      import { connectAuthorFaqs } from '../../scripts/content-fragment-author.js';
+      import createPreviewChannel from '../../scripts/experimentation-channel.js';
 
       const results = document.querySelector('#results');
       const originalFetch = window.fetch;
       const originalReferrer = Object.getOwnPropertyDescriptor(document, 'referrer');
+      let accessToken = 'test-ims-token';
       const path = '/content/dam/frescopa/en/faqs/do-i-have-to-buy-frescopa-pods';
       const secondPath = '/content/dam/frescopa/en/faqs/is-it-a-chore-to-clean';
       const items = [
@@ -32,12 +35,15 @@
         return block;
       };
       const test = async (name, run) => {
+        const disconnect = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
         try {
-          await run();
+          await run(disconnect);
           results.textContent += `PASS ${name}\n`;
         } catch (error) {
           results.textContent += `FAIL ${name}: ${error.message}\n`;
         } finally {
+          disconnect();
+          accessToken = 'test-ims-token';
           window.fetch = originalFetch;
           if (originalReferrer) Object.defineProperty(document, 'referrer', originalReferrer);
           else delete document.referrer;
@@ -59,20 +65,22 @@
         assert(!isAuthoringContext({ hostname: 'localhost' }, 'https://da.live.example.com/edit'), 'unrelated referrer');
       });
 
-      await test('author GraphQL uses cookies, path filters and authored order', async () => {
+      await test('author GraphQL uses bearer authentication, path filters and authored order', async () => {
         Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
         const block = fixture(`<div><div>${path}<br>${secondPath}<br>${path}</div></div>`);
         let requests = 0;
         window.fetch = async (url, options) => {
           requests += 1;
+          assert(options.headers.Authorization === 'Bearer test-ims-token', 'IMS bearer on both requests');
+          assert(options.credentials === 'omit', 'no cross-site session cookies');
           if (requests === 1) {
             assert(String(url) === 'https://author-p137825-e1511252.adobeaemcloud.com/libs/granite/csrf/token.json', 'author CSRF endpoint');
-            assert(options.credentials === 'include' && options.cache === 'no-store', 'fresh authenticated token');
+            assert(options.cache === 'no-store', 'fresh authenticated token');
             return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
           }
           assert(url === 'https://author-p137825-e1511252.adobeaemcloud.com/content/_cq_graphql/frescopa/endpoint.json', 'author endpoint');
-          assert(options.method === 'POST' && options.credentials === 'include', 'authenticated POST');
-          assert(options.headers['content-type'] === 'application/json', 'JSON request');
+          assert(options.method === 'POST', 'authenticated POST');
+          assert(options.headers['Content-Type'] === 'application/json', 'JSON request');
           assert(options.headers['CSRF-Token'] === 'test-csrf-token', 'CSRF token on POST');
           const { query, variables } = JSON.parse(options.body);
           assert(query.includes('faqList(filter: $filter)'), 'GraphQL filter applied');
@@ -89,6 +97,132 @@
         await Promise.all([decorate(block), decorate(block)]);
         assert(requests === 2, 'one token request and one GraphQL request');
         assert(JSON.stringify([...block.querySelectorAll('.faq-label')].map((el) => el.textContent)) === JSON.stringify(items.map((item) => item.question)), 'requested results in authored order');
+      });
+
+      await test('refreshed token is used without sending credentials over the preview channel', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        const observer = createPreviewChannel(window.location.href);
+        const messages = [];
+        observer.onmessage = ({ data }) => messages.push(JSON.stringify(data));
+        try {
+          for (const token of ['test-ims-token', 'refreshed-ims-token']) {
+            accessToken = token;
+            window.fetch = async (url, options) => {
+              assert(options.headers.Authorization === `Bearer ${token}`, 'current token on every request');
+              if (String(url).endsWith('/libs/granite/csrf/token.json')) {
+                return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
+              }
+              return { ok: true, json: async () => ({ data: { faqList: { items: [
+                { ...items[0], _path: path, token: 'must-not-leak' },
+              ] } } }) };
+            };
+            const block = fixture(`<div><div>${path}</div></div>`);
+            await decorate(block);
+            assert(block.querySelectorAll('details').length === 1, 'author result rendered');
+          }
+          assert(messages.length > 0, 'observed real channel messages');
+          for (const secret of ['test-ims-token', 'refreshed-ims-token', 'test-csrf-token', 'must-not-leak']) {
+            assert(messages.every((message) => !message.includes(secret)), 'credentials absent from channel');
+          }
+        } finally {
+          observer.close();
+        }
+      });
+
+      await test('missing IMS token prevents author requests and provides retry', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        accessToken = '';
+        let requests = 0;
+        window.fetch = async () => {
+          requests += 1;
+          throw new Error('Unexpected request');
+        };
+        const block = fixture(`<div><div>${path}</div></div>`);
+        await decorate(block);
+        assert(requests === 0, 'no anonymous author or edge request');
+        assert(block.textContent.includes('Sign in to DA'), 'actionable guidance');
+        assert(block.querySelector('button')?.textContent === 'Retry author connection', 'retry offered');
+        accessToken = 'test-ims-token';
+        window.fetch = async (url) => {
+          if (String(url).endsWith('/libs/granite/csrf/token.json')) {
+            return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
+          }
+          return { ok: true, json: async () => ({ data: { faqList: { items: [
+            { ...items[0], _path: path },
+          ] } } }) };
+        };
+        block.querySelector('button').click();
+        await new Promise((resolve, reject) => {
+          const observer = new MutationObserver(() => {
+            if (block.querySelector('details')) {
+              clearTimeout(timer);
+              observer.disconnect();
+              resolve();
+            }
+          });
+          const timer = setTimeout(() => {
+            observer.disconnect();
+            reject(new Error('Retry did not render author FAQs'));
+          }, 3000);
+          observer.observe(block, { childList: true, subtree: true });
+        });
+        assert(block.querySelectorAll('details').length === 1, 'retry restored paths and rendered FAQs');
+      });
+
+      await test('a panel opened after decoration begins completes the pending request', async (disconnect) => {
+        disconnect();
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        window.fetch = async (url) => {
+          if (String(url).endsWith('/libs/granite/csrf/token.json')) {
+            return { ok: true, json: async () => ({ token: 'test-csrf-token' }) };
+          }
+          return { ok: true, json: async () => ({ data: { faqList: { items: [
+            { ...items[0], _path: path },
+          ] } } }) };
+        };
+        const block = fixture(`<div><div>${path}</div></div>`);
+        const loading = decorate(block);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
+        try {
+          await loading;
+          assert(block.querySelectorAll('details').length === 1, 'late panel connection rendered FAQs');
+        } finally {
+          closePanel();
+        }
+      });
+
+      await test('broker rejects invalid paths and does not answer other pages', async () => {
+        let requests = 0;
+        window.fetch = async () => {
+          requests += 1;
+          throw new Error('Unexpected request');
+        };
+        const channel = createPreviewChannel(window.location.href);
+        const otherPage = createPreviewChannel(new URL('/unrelated-page', window.location.href).href);
+        let otherPageReplied = false;
+        otherPage.onmessage = () => { otherPageReplied = true; };
+        try {
+          const response = new Promise((resolve) => {
+            channel.onmessage = ({ data }) => {
+              if (data.requestId === 'invalid-path-test' && data.response) resolve(data);
+            };
+          });
+          channel.postMessage({
+            type: 'da:content-fragment', action: 'fetch', requestId: 'invalid-path-test',
+            paths: ['/content/dam/../private'],
+          });
+          assert(typeof (await response).error === 'string', 'invalid path rejected explicitly');
+          otherPage.postMessage({
+            type: 'da:content-fragment', action: 'fetch', requestId: 'other-page-test', paths: [path],
+          });
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          assert(!otherPageReplied, 'unrelated page receives no response');
+          assert(requests === 0, 'no author fetch for invalid or unrelated requests');
+        } finally {
+          channel.close();
+          otherPage.close();
+        }
       });
 
       await test('CSRF failures prevent the author POST and published fallback', async () => {
