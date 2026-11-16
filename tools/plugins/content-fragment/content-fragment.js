@@ -1,9 +1,9 @@
 import DA_SDK from 'https://da.live/nx/utils/sdk.js';
 import { connectAuthorFaqs } from '../../../scripts/content-fragment-author.js';
 import { getPageContext } from '../contextual-experimentation/context.js';
+import createPanel from './panel.js';
 
-const status = document.querySelector('#status');
-const showStatus = (text) => { status.textContent = text; };
+const { showStatus, setPage } = createPanel();
 
 async function init() {
   if (window.parent === window || window.location.ancestorOrigins?.[0] !== 'https://da.live') {
@@ -26,13 +26,14 @@ async function init() {
     throw new Error('Sign in to DA, then reopen this panel.');
   }
   const page = getPageContext(host.context);
+  setPage(page.pageUrl);
   const disconnect = connectAuthorFaqs(page.pageUrl, () => token, showStatus);
   window.addEventListener('pagehide', () => {
     disconnect();
     token = undefined;
     window.removeEventListener('message', updateToken, true);
   }, { once: true });
-  showStatus('Ready. Waiting for FAQ requests from this page. Use Layout or Split view.');
+  showStatus('Ready. Waiting for FAQ requests from this page. Use Layout or Split view.', { state: 'waiting' });
 }
 
-init().catch((error) => showStatus(error.message));
+init().catch((error) => showStatus(error.message, { state: 'error' }));
