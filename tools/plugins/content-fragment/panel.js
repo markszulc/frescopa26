@@ -72,22 +72,52 @@ export default function createPanel(doc = document, onHighlight = null) {
         editors.set(path, { ...editor, id: fragment.id });
       }
       const editor = editors.get(path);
-      const addField = (label, value) => {
+      const addField = (label, value, list = fields) => {
         const term = doc.createElement('dt');
         term.textContent = label;
         const definition = doc.createElement('dd');
         definition.textContent = value;
-        fields.append(term, definition);
+        list.append(term, definition);
       };
-      addField('Publication status', fragment.status);
-      if (fragment.publicationError) addField('Publication error', fragment.publicationError);
-      if (fragment.id) addField('Fragment ID', fragment.id);
+      const info = doc.createElement('button');
+      info.type = 'button';
+      info.className = 'fragment-info';
+      info.textContent = 'i';
+      info.title = 'Fragment information';
+      info.setAttribute('aria-label', 'Fragment information');
+      info.setAttribute('aria-expanded', 'false');
+      const popover = doc.createElement('div');
+      popover.id = `fragment-info-${index}`;
+      popover.className = 'fragment-info-popover';
+      popover.setAttribute('popover', 'auto');
+      popover.setAttribute('role', 'dialog');
+      popover.setAttribute('aria-label', 'Fragment information');
+      info.setAttribute('popovertarget', popover.id);
+      info.setAttribute('aria-controls', popover.id);
+      info.setAttribute('aria-haspopup', 'dialog');
+      const metadata = doc.createElement('dl');
+      addField('Publication status', fragment.status, metadata);
+      if (fragment.publicationError) addField('Publication error', fragment.publicationError, metadata);
+      if (fragment.id) addField('Fragment ID', fragment.id, metadata);
+      popover.append(metadata);
+      popover.addEventListener('beforetoggle', (event) => {
+        const open = event.newState === 'open';
+        info.setAttribute('aria-expanded', String(open));
+        if (!open) return;
+        const rect = info.getBoundingClientRect();
+        const view = doc.defaultView;
+        const width = Math.min(280, view.innerWidth - 32);
+        const top = Math.max(16, Math.min(rect.bottom + 8, view.innerHeight - 180));
+        popover.style.left = `${Math.max(16, Math.min(rect.left, view.innerWidth - width - 16))}px`;
+        popover.style.top = `${top}px`;
+        popover.style.maxHeight = `${Math.max(0, view.innerHeight - top - 16)}px`;
+      });
       if (!editor && fragment.question !== undefined) addField('Question', fragment.question);
       if (!editor && fragment.answer !== undefined) addField('Answer', fragment.answer);
       if (!editor && fragment.question === undefined && fragment.answer === undefined) {
         addField('Fields', 'Fragment fields are not available. Load the fragment successfully to view them.');
       }
-      details.append(fields);
+      details.append(info, popover, fields);
       if (editor) {
         details.append(editor.element);
         if (expandedPath === path) editor.open();

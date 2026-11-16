@@ -144,7 +144,11 @@
         const firstDetails = rows[0].nextElementSibling;
         assert(!firstDetails.hidden && rows[0].querySelector('button').getAttribute('aria-expanded') === 'true', 'title expands details accessibly');
         assert(firstDetails.textContent.includes('First question?') && firstDetails.textContent.includes('First answer.'), 'question and answer fields shown');
-        assert(firstDetails.textContent.includes(id), 'fragment UUID shown');
+        const info = firstDetails.querySelector('.fragment-info');
+        const popover = firstDetails.querySelector('.fragment-info-popover');
+        assert(popover.textContent.includes(id) && popover.getAttribute('popover') === 'auto', 'fragment UUID moved into a dismissible popover');
+        assert(info.getAttribute('popovertarget') === popover.id && info.getAttribute('aria-expanded') === 'false', 'information hidden until its accessible button is activated');
+        assert(!firstDetails.querySelector('dl:not(.fragment-info-popover dl)').textContent.includes(id), 'fragment UUID not shown with editable fields');
         showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'PUBLISHED' }] });
         rows = doc.querySelectorAll('.fragment-row');
         assert(!rows[0].nextElementSibling.hidden && rows[0].nextElementSibling.textContent.includes('Published'), 'publication update preserves open details');
@@ -168,6 +172,26 @@
         showStatus('', { state: 'inventory', paths: [path] });
         showStatus('', { state: 'inventory', paths: [path, `${path}-missing`] });
         assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'removed fragment cannot resurrect expanded state');
+      });
+
+      await test('fragment information opens a native popover without toggling the accordion', async () => {
+        const markup = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const panel = fixture(`<main>${markup.querySelector('main').innerHTML}</main>`, 'content-fragment content-fragment-panel');
+        const { showStatus, disconnect } = createPanel(document);
+        showStatus('', { state: 'inventory', paths: [path] });
+        showStatus('', { state: 'connected', paths: [path], items: [{ ...items[0], _path: path }] });
+        showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'MODIFIED' }] });
+        panel.querySelector('.fragment-toggle').click();
+        const popover = panel.querySelector('.fragment-info-popover');
+        const info = panel.querySelector('.fragment-info');
+        assert(getComputedStyle(popover).display === 'none', 'metadata initially hidden');
+        info.click();
+        assert(popover.matches(':popover-open') && info.getAttribute('aria-expanded') === 'true', 'native information button opens popover accessibly');
+        assert(popover.textContent.includes('Published (modified)') && popover.textContent.includes(id), 'popover shows current publication status and UUID');
+        assert(!panel.querySelector('.fragment-details-row').hidden, 'information interaction does not collapse fields');
+        info.click();
+        assert(!popover.matches(':popover-open') && info.getAttribute('aria-expanded') === 'false', 'information button closes popover');
+        disconnect();
       });
 
       await test('management edits only changed fields of the chosen variation using its exact ETag', async () => {
@@ -213,110 +237,61 @@
         assert(conflict?.message.includes('edits are retained'), 'conflict explicit without automatic overwrite');
       });
 
-      await test('publishing uses the supported workflow API and rejects HTTP and per-fragment failures', async () => {
-        const api = createFragmentManagement(() => accessToken);
-        const reference = { id, path };
-        let result = { items: [{ id, path, status: 'SUCCESS_TRIGGERED' }], workflowInstanceId: '/var/workflow/instances/publish-1' };
-        let httpStatus = 200;
-        let writes = 0;
-        window.fetch = async (url, options) => {
-          if (url.endsWith('/csrf/token.json')) return new Response(JSON.stringify({ token: 'csrf-token' }));
-          writes += 1;
-          assert(url.endsWith('/adobe/sites/cf/fragments/publish') && options.method === 'POST', 'official publish endpoint');
-          assert(options.credentials === 'omit' && options.headers.Authorization === 'Bearer test-ims-token', 'authenticated publishing');
-          assert(options.headers['CSRF-Token'] === 'csrf-token' && options.headers['Content-Type'] === 'application/json', 'CSRF protected JSON request');
-          const body = JSON.parse(options.body);
-          assert(body.ids.length === 1 && body.ids[0] === id && body.agentId === 'publish', 'only selected fragment targets publish tier');
-          assert(body.filterReferencesByStatus.length === 0 && !body.scheduledTime, 'no reference publishing or scheduling');
-          return new Response(JSON.stringify(result), { status: httpStatus });
-        };
-        assert((await api.publish(reference)).workflowInstanceId.includes('publish-1'), 'workflow initiation acknowledged');
-        for (const status of ['ERROR_FORBIDDEN', 'ERROR_INVALID']) {
-          result = { items: [{ path, status }] };
-          let failure;
-          try { await api.publish(reference); } catch (error) { failure = error; }
-          assert(failure?.message.includes(status), 'HTTP 200 per-fragment failure is not success');
-        }
-        result = { items: [{ path: secondPath, status: 'SUCCESS_TRIGGERED' }], workflowInstanceId: '/var/workflow/other' };
-        let missing;
-        try { await api.publish(reference); } catch (error) { missing = error; }
-        assert(missing?.message.includes('did not confirm'), 'unrelated response cannot confirm publishing');
-        httpStatus = 403;
-        let forbidden;
-        try { await api.publish(reference); } catch (error) { forbidden = error; }
-        assert(forbidden?.message.includes('HTTP 403'), 'permission failure explicit');
-        const before = writes;
-        accessToken = '';
-        let signedOut;
-        try { await api.publish(reference); } catch (error) { signedOut = error; }
-        assert(signedOut?.message.includes('Sign in') && writes === before, 'missing authentication blocks publication');
-      });
-
-      await test('publishing requires confirmation and saved variation drafts, and refreshes status without losing fields', async () => {
+      await test('save and discard icons preserve editing, while usage success is quiet and failures remain visible', async () => {
         const doc = new DOMParser().parseFromString('<body></body>', 'text/html');
         const tick = () => new Promise(resolve => setTimeout(resolve, 0));
-        const snapshot = variation => ({
-          variation, etag: '"version"', data: { fields: [
-            { name: 'question', type: 'text', values: [`${variation} question`] },
+        const snapshot = () => ({
+          variation: 'master', etag: '"version"', data: { fields: [
+            { name: 'question', type: 'text', values: ['Original'] },
           ] },
         });
-        let publishes = 0;
-        let refreshes = 0;
-        let fail = true;
-        let finish;
+        let failUsage = false;
+        let saved = 0;
         const api = {
-          recordUsage: async () => {},
-          read: async (reference, variation) => snapshot(variation),
-          variations: async () => [{ name: 'short' }],
-          publish: async reference => {
-            publishes += 1;
-            assert(reference.id === id && reference.path === path, 'publishes fragment, not selected variation');
-            if (fail) throw new Error('Publishing denied');
-            await new Promise(resolve => { finish = resolve; });
-          },
+          recordUsage: async () => { if (failUsage) throw new Error('Metadata permission denied'); },
+          read: async () => snapshot(),
+          variations: async () => [],
+          save: async (reference, original, changes) => ({
+            ...original, data: { fields: [{ ...original.data.fields[0], values: [changes[0].value] }] },
+          }),
         };
-        const editor = createFragmentEditor(doc, { id, path }, api, () => {}, () => { refreshes += 1; });
+        const editor = createFragmentEditor(doc, { id, path }, api, () => { saved += 1; });
         doc.body.append(editor.element);
         editor.open();
         await tick();
+        const save = doc.querySelector('button[aria-label="Save to AEM"]');
+        const discard = doc.querySelector('button[aria-label="Discard edits and reload"]');
+        assert(save.querySelector('svg[aria-hidden="true"]') && discard.querySelector('svg[aria-hidden="true"]'), 'save and discard use decorative SVG icons');
+        assert(!save.textContent && !discard.textContent && save.title && discard.title, 'icon-only controls retain accessible names and tooltips');
+        assert(!editor.element.textContent.includes('Only this fragment will be published') && !doc.querySelector('.fragment-publish'), 'publish controls and instructions removed');
+        assert(!editor.element.textContent.includes('This DA page is recorded'), 'usage success label removed');
         const change = value => {
           const input = doc.querySelector('input');
           input.value = value;
           input.dispatchEvent(new Event('input'));
         };
-        const switchVariation = async value => {
-          doc.querySelector('select').value = value;
-          doc.querySelector('select').dispatchEvent(new Event('change'));
-          await tick();
-        };
-        change('Unsaved main');
-        assert(doc.querySelector('.fragment-publish').disabled, 'unsaved edits disable publishing');
-        await switchVariation('short');
-        assert(doc.querySelector('.fragment-publish').disabled, 'hidden dirty main draft also blocks publishing');
-        await switchVariation('master');
-        change('master question');
-        doc.querySelector('.fragment-publish').click();
-        assert(publishes === 0 && doc.querySelector('.fragment-publish').textContent === 'Publish now', 'confirmation required before write');
-        [...doc.querySelectorAll('button')].find(button => button.textContent === 'Cancel publish').click();
-        assert(publishes === 0 && doc.querySelector('.fragment-publish').textContent === 'Publish fragment', 'cancel does not publish');
-        doc.querySelector('.fragment-publish').click();
-        doc.querySelector('.fragment-publish').click();
+        change('Discard this draft');
+        assert(!save.disabled, 'editing still enables save');
+        discard.click();
         await tick();
-        assert(editor.element.textContent.includes('Publishing denied') && doc.querySelector('input').value === 'master question', 'publish failures visible and fields retained');
-        fail = false;
-        await switchVariation('short');
-        doc.querySelector('.fragment-publish').click();
-        doc.querySelector('.fragment-publish').click();
-        assert(doc.querySelector('.fragment-publish').disabled && doc.querySelector('select').disabled, 'duplicate publish and variation changes blocked while pending');
-        finish();
+        assert(doc.querySelector('input').value === 'Original' && doc.querySelector('button[type="submit"]').disabled, 'discard icon reloads authoritative fields without saving');
+        change('Saved through icon form');
+        doc.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true }));
         await tick();
-        assert(publishes === 2 && editor.element.textContent.includes('Publishing workflow started') && editor.element.textContent.includes('asynchronous'), 'queued workflow is not claimed as completed publication');
-        assert(doc.querySelector('input').value === 'short question' && doc.querySelector('select').value === 'short', 'publishing preserves selected variation');
-        const previous = refreshes;
-        [...doc.querySelectorAll('button')].find(button => button.textContent === 'Refresh publication status').click();
-        await tick();
-        assert(refreshes === previous + 1 && editor.element.textContent.includes('Publication status refreshed'), 'manual status refresh available after asynchronous publication');
+        assert(saved === 1 && doc.querySelector('input').value === 'Saved through icon form', 'icon form retains explicit save behavior');
         editor.disconnect();
+        failUsage = true;
+        const failed = createFragmentEditor(doc, { id, path }, api, () => {});
+        doc.body.replaceChildren(failed.element);
+        failed.open();
+        await tick();
+        const retry = [...doc.querySelectorAll('button')].find(button => button.textContent === 'Retry page usage');
+        assert(!retry.hidden && failed.element.textContent.includes('Metadata permission denied'), 'usage error and retry remain visible');
+        failUsage = false;
+        retry.click();
+        await tick();
+        assert(retry.hidden && !failed.element.textContent.includes('Metadata permission denied'), 'successful retry clears previous usage error quietly');
+        failed.disconnect();
       });
 
       await test('variation listing reads every page and rejects repeating cursors', async () => {

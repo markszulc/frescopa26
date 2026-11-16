@@ -74,8 +74,9 @@ Each indicator has a descriptive tooltip and accessible status label.
 Select anywhere on a fragment row (or focus its title control and use Enter/Space)
 to expand its details, outline every block referencing that path in the preview,
 and scroll the first into view. The single-open accordion shows the fragment's
-fields from AEM author, UUID, and publication status, with
-explicit messages when fields or publication metadata are unavailable.
+fields from AEM author. A small circled **i** opens a popover containing the UUID
+and publication status. Close it with Escape or an outside click. Unavailable
+fields or publication metadata have explicit error messages.
 Selecting another fragment closes the previous details, moves the highlight,
 and restores the previous outlines. Selecting the same row again collapses it.
 Open details stay expanded when publication metadata updates.
@@ -98,7 +99,7 @@ the latest author content. Added or removed block references update the list.
 ## Edit fields and variations
 
 Opening a fragment's accordion loads its fields from the authenticated Content
-Fragment Management API. Click the inputs to edit and select **Save to AEM** to
+Fragment Management API. Click the inputs to edit and select the **Save** icon to
 persist changes. All fields in the current FAQ model (question, answer, category,
 and SKU) are editable. Locked fields, multi-value fields, and non-text types are
 shown read-only; use the separate **Edit** link for the full AEM editor.
@@ -109,8 +110,9 @@ The **Variation** selector lists Main plus every existing variation, including
 paginated results. Selection changes which fields are viewed/edited only; it
 does not modify the page's Content Fragment block or its rendered variation.
 Unsaved drafts are retained when switching variations or updating publication
-status. **Discard edits and reload** explicitly discards the current draft and
-reloads it from AEM.
+status. The circular-arrow **Discard edits and reload** icon explicitly discards
+the current draft and reloads it from AEM. Both icon buttons have accessible
+labels and descriptive hover tooltips.
 
 Saves use JSON Patch on the selected fragment/variation endpoint, changing only
 modified field values, with the exact ETag from the loaded representation in
@@ -120,24 +122,12 @@ Saving updates AEM author, not publish or the DA document. Reload the page
 preview to fetch saved content. The panel refreshes publication status after
 successful field or usage-metadata writes.
 
-### Publish a fragment
-
-Select **Publish fragment**, then **Publish now** to start AEM's publishing
-workflow for the whole saved fragment, including its variations. Save or discard
-unsaved edits in every variation first. Only this fragment is published:
-referenced fragments, assets, models, and the DA page are not published.
-Ensure required references and the model are already published.
-
-Publishing uses authenticated `POST /adobe/sites/cf/fragments/publish` with an
-AEM CSRF token. Publishing permissions still apply. HTTP errors and per-fragment
-validation/permission failures are displayed; a started workflow is not reported
-as completed publication. Use **Refresh publication status** to check the status
-after the asynchronous workflow runs. Publishing does not discard cached drafts;
-reload fields before further editing if AEM reports a save conflict.
+Publishing is not available in the extension. Use **Edit** to publish through
+AEM's native Content Fragment editor.
 
 ### AEM CORS requirements
 
-The author must allow the panel's HTTPS preview origin, `GET`, `POST`, `PATCH`,
+The author must allow the panel's HTTPS preview origin, `GET`, `PATCH`,
 and preflight requests, and the `Authorization`, `Content-Type`, `If-Match`, and
 `CSRF-Token` request headers. Its CORS response must **expose `ETag`** (for example
 `Access-Control-Expose-Headers: ETag`). Without a readable ETag the extension
@@ -160,7 +150,8 @@ This is external DA usage metadata, **not** AEM's native **Referenced by** list,
 which is computed from references inside AEM and cannot be populated with
 external DA pages through the supported management API. The default metadata
 schema accepts the custom property; other schemas must explicitly define it.
-Failures are displayed inside each accordion with **Retry page usage**.
+Successful usage recording shows no confirmation label. Failures are displayed
+inside each accordion with **Retry page usage**.
 
 Tracking records observed usage while the panel is open. It is append-only:
 removing a block from a possibly-unsaved preview does not delete historical

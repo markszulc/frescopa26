@@ -242,6 +242,34 @@
   margin-bottom: 0;
 }
 
+.content-fragment-panel .fragment-info {
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 0 0 12px auto;
+  padding: 0;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font: bold 16px / 1 serif;
+  cursor: pointer;
+}
+
+.content-fragment-panel .fragment-info-popover {
+  position: fixed;
+  width: min(280px, calc(100vw - 32px));
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid var(--s2-gray-200, #e1e1e1);
+  border-radius: 8px;
+  background: var(--s2-gray-25, #fff);
+  color: inherit;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+  overflow-wrap: anywhere;
+}
+
 .content-fragment-panel .fragment-editor {
   display: grid;
   gap: 12px;
@@ -299,6 +327,18 @@
   color: inherit;
   font: inherit;
   cursor: pointer;
+}
+
+.content-fragment-panel .fragment-editor .fragment-icon-button {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-fragment-panel .fragment-icon-button svg {
+  flex-shrink: 0;
 }
 
 .content-fragment-panel #highlight-status,

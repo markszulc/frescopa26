@@ -1,5 +1,27 @@
 import { isEditableField } from './management.js';
 
+function createIconButton(doc, label, path) {
+  const button = doc.createElement('button');
+  button.className = 'fragment-icon-button';
+  button.title = label;
+  button.setAttribute('aria-label', label);
+  const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', '20');
+  svg.setAttribute('height', '20');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '1.8');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('aria-hidden', 'true');
+  const shape = doc.createElementNS(svg.namespaceURI, 'path');
+  shape.setAttribute('d', path);
+  svg.append(shape);
+  button.append(svg);
+  return button;
+}
+
 export default function createFragmentEditor(doc, reference, api, onSaved, onUsage = () => {}) {
   const element = doc.createElement('section');
   element.className = 'fragment-editor';
@@ -16,10 +38,12 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
     usage.textContent = 'Recording page usage...';
     try {
       await api.recordUsage(reference);
-      usage.textContent = 'This DA page is recorded in fragment usage metadata.';
+      usage.textContent = '';
+      usage.hidden = true;
       if (active) onUsage();
     } catch (error) {
       usage.textContent = `Page usage not recorded: ${error.message}`;
+      usage.hidden = false;
       retryUsage.hidden = false;
     }
   };
@@ -32,7 +56,6 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
   let pending = false;
   let loaded = false;
   let message = '';
-  let confirmingPublish = false;
   let load;
   const createDraft = (snapshot) => ({
     snapshot,
@@ -63,24 +86,12 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
     notice.textContent = 'Read-only: AEM is not exposing the ETag header required for safe saves. '
       + 'An AEM administrator must add Access-Control-Expose-Headers: ETag to its CORS policy. '
       + 'For now, use the Edit link above to make changes in AEM.';
-    const saveButton = doc.createElement('button');
+    const saveButton = createIconButton(doc, 'Save to AEM', 'M5 3h12l4 4v14H3V3h2Zm2 0v6h10V3M7 21v-8h10v8');
     saveButton.type = 'submit';
-    saveButton.textContent = 'Save to AEM';
     const canSave = () => !pending && Boolean(draft?.snapshot.etag)
       && [...(draft?.values || [])].some(([name, value]) => (
         value !== (draft.snapshot.data.fields.find((field) => field.name === name).values[0] ?? '')
       ));
-    const hasEdits = () => [...drafts.values()].some((value) => (
-      [...value.values].some(([name, text]) => (
-        text !== (value.snapshot.data.fields.find((field) => field.name === name).values[0] ?? '')
-      ))
-    ));
-    const publishButton = doc.createElement('button');
-    publishButton.type = 'button';
-    publishButton.className = 'fragment-publish';
-    publishButton.textContent = confirmingPublish ? 'Publish now' : 'Publish fragment';
-    const canPublish = () => !pending && Boolean(draft) && !hasEdits();
-    publishButton.disabled = !canPublish();
     if (draft) {
       draft.snapshot.data.fields.forEach((field) => {
         const fieldLabel = doc.createElement('label');
@@ -97,7 +108,6 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
           input.addEventListener('input', () => {
             draft.values.set(field.name, input.value);
             saveButton.disabled = !canSave();
-            publishButton.disabled = !canPublish();
           });
           fieldLabel.append(input);
           if (field.mimeType && field.mimeType !== 'text/plain') {
@@ -116,9 +126,8 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
       });
     }
     saveButton.disabled = !canSave();
-    const reload = doc.createElement('button');
+    const reload = createIconButton(doc, 'Discard edits and reload', 'M3 10a9 9 0 1 1 2 8M3 4v6h6');
     reload.type = 'button';
-    reload.textContent = 'Discard edits and reload';
     reload.disabled = pending;
     const status = doc.createElement('p');
     status.setAttribute('role', 'status');
@@ -126,74 +135,13 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
       : 'Changes are saved to AEM author only, not published. Reload the page preview after saving.');
     status.hidden = !status.textContent;
     form.append(saveButton, reload);
-    const publication = doc.createElement('div');
-    const publishNotice = doc.createElement('p');
-    publishNotice.textContent = confirmingPublish
-      ? 'Publish the whole saved fragment to AEM publish now? This includes all variations, but no referenced content. This does not publish the DA page.'
-      : 'Save or discard edits in every variation before publishing. Only this fragment will be published.';
-    const cancelPublish = doc.createElement('button');
-    cancelPublish.type = 'button';
-    cancelPublish.textContent = 'Cancel publish';
-    cancelPublish.hidden = !confirmingPublish;
-    const refreshPublication = doc.createElement('button');
-    refreshPublication.type = 'button';
-    refreshPublication.textContent = 'Refresh publication status';
-    refreshPublication.disabled = pending || !draft;
-    publication.append(publishNotice, publishButton, cancelPublish, refreshPublication);
-    content.replaceChildren(notice, label, form, publication, status);
-    cancelPublish.addEventListener('click', () => {
-      confirmingPublish = false;
-      render();
-    });
-    refreshPublication.addEventListener('click', async () => {
-      pending = true;
-      message = 'Refreshing publication status...';
-      render();
-      try {
-        await onUsage();
-        message = 'Publication status refreshed.';
-      } catch (error) {
-        message = `Publication status could not be refreshed: ${error.message}`;
-      } finally {
-        pending = false;
-        if (active) render();
-      }
-    });
-    publishButton.addEventListener('click', async () => {
-      if (!canPublish()) return;
-      if (!confirmingPublish) {
-        confirmingPublish = true;
-        render();
-        content.querySelector('.fragment-publish').focus();
-        return;
-      }
-      confirmingPublish = false;
-      pending = true;
-      message = 'Requesting publication in AEM...';
-      render();
-      try {
-        await api.publish(reference);
-        message = 'Publishing workflow started. Publication is asynchronous; use Refresh publication status to check completion.';
-        try {
-          await onUsage();
-        } catch (error) {
-          message += ` Publication status could not be refreshed: ${error.message}`;
-        }
-      } catch (error) {
-        message = error.message;
-      } finally {
-        pending = false;
-        if (active) render();
-      }
-    });
+    content.replaceChildren(notice, label, form, status);
     select.addEventListener('change', () => {
       selected = select.value;
-      confirmingPublish = false;
       message = '';
       load();
     });
     reload.addEventListener('click', () => {
-      confirmingPublish = false;
       drafts.delete(selected);
       options = undefined;
       message = '';
@@ -202,7 +150,6 @@ export default function createFragmentEditor(doc, reference, api, onSaved, onUsa
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!canSave()) return;
-      confirmingPublish = false;
       pending = true;
       message = 'Saving to AEM author...';
       render();
