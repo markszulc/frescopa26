@@ -59,10 +59,11 @@ Fragment** from the tool panel.
 
 Loading never delays page rendering. In Workspace, each block immediately loads
 **published** FAQs from `GET /faq-data-by-path` (the same Edge Function the live
-site uses) and shows a small, muted **Published** label above them. Its tooltip
+site uses) and shows a small, muted **Published** label above them, inside a dim
+grey outline around the block. The label's tooltip
 explains that the content may not match the latest author changes. When the
 Content Fragment panel is open (now or later), the block swaps to author content
-and removes the label. Author results always win, even if they arrive before the
+and removes the label and outline without shifting the layout. Author results always win, even if they arrive before the
 published response. Fragments that are not yet published show "not published
 yet" with the label, rather than an error. If author loading fails, published
 content stays visible and the label tooltip shows the error. If both fail, the
