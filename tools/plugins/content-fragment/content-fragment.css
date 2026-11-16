@@ -13,9 +13,19 @@
 
 .content-fragment-panel main {
   display: grid;
+  height: 100dvh;
+  grid-template-rows: minmax(0, 1fr) auto;
   gap: var(--s2-spacing-400, 24px);
   min-width: 0;
   padding: var(--s2-spacing-300, 20px);
+}
+
+.content-fragment-panel .panel-content {
+  display: grid;
+  min-height: 0;
+  gap: var(--s2-spacing-400, 24px);
+  align-content: start;
+  overflow: auto;
 }
 
 .content-fragment-panel h1,
@@ -54,7 +64,9 @@
 }
 
 .content-fragment-panel .author-card {
+  max-height: 60dvh;
   padding: var(--s2-spacing-300, 20px);
+  overflow: auto;
   border: 1px solid var(--s2-gray-200, #e1e1e1);
   border-radius: var(--s2-corner-radius-200, 8px);
   background: var(--s2-gray-25, #fff);
@@ -260,7 +272,6 @@
   display: grid;
   gap: 12px;
   padding-top: 12px;
-  border-top: 1px solid var(--s2-gray-200, #e1e1e1);
 }
 
 .content-fragment-panel .fragment-editor label {
@@ -407,14 +418,20 @@
 
 .content-advisor-dialog main {
   height: 100dvh;
+  grid-template-rows: minmax(0, 1fr);
   padding: 16px;
 }
 
-.content-advisor-dialog main > :not([aria-labelledby="browse-heading"]) {
+.content-advisor-dialog .panel-content {
+  display: contents;
+}
+
+.content-advisor-dialog .author-card,
+.content-advisor-dialog .panel-content > :not([aria-labelledby="browse-fragments"]) {
   display: none;
 }
 
-.content-advisor-dialog [aria-labelledby="browse-heading"] {
+.content-advisor-dialog [aria-labelledby="browse-fragments"] {
   display: flex;
   min-height: 0;
   flex-direction: column;

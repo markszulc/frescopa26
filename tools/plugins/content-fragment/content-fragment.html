@@ -12,41 +12,41 @@
   </head>
   <body class="content-fragment-panel">
     <main>
-      <header>
-        <p class="eyebrow">AEM CONTENT</p>
-        <h1>Content Fragments</h1>
-        <p class="description">Preview and edit the Content Fragments referenced on this page.</p>
-      </header>
+      <div class="panel-content">
+        <header>
+          <p class="eyebrow">AEM CONTENT</p>
+          <h1>Content Fragments</h1>
+          <p class="description">Preview and edit the Content Fragments referenced on this page.</p>
+        </header>
 
-      <section aria-labelledby="fragments-heading">
-        <div class="section-heading">
-          <h2 id="fragments-heading">On This Page</h2>
-          <span id="fragment-count" class="count" aria-label="Fragment count">0</span>
-        </div>
-        <p id="empty-state" class="description">Waiting for fragment references from the preview.</p>
-        <div class="table-scroll" role="region" aria-label="Content Fragments" hidden>
-          <table aria-labelledby="fragments-heading">
-            <thead>
-              <tr><th scope="col">Fragment</th><th scope="col">Status</th><th scope="col">Action</th></tr>
-            </thead>
-            <tbody id="fragments"></tbody>
-          </table>
-        </div>
-        <p id="highlight-status" class="description" role="status" aria-live="polite" hidden></p>
-        <p id="publication-status" class="description" role="status" aria-live="polite" hidden></p>
-      </section>
+        <section aria-labelledby="fragments-heading">
+          <div class="section-heading">
+            <h2 id="fragments-heading">On This Page</h2>
+            <span id="fragment-count" class="count" aria-label="Fragment count">0</span>
+          </div>
+          <p id="empty-state" class="description">Waiting for fragment references from the preview.</p>
+          <div class="table-scroll" role="region" aria-label="Content Fragments" hidden>
+            <table aria-labelledby="fragments-heading">
+              <thead>
+                <tr><th scope="col">Fragment</th><th scope="col">Status</th><th scope="col">Action</th></tr>
+              </thead>
+              <tbody id="fragments"></tbody>
+            </table>
+          </div>
+          <p id="highlight-status" class="description" role="status" aria-live="polite" hidden></p>
+          <p id="publication-status" class="description" role="status" aria-live="polite" hidden></p>
+        </section>
 
-      <section aria-labelledby="browse-heading">
-        <h2 id="browse-heading">Place a Content Fragment</h2>
-        <p class="description">Select a Content Fragment block to add a path, or place the cursor where you want to paste it.</p>
-        <button id="browse-fragments" type="button" aria-haspopup="dialog" disabled>Browse with Content Advisor</button>
-        <div id="content-advisor" hidden></div>
-        <p id="insert-status" class="description" role="status" aria-live="polite"></p>
-        <div id="advisor-actions" hidden>
-          <button id="close-advisor" type="button">Cancel</button>
-          <button id="insert-fragments" type="button" disabled>Insert selected fragments</button>
-        </div>
-      </section>
+        <section aria-labelledby="browse-fragments">
+          <button id="browse-fragments" type="button" aria-haspopup="dialog" title="Select a Content Fragment block to add a path, or place the cursor where you want to paste it." disabled>Add a Content Fragment</button>
+          <div id="content-advisor" hidden></div>
+          <p id="insert-status" class="description" role="status" aria-live="polite"></p>
+          <div id="advisor-actions" hidden>
+            <button id="close-advisor" type="button">Cancel</button>
+            <button id="insert-fragments" type="button" disabled>Insert selected fragments</button>
+          </div>
+        </section>
+      </div>
 
       <details class="author-card">
         <summary>

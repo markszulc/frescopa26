@@ -90,7 +90,9 @@ animation. Reloading the preview or unloading the panel also clears highlighting
 Highlighting does not edit or save authored content.
 Highlight errors are shown below the table; Layout or Split view is required.
 Successful highlights do not display a confirmation label.
-**Author Connection** is collapsed by default. Expand it for the author hostname,
+**Author Connection** is docked at the bottom of the extension and collapsed by
+default. The panel content scrolls above it; expanded connection details scroll
+within the card when needed. Expand it for the author hostname,
 service, authentication method, current page, request details, and troubleshooting.
 Each enabled **Edit** link opens the new Experience Cloud Content Fragment editor
 in a new tab, using the fragment's management API UUID, the author repository, and
@@ -163,10 +165,11 @@ hook, or native referential-integrity service.
 
 ## Browse and place fragment paths
 
-**Browse with Content Advisor** uses DA's SDK `showPanel('content-advisor')` to
+**Add a Content Fragment** uses DA's SDK `showPanel('content-advisor')` to
 open a native Workspace full-size dialog above the editor, not inside the
 sidebar iframe. The Content Advisor library registration above is required;
 an iframe-local CSS dialog cannot escape the sidebar's bounds.
+The button's tooltip explains where to select a block or place the cursor.
 The dialog loads Adobe's hosted Content Advisor, with its built-in **Content
 Fragments** experience enabled and selected. It uses the DA IMS token and the
 same author repository, initially browsing the FAQ folder.

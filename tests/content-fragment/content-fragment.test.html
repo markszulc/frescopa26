@@ -82,6 +82,9 @@
       await test('panel shows instance, live fragment states and safe editor links', async () => {
         const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
         const { showStatus, setPage } = createPanel(doc);
+        const browse = doc.querySelector('#browse-fragments');
+        assert(browse.textContent === 'Add a Content Fragment' && !browse.closest('section').querySelector('h2'), 'placement control has no separate heading');
+        assert(browse.title === 'Select a Content Fragment block to add a path, or place the cursor where you want to paste it.', 'placement guidance moved to button tooltip');
         const connection = doc.querySelector('details.author-card');
         assert(!connection.open && connection.querySelector('summary').textContent.includes('Author Connection'), 'connection troubleshooting collapsed by default');
         assert(Boolean(doc.querySelector('#fragments-heading').compareDocumentPosition(connection) & Node.DOCUMENT_POSITION_FOLLOWING), 'fragment list before connection details');
