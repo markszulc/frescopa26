@@ -17,13 +17,17 @@ in-memory IMS token through the DA SDK and sends `Authorization: Bearer ...`
 to `https://author-p137825-e1511252.adobeaemcloud.com`. It omits session cookies,
 so no SameSite cookie change is needed.
 
-The panel first requests `/libs/granite/csrf/token.json` using the bearer token,
-then POSTs the GraphQL path filter to
-`/content/_cq_graphql/frescopa/endpoint.json` with the bearer and `CSRF-Token`
-headers. Both endpoints must allow the actual preview origin and the
-`Authorization`, `Content-Type`, and `CSRF-Token` headers through CORS. AEM
-permissions and the Sling Referrer Filter still apply. The signed-in DA user
-must have access to the author environment, FAQ fragments, and models.
+The panel reads each unique path with the supported management API
+`GET /adobe/sites/cf/fragments?path={encoded-path}&limit=1`, keeping only the
+exact path's Question and Answer fields and UUID. Plain-text answers are
+preserved; HTML answers are converted to plain text for the FAQ renderer.
+Missing fragments remain listed as not found.
+Read requests use bearer authentication but require neither GraphQL POST nor a
+CSRF token. The endpoint must allow the actual preview origin and `Authorization`
+header through CORS. Keep AEM's managed Referrer Filter configuration intact;
+do not replace it with a DA-only allowlist. The signed-in DA user must have
+access to the author environment and FAQ fragments. Mutation requests still
+obtain a CSRF token as described below.
 
 The existing same-origin preview channel scopes messages to the browser tab,
 code branch, and canonical page path. Only fragment paths, rendered FAQ data,
@@ -76,15 +80,16 @@ Selecting another fragment closes the previous details, moves the highlight,
 and restores the previous outlines. Selecting the same row again collapses it.
 Open details stay expanded when publication metadata updates.
 Titles retain their plain styling; **Edit** remains a separate link and does not
-expand or locate the fragment. Highlights begin fading at 6.5 seconds and clear at 7.5 seconds,
+expand or locate the fragment. Highlights begin fading at 2 seconds and clear at 3 seconds,
 including after preview block replacements. Reduced-motion users get no fade
 animation. Reloading the preview or unloading the panel also clears highlighting.
 Highlighting does not edit or save authored content.
 Highlight errors are shown below the table; Layout or Split view is required.
+Successful highlights do not display a confirmation label.
 **Author Connection** is collapsed by default. Expand it for the author hostname,
 service, authentication method, current page, request details, and troubleshooting.
 Each enabled **Edit** link opens the new Experience Cloud Content Fragment editor
-in a new tab, using the fragment's GraphQL `_id` UUID, the author repository, and
+in a new tab, using the fragment's management API UUID, the author repository, and
 the `mark-szulc` Experience Cloud organization route. Edit remains disabled until
 a UUID is available. It does not save or publish content. Author-editor sign-in
 and permissions still apply. After saving edits, reload the preview to fetch
@@ -114,6 +119,21 @@ visible and retain the draft; conflicts are never automatically overwritten.
 Saving updates AEM author, not publish or the DA document. Reload the page
 preview to fetch saved content. The panel refreshes publication status after
 successful field or usage-metadata writes.
+
+### Publish a fragment
+
+Select **Publish fragment**, then **Publish now** to start AEM's publishing
+workflow for the whole saved fragment, including its variations. Save or discard
+unsaved edits in every variation first. Only this fragment is published:
+referenced fragments, assets, models, and the DA page are not published.
+Ensure required references and the model are already published.
+
+Publishing uses authenticated `POST /adobe/sites/cf/fragments/publish` with an
+AEM CSRF token. Publishing permissions still apply. HTTP errors and per-fragment
+validation/permission failures are displayed; a started workflow is not reported
+as completed publication. Use **Refresh publication status** to check the status
+after the asynchronous workflow runs. Publishing does not discard cached drafts;
+reload fields before further editing if AEM reports a save conflict.
 
 ### AEM CORS requirements
 

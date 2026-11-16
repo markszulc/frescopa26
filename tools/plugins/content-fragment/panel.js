@@ -97,12 +97,13 @@ export default function createPanel(doc = document, onHighlight = null) {
       const locate = async () => {
         const message = doc.querySelector('#highlight-status');
         try {
-          const count = await onHighlight(path);
-          message.textContent = `Highlighted ${count} ${count === 1 ? 'block' : 'blocks'} in the preview. Highlight fades after 7.5 seconds.`;
+          await onHighlight(path);
+          message.textContent = '';
+          message.hidden = true;
         } catch (error) {
           message.textContent = error.message;
+          message.hidden = false;
         }
-        message.hidden = false;
       };
       const activate = () => {
         expandedPath = expandedPath === path ? undefined : path;

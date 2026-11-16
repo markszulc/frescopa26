@@ -74,8 +74,8 @@ export function registerAuthorFragments(block, paths) {
         fadeTimer = setTimeout(() => {
           fading = true;
           highlights.fade();
-        }, 6500);
-        clearTimer = setTimeout(clearHighlight, 7500);
+        }, 2000);
+        clearTimer = setTimeout(clearHighlight, 3000);
         blocks[0].scrollIntoView({
           block: 'center',
           behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',

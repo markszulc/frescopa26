@@ -213,6 +213,112 @@
         assert(conflict?.message.includes('edits are retained'), 'conflict explicit without automatic overwrite');
       });
 
+      await test('publishing uses the supported workflow API and rejects HTTP and per-fragment failures', async () => {
+        const api = createFragmentManagement(() => accessToken);
+        const reference = { id, path };
+        let result = { items: [{ id, path, status: 'SUCCESS_TRIGGERED' }], workflowInstanceId: '/var/workflow/instances/publish-1' };
+        let httpStatus = 200;
+        let writes = 0;
+        window.fetch = async (url, options) => {
+          if (url.endsWith('/csrf/token.json')) return new Response(JSON.stringify({ token: 'csrf-token' }));
+          writes += 1;
+          assert(url.endsWith('/adobe/sites/cf/fragments/publish') && options.method === 'POST', 'official publish endpoint');
+          assert(options.credentials === 'omit' && options.headers.Authorization === 'Bearer test-ims-token', 'authenticated publishing');
+          assert(options.headers['CSRF-Token'] === 'csrf-token' && options.headers['Content-Type'] === 'application/json', 'CSRF protected JSON request');
+          const body = JSON.parse(options.body);
+          assert(body.ids.length === 1 && body.ids[0] === id && body.agentId === 'publish', 'only selected fragment targets publish tier');
+          assert(body.filterReferencesByStatus.length === 0 && !body.scheduledTime, 'no reference publishing or scheduling');
+          return new Response(JSON.stringify(result), { status: httpStatus });
+        };
+        assert((await api.publish(reference)).workflowInstanceId.includes('publish-1'), 'workflow initiation acknowledged');
+        for (const status of ['ERROR_FORBIDDEN', 'ERROR_INVALID']) {
+          result = { items: [{ path, status }] };
+          let failure;
+          try { await api.publish(reference); } catch (error) { failure = error; }
+          assert(failure?.message.includes(status), 'HTTP 200 per-fragment failure is not success');
+        }
+        result = { items: [{ path: secondPath, status: 'SUCCESS_TRIGGERED' }], workflowInstanceId: '/var/workflow/other' };
+        let missing;
+        try { await api.publish(reference); } catch (error) { missing = error; }
+        assert(missing?.message.includes('did not confirm'), 'unrelated response cannot confirm publishing');
+        httpStatus = 403;
+        let forbidden;
+        try { await api.publish(reference); } catch (error) { forbidden = error; }
+        assert(forbidden?.message.includes('HTTP 403'), 'permission failure explicit');
+        const before = writes;
+        accessToken = '';
+        let signedOut;
+        try { await api.publish(reference); } catch (error) { signedOut = error; }
+        assert(signedOut?.message.includes('Sign in') && writes === before, 'missing authentication blocks publication');
+      });
+
+      await test('publishing requires confirmation and saved variation drafts, and refreshes status without losing fields', async () => {
+        const doc = new DOMParser().parseFromString('<body></body>', 'text/html');
+        const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+        const snapshot = variation => ({
+          variation, etag: '"version"', data: { fields: [
+            { name: 'question', type: 'text', values: [`${variation} question`] },
+          ] },
+        });
+        let publishes = 0;
+        let refreshes = 0;
+        let fail = true;
+        let finish;
+        const api = {
+          recordUsage: async () => {},
+          read: async (reference, variation) => snapshot(variation),
+          variations: async () => [{ name: 'short' }],
+          publish: async reference => {
+            publishes += 1;
+            assert(reference.id === id && reference.path === path, 'publishes fragment, not selected variation');
+            if (fail) throw new Error('Publishing denied');
+            await new Promise(resolve => { finish = resolve; });
+          },
+        };
+        const editor = createFragmentEditor(doc, { id, path }, api, () => {}, () => { refreshes += 1; });
+        doc.body.append(editor.element);
+        editor.open();
+        await tick();
+        const change = value => {
+          const input = doc.querySelector('input');
+          input.value = value;
+          input.dispatchEvent(new Event('input'));
+        };
+        const switchVariation = async value => {
+          doc.querySelector('select').value = value;
+          doc.querySelector('select').dispatchEvent(new Event('change'));
+          await tick();
+        };
+        change('Unsaved main');
+        assert(doc.querySelector('.fragment-publish').disabled, 'unsaved edits disable publishing');
+        await switchVariation('short');
+        assert(doc.querySelector('.fragment-publish').disabled, 'hidden dirty main draft also blocks publishing');
+        await switchVariation('master');
+        change('master question');
+        doc.querySelector('.fragment-publish').click();
+        assert(publishes === 0 && doc.querySelector('.fragment-publish').textContent === 'Publish now', 'confirmation required before write');
+        [...doc.querySelectorAll('button')].find(button => button.textContent === 'Cancel publish').click();
+        assert(publishes === 0 && doc.querySelector('.fragment-publish').textContent === 'Publish fragment', 'cancel does not publish');
+        doc.querySelector('.fragment-publish').click();
+        doc.querySelector('.fragment-publish').click();
+        await tick();
+        assert(editor.element.textContent.includes('Publishing denied') && doc.querySelector('input').value === 'master question', 'publish failures visible and fields retained');
+        fail = false;
+        await switchVariation('short');
+        doc.querySelector('.fragment-publish').click();
+        doc.querySelector('.fragment-publish').click();
+        assert(doc.querySelector('.fragment-publish').disabled && doc.querySelector('select').disabled, 'duplicate publish and variation changes blocked while pending');
+        finish();
+        await tick();
+        assert(publishes === 2 && editor.element.textContent.includes('Publishing workflow started') && editor.element.textContent.includes('asynchronous'), 'queued workflow is not claimed as completed publication');
+        assert(doc.querySelector('input').value === 'short question' && doc.querySelector('select').value === 'short', 'publishing preserves selected variation');
+        const previous = refreshes;
+        [...doc.querySelectorAll('button')].find(button => button.textContent === 'Refresh publication status').click();
+        await tick();
+        assert(refreshes === previous + 1 && editor.element.textContent.includes('Publication status refreshed'), 'manual status refresh available after asynchronous publication');
+        editor.disconnect();
+      });
+
       await test('variation listing reads every page and rejects repeating cursors', async () => {
         const api = createFragmentManagement(() => accessToken);
         const urls = [];
@@ -385,32 +491,28 @@
         second.scrollIntoView = (options) => scrolled.push({ element: second, options });
         const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
         let selections = 0;
+        let highlighted;
         const { showStatus } = createPanel(doc, (path) => {
           selections += 1;
-          return highlightAuthorFragment(path);
+          highlighted = highlightAuthorFragment(path);
+          return highlighted;
         });
         showStatus('', { state: 'inventory', paths: [path, secondPath] });
         showStatus('Connected', {
           state: 'connected', paths: [path, secondPath],
           items: [{ ...items[0], _path: path }, { ...items[1], _path: secondPath }],
         });
-        const activate = (target) => new Promise((resolve, reject) => {
-          const message = doc.querySelector('#highlight-status');
-          const observer = new MutationObserver(() => {
-            clearTimeout(timer);
-            observer.disconnect();
-            resolve(message.textContent);
-          });
-          const timer = setTimeout(() => {
-            observer.disconnect();
-            reject(new Error('Missing highlight announcement'));
-          }, 2000);
-          observer.observe(message, { childList: true });
+        const activate = async (target) => {
           target.click();
-        });
+          await highlighted;
+        };
         const rows = doc.querySelectorAll('.fragment-row');
         assert(rows[0].querySelector('.fragment-toggle').type === 'button' && rows[0].querySelector('.fragment-name').tagName === 'STRONG', 'native keyboard-accessible control with plain title');
-        assert((await activate(rows[0].querySelector('.fragment-path'))).startsWith('Highlighted 2 blocks in the preview.'), 'path area locates matching blocks');
+        const message = doc.querySelector('#highlight-status');
+        message.textContent = 'Previous highlight error';
+        message.hidden = false;
+        await activate(rows[0].querySelector('.fragment-path'));
+        assert(message.hidden && !message.textContent, 'successful highlighting clears errors without a confirmation label');
         assert(first.style.outline === 'rgb(59, 99, 251) solid 2px' && shared.style.outline === first.style.outline, 'all matching blocks outlined');
         assert(!second.style.outline, 'unrelated block unchanged');
         assert(scrolled.length === 1 && scrolled[0].element === first && scrolled[0].options.block === 'center', 'first reference scrolled into view');
@@ -430,10 +532,12 @@
         shared.remove();
         await new Promise(resolve => setTimeout(resolve, 0));
         assert(replacement.style.outline.includes('59, 99, 251') && !second.style.outline && !shared.style.outline, 'live replacement with the same path retains highlight without stale outlines');
-        await new Promise(resolve => setTimeout(resolve, 6650));
-        assert(replacement.style.getPropertyValue('outline-color') === 'transparent', 'highlight begins fading within five to ten seconds');
+        await new Promise(resolve => setTimeout(resolve, 1850));
+        assert(replacement.style.outline.includes('59, 99, 251'), 'highlight remains visible before two seconds');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        assert(replacement.style.getPropertyValue('outline-color') === 'transparent', 'highlight begins fading after two seconds');
         await new Promise(resolve => setTimeout(resolve, 1000));
-        assert(!replacement.style.outline && !replacement.style.transition, 'highlight and transition restored by 7.5 seconds');
+        assert(!replacement.style.outline && !replacement.style.transition, 'highlight and transition restored by three seconds');
         assert(first.style.transition === 'opacity 2s linear' && first.style.getPropertyPriority('transition') === 'important', 'original transition and priority preserved');
         const afterExpiry = fixture('<div></div>');
         registerAuthorFragments(afterExpiry, [secondPath]);

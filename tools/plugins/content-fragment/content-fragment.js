@@ -76,7 +76,6 @@ async function init() {
     browse.disabled = false;
     browse.addEventListener('click', () => {
       host.actions.showPanel('content-advisor');
-      document.querySelector('#insert-status').textContent = 'Opening Content Advisor in a Workspace dialog. If it does not open, register the Content Advisor fullsize-dialog library entry in DA configuration.';
     });
   }
   window.addEventListener('pagehide', () => {

@@ -105,6 +105,41 @@ export default function createFragmentManagement(getToken, pageUrl) {
     await request(snapshot.url, patch, snapshot.etag);
     return read(reference, snapshot.variation);
   };
+  const publish = async (reference) => {
+    endpoint(reference);
+    const token = getToken();
+    if (typeof token !== 'string' || !token.trim()) throw new Error('Sign in to DA and reopen this panel.');
+    const response = await fetch(`${AUTHOR_ORIGIN}/adobe/sites/cf/fragments/publish`, {
+      method: 'POST',
+      credentials: 'omit',
+      cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'CSRF-Token': await fetchAuthorCsrfToken(token),
+      },
+      body: JSON.stringify({
+        ids: [reference.id], agentId: 'publish', filterReferencesByStatus: [],
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`AEM publish returned HTTP ${response.status}. Check publishing permissions and CORS.`);
+    }
+    const data = await response.json();
+    const item = Array.isArray(data.items) && data.items.find((result) => (
+      result && (result.id === reference.id || result.path === reference.path)
+    ));
+    if (!item || typeof item.status !== 'string') {
+      throw new Error('AEM did not confirm the publishing request. Check publication status in AEM before retrying.');
+    }
+    if (item.status !== 'SUCCESS_TRIGGERED') {
+      throw new Error(`AEM could not publish this fragment: ${item.status}. Check permissions and fragment validation in AEM.`);
+    }
+    if (typeof data.workflowInstanceId !== 'string' || !data.workflowInstanceId) {
+      throw new Error('AEM did not return a publishing workflow. Check publication status in AEM before retrying.');
+    }
+    return data;
+  };
   const recordUsage = async (reference) => {
     const page = new URL(pageUrl);
     if (page.origin !== 'https://da.live' || page.pathname !== '/canvas'
@@ -141,6 +176,6 @@ export default function createFragmentManagement(getToken, pageUrl) {
     }
   };
   return {
-    read, variations, save, recordUsage,
+    read, variations, save, publish, recordUsage,
   };
 }
