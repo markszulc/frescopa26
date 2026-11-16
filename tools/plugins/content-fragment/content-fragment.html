@@ -6,12 +6,58 @@
     <meta name="referrer" content="no-referrer">
     <title>Content Fragment</title>
     <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://da.live/nx2/styles/styles.css">
+    <link rel="stylesheet" href="./content-fragment.css">
     <script type="module" src="./content-fragment.js"></script>
   </head>
-  <body>
-    <h1>Content Fragment</h1>
-    <p>Keep this panel open to load FAQs directly from AEM author using your DA sign-in.</p>
-    <p>After opening the panel, use Retry author connection in the preview if needed.</p>
-    <p id="status" role="status">Connecting to Experience Workspace...</p>
+  <body class="content-fragment-panel">
+    <main>
+      <header>
+        <p class="eyebrow">AEM CONTENT</p>
+        <h1>Content fragments</h1>
+        <p class="description">Preview author content and open fragments for editing without leaving Workspace.</p>
+      </header>
+
+      <section class="author-card" aria-labelledby="author-heading">
+        <div class="section-heading">
+          <h2 id="author-heading">Author connection</h2>
+          <span id="connection-state" class="connection-state" data-state="waiting">Connecting</span>
+        </div>
+        <dl>
+          <dt>Instance</dt>
+          <dd><a id="author-instance" target="_blank" rel="noopener noreferrer"></a></dd>
+          <dt>Service</dt>
+          <dd>AEM as a Cloud Service / Author</dd>
+          <dt>Authentication</dt>
+          <dd>DA sign-in (IMS bearer token)</dd>
+          <dt>Page</dt>
+          <dd id="page-path">Resolving page...</dd>
+        </dl>
+        <p id="status" role="status" aria-live="polite">Connecting to Experience Workspace...</p>
+      </section>
+
+      <section aria-labelledby="fragments-heading">
+        <div class="section-heading">
+          <h2 id="fragments-heading">On this page</h2>
+          <span id="fragment-count" class="count" aria-label="Fragment count">0</span>
+        </div>
+        <p id="empty-state" class="description">Waiting for fragment references from the preview.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Content fragments" hidden>
+          <table>
+            <caption>Fragments referenced on this page. Edit links open AEM author in a new tab.</caption>
+            <thead>
+              <tr><th scope="col">Fragment</th><th scope="col">Status</th><th scope="col">Action</th></tr>
+            </thead>
+            <tbody id="fragments"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="help">
+        <h2>Working with author content</h2>
+        <p>Keep this panel open in Layout or Split view. If the preview shows an error, select <strong>Retry author connection</strong> in the block.</p>
+        <p>Edits open in a separate tab and require AEM author access. After saving, reload the preview to see your changes.</p>
+      </aside>
+    </main>
   </body>
 </html>

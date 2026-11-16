@@ -1,7 +1,7 @@
 import createPreviewChannel from './experimentation-channel.js';
 
 const MESSAGE = 'da:content-fragment';
-const AUTHOR_ORIGIN = 'https://author-p137825-e1511252.adobeaemcloud.com';
+export const AUTHOR_ORIGIN = 'https://author-p137825-e1511252.adobeaemcloud.com';
 const FAQ_QUERY = `query getFaqsByPaths($filter: FaqModelFilter) {
   faqList(filter: $filter) {
     items {
@@ -19,6 +19,42 @@ function validatePaths(paths) {
   ))) {
     throw new Error('Expected FAQ content fragment paths under /content/dam/.');
   }
+}
+
+let inventoryChannel;
+const fragmentPaths = new WeakMap();
+
+export function registerAuthorFragments(block, paths) {
+  validatePaths(paths);
+  fragmentPaths.set(block, paths);
+  block.dataset.contentFragmentPaths = '';
+  if (inventoryChannel) return;
+  inventoryChannel = createPreviewChannel(window.location.href);
+  let lastPaths;
+  const publish = (force = false) => {
+    const fragments = [...document.querySelectorAll('.content-fragment[data-content-fragment-paths]')]
+      .flatMap((element) => fragmentPaths.get(element) || []);
+    const pathsOnPage = [...new Set(fragments)];
+    const snapshot = JSON.stringify(pathsOnPage);
+    if (!force && snapshot === lastPaths) return;
+    lastPaths = snapshot;
+    inventoryChannel.postMessage({
+      type: MESSAGE, action: 'inventory', response: true, paths: pathsOnPage,
+    });
+  };
+  inventoryChannel.onmessage = ({ data }) => {
+    if (data?.type === MESSAGE && data.action === 'inventory' && !data.response) publish(true);
+  };
+  const observer = new MutationObserver(() => publish());
+  observer.observe(document.body, {
+    childList: true, subtree: true, attributes: true, attributeFilter: ['data-content-fragment-paths'],
+  });
+  window.addEventListener('pagehide', () => {
+    observer.disconnect();
+    inventoryChannel.close();
+    inventoryChannel = undefined;
+  }, { once: true });
+  publish();
 }
 
 export async function fetchAuthorFaqs(paths, accessToken) {
@@ -70,7 +106,7 @@ export async function fetchAuthorFaqs(paths, accessToken) {
     throw new Error('Invalid author FAQ response.');
   }
   const byPath = new Map(items.map(({ _path: path, question, answer }) => (
-    [path, { question, answer: { plaintext: answer.plaintext } }]
+    [path, { _path: path, question, answer: { plaintext: answer.plaintext } }]
   )));
   return [...new Set(paths)].filter((path) => byPath.has(path)).map((path) => byPath.get(path));
 }
@@ -80,7 +116,17 @@ export function connectAuthorFaqs(pageUrl, getToken, onStatus) {
   const pending = new Set();
   let closed = false;
   channel.onmessage = async ({ data }) => {
-    if (data?.type !== MESSAGE || data.response || typeof data.requestId !== 'string') return;
+    if (data?.type !== MESSAGE) return;
+    if (data.action === 'inventory' && data.response && Array.isArray(data.paths)) {
+      try {
+        if (data.paths.length) validatePaths(data.paths);
+        onStatus('', { state: 'inventory', paths: data.paths });
+      } catch (error) {
+        onStatus(error.message, { state: 'error' });
+      }
+      return;
+    }
+    if (data.response || typeof data.requestId !== 'string') return;
     const { requestId, action } = data;
     const reply = (result) => {
       if (!closed) {
@@ -94,17 +140,28 @@ export function connectAuthorFaqs(pageUrl, getToken, onStatus) {
     } else if (action === 'fetch' && !pending.has(requestId)) {
       pending.add(requestId);
       try {
+        validatePaths(data.paths);
+        onStatus('Loading FAQ content from AEM author...', { state: 'loading', paths: data.paths });
         const items = await fetchAuthorFaqs(data.paths, getToken());
         reply({ items });
-        if (!closed) onStatus(`Connected to AEM author. Loaded ${items.length} FAQs.`);
+        if (!closed) {
+          onStatus(`Connected to AEM author. Loaded ${items.length} FAQs.`, {
+            state: 'connected', paths: data.paths, items,
+          });
+        }
       } catch (error) {
         reply({ error: error.message });
-        if (!closed) onStatus(error.message);
+        if (!closed) {
+          onStatus(error.message, {
+            state: 'error', paths: Array.isArray(data.paths) ? data.paths : [],
+          });
+        }
       } finally {
         pending.delete(requestId);
       }
     }
   };
+  channel.postMessage({ type: MESSAGE, action: 'inventory' });
   return () => {
     closed = true;
     channel.onmessage = null;

@@ -12,9 +12,10 @@ export function isAuthoringContext(
     ));
 }
 
-async function fetchFaqs(paths) {
+async function fetchFaqs(paths, block) {
   if (isAuthoringContext()) {
-    const { requestAuthorFaqs } = await import('../../scripts/content-fragment-author.js');
+    const { requestAuthorFaqs, registerAuthorFragments } = await import('../../scripts/content-fragment-author.js');
+    registerAuthorFragments(block, paths);
     return requestAuthorFaqs(paths);
   }
   const params = new URLSearchParams();
@@ -66,7 +67,7 @@ export default async function decorate(block) {
   message(block, 'Loading FAQs...');
 
   try {
-    const items = await fetchFaqs(paths);
+    const items = await fetchFaqs(paths, block);
     if (!items.length) {
       message(block, 'No FAQs found for these content fragments.');
       return;

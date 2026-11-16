@@ -11,11 +11,13 @@
     <script type="module">
       import decorate, { isAuthoringContext } from '../../blocks/content-fragment/content-fragment.js';
       import decorateSku from '../../blocks/faq-list-by-sku/faq-list-by-sku.js';
-      import { connectAuthorFaqs } from '../../scripts/content-fragment-author.js';
+      import { connectAuthorFaqs, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
       import createPreviewChannel from '../../scripts/experimentation-channel.js';
+      import createPanel from '../../tools/plugins/content-fragment/panel.js';
 
       const results = document.querySelector('#results');
       const originalFetch = window.fetch;
+      const panelMarkup = await (await originalFetch('../../tools/plugins/content-fragment/content-fragment.html')).text();
       const originalReferrer = Object.getOwnPropertyDescriptor(document, 'referrer');
       let accessToken = 'test-ims-token';
       const path = '/content/dam/frescopa/en/faqs/do-i-have-to-buy-frescopa-pods';
@@ -63,6 +65,64 @@
           assert(!isAuthoringContext({ hostname }, ''), `edge host ${hostname}`);
         }
         assert(!isAuthoringContext({ hostname: 'localhost' }, 'https://da.live.example.com/edit'), 'unrelated referrer');
+      });
+
+      await test('panel shows instance, live fragment states and safe editor links', async () => {
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus, setPage } = createPanel(doc);
+        setPage('https://main--frescopa26--markszulc.preview.da.live/drafts/fragmenttest');
+        assert(doc.querySelector('#author-instance').href === 'https://author-p137825-e1511252.adobeaemcloud.com/', 'author instance link');
+        assert(doc.querySelector('#page-path').textContent === '/drafts/fragmenttest', 'current page');
+        showStatus('', { state: 'inventory', paths: [path, secondPath] });
+        assert(doc.querySelectorAll('tbody tr').length === 2, 'references listed before fetching');
+        showStatus('Loading', { state: 'loading', paths: [path, secondPath] });
+        showStatus('Connected', {
+          state: 'connected', paths: [path, secondPath],
+          items: [{ _path: path, question: '<img src=x onerror=alert(1)>' }],
+        });
+        assert(doc.querySelector('#connection-state').textContent === 'Connected', 'actual connection state');
+        const rows = doc.querySelectorAll('tbody tr');
+        assert(rows[0].children[1].textContent === 'Loaded', 'loaded result');
+        assert(rows[1].children[1].textContent === 'Not found', 'missing result still listed');
+        assert(!rows[0].querySelector('img'), 'fragment title treated as text');
+        const edit = rows[0].querySelector('a');
+        assert(edit.href === `https://author-p137825-e1511252.adobeaemcloud.com/editor.html${path}`, 'direct fragment editor URL');
+        assert(edit.target === '_blank' && edit.rel.includes('noopener'), 'separate editor tab');
+        assert(edit.getAttribute('aria-label').includes('opens in a new tab'), 'accessible action label');
+        showStatus('Denied', { state: 'error', paths: [path] });
+        assert(doc.querySelector('#connection-state').textContent === 'Connection error', 'error not shown as connected');
+        assert(doc.querySelector('tbody tr').children[1].textContent === 'Failed', 'failed fragment state');
+        showStatus('', { state: 'inventory', paths: [secondPath] });
+        assert(doc.querySelectorAll('tbody tr').length === 1, 'removed references disappear');
+        showStatus('', { state: 'inventory', paths: [] });
+        assert(doc.querySelector('.table-scroll').hidden && !doc.querySelector('#empty-state').hidden, 'empty page state');
+      });
+
+      await test('inventory includes all blocks, deduplicates paths and updates removals', async () => {
+        const first = fixture('<div></div>');
+        const second = fixture('<div></div>');
+        registerAuthorFragments(first, [path, secondPath]);
+        registerAuthorFragments(second, [path]);
+        const channel = createPreviewChannel(window.location.href);
+        const nextInventory = (expected) => new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error('Missing inventory response')), 2000);
+          channel.onmessage = ({ data }) => {
+            if (data.action !== 'inventory' || !data.response) return;
+            if (JSON.stringify(data.paths) !== JSON.stringify(expected)) return;
+            clearTimeout(timer);
+            resolve(data.paths);
+          };
+        });
+        try {
+          const initial = nextInventory([path, secondPath]);
+          channel.postMessage({ type: 'da:content-fragment', action: 'inventory' });
+          assert(JSON.stringify(await initial) === JSON.stringify([path, secondPath]), 'all unique page paths');
+          const removed = nextInventory([path]);
+          first.remove();
+          assert(JSON.stringify(await removed) === JSON.stringify([path]), 'only remaining references');
+        } finally {
+          channel.close();
+        }
       });
 
       await test('author GraphQL uses bearer authentication, path filters and authored order', async () => {
