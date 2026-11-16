@@ -1,4 +1,5 @@
 import createPreviewChannel from './experimentation-channel.js';
+import createAuthorHighlighter from './author-highlight.js';
 
 const MESSAGE = 'da:content-fragment';
 export const AUTHOR_ORIGIN = 'https://author-p137825-e1511252.adobeaemcloud.com';
@@ -31,9 +32,19 @@ export function registerAuthorFragments(block, paths) {
   block.dataset.contentFragmentPaths = '';
   if (inventoryChannel) return;
   inventoryChannel = createPreviewChannel(window.location.href);
+  const highlights = createAuthorHighlighter();
+  const blocksOnPage = () => [...document.querySelectorAll('.content-fragment[data-content-fragment-paths]')];
+  const referencingBlocks = (path) => blocksOnPage()
+    .filter((element) => fragmentPaths.get(element)?.includes(path));
+  let highlightedPath;
   let lastPaths;
   const publish = (force = false) => {
-    const fragments = [...document.querySelectorAll('.content-fragment[data-content-fragment-paths]')]
+    if (highlightedPath) {
+      const blocks = referencingBlocks(highlightedPath);
+      highlights.highlight(blocks);
+      if (!blocks.length) highlightedPath = undefined;
+    }
+    const fragments = blocksOnPage()
       .flatMap((element) => fragmentPaths.get(element) || []);
     const pathsOnPage = [...new Set(fragments)];
     const snapshot = JSON.stringify(pathsOnPage);
@@ -44,7 +55,30 @@ export function registerAuthorFragments(block, paths) {
     });
   };
   inventoryChannel.onmessage = ({ data }) => {
-    if (data?.type === MESSAGE && data.action === 'inventory' && !data.response) publish(true);
+    if (data?.type !== MESSAGE || data.response) return;
+    if (data.action === 'inventory') publish(true);
+    else if (data.action === 'clear-highlight') {
+      highlightedPath = undefined;
+      highlights.clear();
+    } else if (data.action === 'highlight' && typeof data.requestId === 'string') {
+      const reply = (result) => inventoryChannel.postMessage({
+        type: MESSAGE, action: 'highlight', response: true, requestId: data.requestId, ...result,
+      });
+      try {
+        validatePaths([data.path]);
+        const blocks = referencingBlocks(data.path);
+        if (!blocks.length) throw new Error('This fragment is no longer referenced in the preview. Reload the preview and try again.');
+        highlightedPath = data.path;
+        highlights.highlight(blocks);
+        blocks[0].scrollIntoView({
+          block: 'center',
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+        });
+        reply({ count: blocks.length });
+      } catch (error) {
+        reply({ error: error.message });
+      }
+    }
   };
   const observer = new MutationObserver(() => publish());
   observer.observe(document.body, {
@@ -52,6 +86,7 @@ export function registerAuthorFragments(block, paths) {
   });
   window.addEventListener('pagehide', () => {
     observer.disconnect();
+    highlights.clear();
     inventoryChannel.close();
     inventoryChannel = undefined;
   }, { once: true });
@@ -171,10 +206,41 @@ export function connectAuthorFaqs(pageUrl, getToken, onStatus) {
   };
   channel.postMessage({ type: MESSAGE, action: 'inventory' });
   return () => {
+    if (closed) return;
     closed = true;
+    channel.postMessage({ type: MESSAGE, action: 'clear-highlight' });
     channel.onmessage = null;
     channel.close();
   };
+}
+
+export function highlightAuthorFragment(path, pageUrl = window.location.href) {
+  validatePaths([path]);
+  const channel = createPreviewChannel(pageUrl);
+  return new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    let timeout;
+    const finish = (error, count) => {
+      clearTimeout(timeout);
+      channel.close();
+      if (error) reject(error);
+      else resolve(count);
+    };
+    timeout = setTimeout(() => finish(new Error(
+      'Open Layout or Split view and reload the preview to highlight Content Fragments.',
+    )), 3000);
+    channel.onmessage = ({ data }) => {
+      if (data?.type !== MESSAGE || !data.response
+        || data.action !== 'highlight' || data.requestId !== requestId) return;
+      if (typeof data.error === 'string') finish(new Error(data.error));
+      else if (!Number.isInteger(data.count) || data.count < 1) {
+        finish(new Error('Invalid preview highlight response.'));
+      } else finish(null, data.count);
+    };
+    channel.postMessage({
+      type: MESSAGE, action: 'highlight', requestId, path,
+    });
+  });
 }
 
 export function requestAuthorFaqs(paths, pageUrl = window.location.href) {

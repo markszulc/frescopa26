@@ -195,7 +195,25 @@
 .content-fragment-panel .fragment-name {
   display: block;
   margin-bottom: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--s2-blue-1000, #274dea);
+  font: inherit;
   font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.content-fragment-panel .fragment-name:hover {
+  color: var(--s2-blue-1200, #1532ad);
+}
+
+.content-fragment-panel #highlight-status {
+  margin-top: 12px;
 }
 
 .content-fragment-panel .fragment-path {

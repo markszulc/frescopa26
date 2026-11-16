@@ -1,9 +1,13 @@
 import DA_SDK from 'https://da.live/nx/utils/sdk.js';
-import { connectAuthorFaqs } from '../../../scripts/content-fragment-author.js';
+import { connectAuthorFaqs, highlightAuthorFragment } from '../../../scripts/content-fragment-author.js';
 import { getPageContext } from '../contextual-experimentation/context.js';
 import createPanel from './panel.js';
 
-const { showStatus, setPage } = createPanel();
+let pageUrl;
+const { showStatus, setPage } = createPanel(
+  document,
+  (path) => highlightAuthorFragment(path, pageUrl),
+);
 
 async function init() {
   if (window.parent === window || window.location.ancestorOrigins?.[0] !== 'https://da.live') {
@@ -26,6 +30,7 @@ async function init() {
     throw new Error('Sign in to DA, then reopen this panel.');
   }
   const page = getPageContext(host.context);
+  pageUrl = page.pageUrl;
   setPage(page.pageUrl);
   const disconnect = connectAuthorFaqs(page.pageUrl, () => token, showStatus);
   window.addEventListener('pagehide', () => {

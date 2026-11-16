@@ -1,6 +1,6 @@
 import { AUTHOR_ORIGIN } from '../../../scripts/content-fragment-author.js';
 
-export default function createPanel(doc = document) {
+export default function createPanel(doc = document, onHighlight = null) {
   const fragments = new Map();
   const instance = doc.querySelector('#author-instance');
   instance.href = AUTHOR_ORIGIN;
@@ -10,9 +10,23 @@ export default function createPanel(doc = document) {
     const rows = [...fragments].map(([path, fragment]) => {
       const row = doc.createElement('tr');
       const content = doc.createElement('td');
-      const name = doc.createElement('span');
+      const name = doc.createElement('button');
+      name.type = 'button';
       name.className = 'fragment-name';
       name.textContent = fragment.question || path.split('/').pop();
+      name.disabled = typeof onHighlight !== 'function';
+      name.setAttribute('aria-label', `Highlight blocks referencing ${name.textContent} in the page preview`);
+      name.title = 'Highlight referencing blocks in the page preview';
+      name.addEventListener('click', async () => {
+        const message = doc.querySelector('#highlight-status');
+        try {
+          const count = await onHighlight(path);
+          message.textContent = `Highlighted ${count} ${count === 1 ? 'block' : 'blocks'} in the preview.`;
+        } catch (error) {
+          message.textContent = error.message;
+        }
+        message.hidden = false;
+      });
       const location = doc.createElement('span');
       location.className = 'fragment-path';
       location.textContent = path;

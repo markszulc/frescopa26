@@ -54,6 +54,13 @@ The panel uses DA's Adobe-hosted Spectrum 2 tokens and Adobe Clean typography.
 referenced by the page, including missing or failed fragments. Traffic lights
 show green for loaded, amber for waiting/loading, and red for missing/failed
 fragments; each has a descriptive tooltip and accessible status label.
+Select a fragment name (or activate it with Enter/Space) to outline every block
+referencing that path in the preview and scroll the first into view. Selecting
+another fragment moves the highlight and restores the previous outlines.
+Reloading the preview or unloading the panel clears it. Workspace can hide a
+closed panel without unloading it, so its highlight can remain until the next
+selection or preview reload. Highlighting does not edit or save authored content.
+Highlight errors are shown below the table; Layout or Split view is required.
 **Author Connection** is collapsed by default. Expand it for the author hostname,
 service, authentication method, current page, request details, and troubleshooting.
 Each enabled **Edit** link opens the new Experience Cloud Content Fragment editor

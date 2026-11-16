@@ -11,7 +11,7 @@
     <script type="module">
       import decorate, { isAuthoringContext } from '../../blocks/content-fragment/content-fragment.js';
       import decorateSku from '../../blocks/faq-list-by-sku/faq-list-by-sku.js';
-      import { connectAuthorFaqs, fetchAuthorFaqs, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
+      import { connectAuthorFaqs, fetchAuthorFaqs, highlightAuthorFragment, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
       import createPreviewChannel from '../../scripts/experimentation-channel.js';
       import createPanel from '../../tools/plugins/content-fragment/panel.js';
 
@@ -79,7 +79,7 @@
         assert(doc.querySelector('#page-path').textContent === '/drafts/fragmenttest', 'current page');
         showStatus('', { state: 'inventory', paths: [path, secondPath] });
         assert(doc.querySelectorAll('tbody tr').length === 2, 'references listed before fetching');
-        assert(doc.querySelector('tbody button').disabled && !doc.querySelector('tbody a'), 'no editor link without UUID');
+        assert(doc.querySelector('tbody td:last-child button').disabled && !doc.querySelector('tbody a'), 'no editor link without UUID');
         assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === 'Waiting', 'accessible waiting state');
         showStatus('Loading', { state: 'loading', paths: [path, secondPath] });
         assert(doc.querySelector('.fragment-status').dataset.state === 'Loading', 'loading traffic light');
@@ -92,7 +92,7 @@
         assert(rows[0].children[1].textContent === '' && rows[0].querySelector('.fragment-status').getAttribute('aria-label') === 'Loaded', 'traffic light replaces visible Loaded text accessibly');
         assert(rows[0].querySelector('.fragment-status').title === 'Loaded', 'status tooltip');
         assert(rows[1].querySelector('.fragment-status').dataset.state === 'Not found', 'missing result still listed');
-        assert(rows[1].querySelector('button').disabled, 'missing result cannot open incorrect editor');
+        assert(rows[1].querySelector('td:last-child button').disabled, 'missing result cannot open incorrect editor');
         assert(!rows[0].querySelector('img'), 'fragment title treated as text');
         const edit = rows[0].querySelector('a');
         assert(edit.href === `https://experience.adobe.com/?repo=author-p137825-e1511252.adobeaemcloud.com#/@mark-szulc/aem/cf/editor/editor/${id}`, 'new editor URL uses actual fragment UUID');
@@ -105,6 +105,117 @@
         assert(doc.querySelectorAll('tbody tr').length === 1, 'removed references disappear');
         showStatus('', { state: 'inventory', paths: [] });
         assert(doc.querySelector('.table-scroll').hidden && !doc.querySelector('#empty-state').hidden, 'empty page state');
+      });
+
+      await test('fragment selection highlights only referencing blocks, scrolls and restores outlines', async (disconnect) => {
+        const first = fixture('<div></div>');
+        const second = fixture('<div></div>');
+        const shared = fixture('<div></div>');
+        first.style.setProperty('outline', '1px dashed red', 'important');
+        registerAuthorFragments(first, [path]);
+        registerAuthorFragments(second, [secondPath]);
+        registerAuthorFragments(shared, [path, secondPath]);
+        const scrolled = [];
+        first.scrollIntoView = (options) => scrolled.push({ element: first, options });
+        second.scrollIntoView = (options) => scrolled.push({ element: second, options });
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        let selections = 0;
+        const { showStatus } = createPanel(doc, (path) => {
+          selections += 1;
+          return highlightAuthorFragment(path);
+        });
+        showStatus('', { state: 'inventory', paths: [path, secondPath] });
+        showStatus('Connected', {
+          state: 'connected', paths: [path, secondPath],
+          items: [{ ...items[0], _path: path }, { ...items[1], _path: secondPath }],
+        });
+        const activate = (button) => new Promise((resolve, reject) => {
+          const message = doc.querySelector('#highlight-status');
+          const observer = new MutationObserver(() => {
+            clearTimeout(timer);
+            observer.disconnect();
+            resolve(message.textContent);
+          });
+          const timer = setTimeout(() => {
+            observer.disconnect();
+            reject(new Error('Missing highlight announcement'));
+          }, 2000);
+          observer.observe(message, { childList: true });
+          button.click();
+        });
+        const names = doc.querySelectorAll('.fragment-name');
+        assert(names[0].tagName === 'BUTTON' && !names[0].disabled, 'native keyboard-accessible fragment action');
+        assert((await activate(names[0])) === 'Highlighted 2 blocks in the preview.', 'matching block count announced');
+        assert(first.style.outline === 'rgb(59, 99, 251) solid 2px' && shared.style.outline === first.style.outline, 'all matching blocks outlined');
+        assert(!second.style.outline, 'unrelated block unchanged');
+        assert(scrolled.length === 1 && scrolled[0].element === first && scrolled[0].options.block === 'center', 'first reference scrolled into view');
+        const edit = doc.querySelector('#fragments a');
+        edit.addEventListener('click', event => event.preventDefault());
+        edit.click();
+        assert(selections === 1, 'Edit does not trigger block selection');
+        await activate(names[1]);
+        assert(first.style.outline === 'red dashed 1px' && first.style.getPropertyPriority('outline') === 'important', 'previous inline outline and priority restored');
+        assert(second.style.outline === shared.style.outline && second.style.outline.includes('59, 99, 251'), 'selection moves to the other references');
+        assert(scrolled.length === 2 && scrolled[1].element === second, 'new first reference scrolled');
+        const replacement = fixture('<div></div>');
+        registerAuthorFragments(replacement, [secondPath]);
+        second.remove();
+        shared.remove();
+        await new Promise(resolve => setTimeout(resolve, 0));
+        assert(replacement.style.outline.includes('59, 99, 251') && !second.style.outline && !shared.style.outline, 'live replacement with the same path retains highlight without stale outlines');
+        await new Promise((resolve, reject) => {
+          const observer = new MutationObserver(() => {
+            if (replacement.style.outline) return;
+            clearTimeout(timer);
+            observer.disconnect();
+            resolve();
+          });
+          const timer = setTimeout(() => {
+            observer.disconnect();
+            reject(new Error('Highlight remained after disconnect'));
+          }, 2000);
+          observer.observe(replacement, { attributes: true, attributeFilter: ['style'] });
+          disconnect();
+        });
+        assert(!replacement.style.outline, 'disconnecting the panel clears highlighting');
+      });
+
+      await test('highlight failures are visible and requests stay scoped to the current page', async () => {
+        const block = fixture('<div></div>');
+        registerAuthorFragments(block, [path]);
+        window.fetch = () => { throw new Error('Highlight must not fetch author content'); };
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus } = createPanel(doc, value => highlightAuthorFragment(value));
+        showStatus('', { state: 'inventory', paths: [secondPath] });
+        const message = doc.querySelector('#highlight-status');
+        await new Promise((resolve, reject) => {
+          const observer = new MutationObserver(() => {
+            clearTimeout(timer);
+            observer.disconnect();
+            resolve();
+          });
+          const timer = setTimeout(() => {
+            observer.disconnect();
+            reject(new Error('Missing highlight error'));
+          }, 2000);
+          observer.observe(message, { attributes: true, attributeFilter: ['hidden'] });
+          doc.querySelector('.fragment-name').click();
+        });
+        assert(!message.hidden && message.textContent.includes('no longer referenced'), 'stale reference error outside collapsed connection details');
+        assert(!doc.querySelector('.author-card').open && !doc.querySelector('.author-card').contains(message), 'highlight error visible without troubleshooting expansion');
+        for (const [value, pageUrl, expected] of [
+          ['/content/dam/../private', window.location.href, 'Expected FAQ'],
+          [path, new URL('/unrelated-page', window.location.href).href, 'Open Layout or Split view'],
+        ]) {
+          let failure;
+          try {
+            await highlightAuthorFragment(value, pageUrl);
+          } catch (error) {
+            failure = error;
+          }
+          assert(failure?.message.includes(expected), 'invalid or disconnected highlight fails explicitly');
+          assert(!block.style.outline, 'invalid or other-page request cannot highlight this page');
+        }
       });
 
       await test('inventory includes all blocks, deduplicates paths and updates removals', async () => {
