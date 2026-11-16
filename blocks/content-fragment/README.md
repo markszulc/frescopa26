@@ -38,7 +38,7 @@ in panel memory and are supplied only to the fixed author endpoints and Adobe's
 Content Advisor. DA's
 parent-origin/window-validated token updates are used for subsequent requests.
 If access expires or is denied, the block keeps showing published content and
-its **Published** label tooltip explains the author error; reopen the panel or
+its **Previewing Published Content Fragments** label tooltip explains the author error; reopen the panel or
 sign in to DA to load author content.
 
 ## Enable author access in Workspace
@@ -59,11 +59,13 @@ Fragment** from the tool panel.
 
 Loading never delays page rendering. In Workspace, each block immediately loads
 **published** FAQs from `GET /faq-data-by-path` (the same Edge Function the live
-site uses) and shows a small, muted **Published** label above them, inside a dim
-grey outline around the block. The label's tooltip
+site uses) inside a thin, square, 15% grey border fitted to the FAQ list. A small
+**Previewing Published Content Fragments** tab sits on the border's top-right
+edge. The tab's tooltip
 explains that the content may not match the latest author changes. When the
 Content Fragment panel is open (now or later), the block swaps to author content
-and removes the label and outline without shifting the layout. Author results always win, even if they arrive before the
+and removes the tab and border without shifting the layout (the frame's space is
+reserved in Workspace for both sources). Author results always win, even if they arrive before the
 published response. Fragments that are not yet published show "not published
 yet" with the label, rather than an error. If author loading fails, published
 content stays visible and the label tooltip shows the error. If both fail, the

@@ -1,28 +1,34 @@
 @import url('../faq-list-by-sku/faq-list-by-sku.css');
 
-/* Authoring only: a quiet marker that the FAQs come from AEM publish, not author. */
-.content-fragment .faq-source {
-  width: fit-content;
-  margin: 0 0 0.25rem auto;
-  padding: 0.1rem 0.5rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--ink-soft);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  cursor: help;
-}
-
-/* Authoring only (both sources): room for the published outline without layout shift. */
+/*
+ * Authoring only. The frame is reserved for both sources (transparent for author
+ * content) so swapping between published and author content causes no layout shift.
+ */
 .content-fragment[data-faq-source] {
-  margin-top: 1.25rem;
+  position: relative;
+  max-width: var(--content-narrow);
+  margin-block: 1.75rem 0.75rem;
+  padding: 0 0.75rem 0.5rem;
+  border: 1px solid transparent;
 }
 
-/* Outline rather than border, so swapping to author content causes no layout shift. */
 .content-fragment[data-faq-source="published"] {
-  border-radius: 8px;
-  outline: 2px solid rgb(128 128 128 / 30%);
-  outline-offset: 0.5rem;
+  border-color: rgb(128 128 128 / 15%);
+}
+
+/* A tab sitting on the frame's top edge, so it reads as part of the frame. */
+.content-fragment .faq-source {
+  position: absolute;
+  bottom: calc(100% + 1px);
+  right: -1px;
+  margin: 0;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid rgb(128 128 128 / 15%);
+  border-bottom: 0;
+  background: rgb(128 128 128 / 6%);
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: help;
 }

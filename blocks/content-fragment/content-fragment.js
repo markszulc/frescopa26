@@ -82,9 +82,9 @@ function showFaqs(block, items, source) {
   if (source === 'published') {
     const label = document.createElement('p');
     label.className = 'faq-source';
-    label.textContent = 'Published';
+    label.textContent = 'Previewing Published Content Fragments';
     label.title = 'Showing published content. Open the Content Fragment panel to see the latest author content.';
-    (block.querySelector(':scope > .faq-items') || block).prepend(label);
+    block.prepend(label);
   }
 }
 

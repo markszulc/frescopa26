@@ -931,7 +931,7 @@
         assert(block.dataset.faqSource === 'published' && authorRequests === 0, 'published source without the panel');
         assert(block.querySelector('.faq-label')?.textContent === 'Published question?', 'published FAQs rendered');
         const label = block.querySelector('.faq-source');
-        assert(label?.textContent === 'Published' && label.title.includes('Content Fragment panel'), 'subtle published label explains the source');
+        assert(label?.textContent === 'Previewing Published Content Fragments' && label.title.includes('Content Fragment panel'), 'subtle published label explains the source');
         await decorate(block);
         assert(block.querySelectorAll('.faq-source').length === 1, 're-decoration is idempotent');
         const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
