@@ -109,8 +109,7 @@ export function registerAuthorFragments(block, paths) {
   publish();
 }
 
-export async function fetchAuthorFaqs(paths, accessToken) {
-  validatePaths(paths);
+export async function fetchAuthorCsrfToken(accessToken) {
   if (typeof accessToken !== 'string' || !accessToken.trim()) {
     throw new Error('Sign in to DA and reopen the Content Fragment panel.');
   }
@@ -127,6 +126,13 @@ export async function fetchAuthorFaqs(paths, accessToken) {
   if (typeof token !== 'string' || !token.trim()) {
     throw new Error('AEM author did not accept the DA sign-in. Reopen the Content Fragment panel.');
   }
+  return token;
+}
+
+export async function fetchAuthorFaqs(paths, accessToken) {
+  validatePaths(paths);
+  const token = await fetchAuthorCsrfToken(accessToken);
+  const headers = { Authorization: `Bearer ${accessToken}` };
   const response = await fetch(`${AUTHOR_ORIGIN}/content/_cq_graphql/frescopa/endpoint.json`, {
     method: 'POST',
     credentials: 'omit',

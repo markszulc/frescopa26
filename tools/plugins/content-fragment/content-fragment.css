@@ -242,6 +242,54 @@
   margin-bottom: 0;
 }
 
+.content-fragment-panel .fragment-editor {
+  display: grid;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--s2-gray-200, #e1e1e1);
+}
+
+.content-fragment-panel .fragment-editor label {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.content-fragment-panel .fragment-editor input,
+.content-fragment-panel .fragment-editor textarea,
+.content-fragment-panel .fragment-editor select {
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--s2-gray-500, #8f8f8f);
+  border-radius: 4px;
+  background: var(--s2-gray-25, #fff);
+  color: inherit;
+  font: inherit;
+  font-weight: 400;
+}
+
+.content-fragment-panel .fragment-editor textarea {
+  resize: vertical;
+}
+
+.content-fragment-panel .fragment-editor pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.content-fragment-panel .fragment-editor button {
+  margin: 4px 8px 4px 0;
+  padding: 6px 12px;
+  border: 1px solid var(--s2-gray-500, #8f8f8f);
+  border-radius: 16px;
+  background: var(--s2-gray-25, #fff);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
 .content-fragment-panel #highlight-status,
 .content-fragment-panel #publication-status,
 .content-fragment-panel #insert-status {
@@ -345,6 +393,14 @@
   background: none;
   color: var(--s2-gray-600, #6d6d6d);
   font: inherit;
+  cursor: not-allowed;
+}
+
+.content-fragment-panel .fragment-editor button:disabled {
+  padding: 6px 12px;
+  border: 1px solid var(--s2-gray-200, #e1e1e1);
+  background: var(--s2-gray-100, #e9e9e9);
+  color: var(--s2-gray-600, #6d6d6d);
   cursor: not-allowed;
 }
 

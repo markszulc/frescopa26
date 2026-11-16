@@ -52,7 +52,8 @@ Fragment** from the tool panel. Keep that panel open while fetching author FAQs.
 The panel and preview must use the same code branch/origin. Requests wait up
 to 15 seconds for the panel; if it is opened later, select **Retry author
 connection** in the block. The panel shows connection/fetch errors explicitly.
-Opening the panel does not modify or publish authored content.
+Opening the panel does not modify the DA document or publish content. It records
+observed page usage in fragment metadata as described below.
 
 The panel uses DA's Adobe-hosted Spectrum 2 tokens and Adobe Clean typography.
 **On This Page** appears first and lists unique Content Fragment paths currently
@@ -69,7 +70,7 @@ Each indicator has a descriptive tooltip and accessible status label.
 Select anywhere on a fragment row (or focus its title control and use Enter/Space)
 to expand its details, outline every block referencing that path in the preview,
 and scroll the first into view. The single-open accordion shows the fragment's
-Question and Answer fields from AEM author, UUID, and publication status, with
+fields from AEM author, UUID, and publication status, with
 explicit messages when fields or publication metadata are unavailable.
 Selecting another fragment closes the previous details, moves the highlight,
 and restores the previous outlines. Selecting the same row again collapses it.
@@ -88,6 +89,60 @@ the `mark-szulc` Experience Cloud organization route. Edit remains disabled unti
 a UUID is available. It does not save or publish content. Author-editor sign-in
 and permissions still apply. After saving edits, reload the preview to fetch
 the latest author content. Added or removed block references update the list.
+
+## Edit fields and variations
+
+Opening a fragment's accordion loads its fields from the authenticated Content
+Fragment Management API. Click the inputs to edit and select **Save to AEM** to
+persist changes. All fields in the current FAQ model (question, answer, category,
+and SKU) are editable. Locked fields, multi-value fields, and non-text types are
+shown read-only; use the separate **Edit** link for the full AEM editor.
+Rich-text fields retain their original MIME type and are edited as source,
+not converted to plain text.
+
+The **Variation** selector lists Main plus every existing variation, including
+paginated results. Selection changes which fields are viewed/edited only; it
+does not modify the page's Content Fragment block or its rendered variation.
+Unsaved drafts are retained when switching variations or updating publication
+status. **Discard edits and reload** explicitly discards the current draft and
+reloads it from AEM.
+
+Saves use JSON Patch on the selected fragment/variation endpoint, changing only
+modified field values, with the exact ETag from the loaded representation in
+`If-Match` and an AEM CSRF token. Conflict/permission/validation failures are
+visible and retain the draft; conflicts are never automatically overwritten.
+Saving updates AEM author, not publish or the DA document. Reload the page
+preview to fetch saved content. The panel refreshes publication status after
+successful field or usage-metadata writes.
+
+### AEM CORS requirements
+
+The author must allow the panel's HTTPS preview origin, `GET`, `POST`, `PATCH`,
+and preflight requests, and the `Authorization`, `Content-Type`, `If-Match`, and
+`CSRF-Token` request headers. Its CORS response must **expose `ETag`** (for example
+`Access-Control-Expose-Headers: ETag`). Without a readable ETag the extension
+allows viewing but disables field editing and reports usage writes as blocked.
+It does not use wildcard ETags or unguarded writes as a fallback.
+
+## Fragment page-usage metadata
+
+When a referenced fragment's UUID is resolved, the ordinary panel automatically
+adds the canonical `https://da.live/canvas#/owner/site/page` URL to the fragment's
+multi-value string metadata property **`frescopa:usedOnPages`**, using
+`GET/PATCH /adobe/sites/cf/fragments/{uuid}/metadata`. Existing page entries and
+unrelated metadata are preserved; an already-recorded URL causes no write.
+A concurrent metadata change is reread and merged once, guarded by its new ETag.
+
+This is external DA usage metadata, **not** AEM's native **Referenced by** list,
+which is computed from references inside AEM and cannot be populated with
+external DA pages through the supported management API. The default metadata
+schema accepts the custom property; other schemas must explicitly define it.
+Failures are displayed inside each accordion with **Retry page usage**.
+
+Tracking records observed usage while the panel is open. It is append-only:
+removing a block from a possibly-unsaved preview does not delete historical
+entries or other pages' references. It is not a site-wide crawler, publishing
+hook, or native referential-integrity service.
 
 ## Browse and place fragment paths
 

@@ -5,9 +5,12 @@ import {
 import { getPageContext } from '../contextual-experimentation/context.js';
 import createPanel from './panel.js';
 import connectContentAdvisor from './advisor.js';
+import createFragmentManagement from './management.js';
 
 let pageUrl;
-const { showStatus, setPage } = createPanel(
+const {
+  showStatus, setPage, enableAuthoring, disconnect: disconnectEditors,
+} = createPanel(
   document,
   (path) => highlightAuthorFragment(path, pageUrl),
 );
@@ -37,6 +40,14 @@ async function init() {
   setPage(page.pageUrl);
   const advisorMode = new URLSearchParams(window.location.search).get('advisor') === '1';
   let closed = false;
+  if (!advisorMode) {
+    const usagePage = new URL('https://da.live/canvas');
+    usagePage.hash = `/${page.org}/${page.site}${new URL(page.pageUrl).pathname}`;
+    enableAuthoring(createFragmentManagement(() => token, usagePage.href), async ({ id, path }) => {
+      const items = await fetchAuthorFragmentStatuses([{ _id: id, _path: path }], token);
+      if (!closed) showStatus('', { state: 'publication', items });
+    });
+  }
   const generations = new Map();
   const reportStatus = (text, details) => {
     showStatus(text, details);
@@ -72,6 +83,7 @@ async function init() {
     closed = true;
     disconnect?.();
     disconnectAdvisor?.();
+    disconnectEditors();
     token = undefined;
     window.removeEventListener('message', updateToken, true);
   }, { once: true });

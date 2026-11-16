@@ -15,6 +15,8 @@
       import createPreviewChannel from '../../scripts/experimentation-channel.js';
       import createPanel from '../../tools/plugins/content-fragment/panel.js';
       import connectContentAdvisor, { fetchAdvisorOrganization, placeFragmentPaths } from '../../tools/plugins/content-fragment/advisor.js';
+      import createFragmentManagement from '../../tools/plugins/content-fragment/management.js';
+      import createFragmentEditor from '../../tools/plugins/content-fragment/editor.js';
 
       const results = document.querySelector('#results');
       const originalFetch = window.fetch;
@@ -157,6 +159,201 @@
         showStatus('', { state: 'inventory', paths: [path] });
         showStatus('', { state: 'inventory', paths: [path, `${path}-missing`] });
         assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'removed fragment cannot resurrect expanded state');
+      });
+
+      await test('management edits only changed fields of the chosen variation using its exact ETag', async () => {
+        const api = createFragmentManagement(() => accessToken, 'https://da.live/canvas#/markszulc/frescopa26/drafts/fragmenttest');
+        const reference = { id, path };
+        const fields = [
+          { name: 'question', type: 'text', values: ['Original'] },
+          { name: 'answer', type: 'long-text', mimeType: 'text/html', values: ['<p>Keep formatting</p>'] },
+          { name: 'locked', type: 'text', locked: true, values: ['Keep'] },
+        ];
+        let variation = { name: 'short', fields };
+        const writes = [];
+        window.fetch = async (url, options) => {
+          if (url.endsWith('/csrf/token.json')) return new Response(JSON.stringify({ token: 'csrf-token' }));
+          assert(url.includes(`/fragments/${id}/variations/short`), 'variation edits never target main');
+          assert(options.headers.Authorization === 'Bearer test-ims-token' && options.credentials === 'omit', 'authenticated management request');
+          if (options.method === 'PATCH') {
+            writes.push(JSON.parse(options.body));
+            assert(options.headers['If-Match'] === '"variation-version"' && options.headers['CSRF-Token'] === 'csrf-token', 'conditional save with CSRF');
+            assert(options.headers['Content-Type'] === 'application/json-patch+json', 'official JSON Patch media type');
+            variation = { ...variation, fields: [{ ...fields[0], values: ['Updated'] }, ...fields.slice(1)] };
+          }
+          return new Response(JSON.stringify(variation), { headers: { ETag: '"variation-version"' } });
+        };
+        const snapshot = await api.read(reference, 'short');
+        const saved = await api.save(reference, snapshot, [{ name: 'question', value: 'Updated' }, { name: 'answer', value: '<p>Keep formatting</p>' }]);
+        assert(saved.data.fields[0].values[0] === 'Updated', 'saved fields reread from author');
+        assert(writes.length === 1 && writes[0].length === 2 && writes[0][0].op === 'test' && writes[0][1].path === '/fields/0/values', 'only changed field patched with identity guard');
+        for (const [value, changes] of [
+          [{ ...snapshot, etag: null }, [{ name: 'question', value: 'No ETag' }]],
+          [{ ...snapshot, etag: '*' }, [{ name: 'question', value: 'Wildcard' }]],
+          [snapshot, [{ name: 'locked', value: 'Overwrite' }]],
+          [snapshot, [{ name: 'missing', value: 'Overwrite' }]],
+        ]) {
+          let failure;
+          try { await api.save(reference, value, changes); } catch (error) { failure = error; }
+          assert(failure && writes.length === 1, 'unsafe save blocked before mutation');
+        }
+        window.fetch = async url => url.endsWith('/csrf/token.json')
+          ? new Response(JSON.stringify({ token: 'csrf-token' })) : new Response('{}', { status: 412 });
+        let conflict;
+        try { await api.save(reference, snapshot, [{ name: 'question', value: 'Conflict' }]); } catch (error) { conflict = error; }
+        assert(conflict?.message.includes('edits are retained'), 'conflict explicit without automatic overwrite');
+      });
+
+      await test('variation listing reads every page and rejects repeating cursors', async () => {
+        const api = createFragmentManagement(() => accessToken);
+        const urls = [];
+        window.fetch = async url => {
+          urls.push(url);
+          return new Response(JSON.stringify(url.includes('cursor=next')
+            ? { items: [{ name: 'second', title: 'Second' }] }
+            : { items: [{ name: 'first', title: 'First' }], cursor: 'next' }));
+        };
+        const variations = await api.variations({ id, path });
+        assert(variations.length === 2 && urls.length === 2 && urls[1].includes('cursor=next'), 'all existing variations available');
+        window.fetch = async () => new Response(JSON.stringify({ items: [], cursor: 'repeat' }));
+        let failure;
+        try { await api.variations({ id, path }); } catch (error) { failure = error; }
+        assert(failure?.message.includes('pagination'), 'bad cursor cannot loop forever');
+      });
+
+      await test('usage metadata appends the DA page once and preserves concurrent and unrelated references', async () => {
+        const page = 'https://da.live/canvas#/markszulc/frescopa26/drafts/fragmenttest';
+        const otherPage = 'https://da.live/canvas#/markszulc/frescopa26/other';
+        const api = createFragmentManagement(() => accessToken, page);
+        let pages = [otherPage];
+        let patches = 0;
+        let version = 1;
+        window.fetch = async (url, options) => {
+          if (url.endsWith('/csrf/token.json')) return new Response(JSON.stringify({ token: 'csrf-token' }));
+          assert(url.endsWith(`/fragments/${id}/metadata`), 'usage stored as metadata, not outbound references');
+          if (options.method === 'PATCH') {
+            patches += 1;
+            if (patches === 1) {
+              pages.push(`${otherPage}-concurrent`);
+              version += 1;
+              return new Response('{}', { status: 412 });
+            }
+            assert(options.headers['If-Match'] === `"metadata-${version}"`, 'retry uses fresh metadata ETag');
+            const patch = JSON.parse(options.body);
+            assert(patch.length === 1 && patch[0].path === '/frescopa:usedOnPages', 'unrelated metadata untouched');
+            pages = patch[0].value;
+          }
+          return new Response(JSON.stringify({ schemaId: 'default', fields: [
+            { name: 'frescopa:usedOnPages', type: 'array', value: pages },
+            { name: 'dc:title', value: 'Keep title' },
+          ] }), { headers: { ETag: `"metadata-${version}"` } });
+        };
+        await api.recordUsage({ id, path });
+        assert(pages.includes(page) && pages.includes(otherPage) && pages.includes(`${otherPage}-concurrent`), 'concurrent additions preserved');
+        await api.recordUsage({ id, path });
+        assert(patches === 2 && pages.filter(value => value === page).length === 1, 'repeat page visits cause no duplicate or write');
+        window.fetch = async () => new Response(JSON.stringify({ schemaId: 'default', fields: [] }));
+        let failure;
+        try { await api.recordUsage({ id, path }); } catch (error) { failure = error; }
+        assert(failure?.message.includes('expose ETag'), 'unexposed ETag fails visibly instead of unguarded write');
+      });
+
+      await test('inline editor retains variation drafts and errors, and does not change the page variation', async () => {
+        const doc = new DOMParser().parseFromString('<body></body>', 'text/html');
+        const calls = [];
+        const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+        const snapshot = variation => ({
+          variation, etag: '"version"', data: { fields: [
+            { name: 'question', type: 'text', values: [`${variation} question`] },
+            { name: 'answer', type: 'long-text', values: ['An answer'] },
+          ] },
+        });
+        let conflict = true;
+        let saved = 0;
+        const api = {
+          recordUsage: async () => { calls.push('usage'); },
+          variations: async () => [{ name: 'short', title: 'Short' }],
+          read: async (reference, variation) => { calls.push(variation); return snapshot(variation); },
+          save: async (reference, original, changes) => {
+            if (conflict) throw new Error('Concurrent edit; edits retained.');
+            return { ...original, data: { fields: original.data.fields.map(field => ({
+              ...field, values: [changes.find(change => change.name === field.name).value],
+            })) } };
+          },
+        };
+        const editor = createFragmentEditor(doc, { id, path }, api, () => { saved += 1; });
+        doc.body.append(editor.element);
+        editor.open();
+        await tick();
+        const change = value => {
+          const input = doc.querySelector('input[name="question"]');
+          input.value = value;
+          input.dispatchEvent(new Event('input'));
+        };
+        change('Unsaved main');
+        doc.querySelector('select').value = 'short';
+        doc.querySelector('select').dispatchEvent(new Event('change'));
+        await tick();
+        assert(doc.querySelector('input').value === 'short question', 'selected variation fields displayed');
+        change('Unsaved variation');
+        doc.querySelector('select').value = 'master';
+        doc.querySelector('select').dispatchEvent(new Event('change'));
+        await tick();
+        assert(doc.querySelector('input').value === 'Unsaved main', 'main draft retained across switches');
+        doc.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true }));
+        await tick();
+        assert(doc.querySelector('input').value === 'Unsaved main' && editor.element.textContent.includes('Concurrent edit'), 'save failure keeps edits and shows error');
+        conflict = false;
+        doc.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true }));
+        await tick();
+        assert(saved === 1 && editor.element.textContent.includes('Saved to AEM author'), 'explicit save acknowledged');
+        assert(calls.join(',') === 'usage,master,short', 'variation browsing only reads; usage recorded once');
+        assert(doc.querySelector('button[type="submit"]').disabled, 'saved draft no longer dirty');
+        editor.disconnect();
+        const readOnly = createFragmentEditor(doc, { id, path }, {
+          ...api, read: async () => ({ ...snapshot('master'), etag: null }),
+        }, () => { throw new Error('Read-only editor cannot save'); });
+        doc.body.replaceChildren(readOnly.element);
+        readOnly.open();
+        await tick();
+        assert(doc.querySelector('input').disabled && readOnly.element.textContent.includes('Read-only'), 'unexposed ETag keeps fields read-only with configuration guidance');
+        readOnly.disconnect();
+      });
+
+      await test('panel preserves inline drafts across inventory and publication updates and records usage once', async () => {
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus, enableAuthoring, disconnect } = createPanel(doc);
+        const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+        let usages = 0;
+        const api = {
+          recordUsage: async () => { usages += 1; },
+          variations: async () => [],
+          read: async () => ({ variation: 'master', etag: '"version"', data: { fields: [
+            { name: 'question', type: 'text', values: ['Original'] },
+          ] } }),
+          save: async (reference, snapshot, changes) => ({ ...snapshot, data: { fields: [
+            { name: 'question', type: 'text', values: [changes[0].value] },
+          ] } }),
+        };
+        enableAuthoring(api, () => {});
+        showStatus('', { state: 'inventory', paths: [path] });
+        showStatus('', { state: 'connected', paths: [path], items: [{ ...items[0], _path: path }] });
+        await tick();
+        assert(usages === 1, 'usage recorded even before opening fields');
+        doc.querySelector('.fragment-toggle').click();
+        await tick();
+        const input = doc.querySelector('.fragment-editor input');
+        input.value = 'Keep draft';
+        input.dispatchEvent(new Event('input'));
+        showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'PUBLISHED' }] });
+        showStatus('', { state: 'loading', paths: [path] });
+        showStatus('', { state: 'connected', paths: [path], items: [{ ...items[0], _path: path }] });
+        assert(doc.querySelector('.fragment-editor input') === input && input.value === 'Keep draft', 'background updates preserve editor and dirty values');
+        doc.querySelector('.fragment-editor form').dispatchEvent(new Event('submit', { cancelable: true }));
+        await tick();
+        assert(doc.querySelector('.fragment-name').textContent === 'Keep draft', 'saved title updates current fragment after background object replacement');
+        assert(usages === 1, 'background rerenders do not duplicate usage requests');
+        disconnect();
       });
 
       await test('fragment selection highlights only referencing blocks, scrolls and restores outlines', async (disconnect) => {
