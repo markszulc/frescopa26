@@ -40,10 +40,13 @@
       <section aria-labelledby="browse-heading">
         <h2 id="browse-heading">Place a Content Fragment</h2>
         <p class="description">Select a Content Fragment block to add a path, or place the cursor where you want to paste it.</p>
-        <button id="browse-fragments" type="button" disabled>Browse with Content Advisor</button>
-        <button id="close-advisor" type="button" hidden>Close browser</button>
-        <div id="content-advisor"></div>
+        <button id="browse-fragments" type="button" aria-haspopup="dialog" disabled>Browse with Content Advisor</button>
+        <div id="content-advisor" hidden></div>
         <p id="insert-status" class="description" role="status" aria-live="polite"></p>
+        <div id="advisor-actions" hidden>
+          <button id="close-advisor" type="button">Cancel</button>
+          <button id="insert-fragments" type="button" disabled>Insert selected fragments</button>
+        </div>
       </section>
 
       <details class="author-card">

@@ -3,6 +3,32 @@ import { AUTHOR_ORIGIN, validatePaths } from '../../../scripts/content-fragment-
 import { readPaths } from '../../../blocks/content-fragment/content-fragment.js';
 
 const SELECTOR_URL = 'https://experience.adobe.com/solutions/CQ-assets-selectors/static-assets/resources/assets-selectors.js';
+const REPOSITORY_ID = new URL(AUTHOR_ORIGIN).hostname;
+
+export async function fetchAdvisorOrganization(accessToken) {
+  if (typeof accessToken !== 'string' || !accessToken.trim()) {
+    throw new Error('Sign in to DA and reopen Content Advisor.');
+  }
+  const response = await fetch('https://aem-discovery.adobe.io/repositories', {
+    credentials: 'omit',
+    cache: 'no-store',
+    headers: { Authorization: `Bearer ${accessToken}`, 'x-api-key': 'exc_app' },
+  });
+  if (!response.ok) throw new Error(`AEM repository discovery returned HTTP ${response.status}. Check your AEM organization access.`);
+  const json = await response.json();
+  if (!Array.isArray(json.children)) throw new Error('Invalid AEM repository discovery response.');
+  const repository = json.children
+    .map((child) => {
+      const { _embedded: embedded } = child || {};
+      return embedded?.['http://ns.adobe.com/adobecloud/rel/primary'];
+    })
+    .find((entry) => entry?.['repo:repositoryId'] === REPOSITORY_ID);
+  const owner = repository?.['repo:owner'];
+  if (owner?.type !== 'org' || !/^[a-z0-9]+@AdobeOrg$/i.test(owner.id)) {
+    throw new Error('Could not determine the organization owning this AEM repository. Check repository discovery access and retry.');
+  }
+  return owner.id;
+}
 
 export async function placeFragmentPaths(actions, snapshot, paths) {
   validatePaths(paths);
@@ -47,35 +73,52 @@ export async function placeFragmentPaths(actions, snapshot, paths) {
 export default function connectContentAdvisor(doc, host, getToken) {
   const button = doc.querySelector('#browse-fragments');
   const closeButton = doc.querySelector('#close-advisor');
+  const insertButton = doc.querySelector('#insert-fragments');
+  const footer = doc.querySelector('#advisor-actions');
   const container = doc.querySelector('#content-advisor');
   const message = doc.querySelector('#insert-status');
   let snapshot;
   let closed = false;
   let busy = false;
+  let selected;
   const unsubscribe = host.actions.subscribeLiveDocument((value) => { snapshot = value; });
   button.disabled = false;
   button.addEventListener('click', async () => {
     button.disabled = true;
+    footer.hidden = false;
+    closeButton.hidden = false;
+    insertButton.disabled = true;
+    selected = undefined;
     message.textContent = 'Loading Adobe Content Advisor...';
+    let cancelled = false;
+    const onClose = () => {
+      cancelled = true;
+      container.hidden = true;
+      closeButton.hidden = true;
+      footer.hidden = true;
+      button.hidden = false;
+      message.textContent = '';
+      button.disabled = false;
+      host.actions.closeLibrary();
+    };
+    closeButton.onclick = onClose;
     try {
-      await loadScript(SELECTOR_URL);
-      if (closed) return;
+      const [imsOrg] = await Promise.all([
+        fetchAdvisorOrganization(getToken()),
+        loadScript(SELECTOR_URL),
+      ]);
+      if (closed || cancelled) return;
       const selectors = window.PureJSSelectors;
       if (typeof selectors?.renderContentAdvisor !== 'function') {
         throw new Error('Adobe Content Advisor is unavailable. Reopen the panel and try again.');
       }
-      const onClose = () => {
-        container.hidden = true;
-        closeButton.hidden = true;
-        message.textContent = '';
-        button.disabled = false;
-      };
-      closeButton.onclick = onClose;
       const onSubmit = async ({ contentFragments, repoId }) => {
         if (closed || busy) return;
         busy = true;
+        insertButton.disabled = true;
+        closeButton.disabled = true;
         try {
-          if (repoId && repoId !== new URL(AUTHOR_ORIGIN).hostname) {
+          if (repoId && repoId !== REPOSITORY_ID) {
             throw new Error('Select fragments from the configured AEM author repository.');
           }
           if (!Array.isArray(contentFragments) || contentFragments.some((fragment) => (
@@ -90,41 +133,57 @@ export default function connectContentAdvisor(doc, host, getToken) {
             message.textContent = text;
           }
         } catch (error) {
+          if (closed || cancelled) return;
           message.textContent = error.message;
         } finally {
           busy = false;
+          insertButton.disabled = !selected?.contentFragments?.length;
+          closeButton.disabled = false;
         }
       };
+      const onSelectionChange = (value) => {
+        selected = value;
+        const count = Array.isArray(value?.contentFragments) ? value.contentFragments.length : 0;
+        insertButton.textContent = count ? `Insert selected fragments (${count})` : 'Insert selected fragments';
+        insertButton.disabled = busy || !count;
+      };
+      insertButton.onclick = () => onSubmit(selected);
       container.hidden = false;
+      button.hidden = true;
       closeButton.hidden = false;
       selectors.renderContentAdvisor(container, {
         imsToken: getToken(),
-        repositoryId: new URL(AUTHOR_ORIGIN).hostname,
+        imsOrg,
+        repositoryId: REPOSITORY_ID,
         aemTierType: ['author'],
         featureSet: ['advisor', 'content-fragments'],
         defaultSelectedFeature: 'content-fragments',
         noWrap: true,
         onClose,
         handleSelection: () => {
+          onSelectionChange(undefined);
           message.textContent = 'Choose Content Fragments in Content Advisor to insert fragment paths, not media assets.';
         },
+        onSwitchFeature: () => onSelectionChange(undefined),
         contentFragmentSelectorProps: {
           imsToken: getToken(),
-          repoId: new URL(AUTHOR_ORIGIN).hostname,
+          orgId: imsOrg,
+          repoId: REPOSITORY_ID,
           filters: { folder: '/content/dam/frescopa/en/faqs' },
           selectionType: 'multiple',
+          onSelectionChange,
           onSubmit,
           onDismiss: onClose,
         },
       });
-      message.textContent = 'Choose Content Fragments, browse, then confirm your selection to place paths.';
+      message.textContent = 'Select Content Fragments, then use Insert selected fragments below.';
     } catch (error) {
       if (!window.PureJSSelectors?.renderContentAdvisor) {
         document.head.querySelector(`script[src="${SELECTOR_URL}"]`)?.remove();
       }
       message.textContent = error.message || 'Could not load Adobe Content Advisor. Check network access and try again.';
       button.disabled = false;
-      closeButton.hidden = true;
+      button.hidden = false;
     }
   });
   return () => {

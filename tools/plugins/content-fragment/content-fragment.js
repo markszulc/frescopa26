@@ -35,9 +35,10 @@ async function init() {
   const page = getPageContext(host.context);
   pageUrl = page.pageUrl;
   setPage(page.pageUrl);
+  const advisorMode = new URLSearchParams(window.location.search).get('advisor') === '1';
   let closed = false;
   const generations = new Map();
-  const disconnect = connectAuthorFaqs(page.pageUrl, () => token, (text, details) => {
+  const reportStatus = (text, details) => {
     showStatus(text, details);
     if (details.state === 'loading') {
       details.paths.forEach((path) => generations.set(path, (generations.get(path) || 0) + 1));
@@ -52,12 +53,25 @@ async function init() {
         });
       }
     });
-  });
-  const disconnectAdvisor = connectContentAdvisor(document, host, () => token);
+  };
+  const disconnect = advisorMode ? null : connectAuthorFaqs(pageUrl, () => token, reportStatus);
+  let disconnectAdvisor;
+  if (advisorMode) {
+    document.body.classList.add('content-advisor-dialog');
+    disconnectAdvisor = connectContentAdvisor(document, host, () => token);
+    document.querySelector('#browse-fragments').click();
+  } else {
+    const browse = document.querySelector('#browse-fragments');
+    browse.disabled = false;
+    browse.addEventListener('click', () => {
+      host.actions.showPanel('content-advisor');
+      document.querySelector('#insert-status').textContent = 'Opening Content Advisor in a Workspace dialog. If it does not open, register the Content Advisor fullsize-dialog library entry in DA configuration.';
+    });
+  }
   window.addEventListener('pagehide', () => {
     closed = true;
-    disconnect();
-    disconnectAdvisor();
+    disconnect?.();
+    disconnectAdvisor?.();
     token = undefined;
     window.removeEventListener('message', updateToken, true);
   }, { once: true });

@@ -36,12 +36,16 @@ never silently fall back to published content.
 
 ## Enable author access in Workspace
 
-After deploying the code, add this row to the `library` sheet at
+After deploying the code, add these rows to the `library` sheet at
 `https://da.live/config#/markszulc/frescopa26`, preserving existing entries:
 
-| title | path |
-| --- | --- |
-| Content Fragment | /tools/plugins/content-fragment/content-fragment.html |
+| title | path | experience |
+| --- | --- | --- |
+| Content Fragment | /tools/plugins/content-fragment/content-fragment.html | inline |
+| Content Advisor | /tools/plugins/content-fragment/content-fragment.html?advisor=1 | fullsize-dialog |
+
+Use the **experience** column, not **format**, for `fullsize-dialog`. Reload
+Workspace after changing the library registration.
 
 Open the page in DA canvas using Layout or Split view and select **Content
 Fragment** from the tool panel. Keep that panel open while fetching author FAQs.
@@ -82,13 +86,30 @@ the latest author content. Added or removed block references update the list.
 
 ## Browse and place fragment paths
 
-**Browse with Content Advisor** loads Adobe's hosted Content Advisor, with its
-built-in **Content Fragments** experience enabled and selected. It uses the DA
-IMS token and the same author repository, initially browsing the FAQ folder.
+**Browse with Content Advisor** uses DA's SDK `showPanel('content-advisor')` to
+open a native Workspace full-size dialog above the editor, not inside the
+sidebar iframe. The Content Advisor library registration above is required;
+an iframe-local CSS dialog cannot escape the sidebar's bounds.
+The dialog loads Adobe's hosted Content Advisor, with its built-in **Content
+Fragments** experience enabled and selected. It uses the DA IMS token and the
+same author repository, initially browsing the FAQ folder.
 The organization must have Content Advisor access/provisioning for the panel's
 HTTPS preview origin. No custom fragment picker is used.
 
-Select one or more main-variation fragments and confirm the selection. If a
+The repository's owning IMS organization is resolved from Adobe's authenticated
+`https://aem-discovery.adobe.io/repositories` API by matching the exact author
+repository ID. It is passed as Content Advisor's `imsOrg` and the fragment
+selector's `orgId`, addressing the "Couldn't determine your organization for
+this repository" notice. Discovery errors are shown explicitly rather than
+guessing an organization or suppressing the notice.
+
+Select one or more main-variation fragments and use the persistent **Insert
+selected fragments** button below the Adobe picker. This action is enabled by
+the native `onSelectionChange` callback; it does not depend on the embedded
+picker rendering its own submission controls. **Cancel** or Escape closes the
+Workspace dialog without inserting. The picker scrolls within the available
+dialog height while the insertion controls remain visible.
+If a
 one-column, path-based **Content Fragment** block is selected in DA, the panel
 adds the paths to that block, preserving existing paths and removing duplicates.
 It uses DA's live-document subscription and guarded `sendHTML` replacement:

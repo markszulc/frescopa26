@@ -14,7 +14,7 @@
       import { connectAuthorFaqs, fetchAuthorFaqs, fetchAuthorFragmentStatuses, highlightAuthorFragment, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
       import createPreviewChannel from '../../scripts/experimentation-channel.js';
       import createPanel from '../../tools/plugins/content-fragment/panel.js';
-      import connectContentAdvisor, { placeFragmentPaths } from '../../tools/plugins/content-fragment/advisor.js';
+      import connectContentAdvisor, { fetchAdvisorOrganization, placeFragmentPaths } from '../../tools/plugins/content-fragment/advisor.js';
 
       const results = document.querySelector('#results');
       const originalFetch = window.fetch;
@@ -348,12 +348,24 @@
         let props;
         let pasted;
         let unsubscribed = false;
+        let closedDialogs = 0;
+        const imsOrg = 'A123456@AdobeOrg';
+        window.fetch = async (url, options) => {
+          assert(url === 'https://aem-discovery.adobe.io/repositories', 'Adobe repository discovery endpoint');
+          assert(options.headers.Authorization === `Bearer ${accessToken}` && options.headers['x-api-key'] === 'exc_app', 'discovery uses current DA sign-in and native Adobe client');
+          assert(options.credentials === 'omit', 'no discovery cookies');
+          return { ok: true, json: async () => ({ children: [
+            { _embedded: { 'http://ns.adobe.com/adobecloud/rel/primary': { 'repo:repositoryId': 'other-author', 'repo:owner': { id: 'B765432@AdobeOrg', type: 'org' } } } },
+            { _embedded: { 'http://ns.adobe.com/adobecloud/rel/primary': { 'repo:repositoryId': 'author-p137825-e1511252.adobeaemcloud.com', 'repo:owner': { id: imsOrg, type: 'org' } } } },
+          ] }) };
+        };
         const actions = {
           subscribeLiveDocument: (callback) => {
             callback({ html: '<body><main><div><p>Cursor</p></div></main></body>', selection: { blockIndex: null }, editable: true });
             return () => { unsubscribed = true; };
           },
           sendText: (text) => { pasted = text; },
+          closeLibrary: () => { closedDialogs += 1; },
         };
         window.PureJSSelectors = { renderContentAdvisor: (container, options) => { props = options; } };
         const disconnect = connectContentAdvisor(doc, { actions }, () => accessToken);
@@ -363,6 +375,7 @@
           await new Promise(resolve => setTimeout(resolve, 0));
           assert(props.featureSet.includes('content-fragments') && props.defaultSelectedFeature === 'content-fragments', 'Adobe fragment experience enabled and selected, not a custom picker');
           assert(props.imsToken === accessToken && props.contentFragmentSelectorProps.imsToken === accessToken, 'existing DA token supplied to both Adobe experiences');
+          assert(props.imsOrg === imsOrg && props.contentFragmentSelectorProps.orgId === imsOrg, 'actual owning organization passed to both pickers, not the first accessible organization');
           assert(props.repositoryId === 'author-p137825-e1511252.adobeaemcloud.com' && props.contentFragmentSelectorProps.repoId === props.repositoryId, 'fixed author repository');
           props.handleSelection([{ path }]);
           assert(!pasted && doc.querySelector('#insert-status').textContent.includes('not media assets'), 'media selection cannot insert a fragment path');
@@ -370,20 +383,44 @@
           assert(!pasted && doc.querySelector('#insert-status').textContent.includes('main-variation'), 'unsupported variations not silently inserted as master');
           await props.contentFragmentSelectorProps.onSubmit({ contentFragments: [{ path }], repoId: 'other-author' });
           assert(!pasted && doc.querySelector('#insert-status').textContent.includes('configured AEM author'), 'wrong repository cannot insert conflicting paths');
-          await props.contentFragmentSelectorProps.onSubmit({ contentFragments: [{ path, variations: [] }], repoId: props.repositoryId });
-          assert(pasted === path && !button.disabled && doc.querySelector('#content-advisor').hidden, 'confirmed fragment selection pastes plain path and closes browser');
+          const insert = doc.querySelector('#insert-fragments');
+          assert(insert.disabled && !doc.querySelector('#advisor-actions').hidden, 'persistent insert action visible but disabled without selection');
+          props.contentFragmentSelectorProps.onSelectionChange({ contentFragments: [{ path, variations: [] }], repoId: props.repositoryId });
+          assert(!insert.disabled && insert.textContent.includes('(1)') && !pasted, 'native selection enables insertion without writing before confirmation');
+          props.contentFragmentSelectorProps.onSelectionChange({ contentFragments: [] });
+          assert(insert.disabled, 'clearing selection disables insertion');
+          props.contentFragmentSelectorProps.onSelectionChange({ contentFragments: [{ path, variations: [] }], repoId: props.repositoryId });
+          insert.click();
+          await new Promise(resolve => setTimeout(resolve, 0));
+          assert(pasted === path && closedDialogs === 1 && doc.querySelector('#content-advisor').hidden, 'visible insert action places paths and closes the Workspace dialog');
           accessToken = 'refreshed-ims-token';
           button.click();
           await new Promise(resolve => setTimeout(resolve, 0));
           assert(props.imsToken === accessToken && !doc.querySelector('#content-advisor').hidden, 'reopening uses current token');
           doc.querySelector('#close-advisor').click();
-          assert(doc.querySelector('#content-advisor').hidden && !button.disabled, 'author can cancel inline browsing');
+          assert(doc.querySelector('#content-advisor').hidden && closedDialogs === 2, 'Cancel closes the native dialog');
         } finally {
           disconnect();
           window.PureJSSelectors = originalSelectors;
           script.remove();
         }
         assert(unsubscribed, 'live document subscription released');
+      });
+
+      await test('missing or invalid repository organization is reported instead of guessing or hiding the notice', async () => {
+        for (const response of [
+          { ok: false, status: 403 },
+          { ok: true, json: async () => ({ children: [] }) },
+          { ok: true, json: async () => ({}) },
+          { ok: true, json: async () => ({ children: [
+            { _embedded: { 'http://ns.adobe.com/adobecloud/rel/primary': { 'repo:repositoryId': 'author-p137825-e1511252.adobeaemcloud.com', 'repo:owner': { id: 'not-an-ims-org', type: 'org' } } } },
+          ] }) },
+        ]) {
+          window.fetch = async () => response;
+          let failure;
+          try { await fetchAdvisorOrganization(accessToken); } catch (error) { failure = error; }
+          assert(failure?.message, 'discovery failure surfaced explicitly');
+        }
       });
 
       await test('author GraphQL uses bearer authentication, path filters and authored order', async () => {

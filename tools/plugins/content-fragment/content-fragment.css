@@ -241,7 +241,8 @@
 }
 
 .content-fragment-panel #browse-fragments,
-.content-fragment-panel #close-advisor {
+.content-fragment-panel #close-advisor,
+.content-fragment-panel #insert-fragments {
   padding: 8px 16px;
   border: 1px solid var(--s2-gray-500, #8f8f8f);
   border-radius: 20px;
@@ -251,9 +252,57 @@
   cursor: pointer;
 }
 
-.content-fragment-panel #content-advisor:not(:empty) {
-  height: 75vh;
-  min-height: 480px;
+.content-fragment-panel #advisor-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-block: 12px;
+}
+
+.content-fragment-panel #advisor-actions[hidden] {
+  display: none;
+}
+
+.content-fragment-panel #insert-fragments {
+  border-color: var(--s2-blue-1000, #274dea);
+  background: var(--s2-blue-1000, #274dea);
+  color: #fff;
+}
+
+.content-fragment-panel #insert-fragments:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.content-advisor-dialog main {
+  height: 100dvh;
+  padding: 16px;
+}
+
+.content-advisor-dialog main > :not([aria-labelledby="browse-heading"]) {
+  display: none;
+}
+
+.content-advisor-dialog [aria-labelledby="browse-heading"] {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.content-advisor-dialog #content-advisor {
+  min-height: 0;
+  flex: 1;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.content-advisor-dialog #content-advisor > div {
+  height: 100%;
+}
+
+.content-advisor-dialog #insert-status,
+.content-advisor-dialog #advisor-actions {
+  flex-shrink: 0;
 }
 
 .content-fragment-panel button:disabled {
