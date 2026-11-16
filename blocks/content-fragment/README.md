@@ -11,23 +11,48 @@ fragment path per line in the cell (separate paragraphs or line breaks work):
 
 Paths may be together in one cell or in separate rows. Duplicate
 paths are requested only once. In Experience Workspace or DA (`da.live`,
-including its preview subdomains), the block fetches directly from
-`https://author-p137825-e1511252.adobeaemcloud.com/content/_cq_graphql/frescopa/endpoint.json`.
-Embedded previews are detected using their ancestor origins or referrer from
-DA or `experience.adobe.com`. The block POSTs a GraphQL path filter using the
-existing AEM author session cookies. Before each POST, it fetches a fresh token
-from `/libs/granite/csrf/token.json` on author and sends it in the `CSRF-Token`
-header, as required by AEM for authenticated POST requests.
-Authors must be signed in to AEM author; both endpoints must allow credentialed
-cross-origin requests from the actual preview origin, including the
-`Content-Type` and `CSRF-Token` request headers. The browser must permit the
-author cookies.
+including its preview subdomains), the block uses the **Content Fragment** DA
+panel to fetch directly from AEM author in the browser. The panel obtains DA's
+in-memory IMS token through the DA SDK and sends `Authorization: Bearer ...`
+to `https://author-p137825-e1511252.adobeaemcloud.com`. It omits session cookies,
+so no SameSite cookie change is needed.
 
-If author requests return 403, check the failed request in browser Network tools:
-a missing/empty token indicates an unavailable author session; a GraphQL POST
-with a valid token may still be rejected by AEM permissions or the Sling Referrer
-Filter. Check AEM logs and the allowed preview origins rather than disabling
-CSRF protection.
+The panel first requests `/libs/granite/csrf/token.json` using the bearer token,
+then POSTs the GraphQL path filter to
+`/content/_cq_graphql/frescopa/endpoint.json` with the bearer and `CSRF-Token`
+headers. Both endpoints must allow the actual preview origin and the
+`Authorization`, `Content-Type`, and `CSRF-Token` headers through CORS. AEM
+permissions and the Sling Referrer Filter still apply. The signed-in DA user
+must have access to the author environment, FAQ fragments, and models.
+
+The existing same-origin preview channel scopes messages to the browser tab,
+code branch, and canonical page path. Only fragment paths, rendered FAQ data,
+and connection errors cross that channel; IMS/CSRF tokens never do. Tokens stay
+in panel memory and are sent only to the fixed author endpoints. DA's
+parent-origin/window-validated token updates are used for subsequent requests.
+If access expires or is denied, reopen the panel/sign in and retry; requests
+never silently fall back to published content.
+
+## Enable author access in Workspace
+
+After deploying the code, add this row to the `library` sheet at
+`https://da.live/config#/markszulc/frescopa26`, preserving existing entries:
+
+| title | path |
+| --- | --- |
+| Content Fragment | /tools/plugins/content-fragment/content-fragment.html |
+
+Open the page in DA canvas using Layout or Split view and select **Content
+Fragment** from the tool panel. Keep that panel open while fetching author FAQs.
+The panel and preview must use the same code branch/origin. Requests wait up
+to 15 seconds for the panel; if it is opened later, select **Retry author
+connection** in the block. The panel shows connection/fetch errors explicitly.
+Opening the panel does not modify or publish authored content.
+
+Embedded authoring is detected through DA/Experience Workspace ancestors or
+referrers. Without a registered DA panel (for example a standalone preview or
+another Experience Cloud host), author access reports connection guidance
+rather than attempting anonymous or cookie-based requests.
 
 In all other contexts, the block calls
 `https://www.frescopa.coffee/faq-data-by-path` using one `path` query parameter per

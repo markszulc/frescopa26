@@ -27,6 +27,32 @@ npm i
 npm run lint
 ```
 
+## Embed block
+
+The [Embed block](blocks/embed/embed.js) is adapted from Adobe's
+[AEM Block Collection](https://github.com/adobe/aem-block-collection/tree/main/blocks/embed)
+under the repository's Apache 2.0 license.
+
+Author a one-column table named **Embed** with a link to the content:
+
+| Embed |
+|-------|
+| https://www.youtube.com/watch?v=aqz-KE-bpKQ |
+
+YouTube watch/short links, Vimeo video links, and Twitter post links receive
+provider-specific embeds. Other URLs are displayed in a responsive iframe;
+the destination must permit iframe embedding.
+
+Optionally add a poster image in a row before the link. With a poster, content
+loads when the play button is activated (YouTube and Vimeo request muted autoplay).
+Without a poster, it loads when the block enters the viewport. Third-party
+players and Twitter's widget script connect directly to their providers; this
+block does not add consent management.
+
+The [local demo](drafts/embed.plain.html) includes both loading modes. Run
+`npx -y @adobe/aem-cli up --no-open --forward-browser-logs --html-folder drafts`
+and open `http://localhost:3000/embed`.
+
 ## Navigation search
 
 The navigation modal uses the same vector-search, generative-answer, and result

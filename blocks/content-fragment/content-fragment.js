@@ -1,16 +1,6 @@
 import { decorateFaqs, toRows } from '../faq-list-by-sku/faq-list-by-sku.js';
 
 const FAQ_ENDPOINT = 'https://www.frescopa.coffee/faq-data-by-path';
-const AUTHOR_ENDPOINT = 'https://author-p137825-e1511252.adobeaemcloud.com/content/_cq_graphql/frescopa/endpoint.json';
-const FAQ_QUERY = `query getFaqsByPaths($filter: FaqModelFilter) {
-  faqList(filter: $filter) {
-    items {
-      _path
-      question
-      answer { plaintext }
-    }
-  }
-}`;
 
 export function isAuthoringContext(
   location = window.location,
@@ -22,59 +12,25 @@ export function isAuthoringContext(
     ));
 }
 
-async function getAuthorCsrfToken() {
-  const response = await fetch(new URL('/libs/granite/csrf/token.json', AUTHOR_ENDPOINT), {
-    credentials: 'include',
-    cache: 'no-store',
-  });
-  if (!response.ok) throw new Error(`Author CSRF token request returned HTTP ${response.status}`);
-  const { token } = await response.json();
-  if (typeof token !== 'string' || !token.trim()) {
-    throw new Error('Author CSRF token unavailable. Sign in to AEM author and allow author session cookies.');
-  }
-  return token;
-}
-
 async function fetchFaqs(paths) {
-  const authoring = isAuthoringContext();
+  if (isAuthoringContext()) {
+    const { requestAuthorFaqs } = await import('../../scripts/content-fragment-author.js');
+    return requestAuthorFaqs(paths);
+  }
   const params = new URLSearchParams();
   paths.forEach((path) => params.append('path', path));
-  const response = await fetch(authoring ? AUTHOR_ENDPOINT : `${FAQ_ENDPOINT}?${params}`, authoring ? {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'content-type': 'application/json',
-      'CSRF-Token': await getAuthorCsrfToken(),
-    },
-    body: JSON.stringify({
-      query: FAQ_QUERY,
-      variables: {
-        filter: {
-          _path: {
-            _logOp: 'OR',
-            _expressions: paths.map((value) => ({ value, _operator: 'EQUALS' })),
-          },
-        },
-      },
-    }),
-  } : undefined);
+  const response = await fetch(`${FAQ_ENDPOINT}?${params}`);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const json = await response.json();
-  const items = authoring ? json?.data?.faqList?.items : json?.items;
-  if ((authoring && json?.errors?.length) || !Array.isArray(items) || items.some((item) => {
+  const items = json?.items;
+  if (!Array.isArray(items) || items.some((item) => {
     if (!item) return true;
-    const { question, answer, _path: path } = item;
-    return typeof question !== 'string' || typeof answer?.plaintext !== 'string'
-      || (authoring && typeof path !== 'string');
+    const { question, answer } = item;
+    return typeof question !== 'string' || typeof answer?.plaintext !== 'string';
   })) {
     throw new Error('Invalid FAQ response');
   }
-  if (!authoring) return items;
-  const byPath = new Map(items.map((item) => {
-    const { _path: path } = item;
-    return [path, item];
-  }));
-  return paths.filter((path) => byPath.has(path)).map((path) => byPath.get(path));
+  return items;
 }
 
 function message(block, text) {
@@ -121,6 +77,24 @@ export default async function decorate(block) {
     // eslint-disable-next-line no-console
     console.warn('content-fragment: could not load FAQs', error);
     message(block, 'Could not load FAQs for these content fragments.');
+    if (isAuthoringContext()) {
+      const guidance = document.createElement('p');
+      guidance.textContent = error.message;
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.textContent = 'Retry author connection';
+      retry.addEventListener('click', () => {
+        block.replaceChildren(...paths.map((path) => {
+          const row = document.createElement('div');
+          const cell = document.createElement('div');
+          cell.textContent = path;
+          row.append(cell);
+          return row;
+        }));
+        decorate(block);
+      }, { once: true });
+      block.append(guidance, retry);
+    }
   } finally {
     delete block.dataset.faqState;
   }
