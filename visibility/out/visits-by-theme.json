@@ -1,0 +1,300 @@
+{
+ "meta": {
+  "period": "2026-10-19 to 2026-11-17",
+  "visits": 309700,
+  "topical": 234500,
+  "themed": 227600
+ },
+ "sites": [
+  {
+   "id": "frescopa",
+   "name": "frescopa.coffee",
+   "visits": 309700,
+   "topical": 234500,
+   "themed": 227600
+  }
+ ],
+ "themes": {
+  "offers": {
+   "label": "Offers and financing",
+   "visits": 20600,
+   "search": 11400,
+   "ai": 400,
+   "cross": 0,
+   "sites": {
+    "frescopa": 20600
+   },
+   "share": 0.08784648187633262,
+   "top": [
+    [
+     "/offers",
+     12800
+    ],
+    [
+     "/offers/atelier-year-of-beans",
+     3000
+    ],
+    [
+     "/offers/students",
+     2500
+    ],
+    [
+     "/",
+     2300
+    ]
+   ]
+  },
+  "smart": {
+   "label": "Smart coffee, the coffee agent",
+   "visits": 9400,
+   "search": 4300,
+   "ai": 1200,
+   "cross": 0,
+   "sites": {
+    "frescopa": 9400
+   },
+   "share": 0.040085287846481875,
+   "top": [
+    [
+     "/blog/atelier-taste",
+     4000
+    ],
+    [
+     "/blog/smart-coffee-machines-explained",
+     3200
+    ],
+    [
+     "/blog/what-is-a-coffee-agent",
+     2200
+    ]
+   ]
+  },
+  "pods": {
+   "label": "Pods and sustainability",
+   "visits": 8600,
+   "search": 5600,
+   "ai": 500,
+   "cross": 0,
+   "sites": {
+    "frescopa": 8600
+   },
+   "share": 0.03667377398720682,
+   "top": [
+    [
+     "/sustainability",
+     3300
+    ],
+    [
+     "/blog/nothing-wasted",
+     2800
+    ],
+    [
+     "/blog/are-compostable-capsules-really-compostable",
+     2500
+    ]
+   ]
+  },
+  "care": {
+   "label": "Care and descaling",
+   "visits": 28600,
+   "search": 14900,
+   "ai": 500,
+   "cross": 0,
+   "sites": {
+    "frescopa": 28600
+   },
+   "share": 0.12196162046908315,
+   "top": [
+    [
+     "/support",
+     11000
+    ],
+    [
+     "/support/descaling-the-atelier",
+     7500
+    ],
+    [
+     "/support/cleaning-the-milk-system",
+     4900
+    ],
+    [
+     "/support/water-filter",
+     4600
+    ],
+    [
+     "/",
+     600
+    ]
+   ]
+  },
+  "cafes": {
+   "label": "Cafés and classes",
+   "visits": 31900,
+   "search": 16900,
+   "ai": 700,
+   "cross": 0,
+   "sites": {
+    "frescopa": 31900
+   },
+   "share": 0.13603411513859276,
+   "top": [
+    [
+     "/cafe",
+     14800
+    ],
+    [
+     "/cafe/classes/latte-art",
+     4800
+    ],
+    [
+     "/cafe/book-atelier-tour",
+     4700
+    ],
+    [
+     "/cafe/classes/cupping",
+     2700
+    ],
+    [
+     "/",
+     2500
+    ],
+    [
+     "/blog/soho-morning",
+     2400
+    ]
+   ]
+  },
+  "brewing": {
+   "label": "Brewing at home",
+   "visits": 17900,
+   "search": 12200,
+   "ai": 600,
+   "cross": 0,
+   "sites": {
+    "frescopa": 17900
+   },
+   "share": 0.07633262260127932,
+   "top": [
+    [
+     "/blog/dialling-in-espresso",
+     6200
+    ],
+    [
+     "/blog/milk-frothing-guide",
+     5100
+    ],
+    [
+     "/blog/how-to-make-a-latte-at-home",
+     3400
+    ],
+    [
+     "/blog/slow-pour",
+     3200
+    ]
+   ]
+  },
+  "beans": {
+   "label": "Beans and subscription",
+   "visits": 34800,
+   "search": 16200,
+   "ai": 1000,
+   "cross": 0,
+   "sites": {
+    "frescopa": 34800
+   },
+   "share": 0.14840085287846483,
+   "top": [
+    [
+     "/beverages",
+     14300
+    ],
+    [
+     "/subscriptions",
+     9200
+    ],
+    [
+     "/",
+     4700
+    ],
+    [
+     "/beverages/coffee",
+     3100
+    ],
+    [
+     "/blog/single-origin",
+     2100
+    ],
+    [
+     "/blog/tea-quiet-hour",
+     1400
+    ]
+   ]
+  },
+  "machines": {
+   "label": "Espresso machines",
+   "visits": 75800,
+   "search": 42300,
+   "ai": 2900,
+   "cross": 0,
+   "sites": {
+    "frescopa": 75800
+   },
+   "share": 0.3232409381663113,
+   "top": [
+    [
+     "/machines/atelier",
+     37900
+    ],
+    [
+     "/machines",
+     16900
+    ],
+    [
+     "/",
+     10300
+    ],
+    [
+     "/blog/automatic-espresso-machines-explained",
+     4300
+    ],
+    [
+     "/machines/compare",
+     3700
+    ],
+    [
+     "/machines/atelier/reviews",
+     2700
+    ]
+   ]
+  }
+ },
+ "unmatched": {
+  "visits": 6900,
+  "search": 2300,
+  "ai": 300,
+  "cross": 0,
+  "sites": {
+   "frescopa": 6900
+  },
+  "share": 0.029424307036247335,
+  "top": [
+   [
+    "/blog",
+    6100
+   ],
+   [
+    "/",
+    800
+   ]
+  ]
+ },
+ "excluded": {
+  "visits": 0,
+  "search": 0,
+  "ai": 0,
+  "cross": 0,
+  "sites": {},
+  "share": 0,
+  "top": []
+ }
+}
