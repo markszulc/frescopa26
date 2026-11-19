@@ -12,6 +12,8 @@ import {
   loadBlock,
   readBlockConfig,
   toClassName,
+  getMetadata,
+  sampleRUM,
 } from './aem.js';
 import {
   loadCommerceEager,
@@ -24,6 +26,9 @@ import {
   runExperimentation,
   runExperimentationLazy,
 } from './experiment-loader.js';
+import cohortRules from './cohort-rules.js';
+import { runCohorts, rememberVisit, watchSignIn } from './cohorts.js';
+import { previewForce, listenForPicks } from './cohort-preview.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -438,6 +443,11 @@ async function loadEager(doc) {
       console.error('Error initializing commerce configuration:', e);
     }
     decorateMain(main);
+    // Homepage cohorts: after decoration (sections carry their metadata), before anything shows.
+    // Only runs on a page with `Cohorts: on` metadata or inside the cohort experiment.
+    const force = previewForce();
+    const cohort = runCohorts(main, cohortRules, { sampleRUM, getMetadata, force });
+    if (cohort) listenForPicks(force?.id || 'default');
     // Only commerce pages need a working config; other pages keep rendering without it.
     if (commerceReady) {
       try {
@@ -473,6 +483,10 @@ async function loadLazy(doc) {
 
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  // on-device memory on every page: visits, interests, signed in
+  rememberVisit(cohortRules);
+  watchSignIn(cohortRules);
 
   await runExperimentationLazy(doc);
   decorateScrollReveal(main);
@@ -519,6 +533,10 @@ function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  if (new URLSearchParams(window.location.search).has('demo')) {
+    loadCSS(`${window.hlx.codeBasePath}/styles/cohort-panel.css`);
+    import('./cohort-panel.js').then((m) => m.default(cohortRules));
+  }
 }
 
 export async function loadPage() {

@@ -1,0 +1,3010 @@
+{
+ "meta": {
+  "domain": "www.frescopa.coffee",
+  "path": "/",
+  "start": "2026-10-19T02:28:27.465Z",
+  "end": "2026-11-17T23:51:51.716Z",
+  "views": 122000,
+  "bundles": 1220,
+  "weeks": 5,
+  "fullWeeks": 4,
+  "note": "Sampled page views, bots and prerenders excluded (personal AI agents count only where a rule asks for them). `weeks[]` are 7-day windows from `start`; the last one is partial when `weeks > fullWeeks`. `growth` is the last full week over the first, null without two full weeks of 10+ bundles each. `today.vsAll` compares a rule with all views (1 = the same; `didNothing` below 1 is better). `standsOut` marks a small rule (under 5% of views) that is clearly more engaged or growing 2x or more: call it out by name. `today.supportRate` is the rule's secondary action (`support`) on the homepage. `secondOrder` (with --site) is site-wide: `first[]` = pages people open right after the homepage (share of those arrivals), each with `next[]` = what they click on there; `assists.pages[]` = pages viewed right before the conversion, `lift` against the site rate. Rules with `modelled: true` depend on on-device memory, which Optel cannot see: they are estimated at steady state from what views do today. Rules with `firstVisitAssumed: true` ask for a first visit, which Optel cannot see either: every view counts as one, so their share is an upper bound. `topClicks[].link: false` is a click that opened something on the page (menu, search, carousel) rather than a link: its `click` is the element selector."
+ },
+ "columns": [
+  {
+   "head": "Entry source",
+   "nodes": [
+    {
+     "id": "e:internal",
+     "label": "Internal navigation",
+     "views": 33800
+    },
+    {
+     "id": "e:direct",
+     "label": "Direct",
+     "views": 32200
+    },
+    {
+     "id": "e:paid",
+     "label": "Paid",
+     "views": 28300
+    },
+    {
+     "id": "e:social",
+     "label": "Social",
+     "views": 7700
+    },
+    {
+     "id": "e:referral",
+     "label": "Other referrers",
+     "views": 5200
+    },
+    {
+     "id": "e:search",
+     "label": "Search",
+     "views": 4200
+    },
+    {
+     "id": "e:email",
+     "label": "Email (Gmail app, webmail)",
+     "views": 3200
+    },
+    {
+     "id": "e:owned",
+     "label": "Email & owned campaigns",
+     "views": 2600
+    },
+    {
+     "id": "e:ai",
+     "label": "AI assistants",
+     "views": 2600
+    },
+    {
+     "id": "e:cashback",
+     "label": "Cashback & coupon sites",
+     "views": 1500
+    },
+    {
+     "id": "e:agent",
+     "label": "Personal AI agents",
+     "views": 700
+    }
+   ]
+  },
+  {
+   "head": "Device",
+   "nodes": [
+    {
+     "id": "d:desktop",
+     "label": "Desktop",
+     "views": 60100
+    },
+    {
+     "id": "d:mobile",
+     "label": "Mobile",
+     "views": 61900
+    }
+   ]
+  },
+  {
+   "head": "Rule that fires · first match wins",
+   "nodes": [
+    {
+     "id": "r:personal-agent",
+     "label": "1 · A personal AI agent is browsing",
+     "sub": "",
+     "signal": "agent",
+     "views": 700
+    },
+    {
+     "id": "r:from-email",
+     "label": "2 · Opened one of our emails",
+     "sub": "",
+     "signal": "link",
+     "views": 5800
+    },
+    {
+     "id": "r:from-app",
+     "label": "3 · Came from the Fréscopa app",
+     "sub": "",
+     "signal": "link",
+     "views": 3000
+    },
+    {
+     "id": "r:campus-partner",
+     "label": "4 · Followed a campus partner offer",
+     "sub": "",
+     "signal": "link",
+     "views": 2200
+    },
+    {
+     "id": "r:deal-sites",
+     "label": "5 · Came from a cashback or coupon site",
+     "sub": "",
+     "signal": "link",
+     "views": 1500
+    },
+    {
+     "id": "r:ai-referred",
+     "label": "6 · Sent by an AI assistant",
+     "sub": "",
+     "signal": "link",
+     "views": 2500
+    },
+    {
+     "id": "r:paid-social",
+     "label": "7 · Clicked a social ad",
+     "sub": "",
+     "signal": "link",
+     "views": 3200
+    },
+    {
+     "id": "r:paid-search",
+     "label": "8 · Clicked a search ad",
+     "sub": "",
+     "signal": "link",
+     "views": 25100
+    },
+    {
+     "id": "r:signed-in-before",
+     "label": "9 · Has used their account before",
+     "sub": "",
+     "signal": "memory",
+     "views": 4700
+    },
+    {
+     "id": "r:returning-interest",
+     "label": "10 · Back with a product interest",
+     "sub": "",
+     "signal": "memory",
+     "views": 9300
+    },
+    {
+     "id": "r:organic-search",
+     "label": "11 · Searched and landed here",
+     "sub": "",
+     "signal": "link",
+     "views": 4300
+    },
+    {
+     "id": "r:mobile-first-visit",
+     "label": "12 · First visit on a phone",
+     "sub": "",
+     "signal": "device",
+     "views": 33600
+    },
+    {
+     "id": "r:none",
+     "label": "No rule matched",
+     "sub": "Original page",
+     "signal": "none",
+     "views": 26100
+    }
+   ]
+  },
+  {
+   "head": "Homepage experience",
+   "nodes": [
+    {
+     "id": "x:agent",
+     "label": "Personal agent: plain & orderable",
+     "sub": "Specs and prices as text · labelled actions · nothing hidden",
+     "views": 700
+    },
+    {
+     "id": "x:owner",
+     "label": "Owner: your beans first",
+     "sub": "Reorder beans · your routine · care · one new favourite",
+     "views": 13500
+    },
+    {
+     "id": "x:deal",
+     "label": "Deal seeker: the bundle first",
+     "sub": "Atelier + a year of beans · what is in the box · 30-night trial",
+     "views": 3700
+    },
+    {
+     "id": "x:shopper",
+     "label": "Shopper: answer the search",
+     "sub": "Price and monthly plan · compare machines · reviews",
+     "views": 41200
+    },
+    {
+     "id": "x:story",
+     "label": "Discover: see it pour",
+     "sub": "Video · three reviews · one bundle",
+     "views": 3200
+    },
+    {
+     "id": "x:local",
+     "label": "Nearby: taste it first",
+     "sub": "Nearest café · book an Atelier tour · classes",
+     "views": 33600
+    },
+    {
+     "id": "x:default",
+     "label": "Original homepage",
+     "sub": "Unchanged: the same page as the holdout",
+     "views": 26100
+    }
+   ]
+  }
+ ],
+ "links": [
+  {
+   "s": "e:owned",
+   "t": "d:desktop",
+   "signal": "link",
+   "views": 1100,
+   "rules": [
+    "from-email"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:from-email",
+   "signal": "link",
+   "views": 2200,
+   "rules": [
+    "from-email"
+   ]
+  },
+  {
+   "s": "r:from-email",
+   "t": "x:owner",
+   "signal": "link",
+   "views": 5800,
+   "rules": [
+    "from-email"
+   ]
+  },
+  {
+   "s": "e:email",
+   "t": "d:mobile",
+   "signal": "link",
+   "views": 2100,
+   "rules": [
+    "from-email"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:from-email",
+   "signal": "link",
+   "views": 3600,
+   "rules": [
+    "from-email"
+   ]
+  },
+  {
+   "s": "e:internal",
+   "t": "d:mobile",
+   "signal": "device",
+   "views": 13100,
+   "rules": [
+    "mobile-first-visit"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:mobile-first-visit",
+   "signal": "device",
+   "views": 33600,
+   "rules": [
+    "mobile-first-visit"
+   ]
+  },
+  {
+   "s": "r:mobile-first-visit",
+   "t": "x:local",
+   "signal": "device",
+   "views": 33600,
+   "rules": [
+    "mobile-first-visit"
+   ]
+  },
+  {
+   "s": "e:direct",
+   "t": "d:desktop",
+   "signal": "none",
+   "views": 8800,
+   "rules": [
+    "none"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:none",
+   "signal": "none",
+   "views": 26100,
+   "rules": [
+    "none"
+   ]
+  },
+  {
+   "s": "r:none",
+   "t": "x:default",
+   "signal": "none",
+   "views": 26100,
+   "rules": [
+    "none"
+   ]
+  },
+  {
+   "s": "e:search",
+   "t": "d:desktop",
+   "signal": "link",
+   "views": 2500,
+   "rules": [
+    "organic-search"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:organic-search",
+   "signal": "link",
+   "views": 2500,
+   "rules": [
+    "organic-search"
+   ]
+  },
+  {
+   "s": "r:organic-search",
+   "t": "x:shopper",
+   "signal": "link",
+   "views": 4300,
+   "rules": [
+    "organic-search"
+   ]
+  },
+  {
+   "s": "e:direct",
+   "t": "d:desktop",
+   "signal": "memory",
+   "views": 6500,
+   "rules": [
+    "signed-in-before",
+    "returning-interest"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:signed-in-before",
+   "signal": "memory",
+   "views": 4700,
+   "rules": [
+    "signed-in-before"
+   ]
+  },
+  {
+   "s": "r:signed-in-before",
+   "t": "x:owner",
+   "signal": "memory",
+   "views": 4700,
+   "rules": [
+    "signed-in-before"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:returning-interest",
+   "signal": "memory",
+   "views": 9300,
+   "rules": [
+    "returning-interest"
+   ]
+  },
+  {
+   "s": "r:returning-interest",
+   "t": "x:shopper",
+   "signal": "memory",
+   "views": 9300,
+   "rules": [
+    "returning-interest"
+   ]
+  },
+  {
+   "s": "e:search",
+   "t": "d:mobile",
+   "signal": "link",
+   "views": 1700,
+   "rules": [
+    "organic-search"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:organic-search",
+   "signal": "link",
+   "views": 1800,
+   "rules": [
+    "organic-search"
+   ]
+  },
+  {
+   "s": "e:social",
+   "t": "d:desktop",
+   "signal": "none",
+   "views": 3900,
+   "rules": [
+    "none"
+   ]
+  },
+  {
+   "s": "e:internal",
+   "t": "d:desktop",
+   "signal": "none",
+   "views": 13400,
+   "rules": [
+    "none"
+   ]
+  },
+  {
+   "s": "e:paid",
+   "t": "d:mobile",
+   "signal": "link",
+   "views": 17000,
+   "rules": [
+    "paid-search",
+    "paid-social"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:paid-search",
+   "signal": "link",
+   "views": 14300,
+   "rules": [
+    "paid-search"
+   ]
+  },
+  {
+   "s": "r:paid-search",
+   "t": "x:shopper",
+   "signal": "link",
+   "views": 25100,
+   "rules": [
+    "paid-search"
+   ]
+  },
+  {
+   "s": "e:direct",
+   "t": "d:mobile",
+   "signal": "device",
+   "views": 16900,
+   "rules": [
+    "mobile-first-visit"
+   ]
+  },
+  {
+   "s": "e:cashback",
+   "t": "d:desktop",
+   "signal": "link",
+   "views": 1100,
+   "rules": [
+    "deal-sites"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:deal-sites",
+   "signal": "link",
+   "views": 1100,
+   "rules": [
+    "deal-sites"
+   ]
+  },
+  {
+   "s": "r:deal-sites",
+   "t": "x:deal",
+   "signal": "link",
+   "views": 1500,
+   "rules": [
+    "deal-sites"
+   ]
+  },
+  {
+   "s": "e:internal",
+   "t": "d:desktop",
+   "signal": "memory",
+   "views": 7300,
+   "rules": [
+    "returning-interest",
+    "signed-in-before"
+   ]
+  },
+  {
+   "s": "e:paid",
+   "t": "d:desktop",
+   "signal": "link",
+   "views": 11300,
+   "rules": [
+    "paid-search",
+    "paid-social"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:paid-search",
+   "signal": "link",
+   "views": 10800,
+   "rules": [
+    "paid-search"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:paid-social",
+   "signal": "link",
+   "views": 2700,
+   "rules": [
+    "paid-social"
+   ]
+  },
+  {
+   "s": "r:paid-social",
+   "t": "x:story",
+   "signal": "link",
+   "views": 3200,
+   "rules": [
+    "paid-social"
+   ]
+  },
+  {
+   "s": "e:ai",
+   "t": "d:mobile",
+   "signal": "link",
+   "views": 1200,
+   "rules": [
+    "ai-referred",
+    "organic-search"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:ai-referred",
+   "signal": "link",
+   "views": 1100,
+   "rules": [
+    "ai-referred"
+   ]
+  },
+  {
+   "s": "r:ai-referred",
+   "t": "x:shopper",
+   "signal": "link",
+   "views": 2500,
+   "rules": [
+    "ai-referred"
+   ]
+  },
+  {
+   "s": "e:referral",
+   "t": "d:desktop",
+   "signal": "link",
+   "views": 800,
+   "rules": [
+    "from-app",
+    "campus-partner"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:from-app",
+   "signal": "link",
+   "views": 200,
+   "rules": [
+    "from-app"
+   ]
+  },
+  {
+   "s": "r:from-app",
+   "t": "x:owner",
+   "signal": "link",
+   "views": 3000,
+   "rules": [
+    "from-app"
+   ]
+  },
+  {
+   "s": "e:email",
+   "t": "d:desktop",
+   "signal": "link",
+   "views": 1100,
+   "rules": [
+    "from-email"
+   ]
+  },
+  {
+   "s": "e:referral",
+   "t": "d:mobile",
+   "signal": "link",
+   "views": 4400,
+   "rules": [
+    "campus-partner",
+    "from-app"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:campus-partner",
+   "signal": "link",
+   "views": 1600,
+   "rules": [
+    "campus-partner"
+   ]
+  },
+  {
+   "s": "r:campus-partner",
+   "t": "x:deal",
+   "signal": "link",
+   "views": 2200,
+   "rules": [
+    "campus-partner"
+   ]
+  },
+  {
+   "s": "e:social",
+   "t": "d:desktop",
+   "signal": "memory",
+   "views": 200,
+   "rules": [
+    "signed-in-before"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:from-app",
+   "signal": "link",
+   "views": 2800,
+   "rules": [
+    "from-app"
+   ]
+  },
+  {
+   "s": "e:social",
+   "t": "d:mobile",
+   "signal": "device",
+   "views": 3600,
+   "rules": [
+    "mobile-first-visit"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:paid-social",
+   "signal": "link",
+   "views": 500,
+   "rules": [
+    "paid-social"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:campus-partner",
+   "signal": "link",
+   "views": 600,
+   "rules": [
+    "campus-partner"
+   ]
+  },
+  {
+   "s": "e:cashback",
+   "t": "d:mobile",
+   "signal": "link",
+   "views": 400,
+   "rules": [
+    "deal-sites"
+   ]
+  },
+  {
+   "s": "d:mobile",
+   "t": "r:deal-sites",
+   "signal": "link",
+   "views": 400,
+   "rules": [
+    "deal-sites"
+   ]
+  },
+  {
+   "s": "e:owned",
+   "t": "d:mobile",
+   "signal": "link",
+   "views": 1500,
+   "rules": [
+    "from-email"
+   ]
+  },
+  {
+   "s": "e:ai",
+   "t": "d:desktop",
+   "signal": "link",
+   "views": 1400,
+   "rules": [
+    "ai-referred"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:ai-referred",
+   "signal": "link",
+   "views": 1400,
+   "rules": [
+    "ai-referred"
+   ]
+  },
+  {
+   "s": "e:agent",
+   "t": "d:desktop",
+   "signal": "agent",
+   "views": 700,
+   "rules": [
+    "personal-agent"
+   ]
+  },
+  {
+   "s": "d:desktop",
+   "t": "r:personal-agent",
+   "signal": "agent",
+   "views": 700,
+   "rules": [
+    "personal-agent"
+   ]
+  },
+  {
+   "s": "r:personal-agent",
+   "t": "x:agent",
+   "signal": "agent",
+   "views": 700,
+   "rules": [
+    "personal-agent"
+   ]
+  }
+ ],
+ "rules": [
+  {
+   "id": "personal-agent",
+   "label": "A personal AI agent is browsing",
+   "experience": "agent",
+   "signal": "agent",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 700,
+   "share": 0.005737704918032787,
+   "bundles": 7,
+   "lowSample": true,
+   "today": {
+    "goalRate": 0.42857142857142855,
+    "supportRate": null,
+    "didNothing": 0.14285714285714285,
+    "navigated": 0.42857142857142855,
+    "vsAll": {
+     "navigated": 1.4324853228962817,
+     "didNothing": 0.6755260243632336
+    },
+    "topClicks": [
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.2857142857142857,
+      "bundles": 2
+     },
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.14285714285714285,
+      "bundles": 1
+     },
+     {
+      "click": "/offers",
+      "link": true,
+      "share": 0.14285714285714285,
+      "bundles": 1
+     }
+    ]
+   },
+   "weeks": [
+    0,
+    400,
+    100,
+    200,
+    0
+   ],
+   "growth": null,
+   "standsOut": false
+  },
+  {
+   "id": "from-email",
+   "label": "Opened one of our emails",
+   "experience": "owner",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 5800,
+   "share": 0.047540983606557376,
+   "bundles": 58,
+   "lowSample": false,
+   "today": {
+    "goalRate": 0.27586206896551724,
+    "supportRate": 0.10344827586206896,
+    "didNothing": 0.29310344827586204,
+    "navigated": 0.3275862068965517,
+    "vsAll": {
+     "navigated": 1.0949456778460085,
+     "didNothing": 1.3859930499866344
+    },
+    "topClicks": [
+     {
+      "click": "/subscriptions",
+      "link": true,
+      "share": 0.13793103448275862,
+      "bundles": 8
+     },
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.06896551724137931,
+      "bundles": 4
+     },
+     {
+      "click": "/customer/login",
+      "link": true,
+      "share": 0.06896551724137931,
+      "bundles": 4
+     },
+     {
+      "click": "header button.nav-hamburger",
+      "link": false,
+      "share": 0.06896551724137931,
+      "bundles": 4
+     },
+     {
+      "click": "/offers",
+      "link": true,
+      "share": 0.05172413793103448,
+      "bundles": 3
+     }
+    ]
+   },
+   "weeks": [
+    1200,
+    1500,
+    1000,
+    1700,
+    400
+   ],
+   "growth": 1.4166666666666667,
+   "standsOut": false
+  },
+  {
+   "id": "from-app",
+   "label": "Came from the Fréscopa app",
+   "experience": "owner",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 3000,
+   "share": 0.02459016393442623,
+   "bundles": 30,
+   "lowSample": false,
+   "today": {
+    "goalRate": 0.5333333333333333,
+    "supportRate": null,
+    "didNothing": 0.06666666666666667,
+    "navigated": 0.5333333333333333,
+    "vsAll": {
+     "navigated": 1.782648401826484,
+     "didNothing": 0.3152454780361757
+    },
+    "topClicks": [
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.26666666666666666,
+      "bundles": 8
+     },
+     {
+      "click": "header button.nav-hamburger",
+      "link": false,
+      "share": 0.26666666666666666,
+      "bundles": 8
+     },
+     {
+      "click": "/support",
+      "link": true,
+      "share": 0.16666666666666666,
+      "bundles": 5
+     },
+     {
+      "click": "/customer/login",
+      "link": true,
+      "share": 0.16666666666666666,
+      "bundles": 5
+     },
+     {
+      "click": "/subscriptions",
+      "link": true,
+      "share": 0.16666666666666666,
+      "bundles": 5
+     }
+    ]
+   },
+   "weeks": [
+    900,
+    500,
+    700,
+    700,
+    200
+   ],
+   "growth": null,
+   "standsOut": true
+  },
+  {
+   "id": "campus-partner",
+   "label": "Followed a campus partner offer",
+   "experience": "deal",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 2200,
+   "share": 0.018032786885245903,
+   "bundles": 22,
+   "lowSample": true,
+   "today": {
+    "goalRate": 0.09090909090909091,
+    "supportRate": null,
+    "didNothing": 0.22727272727272727,
+    "navigated": 0.36363636363636365,
+    "vsAll": {
+     "navigated": 1.215442092154421,
+     "didNothing": 1.0747004933051445
+    },
+    "topClicks": [
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.18181818181818182,
+      "bundles": 4
+     },
+     {
+      "click": ".hero picture",
+      "link": false,
+      "share": 0.13636363636363635,
+      "bundles": 3
+     },
+     {
+      "click": "/cafe",
+      "link": true,
+      "share": 0.09090909090909091,
+      "bundles": 2
+     },
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.09090909090909091,
+      "bundles": 2
+     },
+     {
+      "click": "/offers",
+      "link": true,
+      "share": 0.09090909090909091,
+      "bundles": 2
+     }
+    ]
+   },
+   "weeks": [
+    500,
+    600,
+    200,
+    900,
+    0
+   ],
+   "growth": null,
+   "standsOut": false
+  },
+  {
+   "id": "deal-sites",
+   "label": "Came from a cashback or coupon site",
+   "experience": "deal",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 1500,
+   "share": 0.012295081967213115,
+   "bundles": 15,
+   "lowSample": true,
+   "today": {
+    "goalRate": 0.13333333333333333,
+    "supportRate": 0.06666666666666667,
+    "didNothing": 0.4,
+    "navigated": 0.26666666666666666,
+    "vsAll": {
+     "navigated": 0.891324200913242,
+     "didNothing": 1.8914728682170543
+    },
+    "topClicks": [
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.3333333333333333,
+      "bundles": 5
+     },
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.13333333333333333,
+      "bundles": 2
+     },
+     {
+      "click": "/cart",
+      "link": true,
+      "share": 0.06666666666666667,
+      "bundles": 1
+     },
+     {
+      "click": "/offers",
+      "link": true,
+      "share": 0.06666666666666667,
+      "bundles": 1
+     }
+    ]
+   },
+   "weeks": [
+    600,
+    400,
+    200,
+    100,
+    200
+   ],
+   "growth": null,
+   "standsOut": false
+  },
+  {
+   "id": "ai-referred",
+   "label": "Sent by an AI assistant",
+   "experience": "shopper",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 2500,
+   "share": 0.020491803278688523,
+   "bundles": 25,
+   "lowSample": true,
+   "today": {
+    "goalRate": 0.32,
+    "supportRate": 0.16,
+    "didNothing": 0.04,
+    "navigated": 0.44,
+    "vsAll": {
+     "navigated": 1.4706849315068493,
+     "didNothing": 0.18914728682170542
+    },
+    "topClicks": [
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.16,
+      "bundles": 4
+     },
+     {
+      "click": ".taste-profile button",
+      "link": false,
+      "share": 0.16,
+      "bundles": 4
+     },
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.12,
+      "bundles": 3
+     },
+     {
+      "click": "/offers",
+      "link": true,
+      "share": 0.12,
+      "bundles": 3
+     },
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.12,
+      "bundles": 3
+     }
+    ]
+   },
+   "weeks": [
+    200,
+    600,
+    500,
+    900,
+    300
+   ],
+   "growth": null,
+   "standsOut": false
+  },
+  {
+   "id": "paid-social",
+   "label": "Clicked a social ad",
+   "experience": "story",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 3200,
+   "share": 0.02622950819672131,
+   "bundles": 32,
+   "lowSample": false,
+   "today": {
+    "goalRate": 0.0625,
+    "supportRate": null,
+    "didNothing": 0.53125,
+    "navigated": 0.09375,
+    "vsAll": {
+     "navigated": 0.3133561643835616,
+     "didNothing": 2.512112403100775
+    },
+    "topClicks": [
+     {
+      "click": "header button.nav-hamburger",
+      "link": false,
+      "share": 0.0625,
+      "bundles": 2
+     },
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.0625,
+      "bundles": 2
+     },
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.0625,
+      "bundles": 2
+     },
+     {
+      "click": ".hero picture",
+      "link": false,
+      "share": 0.03125,
+      "bundles": 1
+     },
+     {
+      "click": "/beverages",
+      "link": true,
+      "share": 0.03125,
+      "bundles": 1
+     }
+    ]
+   },
+   "weeks": [
+    800,
+    100,
+    800,
+    800,
+    700
+   ],
+   "growth": null,
+   "standsOut": false
+  },
+  {
+   "id": "paid-search",
+   "label": "Clicked a search ad",
+   "experience": "shopper",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 25100,
+   "share": 0.20573770491803278,
+   "bundles": 251,
+   "lowSample": false,
+   "today": {
+    "goalRate": 0.1394422310756972,
+    "supportRate": 0.10358565737051793,
+    "didNothing": 0.14741035856573706,
+    "navigated": 0.2908366533864542,
+    "vsAll": {
+     "navigated": 0.9721115537848606,
+     "didNothing": 0.6970567343030977
+    },
+    "topClicks": [
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.15139442231075698,
+      "bundles": 38
+     },
+     {
+      "click": ".hero picture",
+      "link": false,
+      "share": 0.099601593625498,
+      "bundles": 25
+     },
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.09163346613545817,
+      "bundles": 23
+     },
+     {
+      "click": "/machines",
+      "link": true,
+      "share": 0.07569721115537849,
+      "bundles": 19
+     },
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.06772908366533864,
+      "bundles": 17
+     }
+    ]
+   },
+   "weeks": [
+    4600,
+    5200,
+    6300,
+    7000,
+    2000
+   ],
+   "growth": 1.5217391304347827,
+   "standsOut": false
+  },
+  {
+   "id": "signed-in-before",
+   "label": "Has used their account before",
+   "experience": "owner",
+   "signal": "memory",
+   "modelled": true,
+   "firstVisitAssumed": false,
+   "views": 4700,
+   "share": 0.038524590163934426,
+   "bundles": 47,
+   "lowSample": false,
+   "today": {
+    "goalRate": null,
+    "supportRate": null,
+    "didNothing": 0,
+    "navigated": 1,
+    "vsAll": {
+     "navigated": 3.3424657534246576,
+     "didNothing": 0
+    },
+    "topClicks": [
+     {
+      "click": "/customer/login",
+      "link": true,
+      "share": 1,
+      "bundles": 47
+     },
+     {
+      "click": "/subscriptions",
+      "link": true,
+      "share": 0.3404255319148936,
+      "bundles": 16
+     },
+     {
+      "click": "/support",
+      "link": true,
+      "share": 0.0851063829787234,
+      "bundles": 4
+     }
+    ]
+   },
+   "weeks": [
+    1200,
+    1300,
+    1100,
+    900,
+    200
+   ],
+   "growth": null,
+   "standsOut": false
+  },
+  {
+   "id": "returning-interest",
+   "label": "Back with a product interest",
+   "experience": "shopper",
+   "signal": "memory",
+   "modelled": true,
+   "firstVisitAssumed": false,
+   "views": 9300,
+   "share": 0.07622950819672131,
+   "bundles": 93,
+   "lowSample": false,
+   "today": {
+    "goalRate": null,
+    "supportRate": null,
+    "didNothing": 0,
+    "navigated": 1,
+    "vsAll": {
+     "navigated": 3.3424657534246576,
+     "didNothing": 0
+    },
+    "topClicks": [
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.34408602150537637,
+      "bundles": 32
+     },
+     {
+      "click": "/cart",
+      "link": true,
+      "share": 0.17204301075268819,
+      "bundles": 16
+     },
+     {
+      "click": "/beverages",
+      "link": true,
+      "share": 0.16129032258064516,
+      "bundles": 15
+     },
+     {
+      "click": "/blog",
+      "link": true,
+      "share": 0.15053763440860216,
+      "bundles": 14
+     },
+     {
+      "click": "/offers",
+      "link": true,
+      "share": 0.10752688172043011,
+      "bundles": 10
+     }
+    ]
+   },
+   "weeks": [
+    1500,
+    2500,
+    2500,
+    2000,
+    800
+   ],
+   "growth": 1.3333333333333333,
+   "standsOut": false
+  },
+  {
+   "id": "organic-search",
+   "label": "Searched and landed here",
+   "experience": "shopper",
+   "signal": "link",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 4300,
+   "share": 0.03524590163934426,
+   "bundles": 43,
+   "lowSample": false,
+   "today": {
+    "goalRate": 0.16279069767441862,
+    "supportRate": 0.13953488372093023,
+    "didNothing": 0.13953488372093023,
+    "navigated": 0.3488372093023256,
+    "vsAll": {
+     "navigated": 1.1659764256132528,
+     "didNothing": 0.6598161168199026
+    },
+    "topClicks": [
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.18604651162790697,
+      "bundles": 8
+     },
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.16279069767441862,
+      "bundles": 7
+     },
+     {
+      "click": "/machines",
+      "link": true,
+      "share": 0.13953488372093023,
+      "bundles": 6
+     },
+     {
+      "click": "header button.nav-hamburger",
+      "link": false,
+      "share": 0.11627906976744186,
+      "bundles": 5
+     },
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.11627906976744186,
+      "bundles": 5
+     }
+    ]
+   },
+   "weeks": [
+    1000,
+    1100,
+    700,
+    1100,
+    400
+   ],
+   "growth": 1.1,
+   "standsOut": false
+  },
+  {
+   "id": "mobile-first-visit",
+   "label": "First visit on a phone",
+   "experience": "local",
+   "signal": "device",
+   "modelled": false,
+   "firstVisitAssumed": true,
+   "views": 33600,
+   "share": 0.2754098360655738,
+   "bundles": 336,
+   "lowSample": false,
+   "today": {
+    "goalRate": 0.17261904761904762,
+    "supportRate": 0.047619047619047616,
+    "didNothing": 0.26785714285714285,
+    "navigated": 0.17261904761904762,
+    "vsAll": {
+     "navigated": 0.5769732550554468,
+     "didNothing": 1.2666112956810631
+    },
+    "topClicks": [
+     {
+      "click": "header button.nav-hamburger",
+      "link": false,
+      "share": 0.12202380952380952,
+      "bundles": 41
+     },
+     {
+      "click": ".hero picture",
+      "link": false,
+      "share": 0.08928571428571429,
+      "bundles": 30
+     },
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.0744047619047619,
+      "bundles": 25
+     },
+     {
+      "click": "/machines/atelier",
+      "link": true,
+      "share": 0.047619047619047616,
+      "bundles": 16
+     },
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.047619047619047616,
+      "bundles": 16
+     }
+    ]
+   },
+   "weeks": [
+    7200,
+    7500,
+    7700,
+    8700,
+    2500
+   ],
+   "growth": 1.2083333333333333,
+   "standsOut": false
+  },
+  {
+   "id": "none",
+   "label": "No rule matched",
+   "experience": "default",
+   "signal": "none",
+   "modelled": false,
+   "firstVisitAssumed": false,
+   "views": 26100,
+   "share": 0.2139344262295082,
+   "bundles": 261,
+   "lowSample": false,
+   "today": {
+    "goalRate": 0.36015325670498083,
+    "supportRate": null,
+    "didNothing": 0.29118773946360155,
+    "navigated": 0.05747126436781609,
+    "vsAll": {
+     "navigated": 0.19209573295544008,
+     "didNothing": 1.376934271882147
+    },
+    "topClicks": [
+     {
+      "click": ".mood-calendar button.day",
+      "link": false,
+      "share": 0.10727969348659004,
+      "bundles": 28
+     },
+     {
+      "click": ".taste-profile button",
+      "link": false,
+      "share": 0.0842911877394636,
+      "bundles": 22
+     },
+     {
+      "click": "header .nav-tools button.search",
+      "link": false,
+      "share": 0.07279693486590039,
+      "bundles": 19
+     },
+     {
+      "click": ".hero picture",
+      "link": false,
+      "share": 0.0421455938697318,
+      "bundles": 11
+     },
+     {
+      "click": "/beverages",
+      "link": true,
+      "share": 0.01532567049808429,
+      "bundles": 4
+     }
+    ]
+   },
+   "weeks": [
+    6800,
+    6200,
+    6600,
+    5300,
+    1200
+   ],
+   "growth": 0.7794117647058824,
+   "standsOut": false
+  }
+ ],
+ "secondOrder": {
+  "scope": "site",
+  "start": "2026-10-19T02:06:47.908Z",
+  "end": "2026-11-17T23:51:51.716Z",
+  "weeks": 4,
+  "from": "/",
+  "arrivals": 86500,
+  "bundles": 865,
+  "first": [
+   {
+    "path": "/machines/atelier",
+    "views": 27600,
+    "bundles": 276,
+    "share": 0.3190751445086705,
+    "lowSample": false,
+    "onward": 0.6159420289855072,
+    "next": [
+     {
+      "key": "/offers",
+      "views": 6800,
+      "bundles": 68,
+      "share": 0.2463768115942029,
+      "lowSample": false
+     },
+     {
+      "key": "/cart",
+      "views": 4000,
+      "bundles": 40,
+      "share": 0.14492753623188406,
+      "lowSample": false
+     },
+     {
+      "key": "/machines",
+      "views": 3000,
+      "bundles": 30,
+      "share": 0.10869565217391304,
+      "lowSample": false
+     },
+     {
+      "key": "/cafe/book-atelier-tour",
+      "views": 2000,
+      "bundles": 20,
+      "share": 0.07246376811594203,
+      "lowSample": true
+     },
+     {
+      "key": "/support",
+      "views": 1200,
+      "bundles": 12,
+      "share": 0.043478260869565216,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 99500,
+    "nextAll": [
+     {
+      "key": "/",
+      "views": 10100,
+      "bundles": 101,
+      "share": 0.10150753768844221,
+      "lowSample": false
+     },
+     {
+      "key": "/beverages",
+      "views": 4600,
+      "bundles": 46,
+      "share": 0.04623115577889447,
+      "lowSample": false
+     },
+     {
+      "key": "/cafe",
+      "views": 3700,
+      "bundles": 37,
+      "share": 0.0371859296482412,
+      "lowSample": false
+     },
+     {
+      "key": "/blog",
+      "views": 2700,
+      "bundles": 27,
+      "share": 0.027135678391959798,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 2600,
+      "bundles": 26,
+      "share": 0.02613065326633166,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/cafe",
+    "views": 12000,
+    "bundles": 120,
+    "share": 0.13872832369942195,
+    "lowSample": false,
+    "onward": 0.4666666666666667,
+    "next": [
+     {
+      "key": "/cafe/book-atelier-tour",
+      "views": 3600,
+      "bundles": 36,
+      "share": 0.3,
+      "lowSample": false
+     },
+     {
+      "key": "/machines/atelier",
+      "views": 1400,
+      "bundles": 14,
+      "share": 0.11666666666666667,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 600,
+      "bundles": 6,
+      "share": 0.05,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 42200,
+    "nextAll": [
+     {
+      "key": "/machines/atelier",
+      "views": 4100,
+      "bundles": 41,
+      "share": 0.0971563981042654,
+      "lowSample": false
+     },
+     {
+      "key": "/",
+      "views": 3700,
+      "bundles": 37,
+      "share": 0.08767772511848342,
+      "lowSample": false
+     },
+     {
+      "key": "/beverages",
+      "views": 2200,
+      "bundles": 22,
+      "share": 0.052132701421800945,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 1800,
+      "bundles": 18,
+      "share": 0.04265402843601896,
+      "lowSample": true
+     },
+     {
+      "key": "/customer/login",
+      "views": 1700,
+      "bundles": 17,
+      "share": 0.04028436018957346,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/machines",
+    "views": 11600,
+    "bundles": 116,
+    "share": 0.13410404624277455,
+    "lowSample": false,
+    "onward": 0.5775862068965517,
+    "next": [
+     {
+      "key": "/machines/atelier",
+      "views": 4800,
+      "bundles": 48,
+      "share": 0.41379310344827586,
+      "lowSample": false
+     },
+     {
+      "key": "/offers",
+      "views": 1300,
+      "bundles": 13,
+      "share": 0.11206896551724138,
+      "lowSample": true
+     },
+     {
+      "key": "/cafe",
+      "views": 600,
+      "bundles": 6,
+      "share": 0.05172413793103448,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 42300,
+    "nextAll": [
+     {
+      "key": "/",
+      "views": 6600,
+      "bundles": 66,
+      "share": 0.15602836879432624,
+      "lowSample": false
+     },
+     {
+      "key": "/machines/atelier",
+      "views": 4800,
+      "bundles": 48,
+      "share": 0.11347517730496454,
+      "lowSample": false
+     },
+     {
+      "key": "/beverages",
+      "views": 2600,
+      "bundles": 26,
+      "share": 0.061465721040189124,
+      "lowSample": true
+     },
+     {
+      "key": "/customer/login",
+      "views": 1700,
+      "bundles": 17,
+      "share": 0.04018912529550828,
+      "lowSample": true
+     },
+     {
+      "key": "/cafe",
+      "views": 1400,
+      "bundles": 14,
+      "share": 0.03309692671394799,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/beverages",
+    "views": 10900,
+    "bundles": 109,
+    "share": 0.1260115606936416,
+    "lowSample": false,
+    "onward": 0.46788990825688076,
+    "next": [
+     {
+      "key": "/subscriptions",
+      "views": 2500,
+      "bundles": 25,
+      "share": 0.22935779816513763,
+      "lowSample": true
+     },
+     {
+      "key": "/cart",
+      "views": 1600,
+      "bundles": 16,
+      "share": 0.14678899082568808,
+      "lowSample": true
+     },
+     {
+      "key": "/machines/atelier",
+      "views": 1000,
+      "bundles": 10,
+      "share": 0.09174311926605505,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 43100,
+    "nextAll": [
+     {
+      "key": "/",
+      "views": 6400,
+      "bundles": 64,
+      "share": 0.14849187935034802,
+      "lowSample": false
+     },
+     {
+      "key": "/machines/atelier",
+      "views": 4600,
+      "bundles": 46,
+      "share": 0.10672853828306264,
+      "lowSample": false
+     },
+     {
+      "key": "/cafe",
+      "views": 3300,
+      "bundles": 33,
+      "share": 0.0765661252900232,
+      "lowSample": false
+     },
+     {
+      "key": "/machines",
+      "views": 1500,
+      "bundles": 15,
+      "share": 0.03480278422273782,
+      "lowSample": true
+     },
+     {
+      "key": "/customer/login",
+      "views": 1500,
+      "bundles": 15,
+      "share": 0.03480278422273782,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/customer/login",
+    "views": 8700,
+    "bundles": 87,
+    "share": 0.10057803468208093,
+    "lowSample": false,
+    "onward": 0.5517241379310345,
+    "next": [
+     {
+      "key": "/subscriptions",
+      "views": 3100,
+      "bundles": 31,
+      "share": 0.3563218390804598,
+      "lowSample": false
+     },
+     {
+      "key": "/beverages",
+      "views": 1100,
+      "bundles": 11,
+      "share": 0.12643678160919541,
+      "lowSample": true
+     },
+     {
+      "key": "/support",
+      "views": 600,
+      "bundles": 6,
+      "share": 0.06896551724137931,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 25800,
+    "nextAll": [
+     {
+      "key": "/machines/atelier",
+      "views": 3300,
+      "bundles": 33,
+      "share": 0.12790697674418605,
+      "lowSample": false
+     },
+     {
+      "key": "/",
+      "views": 2100,
+      "bundles": 21,
+      "share": 0.08139534883720931,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 1900,
+      "bundles": 19,
+      "share": 0.07364341085271318,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 1800,
+      "bundles": 18,
+      "share": 0.06976744186046512,
+      "lowSample": true
+     },
+     {
+      "key": "/cafe",
+      "views": 1400,
+      "bundles": 14,
+      "share": 0.05426356589147287,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/offers",
+    "views": 6400,
+    "bundles": 64,
+    "share": 0.07398843930635839,
+    "lowSample": false,
+    "onward": 0.609375,
+    "next": [
+     {
+      "key": "/cart",
+      "views": 2400,
+      "bundles": 24,
+      "share": 0.375,
+      "lowSample": true
+     },
+     {
+      "key": "/machines/atelier",
+      "views": 1300,
+      "bundles": 13,
+      "share": 0.203125,
+      "lowSample": true
+     },
+     {
+      "key": "/cafe/book-atelier-tour",
+      "views": 200,
+      "bundles": 2,
+      "share": 0.03125,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 26100,
+    "nextAll": [
+     {
+      "key": "/machines/atelier",
+      "views": 2900,
+      "bundles": 29,
+      "share": 0.1111111111111111,
+      "lowSample": true
+     },
+     {
+      "key": "/cart",
+      "views": 2000,
+      "bundles": 20,
+      "share": 0.07662835249042145,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 1300,
+      "bundles": 13,
+      "share": 0.04980842911877394,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 1300,
+      "bundles": 13,
+      "share": 0.04980842911877394,
+      "lowSample": true
+     },
+     {
+      "key": "/customer/login",
+      "views": 1000,
+      "bundles": 10,
+      "share": 0.038314176245210725,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/subscriptions",
+    "views": 3700,
+    "bundles": 37,
+    "share": 0.04277456647398844,
+    "lowSample": false,
+    "onward": 0.5945945945945946,
+    "next": [
+     {
+      "key": "/cart",
+      "views": 1300,
+      "bundles": 13,
+      "share": 0.35135135135135137,
+      "lowSample": true
+     },
+     {
+      "key": "/customer/login",
+      "views": 500,
+      "bundles": 5,
+      "share": 0.13513513513513514,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 400,
+      "bundles": 4,
+      "share": 0.10810810810810811,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 20300,
+    "nextAll": [
+     {
+      "key": "/machines/atelier",
+      "views": 3700,
+      "bundles": 37,
+      "share": 0.18226600985221675,
+      "lowSample": false
+     },
+     {
+      "key": "/cart",
+      "views": 1500,
+      "bundles": 15,
+      "share": 0.07389162561576355,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 1400,
+      "bundles": 14,
+      "share": 0.06896551724137931,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 1400,
+      "bundles": 14,
+      "share": 0.06896551724137931,
+      "lowSample": true
+     },
+     {
+      "key": "/cafe",
+      "views": 1200,
+      "bundles": 12,
+      "share": 0.059113300492610835,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/blog",
+    "views": 2700,
+    "bundles": 27,
+    "share": 0.03121387283236994,
+    "lowSample": true,
+    "onward": 0.1111111111111111,
+    "next": [
+     {
+      "key": "/beverages",
+      "views": 300,
+      "bundles": 3,
+      "share": 0.1111111111111111,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 16900,
+    "nextAll": [
+     {
+      "key": "/machines/atelier",
+      "views": 3900,
+      "bundles": 39,
+      "share": 0.23076923076923078,
+      "lowSample": false
+     },
+     {
+      "key": "/",
+      "views": 3300,
+      "bundles": 33,
+      "share": 0.1952662721893491,
+      "lowSample": false
+     },
+     {
+      "key": "/cafe",
+      "views": 1600,
+      "bundles": 16,
+      "share": 0.09467455621301775,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 1400,
+      "bundles": 14,
+      "share": 0.08284023668639054,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 1000,
+      "bundles": 10,
+      "share": 0.05917159763313609,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/support",
+    "views": 1800,
+    "bundles": 18,
+    "share": 0.020809248554913295,
+    "lowSample": true,
+    "onward": 0.2222222222222222,
+    "next": [
+     {
+      "key": "/customer/login",
+      "views": 300,
+      "bundles": 3,
+      "share": 0.16666666666666666,
+      "lowSample": true
+     },
+     {
+      "key": "/subscriptions",
+      "views": 100,
+      "bundles": 1,
+      "share": 0.05555555555555555,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 19300,
+    "nextAll": [
+     {
+      "key": "/machines/atelier",
+      "views": 2900,
+      "bundles": 29,
+      "share": 0.15025906735751296,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 1400,
+      "bundles": 14,
+      "share": 0.07253886010362694,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 1000,
+      "bundles": 10,
+      "share": 0.05181347150259067,
+      "lowSample": true
+     },
+     {
+      "key": "/customer/login",
+      "views": 700,
+      "bundles": 7,
+      "share": 0.03626943005181347,
+      "lowSample": true
+     },
+     {
+      "key": "/cafe",
+      "views": 600,
+      "bundles": 6,
+      "share": 0.031088082901554404,
+      "lowSample": true
+     }
+    ]
+   },
+   {
+    "path": "/cart",
+    "views": 1100,
+    "bundles": 11,
+    "share": 0.012716763005780347,
+    "lowSample": true,
+    "onward": 0.6363636363636364,
+    "next": [
+     {
+      "key": "/checkout",
+      "views": 700,
+      "bundles": 7,
+      "share": 0.6363636363636364,
+      "lowSample": true
+     }
+    ],
+    "viewsAll": 11300,
+    "nextAll": [
+     {
+      "key": "/machines/atelier",
+      "views": 2500,
+      "bundles": 25,
+      "share": 0.22123893805309736,
+      "lowSample": true
+     },
+     {
+      "key": "/",
+      "views": 1600,
+      "bundles": 16,
+      "share": 0.1415929203539823,
+      "lowSample": true
+     },
+     {
+      "key": "/beverages",
+      "views": 1100,
+      "bundles": 11,
+      "share": 0.09734513274336283,
+      "lowSample": true
+     },
+     {
+      "key": "/customer/login",
+      "views": 800,
+      "bundles": 8,
+      "share": 0.07079646017699115,
+      "lowSample": true
+     },
+     {
+      "key": "/machines",
+      "views": 800,
+      "bundles": 8,
+      "share": 0.07079646017699115,
+      "lowSample": true
+     }
+    ]
+   }
+  ],
+  "byDevice": {
+   "mobile": [
+    {
+     "path": "/machines/atelier",
+     "views": 15600,
+     "bundles": 156,
+     "share": 0.32842105263157895,
+     "lowSample": false,
+     "onward": 0.6474358974358975,
+     "next": [
+      {
+       "key": "/offers",
+       "views": 3700,
+       "bundles": 37,
+       "share": 0.23717948717948717,
+       "lowSample": false
+      },
+      {
+       "key": "/cart",
+       "views": 2400,
+       "bundles": 24,
+       "share": 0.15384615384615385,
+       "lowSample": true
+      },
+      {
+       "key": "/machines",
+       "views": 2000,
+       "bundles": 20,
+       "share": 0.1282051282051282,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 55600,
+     "nextAll": [
+      {
+       "key": "/",
+       "views": 4300,
+       "bundles": 43,
+       "share": 0.07733812949640288,
+       "lowSample": false
+      },
+      {
+       "key": "/beverages",
+       "views": 3200,
+       "bundles": 32,
+       "share": 0.05755395683453238,
+       "lowSample": false
+      },
+      {
+       "key": "/cafe",
+       "views": 2500,
+       "bundles": 25,
+       "share": 0.044964028776978415,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/cafe",
+     "views": 6900,
+     "bundles": 69,
+     "share": 0.14526315789473684,
+     "lowSample": false,
+     "onward": 0.4927536231884058,
+     "next": [
+      {
+       "key": "/cafe/book-atelier-tour",
+       "views": 2100,
+       "bundles": 21,
+       "share": 0.30434782608695654,
+       "lowSample": true
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 1000,
+       "bundles": 10,
+       "share": 0.14492753623188406,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 300,
+       "bundles": 3,
+       "share": 0.043478260869565216,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 25800,
+     "nextAll": [
+      {
+       "key": "/machines/atelier",
+       "views": 2300,
+       "bundles": 23,
+       "share": 0.08914728682170543,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 1400,
+       "bundles": 14,
+       "share": 0.05426356589147287,
+       "lowSample": true
+      },
+      {
+       "key": "/machines",
+       "views": 1100,
+       "bundles": 11,
+       "share": 0.04263565891472868,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/machines",
+     "views": 6100,
+     "bundles": 61,
+     "share": 0.12842105263157894,
+     "lowSample": false,
+     "onward": 0.5901639344262295,
+     "next": [
+      {
+       "key": "/machines/atelier",
+       "views": 2100,
+       "bundles": 21,
+       "share": 0.3442622950819672,
+       "lowSample": true
+      },
+      {
+       "key": "/offers",
+       "views": 1000,
+       "bundles": 10,
+       "share": 0.16393442622950818,
+       "lowSample": true
+      },
+      {
+       "key": "/cafe",
+       "views": 500,
+       "bundles": 5,
+       "share": 0.08196721311475409,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 24000,
+     "nextAll": [
+      {
+       "key": "/",
+       "views": 3000,
+       "bundles": 30,
+       "share": 0.125,
+       "lowSample": false
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 2600,
+       "bundles": 26,
+       "share": 0.10833333333333334,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 1600,
+       "bundles": 16,
+       "share": 0.06666666666666667,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/beverages",
+     "views": 5900,
+     "bundles": 59,
+     "share": 0.12421052631578948,
+     "lowSample": false,
+     "onward": 0.4915254237288136,
+     "next": [
+      {
+       "key": "/subscriptions",
+       "views": 1300,
+       "bundles": 13,
+       "share": 0.22033898305084745,
+       "lowSample": true
+      },
+      {
+       "key": "/cart",
+       "views": 1000,
+       "bundles": 10,
+       "share": 0.1694915254237288,
+       "lowSample": true
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 600,
+       "bundles": 6,
+       "share": 0.1016949152542373,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 25600,
+     "nextAll": [
+      {
+       "key": "/machines/atelier",
+       "views": 3100,
+       "bundles": 31,
+       "share": 0.12109375,
+       "lowSample": false
+      },
+      {
+       "key": "/cafe",
+       "views": 2400,
+       "bundles": 24,
+       "share": 0.09375,
+       "lowSample": true
+      },
+      {
+       "key": "/",
+       "views": 2300,
+       "bundles": 23,
+       "share": 0.08984375,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/customer/login",
+     "views": 4300,
+     "bundles": 43,
+     "share": 0.09052631578947369,
+     "lowSample": false,
+     "onward": 0.6046511627906976,
+     "next": [
+      {
+       "key": "/subscriptions",
+       "views": 1500,
+       "bundles": 15,
+       "share": 0.3488372093023256,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 700,
+       "bundles": 7,
+       "share": 0.16279069767441862,
+       "lowSample": true
+      },
+      {
+       "key": "/support",
+       "views": 400,
+       "bundles": 4,
+       "share": 0.09302325581395349,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 14100,
+     "nextAll": [
+      {
+       "key": "/machines/atelier",
+       "views": 1200,
+       "bundles": 12,
+       "share": 0.0851063829787234,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 900,
+       "bundles": 9,
+       "share": 0.06382978723404255,
+       "lowSample": true
+      },
+      {
+       "key": "/machines",
+       "views": 700,
+       "bundles": 7,
+       "share": 0.04964539007092199,
+       "lowSample": true
+      }
+     ]
+    }
+   ],
+   "desktop": [
+    {
+     "path": "/machines/atelier",
+     "views": 12000,
+     "bundles": 120,
+     "share": 0.3076923076923077,
+     "lowSample": false,
+     "onward": 0.575,
+     "next": [
+      {
+       "key": "/offers",
+       "views": 3100,
+       "bundles": 31,
+       "share": 0.25833333333333336,
+       "lowSample": false
+      },
+      {
+       "key": "/cart",
+       "views": 1600,
+       "bundles": 16,
+       "share": 0.13333333333333333,
+       "lowSample": true
+      },
+      {
+       "key": "/machines",
+       "views": 1000,
+       "bundles": 10,
+       "share": 0.08333333333333333,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 43900,
+     "nextAll": [
+      {
+       "key": "/",
+       "views": 5800,
+       "bundles": 58,
+       "share": 0.13211845102505695,
+       "lowSample": false
+      },
+      {
+       "key": "/beverages",
+       "views": 1400,
+       "bundles": 14,
+       "share": 0.03189066059225513,
+       "lowSample": true
+      },
+      {
+       "key": "/customer/login",
+       "views": 1200,
+       "bundles": 12,
+       "share": 0.02733485193621868,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/machines",
+     "views": 5500,
+     "bundles": 55,
+     "share": 0.14102564102564102,
+     "lowSample": false,
+     "onward": 0.5636363636363636,
+     "next": [
+      {
+       "key": "/machines/atelier",
+       "views": 2700,
+       "bundles": 27,
+       "share": 0.4909090909090909,
+       "lowSample": true
+      },
+      {
+       "key": "/offers",
+       "views": 300,
+       "bundles": 3,
+       "share": 0.05454545454545454,
+       "lowSample": true
+      },
+      {
+       "key": "/cafe",
+       "views": 100,
+       "bundles": 1,
+       "share": 0.01818181818181818,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 18300,
+     "nextAll": [
+      {
+       "key": "/",
+       "views": 3600,
+       "bundles": 36,
+       "share": 0.19672131147540983,
+       "lowSample": false
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 2200,
+       "bundles": 22,
+       "share": 0.12021857923497267,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 1000,
+       "bundles": 10,
+       "share": 0.0546448087431694,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/cafe",
+     "views": 5100,
+     "bundles": 51,
+     "share": 0.13076923076923078,
+     "lowSample": false,
+     "onward": 0.43137254901960786,
+     "next": [
+      {
+       "key": "/cafe/book-atelier-tour",
+       "views": 1500,
+       "bundles": 15,
+       "share": 0.29411764705882354,
+       "lowSample": true
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 400,
+       "bundles": 4,
+       "share": 0.0784313725490196,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 300,
+       "bundles": 3,
+       "share": 0.058823529411764705,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 16400,
+     "nextAll": [
+      {
+       "key": "/",
+       "views": 2600,
+       "bundles": 26,
+       "share": 0.15853658536585366,
+       "lowSample": true
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 1800,
+       "bundles": 18,
+       "share": 0.10975609756097561,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 800,
+       "bundles": 8,
+       "share": 0.04878048780487805,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/beverages",
+     "views": 5000,
+     "bundles": 50,
+     "share": 0.1282051282051282,
+     "lowSample": false,
+     "onward": 0.44,
+     "next": [
+      {
+       "key": "/subscriptions",
+       "views": 1200,
+       "bundles": 12,
+       "share": 0.24,
+       "lowSample": true
+      },
+      {
+       "key": "/cart",
+       "views": 600,
+       "bundles": 6,
+       "share": 0.12,
+       "lowSample": true
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 400,
+       "bundles": 4,
+       "share": 0.08,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 17500,
+     "nextAll": [
+      {
+       "key": "/",
+       "views": 4100,
+       "bundles": 41,
+       "share": 0.2342857142857143,
+       "lowSample": false
+      },
+      {
+       "key": "/machines/atelier",
+       "views": 1500,
+       "bundles": 15,
+       "share": 0.08571428571428572,
+       "lowSample": true
+      },
+      {
+       "key": "/cafe",
+       "views": 900,
+       "bundles": 9,
+       "share": 0.05142857142857143,
+       "lowSample": true
+      }
+     ]
+    },
+    {
+     "path": "/customer/login",
+     "views": 4400,
+     "bundles": 44,
+     "share": 0.11282051282051282,
+     "lowSample": false,
+     "onward": 0.5,
+     "next": [
+      {
+       "key": "/subscriptions",
+       "views": 1600,
+       "bundles": 16,
+       "share": 0.36363636363636365,
+       "lowSample": true
+      },
+      {
+       "key": "/beverages",
+       "views": 400,
+       "bundles": 4,
+       "share": 0.09090909090909091,
+       "lowSample": true
+      },
+      {
+       "key": "/support",
+       "views": 200,
+       "bundles": 2,
+       "share": 0.045454545454545456,
+       "lowSample": true
+      }
+     ],
+     "viewsAll": 11700,
+     "nextAll": [
+      {
+       "key": "/machines/atelier",
+       "views": 2100,
+       "bundles": 21,
+       "share": 0.1794871794871795,
+       "lowSample": true
+      },
+      {
+       "key": "/",
+       "views": 1500,
+       "bundles": 15,
+       "share": 0.1282051282051282,
+       "lowSample": true
+      },
+      {
+       "key": "/machines",
+       "views": 1100,
+       "bundles": 11,
+       "share": 0.09401709401709402,
+       "lowSample": true
+      }
+     ]
+    }
+   ]
+  },
+  "conversion": {
+   "click": "/cart|/checkout|/cafe",
+   "path": "^/(cart|checkout)",
+   "label": "add to cart or book a tour"
+  },
+  "assists": {
+   "goalViews": 47500,
+   "views": 251600,
+   "rate": 0.18879173290937998,
+   "pages": [
+    {
+     "path": "/",
+     "views": 86500,
+     "bundles": 865,
+     "goalViews": 16800,
+     "share": 0.35368421052631577,
+     "rate": 0.19421965317919074,
+     "lift": 1.028750836629145,
+     "lowSample": false
+    },
+    {
+     "path": "/machines/atelier",
+     "views": 34100,
+     "bundles": 341,
+     "goalViews": 5600,
+     "share": 0.11789473684210526,
+     "rate": 0.16422287390029325,
+     "lift": 0.8698626331223953,
+     "lowSample": false
+    },
+    {
+     "path": "/beverages",
+     "views": 23500,
+     "bundles": 235,
+     "goalViews": 4400,
+     "share": 0.09263157894736843,
+     "rate": 0.18723404255319148,
+     "lift": 0.9917491601343784,
+     "lowSample": false
+    },
+    {
+     "path": "/offers",
+     "views": 11000,
+     "bundles": 110,
+     "goalViews": 3600,
+     "share": 0.07578947368421053,
+     "rate": 0.32727272727272727,
+     "lift": 1.733511961722488,
+     "lowSample": false
+    },
+    {
+     "path": "/subscriptions",
+     "views": 12200,
+     "bundles": 122,
+     "goalViews": 3600,
+     "share": 0.07578947368421053,
+     "rate": 0.29508196721311475,
+     "lift": 1.5630025884383087,
+     "lowSample": false
+    },
+    {
+     "path": "/machines",
+     "views": 20800,
+     "bundles": 208,
+     "goalViews": 3000,
+     "share": 0.06315789473684211,
+     "rate": 0.14423076923076922,
+     "lift": 0.7639676113360323,
+     "lowSample": false
+    },
+    {
+     "path": "/blog",
+     "views": 13800,
+     "bundles": 138,
+     "goalViews": 2800,
+     "share": 0.05894736842105263,
+     "rate": 0.2028985507246377,
+     "lift": 1.0747215865751334,
+     "lowSample": false
+    },
+    {
+     "path": "/cafe",
+     "views": 17000,
+     "bundles": 170,
+     "goalViews": 2100,
+     "share": 0.04421052631578947,
+     "rate": 0.12352941176470589,
+     "lift": 0.6543157894736842,
+     "lowSample": false
+    },
+    {
+     "path": "/support",
+     "views": 7700,
+     "bundles": 77,
+     "goalViews": 1900,
+     "share": 0.04,
+     "rate": 0.24675324675324675,
+     "lift": 1.307012987012987,
+     "lowSample": false
+    },
+    {
+     "path": "/customer/login",
+     "views": 12900,
+     "bundles": 129,
+     "goalViews": 1600,
+     "share": 0.03368421052631579,
+     "rate": 0.12403100775193798,
+     "lift": 0.6569726642186862,
+     "lowSample": false
+    }
+   ]
+  }
+ },
+ "experiences": [
+  {
+   "id": "agent",
+   "label": "Personal agent: plain & orderable",
+   "views": 700,
+   "share": 0.005737704918032787
+  },
+  {
+   "id": "owner",
+   "label": "Owner: your beans first",
+   "views": 13500,
+   "share": 0.11065573770491803
+  },
+  {
+   "id": "deal",
+   "label": "Deal seeker: the bundle first",
+   "views": 3700,
+   "share": 0.030327868852459017
+  },
+  {
+   "id": "shopper",
+   "label": "Shopper: answer the search",
+   "views": 41200,
+   "share": 0.3377049180327869
+  },
+  {
+   "id": "story",
+   "label": "Discover: see it pour",
+   "views": 3200,
+   "share": 0.02622950819672131
+  },
+  {
+   "id": "local",
+   "label": "Nearby: taste it first",
+   "views": 33600,
+   "share": 0.2754098360655738
+  },
+  {
+   "id": "default",
+   "label": "Original homepage",
+   "views": 26100,
+   "share": 0.2139344262295082
+  }
+ ],
+ "today": {
+  "didNothing": 0.21147540983606558,
+  "navigated": 0.29918032786885246,
+  "topClicks": [
+   {
+    "click": "header .nav-tools button.search",
+    "link": false,
+    "share": 0.08114754098360656,
+    "bundles": 99
+   },
+   {
+    "click": "/machines/atelier",
+    "link": true,
+    "share": 0.07704918032786885,
+    "bundles": 94
+   },
+   {
+    "click": ".mood-calendar button.day",
+    "link": false,
+    "share": 0.07459016393442623,
+    "bundles": 91
+   },
+   {
+    "click": "header button.nav-hamburger",
+    "link": false,
+    "share": 0.060655737704918035,
+    "bundles": 74
+   },
+   {
+    "click": ".hero picture",
+    "link": false,
+    "share": 0.05983606557377049,
+    "bundles": 73
+   }
+  ],
+  "weeks": [
+   26500,
+   27900,
+   28400,
+   30300,
+   8900
+  ],
+  "devices": [
+   {
+    "key": "mobile",
+    "views": 61900,
+    "bundles": 619,
+    "share": 0.5073770491803279
+   },
+   {
+    "key": "desktop",
+    "views": 59400,
+    "bundles": 594,
+    "share": 0.48688524590163934
+   },
+   {
+    "key": "bot",
+    "views": 700,
+    "bundles": 7,
+    "share": 0.005737704918032787
+   }
+  ]
+ }
+}
