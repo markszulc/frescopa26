@@ -1,0 +1,17 @@
+{
+  "firm": "Fréscopa",
+  "scope": "US, all AI engines, illustrative demo figures",
+  "states": {"lead": "Fréscopa is named", "comp": "Established brands lead", "open": "Open, or thin"},
+  "note": "Demo data, not measured. Visits are synthetic (cohorts/demo-data.mjs). Prompt volumes are illustrative: the order of the themes follows US prompt research for the same queries (Adobe Brand Visibility, November 2026), the figures are scaled down and varied. Fréscopa is a fictional brand, so who is named is invented. Jobs and experiences are proposals.",
+  "wantedNote": "Fréscopa has no public filings. These lines are read from its own site copy (homepage, the Atelier page, cafés), not from a strategy document.",
+  "themes": [
+    {"id": "machines", "state": "comp", "prompts": 790000, "asked": "Four established machine brands are named first; Fréscopa appears in about 1 answer in 20.", "wanted": "The Atelier launch: \"the first Fréscopa machine with a feel for your mornings\"", "job": ["Win"], "experience": "A compare page and a reviews page that state price, specs and trial terms as text"},
+    {"id": "smart", "state": "open", "prompts": 29000, "asked": "Small but growing. No machine brand is named on the largest topics.", "wanted": "\"Meet your coffee agent\": the machine that learns your taste", "job": ["Claim"], "experience": "One page per question: what a coffee agent is, how it learns, what it stores"},
+    {"id": "beans", "state": "comp", "prompts": 38000, "asked": "Subscription services lead; roasters with a machine are rarely named.", "wanted": "Beans reorder automatically; \"a year of beans\" bundle", "job": ["Win"], "experience": "A subscription page with prices, pause and cancel terms in the first screen"},
+    {"id": "pods", "state": "open", "prompts": 250000, "asked": "Questions about recyclability go unanswered by brands; retailers and forums are cited.", "wanted": "\"Kind by design\": compostable pods, plastic-free refills", "job": ["Claim"], "experience": "A sustainability page with the certification, the materials and how to dispose"},
+    {"id": "care", "state": "lead", "prompts": 880000, "asked": "Brand-specific care questions carry the theme. Fréscopa is named on its own, with thin sources.", "wanted": "", "job": ["Defend"], "experience": "Care guides per task (descale, milk system, filter) that owners and assistants can follow step by step"},
+    {"id": "cafes", "state": "comp", "prompts": 1650000, "asked": "\"Near me\" questions carry the theme and chains are named. Classes and tours are open.", "wanted": "\"Come say hello\": cafés as showrooms, tours and classes", "job": ["Win", "Claim"], "experience": "A page per café and per class with address, hours and booking as text"},
+    {"id": "offers", "state": "open", "prompts": 8000, "asked": "Thin. Deals and financing questions name retailers, not machine brands.", "wanted": "\"Great coffee, without the barista price tag\": students, monthly plan", "job": ["Claim"], "experience": "An offers page: the bundle, the monthly price, the 30-night trial"},
+    {"id": "brewing", "state": "comp", "prompts": 120000, "asked": "Recipe sites and creators are named; machine brands rarely.", "wanted": "", "job": ["Win"], "experience": "Journal guides that name the method and the source in the sentence"}
+  ]
+}

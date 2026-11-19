@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Content Fragment</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://da.live/nx2/styles/styles.css">
+    <link rel="stylesheet" href="./content-fragment.css">
+    <script type="module" src="./content-fragment.js"></script>
+  </head>
+  <body class="content-fragment-panel">
+    <main>
+      <div class="panel-content">
+        <header>
+          <p class="eyebrow">AEM CONTENT</p>
+          <h1>Content Fragments</h1>
+          <p class="description">Preview and edit the Content Fragments referenced on this page.</p>
+        </header>
+
+        <section aria-labelledby="fragments-heading">
+          <div class="section-heading">
+            <h2 id="fragments-heading">On This Page</h2>
+            <span id="fragment-count" class="count" aria-label="Fragment count">0</span>
+          </div>
+          <p id="empty-state" class="description">Waiting for fragment references from the preview.</p>
+          <div class="table-scroll" role="region" aria-label="Content Fragments" hidden>
+            <table aria-labelledby="fragments-heading">
+              <thead>
+                <tr><th scope="col">Fragment</th><th scope="col">Status</th><th scope="col">Action</th></tr>
+              </thead>
+              <tbody id="fragments"></tbody>
+            </table>
+          </div>
+          <p id="highlight-status" class="description" role="status" aria-live="polite" hidden></p>
+          <p id="publication-status" class="description" role="status" aria-live="polite" hidden></p>
+        </section>
+
+        <section aria-labelledby="browse-fragments">
+          <button id="browse-fragments" type="button" aria-haspopup="dialog" title="Select a Content Fragment block to add a path, or place the cursor where you want to paste it." disabled>Add a Content Fragment</button>
+          <div id="content-advisor" hidden></div>
+          <p id="insert-status" class="description" role="status" aria-live="polite"></p>
+          <div id="advisor-actions" hidden>
+            <button id="close-advisor" type="button">Cancel</button>
+            <button id="insert-fragments" type="button" disabled>Insert selected fragments</button>
+          </div>
+        </section>
+      </div>
+
+      <details class="author-card">
+        <summary>
+          <h2>Author Connection</h2>
+          <span id="connection-state" class="connection-state" data-state="waiting">Connecting</span>
+        </summary>
+        <dl>
+          <dt>Instance</dt>
+          <dd><a id="author-instance" target="_blank" rel="noopener noreferrer"></a></dd>
+          <dt>Service</dt>
+          <dd>AEM as a Cloud Service / Author</dd>
+          <dt>Authentication</dt>
+          <dd>DA sign-in (IMS bearer token)</dd>
+          <dt>Page</dt>
+          <dd id="page-path">Resolving page...</dd>
+        </dl>
+        <p id="status" role="status" aria-live="polite">Connecting to Experience Workspace...</p>
+        <aside class="help">
+          <h2>Working with author content</h2>
+          <p>Keep this panel open in Layout or Split view. If the preview shows an error, select <strong>Retry author connection</strong> in the block.</p>
+          <p>Edits open in a separate tab and require AEM author access. After saving, reload the preview to see your changes.</p>
+        </aside>
+      </details>
+    </main>
+  </body>
+</html>

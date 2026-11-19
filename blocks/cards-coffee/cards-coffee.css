@@ -76,10 +76,10 @@
 
 .cards-coffee .cards-coffee-category {
   font-family: var(--font-body);
-  font-size: 0.66rem;
+  font-size: var(--fs-label);
   font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 

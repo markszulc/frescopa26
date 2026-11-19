@@ -44,7 +44,19 @@
   --body-font-family: "Hanken Grotesk", system-ui, sans-serif;
 
   /* Type scale (fluid, matching source) */
-  --fs-eyebrow: 0.75rem;
+
+  /* Eyebrows (the line above a heading) and card labels: sentence case, set in the
+     display face, so they read as part of the headline rather than a stamped tag. */
+  --fs-eyebrow: 1rem;
+  --eyebrow-font: var(--font-display);
+  --eyebrow-weight: 600;
+  --label-case: none;
+  --fs-label: 0.8125rem;
+  --tracking-label: 0;
+
+  /* Small UI tags that stay in capitals (badges, chips, meta) */
+  --fs-caps: 0.75rem;
+  --tracking-caps: 0.2em;
   --fs-sm: 0.9375rem;
   --fs-body: 1.0625rem;
   --fs-body-lg: clamp(1.125rem, 0.98rem + 0.5vw, 1.3125rem);
@@ -64,7 +76,7 @@
   --lh-tight: 1.03;
   --lh-snug: 1.15;
   --lh-body: 1.62;
-  --tracking-eyebrow: 0.2em;
+  --tracking-eyebrow: -0.005em;
   --tracking-tight: -0.02em;
 
   /* Spacing */
@@ -76,8 +88,8 @@
   --space-lg: 2.5rem;
   --space-xl: 4rem;
   --space-2xl: 6rem;
-  --section-y: 72px;
-  --section-padding: 72px;
+  --section-y: clamp(2.5rem, 1.6rem + 2.4vw, 3.5rem);
+  --section-padding: var(--section-y);
   --content: 1120px;
   --content-wide: 1320px;
   --content-narrow: 760px;

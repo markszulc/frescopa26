@@ -63,7 +63,7 @@ function renderDetail(block, item, bridge) {
   const colorDiv = () => {
     const d = document.createElement('div');
     d.className = 'get-coffee-machine-details-image-placeholder';
-    d.style.backgroundColor = CARD_COLORS[0];
+    [d.style.backgroundColor] = CARD_COLORS;
     return d;
   };
   if (src) {
@@ -189,8 +189,8 @@ export default async function decorate(block, bridge) {
       item = Array.isArray(SAMPLE_DATA) ? SAMPLE_DATA[0] : SAMPLE_DATA;
     } else {
       // Detail concept — structuredContent IS the item (flat). No wrapper key.
-      const _result = await bridge.toolResult;
-      item = _result?.structuredContent || {};
+      const result = await bridge.toolResult;
+      item = result?.structuredContent || {};
     }
   } else {
     item = Array.isArray(SAMPLE_DATA) ? SAMPLE_DATA[0] : SAMPLE_DATA;

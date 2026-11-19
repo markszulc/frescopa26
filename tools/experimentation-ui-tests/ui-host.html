@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fixture host only: DA experimentation UI</title>
+    <link rel="stylesheet" href="/tools/plugins/experimentation/index.css">
+    <style>
+      #results { display: none; }
+      #fixture-panel { --panel-height: calc(100dvh - 56px); }
+      .fixture-notice { box-sizing: border-box; height: 56px; margin: 0; padding: 6px; font: 11px/14px sans-serif; }
+    </style>
+    <script type="module" src="/tools/experimentation-ui-tests/ui-browser.js"></script>
+  </head>
+  <body>
+    <p class="fixture-notice">TEST FIXTURE ONLY. No DA connection, persistence, or engine qualification.</p>
+    <main id="fixture-panel" class="experimentation"></main>
+    <pre id="results">Running UI checks...</pre>
+  </body>
+</html>

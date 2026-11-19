@@ -13,3 +13,10 @@ helix-importer-ui
 !AGENTS.md
 .hlx/
 .of1/
+
+# Adobe Commerce: drop-in source maps and local-only storefront config
+scripts/__dropins__/**/*.map
+config.json
+
+# synthetic Optel demo bundles (regenerate with node cohorts/demo-data.mjs)
+cohorts/.data/

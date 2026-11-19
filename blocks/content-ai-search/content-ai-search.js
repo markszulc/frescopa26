@@ -1,96 +1,32 @@
 import { readBlockConfig } from '../../scripts/aem.js';
+import {
+  fetchSearchAnswer,
+  fetchSearchResults,
+  filterSearchAnswer,
+  filterSearchResults,
+  isSafeUrl,
+  renderMarkdownSummary,
+  resolveSearchResult,
+} from '../../scripts/content-ai.js';
 
 const LOADING_DISPLAY_DELAY = 300;
 const TAB_RESULTS = 'search-results';
 const TAB_AI = 'ai-mode';
 const MAX_RESULTS_SIZE = 50;
 const MAX_TOP_UP_REQUESTS = 3;
-// Candidate pool of the vector query. Also caps how many results can be paged through
-// for queries the full-text query does not match, so keep it well above the page size.
-const VECTOR_NUM_CANDIDATES = 50;
-// Only the result fields the block reads (paths are relative to each result's "data").
-const RESULT_FIELDS = [
-  'text',
-  'source',
-  'title',
-  'name',
-  'metadata.url',
-  'metadata.source',
-  'metadata.title',
-  'metadata.description',
-  'metadata.image',
-  'metadata.meta.image',
-];
 
 async function fetchMockAnswer() {
   const url = `${window.hlx.codeBasePath}/blocks/content-ai-search/mock-answer.json`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Failed to load mock answer: ${resp.status}`);
-  return resp.json();
+  return filterSearchAnswer(await resp.json());
 }
 
 async function fetchMockResults() {
   const url = `${window.hlx.codeBasePath}/blocks/content-ai-search/mock-results.json`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Failed to load mock results: ${resp.status}`);
-  return resp.json();
-}
-
-async function fetchSearchAnswer(baseUrl, contentSource, contentSourceType, query) {
-  const url = `${baseUrl}/gensearch`;
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contentSource: { name: contentSource, type: contentSourceType },
-      query,
-    }),
-  });
-  if (!resp.ok) throw new Error(`Content AI request failed: ${resp.status}`);
-  return resp.json();
-}
-
-// Longer, natural-language queries are better served by the semantic vector match than by
-// literal term matching, so the full-text boost shrinks with the number of words.
-function fulltextBoost(query) {
-  const tokens = query.trim().split(/\s+/).length;
-  return tokens > 1 ? 1 / (5 * tokens) : 1;
-}
-
-function buildSearchQuery(text) {
-  return {
-    type: 'composite',
-    operator: 'OR',
-    queries: [
-      { type: 'vector', text, options: { numCandidates: VECTOR_NUM_CANDIDATES, boost: 1 } },
-      {
-        type: 'fulltext',
-        text,
-        options: { boost: fulltextBoost(text), operator: 'AND', matchStrategy: 'COMBINED_FIELDS' },
-      },
-    ],
-  };
-}
-
-async function fetchSearchResults(baseUrl, contentSource, contentSourceType, query, limit, cursor) {
-  const url = `${baseUrl}/search`;
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contentSource: { name: contentSource, type: contentSourceType },
-      query: buildSearchQuery(query),
-      queryOptions: {
-        resultFields: { includes: RESULT_FIELDS },
-        pagination: {
-          limit,
-          ...(cursor ? { cursor } : {}),
-        },
-      },
-    }),
-  });
-  if (!resp.ok) throw new Error(`Content AI search failed: ${resp.status}`);
-  return resp.json();
+  return filterSearchResults(await resp.json());
 }
 
 function toggleShow(el, show) {
@@ -100,7 +36,7 @@ function toggleShow(el, show) {
 }
 
 function resolveMetadataUrl(meta) {
-  return (meta && (meta.url || meta.source)) || '';
+  return resolveSearchResult({ data: { metadata: meta } }).url;
 }
 
 function labelFromUrl(url) {
@@ -119,79 +55,11 @@ function labelFromUrl(url) {
   }
 }
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function isSafeUrl(url) {
-  if (!url) return false;
-  try {
-    const parsed = new URL(url, window.location.origin);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-  } catch (error) {
-    return false;
-  }
-}
-
-function linkifyBareUrls(html) {
-  return html.split(/(<a\b[^>]*>.*?<\/a>)/g).map((part) => {
-    if (/^<a\b/.test(part)) return part;
-    return part.replace(/https?:\/\/[^\s<]+/g, (url) => {
-      const trailingMatch = url.match(/[).,;:!?]+$/);
-      const trailing = trailingMatch ? trailingMatch[0] : '';
-      const cleanUrl = trailing ? url.slice(0, -trailing.length) : url;
-      if (!isSafeUrl(cleanUrl)) return url;
-      return `<a href="${cleanUrl}" target="_blank" rel="noopener">${cleanUrl}</a>${trailing}`;
-    });
-  }).join('');
-}
-
-function renderMarkdownInline(text) {
-  let html = escapeHtml(text);
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (match, label, url) => (
-    isSafeUrl(url) ? `<a href="${url}" target="_blank" rel="noopener">${label}</a>` : label
-  ));
-  html = linkifyBareUrls(html);
-  return html;
-}
-
-function renderMarkdownSummary(text) {
-  const lines = String(text || '').split(/\r?\n/);
-  let html = '';
-  let listOpen = false;
-  lines.forEach((line) => {
-    const trimmed = line.replace(/^\s+/, '');
-    if (/^[-*]\s+/.test(trimmed)) {
-      if (!listOpen) {
-        html += '<ul>';
-        listOpen = true;
-      }
-      html += `<li>${renderMarkdownInline(trimmed.replace(/^[-*]\s+/, ''))}</li>`;
-    } else {
-      if (listOpen) {
-        html += '</ul>';
-        listOpen = false;
-      }
-      if (trimmed.length > 0) html += `<p>${renderMarkdownInline(trimmed)}</p>`;
-    }
-  });
-  if (listOpen) html += '</ul>';
-  return html;
-}
-
 function renderResultItem(item, layout) {
-  const data = item.data || {};
-  const meta = data.metadata || {};
-  const url = data.source || resolveMetadataUrl(meta);
-  const title = meta.title || url || item.id || 'Untitled';
-  const description = meta.description || '';
-  const image = meta.image || '';
+  const {
+    url, title: resultTitle, description, image,
+  } = resolveSearchResult(item);
+  const title = resultTitle || url || item.id || 'Untitled';
   const href = isSafeUrl(url) ? url : '#';
 
   const li = document.createElement('li');
@@ -250,18 +118,12 @@ function renderSourceChip(hit) {
 }
 
 function resolveItemImage(item) {
-  const meta = (item.data && item.data.metadata) || {};
-  const rawMeta = meta.meta && typeof meta.meta === 'object' ? meta.meta : {};
-  const image = meta.image || rawMeta.image || '';
+  const { image } = resolveSearchResult(item);
   return image && isSafeUrl(image) ? image : '';
 }
 
 function resolveItemUrl(item) {
-  const data = item.data || {};
-  const meta = data.metadata || {};
-  const rawMeta = meta.meta && typeof meta.meta === 'object' ? meta.meta : {};
-  return meta.canonicalUrl || meta.canonical || rawMeta.canonical || rawMeta['og:url']
-    || resolveMetadataUrl(meta) || data.source || '';
+  return resolveSearchResult(item).url;
 }
 
 function resolveImageLessIdentity(item) {
@@ -567,7 +429,7 @@ export default function decorate(block) {
       empty.className = 'cmp-content-ai-search__empty';
       empty.textContent = message || 'No results found.';
       resultsList.append(empty);
-      loadMoreButton.hidden = true;
+      loadMoreButton.hidden = !nextCursor;
       return;
     }
     visibleResults.forEach((item) => resultsList.append(renderResultItem(item, resultsLayout)));
@@ -611,7 +473,7 @@ export default function decorate(block) {
     if (append) {
       allResults = deduplicateResults(allResults.concat(newResults));
       const cursorAdvanced = data.cursor && data.cursor !== cursor;
-      nextCursor = (cursorAdvanced && newResults.length) ? data.cursor : null;
+      nextCursor = cursorAdvanced ? data.cursor : null;
     } else {
       allResults = deduplicateResults(newResults);
       nextCursor = data.cursor || null;
@@ -641,7 +503,7 @@ export default function decorate(block) {
       storeResults(data, null, false);
       // The server returns the configured results size per page, so that raw count is
       // the target to restore after duplicates are dropped.
-      pageSize = (data.results || []).length;
+      pageSize = data.unfilteredResultCount ?? (data.results || []).length;
       visibleCount = pageSize;
       try {
         await topUpResults(requestId, query, pageSize);

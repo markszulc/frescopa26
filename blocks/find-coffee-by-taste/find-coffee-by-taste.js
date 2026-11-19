@@ -61,18 +61,30 @@ function getThemedCardBg(palette) {
   let hex = palette[0].replace('#', '');
   if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
   if (hex.length !== 6) return null;
-  const [r, g, b] = [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+  const [r, g, b] = [
+    parseInt(hex.slice(0, 2), 16),
+    parseInt(hex.slice(2, 4), 16),
+    parseInt(hex.slice(4, 6), 16),
+  ];
   if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
-  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
+  const lum = (c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
   const relLum = (rr, gg, bb) => 0.2126 * lum(rr) + 0.7152 * lum(gg) + 0.0722 * lum(bb);
   if (relLum(r, g, b) <= 0.12) return { bg: `#${hex}`, fg: '#ffffff' };
-  let lo = 0; let hi = 1;
+  let lo = 0;
+  let hi = 1;
   for (let i = 0; i < 20; i += 1) {
     const m = (lo + hi) / 2;
-    if (relLum(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) hi = m; else lo = m;
+    if (relLum(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) {
+      hi = m;
+    } else {
+      lo = m;
+    }
   }
-  const dr = Math.round(r * lo); const dg = Math.round(g * lo); const db = Math.round(b * lo);
-  return { bg: `#${dr.toString(16).padStart(2, '0')}${dg.toString(16).padStart(2, '0')}${db.toString(16).padStart(2, '0')}`, fg: '#ffffff' };
+  const channels = [r, g, b].map((c) => Math.round(c * lo).toString(16).padStart(2, '0'));
+  return { bg: `#${channels.join('')}`, fg: '#ffffff' };
 }
 const theme = getThemedCardBg(PALETTE);
 
@@ -87,9 +99,10 @@ export default async function decorate(block, bridge) {
     if (isPreview) {
       items = SAMPLE_DATA;
     } else {
-      const _result = await bridge.toolResult;
-      const structuredContent = _result?.structuredContent || {};
-      // structuredContent.coffees — bare array outputSchema; key derived from actionName "find_coffee_by_taste"
+      const result = await bridge.toolResult;
+      const structuredContent = result?.structuredContent || {};
+      // structuredContent.coffees — bare array outputSchema; key derived from actionName
+      // "find_coffee_by_taste"
       items = structuredContent?.coffees || [];
     }
   } else {

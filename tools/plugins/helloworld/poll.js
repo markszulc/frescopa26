@@ -4,7 +4,7 @@ const WORKER_URL = 'https://vibemig-migration-backend-worker.franklin-prod.worke
 const CANVAS_URL = 'https://da.live/canvas#';
 const POLL_INTERVAL_MS = 30_000;
 
-export async function startPolling(onReady) {
+export default async function startPolling(onReady) {
   const { context } = await DA_SDK;
   const { org, repo, path } = context;
   const pathParts = path?.split('/').filter(Boolean) || [];

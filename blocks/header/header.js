@@ -1,5 +1,10 @@
+import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { fetchPlaceholders, CUSTOMER_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/commerce.js';
+import decorateLanguageSelector from './language-selector.js';
+import { getLanguage, loadLanguages } from '../../scripts/languages.js';
+import { loadNavigation, getNavigationTool } from './navigation.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -77,7 +82,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  button.setAttribute('aria-label', expanded ? nav.dataset.openNavigation : nav.dataset.closeNavigation);
   // enable nav dropdown keyboard accessibility
   if (navSections) {
     const navDrops = navSections.querySelectorAll('.nav-drop');
@@ -109,19 +114,355 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 /**
+ * Turns the nav's cart tool into a mini cart toggle: a live item-count badge
+ * driven by cart/data events, and a drawer that lazy-loads the mini cart
+ * fragment (commerce-mini-cart block) on first open.
+ * @param {Element} link The decorated cart link from the nav tools
+ */
+async function decorateMiniCart(link) {
+  const labels = await fetchPlaceholders();
+  const cartLabel = link.getAttribute('aria-label') || labels.Global?.Cart || 'Cart';
+  const countLabel = (count) => (count === 1
+    ? labels.Global?.CartWithItem?.replace('{count}', count) ?? `${cartLabel}, ${count} item`
+    : labels.Global?.CartWithItems?.replace('{count}', count) ?? `${cartLabel}, ${count} items`);
+  const updatedLabel = (count) => {
+    if (!count) return labels.Global?.CartUpdatedEmpty ?? 'Cart updated, cart is empty';
+    return count === 1
+      ? labels.Global?.CartUpdatedWithItem?.replace('{count}', count) ?? `Cart updated, ${count} item in cart`
+      : labels.Global?.CartUpdatedWithItems?.replace('{count}', count) ?? `Cart updated, ${count} items in cart`;
+  };
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'nav-cart-button';
+  button.innerHTML = link.innerHTML;
+  button.setAttribute('aria-label', countLabel(0));
+  button.setAttribute('aria-haspopup', 'dialog');
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-controls', 'minicart-drawer');
+
+  // Kept mounted so count changes are announced; the visual badge is CSS-only.
+  const status = document.createElement('span');
+  status.className = 'nav-cart-status';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
+
+  link.replaceWith(button);
+  button.after(status);
+
+  const overlay = document.createRange().createContextualFragment(`
+    <div class="minicart-overlay">
+      <div class="minicart-drawer" id="minicart-drawer" role="dialog" aria-modal="true" aria-labelledby="minicart-title" tabindex="-1">
+        <div class="minicart-drawer-head">
+          <h2 class="minicart-drawer-title" id="minicart-title"></h2>
+          <button type="button" class="minicart-close">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+        <div class="minicart-drawer-body"></div>
+      </div>
+    </div>
+  `).firstElementChild;
+  overlay.inert = true;
+  overlay.querySelector('.minicart-drawer-title').textContent = cartLabel;
+  overlay.querySelector('.minicart-close').setAttribute('aria-label', labels.Global?.CloseCart ?? 'Close cart');
+  document.body.append(overlay);
+
+  const drawer = overlay.querySelector('.minicart-drawer');
+  const drawerBody = overlay.querySelector('.minicart-drawer-body');
+  const closeButton = overlay.querySelector('.minicart-close');
+  const title = overlay.querySelector('.minicart-drawer-title');
+  let loading;
+
+  const loadMiniCart = () => {
+    if (!loading) {
+      loading = (async () => {
+        drawerBody.setAttribute('aria-busy', 'true');
+        const miniCartMeta = getMetadata('mini-cart');
+        const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
+        const fragment = await loadFragment(miniCartPath);
+        if (fragment?.firstElementChild) {
+          drawerBody.append(fragment.firstElementChild);
+        } else {
+          // eslint-disable-next-line no-console
+          console.warn(`Mini cart fragment not found at ${miniCartPath}`);
+          loading = null;
+        }
+        drawerBody.removeAttribute('aria-busy');
+      })();
+    }
+    return loading;
+  };
+
+  const getFocusable = () => [...drawer.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+  )].filter((el) => el.offsetParent !== null);
+
+  /* eslint-disable no-use-before-define */
+  const onKeydown = (e) => {
+    if (e.key === 'Escape') {
+      // keep the nav's own Escape handling (on window) from also firing
+      e.stopPropagation();
+      e.preventDefault();
+      closeMiniCart();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusable();
+    if (!focusable.length) {
+      e.preventDefault();
+      drawer.focus();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || document.activeElement === drawer)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+  /* eslint-enable no-use-before-define */
+
+  async function openMiniCart() {
+    if (overlay.classList.contains('is-open')) return;
+    overlay.inert = false;
+    overlay.classList.add('is-open');
+    document.body.classList.add('minicart-open');
+    button.setAttribute('aria-expanded', 'true');
+    document.addEventListener('keydown', onKeydown);
+    // Focus the dialog itself, not the close button: Chrome activates buttons on
+    // the Enter keypress that follows the keydown which opened the drawer.
+    drawer.focus();
+    await loadMiniCart();
+    const { publishShoppingCartViewEvent } = await import('@dropins/storefront-cart/api.js');
+    publishShoppingCartViewEvent();
+  }
+
+  function closeMiniCart() {
+    if (!overlay.classList.contains('is-open')) return;
+    overlay.classList.remove('is-open');
+    overlay.inert = true;
+    document.body.classList.remove('minicart-open');
+    button.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('keydown', onKeydown);
+    button.focus();
+  }
+
+  button.addEventListener('click', () => {
+    if (overlay.classList.contains('is-open')) closeMiniCart();
+    else openMiniCart();
+  });
+  closeButton.addEventListener('click', closeMiniCart);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeMiniCart();
+  });
+
+  let previousCount;
+  events.on('cart/data', (data) => {
+    const count = data?.totalQuantity ?? 0;
+    if (count) button.dataset.count = count > 99 ? '99+' : count;
+    else delete button.dataset.count;
+    button.setAttribute('aria-label', countLabel(count));
+    title.textContent = count ? `${cartLabel} (${count})` : cartLabel;
+    // announce changes only, not the initial count on page load
+    if (previousCount !== undefined && previousCount !== count) {
+      status.textContent = updatedLabel(count);
+    }
+    previousCount = count;
+  }, { eager: true });
+}
+
+const AUTH_COOKIES = [
+  'auth_dropin_user_token',
+  'auth_dropin_firstname',
+  'auth_dropin_lastname',
+  'auth_dropin_admin_session',
+  'auth_dropin_website_code',
+];
+
+function readCookie(name) {
+  const entry = document.cookie.split(';').map((c) => c.trim()).find((c) => c.startsWith(`${name}=`));
+  if (!entry) return '';
+  try {
+    return decodeURIComponent(entry.slice(name.length + 1));
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Turns the nav's account tool into an icon-only sign-in link (signed out) or a menu
+ * button with a first-name greeting and a sign-out action (signed in).
+ * State follows the auth drop-in's `authenticated` event, so no reload is needed.
+ * @param {Element} link The decorated account link from the nav tools
+ */
+async function decorateAccount(link, navLabels) {
+  const labels = await fetchPlaceholders();
+  const signInText = link.getAttribute('aria-label') || labels.Global?.SignIn || 'Sign in';
+  const signOutText = navLabels.signOut ?? labels.Global?.SignOut ?? 'Sign out';
+  const greeting = (name) => (navLabels.accountGreeting ?? labels.Global?.AccountGreeting ?? 'Hi {name}!').replace('{name}', name);
+  const menuLabel = (name) => (navLabels.accountMenu ?? labels.Global?.AccountMenu ?? 'Account menu for {name}').replace('{name}', name);
+  const icon = link.innerHTML;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'nav-account';
+
+  // Signed out: a plain link to the login page that returns here afterwards.
+  const signIn = document.createElement('a');
+  signIn.className = 'nav-account-link';
+  const { pathname, search, hash } = window.location;
+  signIn.href = pathname.startsWith(`${CUSTOMER_PATH}/`)
+    ? CUSTOMER_LOGIN_PATH
+    : `${CUSTOMER_LOGIN_PATH}?returnUrl=${encodeURIComponent(`${pathname}${search}${hash}`)}`;
+  signIn.innerHTML = icon;
+  signIn.setAttribute('aria-label', signInText);
+
+  // Signed in: a disclosure button with the first name, and a sign-out menu.
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'nav-account-button';
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-controls', 'nav-account-menu');
+  button.innerHTML = icon;
+  const nameLabel = document.createElement('span');
+  nameLabel.className = 'nav-account-label';
+  button.append(nameLabel);
+
+  const menu = document.createElement('ul');
+  menu.className = 'nav-account-menu';
+  menu.id = 'nav-account-menu';
+  menu.hidden = true;
+  const signOutItem = document.createElement('li');
+  const signOut = document.createElement('button');
+  signOut.type = 'button';
+  signOut.className = 'nav-account-signout';
+  signOut.textContent = signOutText;
+  signOutItem.append(signOut);
+  menu.append(signOutItem);
+
+  wrap.append(signIn, button, menu);
+  link.replaceWith(wrap);
+
+  // On a page that already has the sign-in form, point at the form instead of
+  // navigating away (and never wrap the login page in its own returnUrl).
+  const loginForm = document.querySelector('main .commerce-login');
+  if (loginForm) {
+    signIn.href = `${pathname}${search}`;
+    signIn.addEventListener('click', (e) => {
+      const email = loginForm.querySelector('input[name="email"], input');
+      if (!email) return;
+      e.preventDefault();
+      email.focus();
+    });
+  }
+
+  /* eslint-disable no-use-before-define */
+  const onKeydown = (e) => {
+    if (e.key !== 'Escape') return;
+    // keep the nav's own Escape handling (on window) from also firing
+    e.stopPropagation();
+    closeMenu(true);
+  };
+  const onOutside = (e) => {
+    if (!wrap.contains(e.target)) closeMenu(false);
+  };
+  /* eslint-enable no-use-before-define */
+
+  function closeMenu(restoreFocus) {
+    if (menu.hidden) return;
+    menu.hidden = true;
+    button.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('keydown', onKeydown);
+    document.removeEventListener('click', onOutside);
+    wrap.removeEventListener('focusout', onFocusOut); // eslint-disable-line no-use-before-define
+    if (restoreFocus) button.focus();
+  }
+
+  function onFocusOut(e) {
+    if (e.relatedTarget && !wrap.contains(e.relatedTarget)) closeMenu(false);
+  }
+
+  function openMenu() {
+    menu.hidden = false;
+    button.setAttribute('aria-expanded', 'true');
+    document.addEventListener('keydown', onKeydown);
+    document.addEventListener('click', onOutside);
+    wrap.addEventListener('focusout', onFocusOut);
+  }
+
+  button.addEventListener('click', () => {
+    if (menu.hidden) openMenu();
+    else closeMenu(false);
+  });
+
+  const render = (authenticated) => {
+    const signedIn = authenticated && !!readCookie('auth_dropin_user_token');
+    if (signedIn) {
+      const firstName = readCookie('auth_dropin_firstname').trim();
+      const name = firstName || (labels.Global?.Account ?? 'Account');
+      nameLabel.textContent = firstName ? greeting(firstName) : name;
+      button.setAttribute('aria-label', menuLabel(name));
+    } else {
+      closeMenu(false);
+    }
+    signIn.hidden = signedIn;
+    button.hidden = !signedIn;
+    wrap.classList.toggle('is-signed-in', signedIn);
+  };
+
+  // Show the cookie state immediately, then follow the drop-in's validation.
+  render(!!readCookie('auth_dropin_user_token'));
+  events.on('authenticated', render, { eager: true });
+
+  signOut.addEventListener('click', async () => {
+    signOut.disabled = true;
+    let revoked = false;
+    try {
+      const { revokeCustomerToken } = await import('@dropins/storefront-auth/api.js');
+      const result = await revokeCustomerToken();
+      revoked = !!result?.success;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('Sign out: could not revoke the token on the server', error);
+    }
+    if (!revoked) {
+      // Still sign out locally so the browser no longer holds the token.
+      AUTH_COOKIES.forEach((name) => {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+      });
+      events.emit('authenticated', false);
+    }
+    signOut.disabled = false;
+    if (window.location.pathname.startsWith(`${CUSTOMER_PATH}/`)) {
+      window.location.assign(CUSTOMER_LOGIN_PATH);
+      return;
+    }
+    // Update the header now (the drop-in's event may arrive later) so the
+    // sign-in link is visible and can take focus.
+    render(false);
+    signIn.focus();
+  });
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/fragments/nav';
-  const fragment = await loadFragment(navPath);
+  const languages = await loadLanguages();
+  const navigation = await loadNavigation(navMeta, window.location, loadFragment, languages);
+  const { fragment, path: navPath } = navigation;
 
   // decorate nav DOM
   block.textContent = '';
   const nav = document.createElement('nav');
   nav.id = 'nav';
+  nav.lang = getLanguage(navPath, languages).code;
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
   const classes = ['brand', 'sections', 'tools'];
@@ -129,6 +470,10 @@ export default async function decorate(block) {
     const section = nav.children[i];
     if (section) section.classList.add(`nav-${c}`);
   });
+  const navLabels = nav.querySelector('.nav-tools')?.dataset || {};
+  nav.dataset.openNavigation = navLabels.openNavigation || 'Open navigation';
+  nav.dataset.closeNavigation = navLabels.closeNavigation || 'Close navigation';
+  nav.setAttribute('aria-label', navLabels.navigationLabel || 'Main navigation');
 
   const navBrand = nav.querySelector('.nav-brand');
   const brandLink = navBrand.querySelector('.button');
@@ -178,9 +523,7 @@ export default async function decorate(block) {
     };
     navTools.querySelectorAll('a').forEach((link) => {
       const label = link.textContent.trim();
-      // match by href fragment (#search) or by the link label (Search)
-      const hrefKey = (link.getAttribute('href') || '').replace(/^#/, '').toLowerCase();
-      const key = toolIcons[hrefKey] ? hrefKey : label.toLowerCase();
+      const key = getNavigationTool(link.getAttribute('href') || '', label, window.location);
       const icon = toolIcons[key];
       if (!icon) return;
       link.setAttribute('aria-label', label);
@@ -198,15 +541,19 @@ export default async function decorate(block) {
           }
         });
       }
+      if (key === 'cart') decorateMiniCart(link);
+      if (key === 'account') decorateAccount(link, navLabels);
     });
+    decorateLanguageSelector(navTools, languages);
   }
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
-  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
+  hamburger.innerHTML = `<button type="button" aria-controls="nav">
       <span class="nav-hamburger-icon"></span>
     </button>`;
+  hamburger.querySelector('button').setAttribute('aria-label', nav.dataset.openNavigation);
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');

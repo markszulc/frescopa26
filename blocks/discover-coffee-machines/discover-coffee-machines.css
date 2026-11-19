@@ -6,10 +6,12 @@ main > .section,
 main > .section:first-of-type {
   margin: 0;
 }
+
 main > .section > div {
   max-width: none;
   padding: 0;
 }
+
 body {
   overflow: auto;
 }
@@ -65,7 +67,7 @@ main .discover-coffee-machines-card {
   flex-direction: column;
   scroll-snap-align: start;
   box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
   position: relative;
 }
 
@@ -111,12 +113,12 @@ main .discover-coffee-machines-avail {
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(33,25,20,0.82);
+  background: rgb(33 25 20 / 82%);
   color: #f2ece1;
 }
 
 main .discover-coffee-machines-avail.is-waitlist {
-  background: rgba(216,162,79,0.92);
+  background: rgb(216 162 79 / 92%);
   color: #211914;
 }
 
@@ -142,7 +144,7 @@ main .discover-coffee-machines-chip {
   font-weight: 600;
   padding: 2px 7px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.14);
+  background: rgb(255 255 255 / 14%);
   color: inherit;
   white-space: nowrap;
 }
@@ -227,7 +229,7 @@ main .discover-coffee-machines-cta:focus-visible {
 }
 
 main .discover-coffee-machines-cta:focus-visible {
-  box-shadow: 0 0 0 2px #ba6945, 0 0 0 4px rgba(255,255,255,0.5);
+  box-shadow: 0 0 0 2px #ba6945, 0 0 0 4px rgb(255 255 255 / 50%);
 }
 
 main .discover-coffee-machines-journey {
@@ -264,7 +266,7 @@ main .discover-coffee-machines-arrow {
   transform: translateY(-50%);
   width: 28px;
   height: 28px;
-  background: rgba(33,25,20,0.6);
+  background: rgb(33 25 20 / 60%);
   color: #fff;
   border: none;
   border-radius: 50%;

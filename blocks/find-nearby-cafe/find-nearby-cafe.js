@@ -43,25 +43,38 @@ const SAMPLE_DATA = [
     directions_url: 'https://www.google.com/maps/dir/?api=1&destination=720+E+3rd+St+Los+Angeles+CA+90013',
   },
 ];
-
-const ACCENT = '#ba6945';
 const PIN_FILL = '#9a4f35';
 const MAX_STORES = 6;
 
-function getThemedCardBg(p) {
-  if (!p || !p[0]) return null;
-  let hex = p[0].replace('#', '');
+function getThemedCardBg(palette) {
+  if (!palette || !palette[0]) return null;
+  let hex = palette[0].replace('#', '');
   if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
   if (hex.length !== 6) return null;
-  const [r, g, b] = [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
-  if (isNaN(r)) return null;
-  const lum = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4); };
-  const rl = (rr, gg, bb) => 0.2126 * lum(rr) + 0.7152 * lum(gg) + 0.0722 * lum(bb);
-  if (rl(r, g, b) <= 0.12) return { bg: '#' + hex, fg: '#fff' };
-  let lo = 0; let hi = 1;
-  for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (rl(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) hi = m; else lo = m; }
-  const dr = Math.round(r * lo); const dg = Math.round(g * lo); const db = Math.round(b * lo);
-  return { bg: `#${dr.toString(16).padStart(2, '0')}${dg.toString(16).padStart(2, '0')}${db.toString(16).padStart(2, '0')}`, fg: '#fff' };
+  const [r, g, b] = [
+    parseInt(hex.slice(0, 2), 16),
+    parseInt(hex.slice(2, 4), 16),
+    parseInt(hex.slice(4, 6), 16),
+  ];
+  if (Number.isNaN(r)) return null;
+  const lum = (c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const relLum = (rr, gg, bb) => 0.2126 * lum(rr) + 0.7152 * lum(gg) + 0.0722 * lum(bb);
+  if (relLum(r, g, b) <= 0.12) return { bg: `#${hex}`, fg: '#fff' };
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 20; i += 1) {
+    const m = (lo + hi) / 2;
+    if (relLum(Math.round(r * m), Math.round(g * m), Math.round(b * m)) > 0.12) {
+      hi = m;
+    } else {
+      lo = m;
+    }
+  }
+  const channels = [r, g, b].map((c) => Math.round(c * lo).toString(16).padStart(2, '0'));
+  return { bg: `#${channels.join('')}`, fg: '#fff' };
 }
 
 const PALETTE = ['#f3ede3', '#ba6945', '#d8a24f'];
@@ -69,27 +82,27 @@ const theme = getThemedCardBg(PALETTE);
 
 // ── Map engine ───────────────────────────────────────────────────────────────
 const MAP_LEAFLET_VERSION = '1.9.4';
-const MAP_LEAFLET_CSS = 'https://unpkg.com/leaflet@' + MAP_LEAFLET_VERSION + '/dist/leaflet.css';
-const MAP_LEAFLET_JS = 'https://unpkg.com/leaflet@' + MAP_LEAFLET_VERSION + '/dist/leaflet.js';
+const MAP_LEAFLET_CSS = `https://unpkg.com/leaflet@${MAP_LEAFLET_VERSION}/dist/leaflet.css`;
+const MAP_LEAFLET_JS = `https://unpkg.com/leaflet@${MAP_LEAFLET_VERSION}/dist/leaflet.js`;
 const MAP_TILE_URL = 'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
 const MAP_TILE_ATTRIB = 'Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const MAP_TILE_MAX_NATIVE_ZOOM = 16;
 const MAP_TILE_MAX_ZOOM = 18;
 
-let __mapLeafletPromise = null;
+let mapLeafletPromise = null;
 
 function loadLeaflet() {
-  const cssLink = document.querySelector('link[data-leaflet="' + MAP_LEAFLET_VERSION + '"]');
+  const cssLink = document.querySelector(`link[data-leaflet="${MAP_LEAFLET_VERSION}"]`);
   if (window.L && cssLink && cssLink.dataset.loaded === '1') {
     return Promise.resolve(window.L);
   }
-  if (__mapLeafletPromise) return __mapLeafletPromise;
+  if (mapLeafletPromise) return mapLeafletPromise;
 
-  const cssReady = new Promise(function (resolve) {
-    const existing = document.querySelector('link[data-leaflet="' + MAP_LEAFLET_VERSION + '"]');
+  const cssReady = new Promise((resolve) => {
+    const existing = document.querySelector(`link[data-leaflet="${MAP_LEAFLET_VERSION}"]`);
     if (existing) {
       if (existing.dataset.loaded === '1') resolve();
-      else existing.addEventListener('load', function () { resolve(); }, { once: true });
+      else existing.addEventListener('load', () => { resolve(); }, { once: true });
       setTimeout(resolve, 1500);
       return;
     }
@@ -97,32 +110,32 @@ function loadLeaflet() {
     link.rel = 'stylesheet';
     link.href = MAP_LEAFLET_CSS;
     link.dataset.leaflet = MAP_LEAFLET_VERSION;
-    link.addEventListener('load', function () { link.dataset.loaded = '1'; resolve(); }, { once: true });
-    link.addEventListener('error', function () { resolve(); }, { once: true });
+    link.addEventListener('load', () => { link.dataset.loaded = '1'; resolve(); }, { once: true });
+    link.addEventListener('error', () => { resolve(); }, { once: true });
     document.head.appendChild(link);
     setTimeout(resolve, 1500);
   });
 
-  const jsReady = new Promise(function (resolve, reject) {
+  const jsReady = new Promise((resolve, reject) => {
     if (window.L) { resolve(window.L); return; }
     const script = document.createElement('script');
     script.src = MAP_LEAFLET_JS;
     script.async = true;
-    script.onload = function () {
+    script.onload = function onload() {
       if (window.L) resolve(window.L);
       else reject(new Error('Leaflet loaded but window.L is missing'));
     };
-    script.onerror = function () { reject(new Error('Failed to load Leaflet')); };
+    script.onerror = function onerror() { reject(new Error('Failed to load Leaflet')); };
     document.head.appendChild(script);
   });
 
-  __mapLeafletPromise = Promise.all([jsReady, cssReady]).then(function (r) { return r[0]; });
-  return __mapLeafletPromise;
+  mapLeafletPromise = Promise.all([jsReady, cssReady]).then((r) => r[0]);
+  return mapLeafletPromise;
 }
 
 function mapCoordsOf(item) {
   if (!item) return null;
-  const num = function (v) {
+  const num = function num(v) {
     if (v === null || v === undefined || v === '') return null;
     const n = typeof v === 'number' ? v : parseFloat(String(v));
     return Number.isFinite(n) ? n : null;
@@ -134,29 +147,33 @@ function mapCoordsOf(item) {
   const lng = num(lngRaw);
   if (lat === null || lng === null) return null;
   if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
-  return { lat: lat, lng: lng };
+  return { lat, lng };
 }
 
 function mapPointsFrom(items) {
   const out = [];
-  (items || []).forEach(function (item, index) {
+  (items || []).forEach((item, index) => {
     const c = mapCoordsOf(item);
-    if (c) out.push({ item: item, index: index, lat: c.lat, lng: c.lng });
+    if (c) {
+      out.push({
+        item, index, lat: c.lat, lng: c.lng,
+      });
+    }
   });
   return out;
 }
 
 function mapProject(points, box) {
   const b = box || [14, 14, 72, 72];
-  const lats = points.map(function (p) { return p.lat; });
-  const lngs = points.map(function (p) { return p.lng; });
+  const lats = points.map((p) => p.lat);
+  const lngs = points.map((p) => p.lng);
   const minLat = Math.min.apply(null, lats);
   const maxLat = Math.max.apply(null, lats);
   const minLng = Math.min.apply(null, lngs);
   const maxLng = Math.max.apply(null, lngs);
   const spanLat = maxLat - minLat;
   const spanLng = maxLng - minLng;
-  return points.map(function (p) {
+  return points.map((p) => {
     const fx = spanLng > 0 ? (p.lng - minLng) / spanLng : 0.5;
     const fy = spanLat > 0 ? (maxLat - p.lat) / spanLat : 0.5;
     return { x: b[0] + fx * b[2], y: b[1] + fy * b[3] };
@@ -179,12 +196,12 @@ function mapMakePin(point, ordinal, opts, asButton) {
     num.textContent = String(ordinal);
     pin.appendChild(num);
   }
-  if (asButton) pin.setAttribute('aria-label', label || ('Location ' + ordinal));
+  if (asButton) pin.setAttribute('aria-label', label || (`Location ${ordinal}`));
   return pin;
 }
 
 function mapDemoteLabelToPin(point, ordinal, opts) {
-  const pin = point.pin;
+  const { pin } = point;
   if (!pin || !pin.classList.contains('find-nearby-cafe-map-label')) return;
   const name = pin.textContent;
   pin.textContent = '';
@@ -199,7 +216,7 @@ function mapDemoteLabelToPin(point, ordinal, opts) {
 }
 
 function mapPromoteToLabel(point) {
-  const pin = point.pin;
+  const { pin } = point;
   if (!pin || pin.classList.contains('find-nearby-cafe-map-label')) return;
   pin.textContent = point.label || '';
   pin.className = 'find-nearby-cafe-map-label';
@@ -210,22 +227,20 @@ function mapPromoteToLabel(point) {
 
 function mapDeclutterLabels(points, opts) {
   if (opts.pinStyle !== 'label') return;
-  points.forEach(function (p) { if (p.pin) mapPromoteToLabel(p); });
+  points.forEach((p) => { if (p.pin) mapPromoteToLabel(p); });
 
   const PAD = 2;
-  const overlaps = function (a, b) {
+  const overlaps = function overlaps(a, b) {
     return a.left < b.right + PAD && b.left < a.right + PAD
       && a.top < b.bottom + PAD && b.top < a.bottom + PAD;
   };
-  const rectOf = function (p) {
+  const rectOf = function rectOf(p) {
     const r = p.pin ? p.pin.getBoundingClientRect() : null;
     return r && r.width && r.height ? r : null;
   };
 
   for (let pass = 0; pass < points.length + 1; pass += 1) {
-    const labelled = points.filter(function (p) {
-      return p.pin && p.pin.classList.contains('find-nearby-cafe-map-label');
-    });
+    const labelled = points.filter((p) => p.pin && p.pin.classList.contains('find-nearby-cafe-map-label'));
     if (labelled.length < 1) return;
 
     const kept = [];
@@ -233,10 +248,11 @@ function mapDeclutterLabels(points, opts) {
     for (let i = 0; i < labelled.length; i += 1) {
       const p = labelled[i];
       const r = rectOf(p);
-      if (!r) continue;
-      const hitsLabel = kept.some(function (k) { return overlaps(r, k); });
-      if (hitsLabel) { demoted = p; break; }
-      kept.push(r);
+      if (r) {
+        const hitsLabel = kept.some((k) => overlaps(r, k));
+        if (hitsLabel) { demoted = p; break; }
+        kept.push(r);
+      }
     }
     if (!demoted) return;
     mapDemoteLabelToPin(demoted, points.indexOf(demoted) + 1, opts);
@@ -244,11 +260,11 @@ function mapDeclutterLabels(points, opts) {
 }
 
 function mapWhenWidthStable(el) {
-  return new Promise(function (resolve) {
+  return new Promise((resolve) => {
     let last = -1;
     let stable = 0;
     const started = Date.now();
-    const tick = function () {
+    const tick = function tick() {
       const w = el.offsetWidth;
       if (w > 0 && w === last) stable += 1; else stable = 0;
       last = w;
@@ -266,28 +282,28 @@ function mapRenderFallback(container, points, onSelect, opts) {
   container.appendChild(grid);
 
   const projected = mapProject(points, opts.fallbackBox);
-  const pins = points.map(function (p, i) {
+  const pins = points.map((p, i) => {
     const anchor = document.createElement('div');
     anchor.className = 'find-nearby-cafe-map-anchor';
-    anchor.style.left = projected[i].x + '%';
-    anchor.style.top = projected[i].y + '%';
+    anchor.style.left = `${projected[i].x}%`;
+    anchor.style.top = `${projected[i].y}%`;
     const pin = mapMakePin(p, i + 1, opts, true);
     anchor.appendChild(pin);
-    pin.addEventListener('click', function () { onSelect(p.index); });
+    pin.addEventListener('click', () => { onSelect(p.index); });
     container.appendChild(anchor);
     return pin;
   });
 
   return {
-    setActive: function (index) {
-      points.forEach(function (p, i) { pins[i].classList.toggle('is-active', p.index === index); });
+    setActive(index) {
+      points.forEach((p, i) => { pins[i].classList.toggle('is-active', p.index === index); });
     },
   };
 }
 
 function mapDynamicMaxZoom(bounds) {
-  const lats = bounds.map(function (b) { return b[0]; });
-  const lngs = bounds.map(function (b) { return b[1]; });
+  const lats = bounds.map((b) => b[0]);
+  const lngs = bounds.map((b) => b[1]);
   const span = Math.max(
     Math.max.apply(null, lats) - Math.min.apply(null, lats),
     Math.max.apply(null, lngs) - Math.min.apply(null, lngs),
@@ -316,7 +332,7 @@ function mapRenderLeaflet(L, container, points, onSelect, opts) {
     updateWhenZooming: true,
   }).addTo(map);
 
-  const bounds = points.map(function (p) { return [p.lat, p.lng]; });
+  const bounds = points.map((p) => [p.lat, p.lng]);
   if (bounds.length === 1) {
     map.setView(bounds[0], opts.singleZoom || 11);
   } else {
@@ -327,9 +343,11 @@ function mapRenderLeaflet(L, container, points, onSelect, opts) {
     });
   }
 
-  points.forEach(function (p, i) {
+  points.forEach((p, i) => {
     const marker = L.marker([p.lat, p.lng], {
-      icon: L.divIcon({ className: 'find-nearby-cafe-map-marker', html: '', iconSize: null, iconAnchor: [0, 0] }),
+      icon: L.divIcon({
+        className: 'find-nearby-cafe-map-marker', html: '', iconSize: null, iconAnchor: [0, 0],
+      }),
       keyboard: true,
       riseOnHover: true,
       title: String(p.item[opts.labelField] || p.item.name || ''),
@@ -340,31 +358,31 @@ function mapRenderLeaflet(L, container, points, onSelect, opts) {
     p.marker = marker;
     p.pin = pin;
 
-    const attach = function () {
+    const attach = function attach() {
       const host = marker.getElement();
       if (host) host.appendChild(pin);
     };
     marker.on('add', attach);
     attach();
 
-    marker.on('click', function () { onSelect(p.index); });
+    marker.on('click', () => { onSelect(p.index); });
   });
 
   mapDeclutterLabels(points, opts);
-  map.on('zoomend', function () { mapDeclutterLabels(points, opts); });
+  map.on('zoomend', () => { mapDeclutterLabels(points, opts); });
 
-  const refresh = function () {
+  const refresh = function refresh() {
     map.invalidateSize(false);
     tiles.redraw();
     mapDeclutterLabels(points, opts);
   };
   requestAnimationFrame(refresh);
-  [80, 200, 400, 800, 1400].forEach(function (ms) { setTimeout(refresh, ms); });
+  [80, 200, 400, 800, 1400].forEach((ms) => { setTimeout(refresh, ms); });
 
   if (typeof ResizeObserver !== 'undefined') {
     let lastW = container.offsetWidth;
     let lastH = container.offsetHeight;
-    const ro = new ResizeObserver(function () {
+    const ro = new ResizeObserver(() => {
       const w = container.offsetWidth;
       const h = container.offsetHeight;
       if (w === lastW && h === lastH) return;
@@ -376,8 +394,8 @@ function mapRenderLeaflet(L, container, points, onSelect, opts) {
   }
 
   return {
-    setActive: function (index, pan) {
-      points.forEach(function (p) {
+    setActive(index, pan) {
+      points.forEach((p) => {
         const on = p.index === index;
         if (p.pin) p.pin.classList.toggle('is-active', on);
         if (p.marker && p.marker.setZIndexOffset) p.marker.setZIndexOffset(on ? 1000 : 0);
@@ -390,7 +408,7 @@ function mapRenderLeaflet(L, container, points, onSelect, opts) {
 
 function mountMap(container, points, onSelect, options) {
   if (!points || !points.length) return Promise.resolve(null);
-  const opts = Object.assign({ pinStyle: 'number', labelField: 'name' }, options || {});
+  const opts = { pinStyle: 'number', labelField: 'name', ...options || {} };
 
   const loading = document.createElement('div');
   loading.className = 'find-nearby-cafe-map-loading';
@@ -398,11 +416,11 @@ function mountMap(container, points, onSelect, options) {
   container.appendChild(loading);
 
   return Promise.all([loadLeaflet(), mapWhenWidthStable(container)])
-    .then(function (r) {
+    .then((r) => {
       loading.remove();
       return mapRenderLeaflet(r[0], container, points, onSelect, opts);
     })
-    .catch(function () {
+    .catch(() => {
       container.textContent = '';
       container.classList.remove('leaflet-container');
       return mapRenderFallback(container, points, onSelect, opts);
@@ -416,14 +434,14 @@ function formatDistance(store) {
   if (d === null || d === undefined || d === '') return '';
   const n = typeof d === 'number' ? d : parseFloat(String(d));
   if (!Number.isFinite(n)) return '';
-  return n.toFixed(1) + ' mi away';
+  return `${n.toFixed(1)} mi away`;
 }
 
 function buildBadges(store) {
   const amenities = Array.isArray(store.amenities) ? store.amenities : [];
   const wrap = document.createElement('div');
   wrap.className = 'find-nearby-cafe-badges';
-  amenities.slice(0, 4).forEach(function (a) {
+  amenities.slice(0, 4).forEach((a) => {
     const b = document.createElement('span');
     b.className = 'find-nearby-cafe-badge';
     if (/tour/i.test(String(a))) b.classList.add('is-tour');
@@ -445,9 +463,10 @@ async function decorate(block, bridge) {
       allStores = SAMPLE_DATA;
     } else {
       try {
-        const _result = await bridge.toolResult;
-        const sc = _result?.structuredContent || {};
-        // structuredContent.cafes — derived from action name "find_nearby_cafe" (bare array outputSchema rule)
+        const result = await bridge.toolResult;
+        const sc = result?.structuredContent || {};
+        // structuredContent.cafes — derived from action name "find_nearby_cafe" (bare array
+        // outputSchema rule)
         allStores = sc.cafes || sc.stores || sc.locations || (Array.isArray(sc) ? sc : null);
       } catch (e) { allStores = null; }
     }
@@ -494,13 +513,13 @@ async function decorate(block, bridge) {
     btn.textContent = 'Find Nearby';
     formCard.appendChild(btn);
 
-    const submit = function () {
+    const submit = function submit() {
       const value = input.value.trim();
       if (!value) { input.focus(); return; }
-      if (bridge && bridge.sendMessage) bridge.sendMessage('Find Fréscopa cafés near ' + value);
+      if (bridge && bridge.sendMessage) bridge.sendMessage(`Find Fréscopa cafés near ${value}`);
     };
     btn.addEventListener('click', submit);
-    input.addEventListener('keydown', function (e) {
+    input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') submit();
     });
 
@@ -519,7 +538,7 @@ async function decorate(block, bridge) {
     const mapEl = document.createElement('div');
     mapEl.className = 'find-nearby-cafe-map';
     mapEl.setAttribute('role', 'application');
-    mapEl.setAttribute('aria-label', 'Map of ' + points.length + ' location' + (points.length === 1 ? '' : 's'));
+    mapEl.setAttribute('aria-label', `Map of ${points.length} location${points.length === 1 ? '' : 's'}`);
 
     const side = document.createElement('div');
     side.className = 'find-nearby-cafe-side';
@@ -530,7 +549,7 @@ async function decorate(block, bridge) {
     const row = document.createElement('div');
     row.className = 'find-nearby-cafe-row';
 
-    const cards = shown.map(function (store, i) {
+    const cards = shown.map((store, i) => {
       const card = document.createElement('div');
       card.className = 'find-nearby-cafe-store-card';
       card.tabIndex = 0;
@@ -542,7 +561,7 @@ async function decorate(block, bridge) {
 
       const pinDiv = document.createElement('div');
       pinDiv.className = 'find-nearby-cafe-store-pin';
-      const pinOrdinal = points.findIndex(function (p) { return p.index === i; });
+      const pinOrdinal = points.findIndex((p) => p.index === i);
       pinDiv.textContent = pinOrdinal >= 0 ? String(pinOrdinal + 1) : '◎';
       if (pinOrdinal >= 0) pinDiv.style.background = PIN_FILL;
       head.appendChild(pinDiv);
@@ -593,10 +612,13 @@ async function decorate(block, bridge) {
       dirBtn.type = 'button';
       dirBtn.className = 'find-nearby-cafe-btn';
       dirBtn.textContent = 'Get Directions';
-      dirBtn.addEventListener('click', function (e) {
+      dirBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (store.directions_url && bridge && bridge.openLink) bridge.openLink(store.directions_url);
-        else if (bridge && bridge.sendMessage) bridge.sendMessage('How do I get to ' + (store.name || 'this location') + '?');
+        if (store.directions_url && bridge && bridge.openLink) {
+          bridge.openLink(store.directions_url);
+        } else if (bridge && bridge.sendMessage) {
+          bridge.sendMessage(`How do I get to ${store.name || 'this location'}?`);
+        }
       });
       actions.appendChild(dirBtn);
 
@@ -605,17 +627,17 @@ async function decorate(block, bridge) {
         tourBtn.type = 'button';
         tourBtn.className = 'find-nearby-cafe-btn is-secondary';
         tourBtn.textContent = 'Book an Atelier Tour';
-        tourBtn.addEventListener('click', function (e) {
+        tourBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (bridge && bridge.sendMessage) bridge.sendMessage('Book an Atelier tour at ' + (store.name || 'this location'));
+          if (bridge && bridge.sendMessage) bridge.sendMessage(`Book an Atelier tour at ${store.name || 'this location'}`);
         });
         actions.appendChild(tourBtn);
       }
 
       card.appendChild(actions);
 
-      card.addEventListener('click', function () { select(i); });
-      card.addEventListener('focusin', function () { select(i); });
+      card.addEventListener('click', () => { select(i); });
+      card.addEventListener('focusin', () => { select(i); });
       row.appendChild(card);
       return card;
     });
@@ -624,7 +646,7 @@ async function decorate(block, bridge) {
 
     const fade = document.createElement('div');
     fade.className = 'find-nearby-cafe-fade';
-    fade.style.background = 'linear-gradient(to right, transparent, ' + (theme ? theme.bg : '#f3ede3') + 'cc)';
+    fade.style.background = `linear-gradient(to right, transparent, ${theme ? theme.bg : '#f3ede3'}cc)`;
     rowWrap.appendChild(fade);
     side.appendChild(rowWrap);
 
@@ -638,7 +660,7 @@ async function decorate(block, bridge) {
     function select(index) {
       if (index === activeIdx) return;
       activeIdx = index;
-      cards.forEach(function (c, i) { c.classList.toggle('is-selected', i === index); });
+      cards.forEach((c, i) => { c.classList.toggle('is-selected', i === index); });
       if (mapApi) mapApi.setActive(index, true);
       const card = cards[index];
       if (card) row.scrollLeft = Math.max(0, card.offsetLeft - row.offsetLeft - 4);
@@ -651,7 +673,7 @@ async function decorate(block, bridge) {
         labelField: 'name',
         maxZoom: 13,
         singleZoom: 13,
-      }).then(function (api) {
+      }).then((api) => {
         mapApi = api;
         if (api && activeIdx >= 0) api.setActive(activeIdx, false);
       });
@@ -665,9 +687,11 @@ async function decorate(block, bridge) {
   if (bridge) {
     bridge.reportSize(block.offsetWidth, block.offsetHeight);
     let resizeTimer;
-    const ro = new ResizeObserver(function () {
+    const ro = new ResizeObserver(() => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () { bridge.reportSize(block.offsetWidth, block.offsetHeight); }, 150);
+      resizeTimer = setTimeout(() => {
+        bridge.reportSize(block.offsetWidth, block.offsetHeight);
+      }, 150);
     });
     ro.observe(block);
   }

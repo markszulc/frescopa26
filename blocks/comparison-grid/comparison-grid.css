@@ -125,7 +125,7 @@
 }
 
 /* Responsive: stack columns on mobile */
-@media (max-width: 599px) {
+@media (width <= 599px) {
   .comparison-grid-header,
   .comparison-grid-row {
     grid-template-columns: 1fr;
@@ -156,7 +156,7 @@
 }
 
 /* Tablet adjustments */
-@media (min-width: 600px) and (max-width: 899px) {
+@media (width >= 600px) and (width <= 899px) {
   .comparison-grid-header,
   .comparison-grid-row {
     grid-template-columns: minmax(120px, 1fr) repeat(auto-fit, minmax(140px, 1fr));

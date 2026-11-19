@@ -124,11 +124,11 @@
 .cards-article .cards-article-card-body p.cards-article-card-category {
   order: -1;
   font-family: var(--font-body);
-  font-size: 0.64rem;
+  font-size: var(--fs-label);
   font-weight: 500;
   line-height: 1.2;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -164,7 +164,7 @@
 .cards-article .cards-article-card-meta {
   margin-top: 0.15rem;
   font-family: var(--font-body);
-  font-size: var(--fs-eyebrow);
+  font-size: var(--fs-caps);
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: 0.1em;

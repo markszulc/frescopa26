@@ -1,6 +1,4 @@
 import {
-  loadHeader,
-  loadFooter,
   decorateIcons,
   decorateSections,
   decorateBlocks,
@@ -10,9 +8,27 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  decorateBlock,
+  loadBlock,
   readBlockConfig,
   toClassName,
+  getMetadata,
+  sampleRUM,
 } from './aem.js';
+import {
+  loadCommerceEager,
+  loadCommerceLazy,
+  initializeCommerce,
+  loadErrorPage,
+} from './commerce.js';
+import {
+  isAuthorPreview,
+  runExperimentation,
+  runExperimentationLazy,
+} from './experiment-loader.js';
+import cohortRules from './cohort-rules.js';
+import { runCohorts, rememberVisit, watchSignIn } from './cohorts.js';
+import { previewForce, listenForPicks } from './cohort-preview.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -206,6 +222,57 @@ function decorateScrollReveal(main) {
   });
 }
 
+async function loadHeader(header) {
+  const headerBlock = buildBlock('header', '');
+  const existingHeaderBlock = header.querySelector(':scope > .header');
+  if (existingHeaderBlock) {
+    existingHeaderBlock.replaceWith(headerBlock);
+  } else {
+    header.append(headerBlock);
+  }
+  decorateBlock(headerBlock);
+  return loadBlock(headerBlock);
+}
+
+async function loadFooter(footer) {
+  const footerBlock = buildBlock('footer', '');
+  const existingFooterBlock = footer.querySelector(':scope > .footer');
+  if (existingFooterBlock) {
+    existingFooterBlock.replaceWith(footerBlock);
+  } else {
+    footer.append(footerBlock);
+  }
+  decorateBlock(footerBlock);
+  return loadBlock(footerBlock);
+}
+
+/**
+ * Builds a "Home / <Page>" breadcrumb nav using the shared `.page-breadcrumb` styles.
+ * @param {Array<{label: string, href?: string}>} crumbs Leading crumbs link out;
+ * the last one is the current page
+ * @returns {HTMLElement} The breadcrumb nav
+ */
+function buildPageBreadcrumb(crumbs) {
+  const nav = document.createElement('nav');
+  nav.className = 'page-breadcrumb';
+  nav.setAttribute('aria-label', 'Breadcrumb');
+  crumbs.forEach(({ label, href }, i) => {
+    if (i > 0) {
+      const sep = document.createElement('span');
+      sep.setAttribute('aria-hidden', 'true');
+      sep.textContent = '/';
+      nav.append(sep);
+    }
+    const isCurrent = i === crumbs.length - 1;
+    const el = document.createElement(isCurrent || !href ? 'span' : 'a');
+    if (isCurrent) el.setAttribute('aria-current', 'page');
+    else if (href) el.href = href;
+    el.textContent = label;
+    nav.append(el);
+  });
+  return nav;
+}
+
 /**
  * Adds a "Home / <Page>" breadcrumb to the intro of catalogue pages (those
  * with a filter bar), mirroring the source site. The current-page label is
@@ -228,20 +295,29 @@ function decorateCatalogueBreadcrumb(main) {
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 
-  const nav = document.createElement('nav');
-  nav.className = 'page-breadcrumb';
-  nav.setAttribute('aria-label', 'Breadcrumb');
-  const home = document.createElement('a');
-  home.href = homeHref;
-  home.textContent = 'Home';
-  const sep = document.createElement('span');
-  sep.setAttribute('aria-hidden', 'true');
-  sep.textContent = '/';
-  const current = document.createElement('span');
-  current.setAttribute('aria-current', 'page');
-  current.textContent = label;
-  nav.append(home, sep, current);
-  wrapper.prepend(nav);
+  wrapper.prepend(buildPageBreadcrumb([{ label: 'Home', href: homeHref }, { label }]));
+}
+
+/**
+ * Turns an authored breadcrumb paragraph (e.g. "Home / Your bag") placed directly
+ * above the cart page heading into the shared `.page-breadcrumb` nav. Authored
+ * links are kept; an unlinked first crumb links to the site root.
+ * @param {Element} main The main element
+ */
+function decorateCartBreadcrumb(main) {
+  const heading = main.querySelector(':scope > .section:has(.commerce-cart) .default-content-wrapper > h1');
+  const crumb = heading?.previousElementSibling;
+  if (crumb?.tagName !== 'P' || !crumb.textContent.includes('/')) return;
+
+  const links = [...crumb.querySelectorAll('a')];
+  const crumbs = crumb.textContent.split('/').map((s) => s.trim()).filter(Boolean)
+    .map((label, i) => ({
+      label,
+      href: links.find((a) => a.textContent.trim() === label)?.getAttribute('href')
+        ?? (i === 0 ? '/' : undefined),
+    }));
+  if (crumbs.length < 2) return;
+  crumb.replaceWith(buildPageBreadcrumb(crumbs));
 }
 
 /**
@@ -342,9 +418,12 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateButtons(main);
   decorateCatalogueBreadcrumb(main);
+  decorateCartBreadcrumb(main);
   decorateMachineBandHeads(main);
   decorateArticleHeader(main);
 }
+
+let commerceReady = false;
 
 /**
  * Loads everything needed to get to LCP.
@@ -355,7 +434,32 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    await runExperimentation(doc);
+    try {
+      await initializeCommerce();
+      commerceReady = true;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Error initializing commerce configuration:', e);
+    }
     decorateMain(main);
+    // Homepage cohorts: after decoration (sections carry their metadata), before anything shows.
+    // Only runs on a page with `Cohorts: on` metadata or inside the cohort experiment.
+    const force = previewForce();
+    const cohort = runCohorts(main, cohortRules, { sampleRUM, getMetadata, force });
+    if (cohort) listenForPicks(force?.id || 'default');
+    // Only commerce pages need a working config; other pages keep rendering without it.
+    if (commerceReady) {
+      try {
+        await loadCommerceEager();
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error loading commerce:', e);
+        loadErrorPage(418);
+      }
+    } else if (main.querySelector('.product-details')) {
+      loadErrorPage(418);
+    }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -380,6 +484,11 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
+  // on-device memory on every page: visits, interests, signed in
+  rememberVisit(cohortRules);
+  watchSignIn(cohortRules);
+
+  await runExperimentationLazy(doc);
   decorateScrollReveal(main);
 
   const { hash } = window.location;
@@ -387,6 +496,8 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
+
+  if (commerceReady) await loadCommerceLazy();
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -418,9 +529,14 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  import('./consent-check.js');
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  if (new URLSearchParams(window.location.search).has('demo')) {
+    loadCSS(`${window.hlx.codeBasePath}/styles/cohort-panel.css`);
+    import('./cohort-panel.js').then((m) => m.default(cohortRules));
+  }
 }
 
 export async function loadPage() {
@@ -429,7 +545,16 @@ export async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+const pageLoaded = loadPage();
+
+if (isAuthorPreview(window.location.href, window.parent !== window)) {
+  pageLoaded.then(async () => {
+    const namespace = window.aem || window.hlx;
+    if (!namespace?.experimentation) return;
+    const { default: connectAuthorPreview } = await import('./experimentation-preview.js');
+    connectAuthorPreview({ prodHost: 'main--frescopa26--markszulc.aem.live' });
+  });
+}
 
 (() => {
   const hasQE = new URL(window.location.href).searchParams.has('quick-edit');

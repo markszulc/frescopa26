@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Measured fixture frame</title>
+    <style>#results { white-space: pre-wrap; overflow-wrap: anywhere; }</style>
+  </head>
+  <body>
+    <iframe title="Fixture-only DA panel" id="panel" height="1000" style="border: 0"></iframe>
+    <pre id="results">Waiting for fixture frame...</pre>
+    <script>
+      const frame = document.querySelector('#panel');
+      const params = new URLSearchParams(location.search);
+      const width = Number(params.get('width'));
+      const height = Number(params.get('height') || 1000);
+      if (![320, 400].includes(width)) throw new Error('Unsupported fixture width');
+      if (![760, 1000].includes(height)) throw new Error('Unsupported fixture height');
+      frame.width = width;
+      frame.height = height;
+      frame.src = params.get('mode') === 'integrated'
+        ? '/tools/experimentation-ui-tests/ui-integrated-host.html'
+        : '/tools/experimentation-ui-tests/ui-host.html';
+      if (params.get('capture') === 'qa') frame.src += '?capture=qa';
+      window.addEventListener('message', (event) => {
+        if (event.origin !== location.origin || event.source !== frame.contentWindow
+          || event.data?.type !== 'ui-fixture-result') return;
+        document.querySelector('#results').textContent = event.data.result;
+        document.body.dataset.result = event.data.passed ? 'passed' : 'failed';
+        if (event.data.qaEvidence) {
+          document.body.dataset.qaEvidence = btoa(JSON.stringify(event.data.qaEvidence));
+        }
+        if (event.data.productionFrameGeometry) {
+          document.body.dataset.productionGeometry = btoa(JSON.stringify(event.data.productionFrameGeometry));
+        }
+      });
+    </script>
+  </body>
+</html>

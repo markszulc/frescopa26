@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Content Fragment tests</title>
+    <link rel="stylesheet" href="../../styles/styles.css">
+    <link rel="stylesheet" href="../../blocks/content-fragment/content-fragment.css">
+  </head>
+  <body>
+    <pre id="results"></pre>
+    <script type="module">
+      import decorate, { isAuthoringContext } from '../../blocks/content-fragment/content-fragment.js';
+      import decorateSku from '../../blocks/faq-list-by-sku/faq-list-by-sku.js';
+      import { connectAuthorFaqs, fetchAuthorCsrfToken, fetchAuthorFaqs, fetchAuthorFragmentStatuses, highlightAuthorFragment, registerAuthorFragments } from '../../scripts/content-fragment-author.js';
+      import createPreviewChannel from '../../scripts/experimentation-channel.js';
+      import createPanel from '../../tools/plugins/content-fragment/panel.js';
+      import connectContentAdvisor, { fetchAdvisorOrganization, placeFragmentPaths } from '../../tools/plugins/content-fragment/advisor.js';
+      import createFragmentManagement from '../../tools/plugins/content-fragment/management.js';
+      import createFragmentEditor from '../../tools/plugins/content-fragment/editor.js';
+
+      const results = document.querySelector('#results');
+      const originalFetch = window.fetch;
+      const panelMarkup = await (await originalFetch('../../tools/plugins/content-fragment/content-fragment.html')).text();
+      const originalReferrer = Object.getOwnPropertyDescriptor(document, 'referrer');
+      let accessToken = 'test-ims-token';
+      const path = '/content/dam/frescopa/en/faqs/do-i-have-to-buy-frescopa-pods';
+      const secondPath = '/content/dam/frescopa/en/faqs/is-it-a-chore-to-clean';
+      const id = '043d7fee-d38d-4b46-951c-67ad0e0177f6';
+      const items = [
+        { _id: id, question: 'First question?', answer: { plaintext: 'First answer.' } },
+        { _id: 'de0c30b0-4745-47fa-b55d-d605cc4f5dde', question: 'Second question?', answer: { plaintext: '<b>Plain text answer.</b>' } },
+      ];
+      const authorItem = (item, fragmentPath) => ({
+        id: item._id,
+        path: fragmentPath,
+        fields: [
+          { name: 'question', type: 'text', values: [item.question] },
+          { name: 'answer', type: 'long-text', mimeType: 'text/plain', values: [item.answer.plaintext] },
+        ],
+      });
+      const assert = (condition, message) => {
+        if (!condition) throw new Error(message);
+      };
+      const fixture = (html, className = 'content-fragment') => {
+        const block = document.createElement('div');
+        block.className = className;
+        block.innerHTML = html;
+        document.body.append(block);
+        return block;
+      };
+      const waitFor = (condition, timeout = 5000) => new Promise((resolve, reject) => {
+        const started = Date.now();
+        const check = () => {
+          if (condition()) resolve();
+          else if (Date.now() - started > timeout) reject(new Error('Timed out waiting for the block'));
+          else setTimeout(check, 20);
+        };
+        setTimeout(check, 0);
+      });
+      const settled = (block, timeout) => waitFor(() => !block.dataset.faqState, timeout);
+      const authorShown = (block) => waitFor(() => block.dataset.faqSource === 'author'
+        || Boolean(block.querySelector('button')));
+      const publishedItems = [{ _path: path, question: 'Published question?', answer: { plaintext: 'Published answer.' } }];
+      // Serves the published Edge Function endpoint, so tests can observe the author requests.
+      const withPublished = (handler, published = async () => ({
+        ok: true, json: async () => ({ items: publishedItems }),
+      })) => async (url, options = {}) => (
+        String(url).startsWith('https://www.frescopa.coffee/') ? published() : handler(url, options)
+      );
+      const test = async (name, run) => {
+        const disconnect = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
+        try {
+          await run(disconnect);
+          results.textContent += `PASS ${name}\n`;
+        } catch (error) {
+          results.textContent += `FAIL ${name}: ${error.message}\n`;
+        } finally {
+          disconnect();
+          accessToken = 'test-ims-token';
+          window.fetch = originalFetch;
+          if (originalReferrer) Object.defineProperty(document, 'referrer', originalReferrer);
+          else delete document.referrer;
+          document.querySelectorAll('.content-fragment, .faq-list-by-sku').forEach((el) => el.remove());
+        }
+      };
+
+      await test('authoring host, ancestor and referrer detection', async () => {
+        for (const hostname of ['da.live', 'main--frescopa26--markszulc.preview.da.live', 'experience.adobe.com']) {
+          assert(isAuthoringContext({ hostname }, ''), `authoring host ${hostname}`);
+        }
+        for (const origin of ['https://da.live', 'https://experience.adobe.com']) {
+          assert(isAuthoringContext({ hostname: 'localhost', ancestorOrigins: [origin] }, ''), 'embedded authoring ancestor');
+          assert(isAuthoringContext({ hostname: 'main--frescopa26--markszulc.aem.page' }, `${origin}/edit`), 'authoring referrer');
+        }
+        for (const hostname of ['localhost', '127.0.0.1', 'www.frescopa.coffee', 'main--frescopa26--markszulc.aem.page', 'main--frescopa26--markszulc.aem.live']) {
+          assert(!isAuthoringContext({ hostname }, ''), `edge host ${hostname}`);
+        }
+        assert(!isAuthoringContext({ hostname: 'localhost' }, 'https://da.live.example.com/edit'), 'unrelated referrer');
+      });
+
+      await test('panel shows instance, live fragment states and safe editor links', async () => {
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus, setPage } = createPanel(doc);
+        const browse = doc.querySelector('#browse-fragments');
+        assert(browse.textContent === 'Add a Content Fragment' && !browse.closest('section').querySelector('h2'), 'placement control has no separate heading');
+        assert(browse.title === 'Select a Content Fragment block to add a path, or place the cursor where you want to paste it.', 'placement guidance moved to button tooltip');
+        const connection = doc.querySelector('details.author-card');
+        assert(!connection.open && connection.querySelector('summary').textContent.includes('Author Connection'), 'connection troubleshooting collapsed by default');
+        assert(Boolean(doc.querySelector('#fragments-heading').compareDocumentPosition(connection) & Node.DOCUMENT_POSITION_FOLLOWING), 'fragment list before connection details');
+        setPage('https://main--frescopa26--markszulc.preview.da.live/drafts/fragmenttest');
+        assert(doc.querySelector('#author-instance').href === 'https://author-p137825-e1511252.adobeaemcloud.com/', 'author instance link');
+        assert(doc.querySelector('#page-path').textContent === '/drafts/fragmenttest', 'current page');
+        showStatus('', { state: 'inventory', paths: [path, secondPath] });
+        assert(doc.querySelectorAll('.fragment-row').length === 2, 'references listed before fetching');
+        assert(doc.querySelector('tbody td:last-child button').disabled && !doc.querySelector('tbody a'), 'no editor link without UUID');
+        assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === 'Waiting', 'accessible waiting state');
+        showStatus('Loading', { state: 'loading', paths: [path, secondPath] });
+        assert(doc.querySelector('.fragment-status').dataset.state === 'Loading', 'loading traffic light');
+        showStatus('Connected', {
+          state: 'connected', paths: [path, secondPath],
+          items: [{ _path: path, _id: id, question: '<img src=x onerror=alert(1)>' }],
+        });
+        assert(doc.querySelector('#connection-state').textContent === 'Connected', 'actual connection state');
+        const rows = doc.querySelectorAll('.fragment-row');
+        assert(rows[0].querySelector('.fragment-status').textContent === '' && rows[0].querySelector('.fragment-status').getAttribute('aria-label') === 'Checking publication', 'loading content does not imply publication');
+        assert(rows[0].querySelector('.fragment-info-popover').textContent.includes('Checking publication'), 'status available in popover');
+        assert(rows[1].querySelector('.fragment-status').dataset.state === 'Not found', 'missing result still listed');
+        assert(rows[1].querySelector('td:last-child button').disabled, 'missing result cannot open incorrect editor');
+        assert(!rows[0].querySelector('img'), 'fragment title treated as text');
+        const edit = rows[0].querySelector('a');
+        assert(edit.href === `https://experience.adobe.com/?repo=author-p137825-e1511252.adobeaemcloud.com#/@mark-szulc/aem/cf/editor/editor/${id}`, 'new editor URL uses actual fragment UUID');
+        assert(edit.target === '_blank' && edit.rel.includes('noopener'), 'separate editor tab');
+        assert(edit.getAttribute('aria-label').includes('opens in a new tab'), 'accessible action label');
+        for (const [status, label] of [
+          ['PUBLISHED', 'Published'], ['MODIFIED', 'Published (modified)'],
+          ['UNPUBLISHED', 'Not published'], ['NEW', 'Not published'], ['DRAFT', 'Not published'],
+        ]) {
+          showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: status }] });
+          assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === label, `publication state ${status}`);
+        }
+        showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'UNKNOWN', publicationError: 'HTTP 403' }] });
+        assert(doc.querySelector('.fragment-info-popover').textContent.includes('HTTP 403'), 'publication failure popover');
+        assert(!doc.querySelector('#publication-status').hidden && doc.querySelector('#publication-status').textContent.includes('HTTP 403'), 'publication failure visible without opening connection details');
+        showStatus('Denied', { state: 'error', paths: [path] });
+        assert(doc.querySelector('#connection-state').textContent === 'Connection error', 'error not shown as connected');
+        assert(doc.querySelector('.fragment-status').getAttribute('aria-label') === 'Failed', 'accessible failed traffic light');
+        showStatus('', { state: 'inventory', paths: [secondPath] });
+        assert(doc.querySelectorAll('.fragment-row').length === 1, 'removed references disappear');
+        showStatus('', { state: 'inventory', paths: [] });
+        assert(doc.querySelector('.table-scroll').hidden && !doc.querySelector('#empty-state').hidden, 'empty page state');
+      });
+
+      await test('fragment accordion exposes safe author fields and publication details with one open row', async () => {
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus } = createPanel(doc);
+        assert(!doc.querySelector('caption'), 'row selection instruction removed');
+        assert(!doc.querySelector('.table-scroll').hasAttribute('tabindex'), 'list wrapper does not steal focus from fields');
+        showStatus('', { state: 'inventory', paths: [path, secondPath] });
+        assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'initially collapsed');
+        showStatus('Connected', {
+          state: 'connected', paths: [path, secondPath],
+          items: [{ ...items[0], _path: path }, { ...items[1], _path: secondPath }],
+        });
+        let rows = doc.querySelectorAll('.fragment-row');
+        rows[0].querySelector('.fragment-toggle').click();
+        const firstDetails = rows[0].nextElementSibling;
+        assert(!firstDetails.hidden && rows[0].querySelector('button').getAttribute('aria-expanded') === 'true', 'title expands details accessibly');
+        assert(firstDetails.textContent.includes('First question?') && firstDetails.textContent.includes('First answer.'), 'question and answer fields shown');
+        const info = rows[0].querySelector('.fragment-status');
+        const popover = rows[0].querySelector('.fragment-info-popover');
+        assert(popover.textContent.includes(id) && popover.getAttribute('popover') === 'auto', 'fragment UUID moved into a dismissible popover');
+        assert(info.getAttribute('popovertarget') === popover.id && info.getAttribute('aria-expanded') === 'false', 'information hidden until its accessible button is activated');
+        assert(!firstDetails.textContent.includes(id) && !doc.querySelector('.fragment-info'), 'metadata and separate information icon removed from fields');
+        showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'PUBLISHED' }] });
+        rows = doc.querySelectorAll('.fragment-row');
+        assert(!rows[0].nextElementSibling.hidden && rows[0].querySelector('.fragment-info-popover').textContent.includes('Published'), 'publication update preserves open details');
+        rows[1].querySelector('.fragment-path').click();
+        assert(rows[0].nextElementSibling.hidden && !rows[1].nextElementSibling.hidden, 'whole row opens and closes previous details');
+        const secondDetails = rows[1].nextElementSibling;
+        assert(secondDetails.textContent.includes('<b>Plain text answer.</b>') && !secondDetails.querySelector('b'), 'answer rendered as text, not markup');
+        const edit = rows[1].querySelector('a');
+        edit.addEventListener('click', event => event.preventDefault());
+        edit.click();
+        assert(!secondDetails.hidden, 'Edit leaves accordion unchanged');
+        rows[1].querySelector('.fragment-toggle').click();
+        assert(secondDetails.hidden && rows[1].querySelector('button').getAttribute('aria-expanded') === 'false', 'same row collapses');
+        showStatus('', { state: 'inventory', paths: [path, secondPath, `${path}-missing`] });
+        rows = doc.querySelectorAll('.fragment-row');
+        rows[2].click();
+        assert(rows[2].nextElementSibling.textContent.includes('Fragment fields are not available'), 'unavailable fields explicit');
+        showStatus('', { state: 'publication', items: [{ _path: `${path}-missing`, publicationStatus: 'UNKNOWN', publicationError: 'HTTP 403' }] });
+        const unavailable = doc.querySelectorAll('.fragment-details-row')[2];
+        const failureDetails = unavailable.previousElementSibling.querySelector('.fragment-info-popover');
+        assert(!unavailable.hidden && failureDetails.textContent.includes('Publication unknown') && failureDetails.textContent.includes('HTTP 403'), 'publication failure available independently of expanded fields');
+        showStatus('', { state: 'inventory', paths: [path] });
+        showStatus('', { state: 'inventory', paths: [path, `${path}-missing`] });
+        assert([...doc.querySelectorAll('.fragment-details-row')].every(row => row.hidden), 'removed fragment cannot resurrect expanded state');
+      });
+
+      await test('traffic light hover and focus expose fragment information without expanding or highlighting', async () => {
+        const markup = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const panel = fixture(`<main>${markup.querySelector('main').innerHTML}</main>`, 'content-fragment content-fragment-panel');
+        let highlights = 0;
+        const { showStatus, disconnect } = createPanel(document, () => { highlights += 1; });
+        showStatus('', { state: 'inventory', paths: [path] });
+        showStatus('', { state: 'connected', paths: [path], items: [{ ...items[0], _path: path }] });
+        showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'MODIFIED' }] });
+        const popover = panel.querySelector('.fragment-info-popover');
+        const info = panel.querySelector('.fragment-status');
+        assert(getComputedStyle(popover).display === 'none', 'metadata initially hidden');
+        info.dispatchEvent(new PointerEvent('pointerenter', { pointerType: 'mouse' }));
+        assert(popover.matches(':popover-open') && info.getAttribute('aria-expanded') === 'true', 'hovering traffic light opens information accessibly');
+        assert(popover.textContent.includes('Published (modified)') && popover.textContent.includes(id), 'popover shows current publication status and UUID');
+        assert(panel.querySelector('.fragment-details-row').hidden && highlights === 0, 'hover does not expand fields or highlight preview');
+        info.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'mouse' }));
+        await new Promise(resolve => setTimeout(resolve, 250));
+        assert(!popover.matches(':popover-open'), 'information closes after pointer leaves');
+        info.click();
+        assert(popover.matches(':popover-open') && highlights === 0 && panel.querySelector('.fragment-details-row').hidden, 'touch or keyboard activation also opens information without selecting row');
+        popover.hidePopover();
+        info.dispatchEvent(new Event('focus'));
+        assert(popover.matches(':popover-open'), 'keyboard focus shows the same information');
+        popover.hidePopover();
+        assert(info.getAttribute('aria-expanded') === 'false', 'dismissal updates accessible state');
+        disconnect();
+      });
+
+      await test('management edits only changed fields of the chosen variation using its exact ETag', async () => {
+        const api = createFragmentManagement(() => accessToken, 'https://da.live/canvas#/markszulc/frescopa26/drafts/fragmenttest');
+        const reference = { id, path };
+        const fields = [
+          { name: 'question', type: 'text', values: ['Original'] },
+          { name: 'answer', type: 'long-text', mimeType: 'text/html', values: ['<p>Keep formatting</p>'] },
+          { name: 'locked', type: 'text', locked: true, values: ['Keep'] },
+        ];
+        let variation = { name: 'short', fields };
+        const writes = [];
+        window.fetch = async (url, options) => {
+          if (url.endsWith('/csrf/token.json')) return new Response(JSON.stringify({ token: 'csrf-token' }));
+          assert(url.includes(`/fragments/${id}/variations/short`), 'variation edits never target main');
+          assert(options.headers.Authorization === 'Bearer test-ims-token' && options.credentials === 'omit', 'authenticated management request');
+          if (options.method === 'PATCH') {
+            writes.push(JSON.parse(options.body));
+            assert(options.headers['If-Match'] === '"variation-version"' && options.headers['CSRF-Token'] === 'csrf-token', 'conditional save with CSRF');
+            assert(options.headers['Content-Type'] === 'application/json-patch+json', 'official JSON Patch media type');
+            variation = { ...variation, fields: [{ ...fields[0], values: ['Updated'] }, ...fields.slice(1)] };
+          }
+          return new Response(JSON.stringify(variation), { headers: { ETag: '"variation-version"' } });
+        };
+        const snapshot = await api.read(reference, 'short');
+        const saved = await api.save(reference, snapshot, [{ name: 'question', value: 'Updated' }, { name: 'answer', value: '<p>Keep formatting</p>' }]);
+        assert(saved.data.fields[0].values[0] === 'Updated', 'saved fields reread from author');
+        assert(writes.length === 1 && writes[0].length === 2 && writes[0][0].op === 'test' && writes[0][1].path === '/fields/0/values', 'only changed field patched with identity guard');
+        for (const [value, changes] of [
+          [{ ...snapshot, etag: null }, [{ name: 'question', value: 'No ETag' }]],
+          [{ ...snapshot, etag: '*' }, [{ name: 'question', value: 'Wildcard' }]],
+          [snapshot, [{ name: 'locked', value: 'Overwrite' }]],
+          [snapshot, [{ name: 'missing', value: 'Overwrite' }]],
+        ]) {
+          let failure;
+          try { await api.save(reference, value, changes); } catch (error) { failure = error; }
+          assert(failure && writes.length === 1, 'unsafe save blocked before mutation');
+        }
+        window.fetch = async url => url.endsWith('/csrf/token.json')
+          ? new Response(JSON.stringify({ token: 'csrf-token' })) : new Response('{}', { status: 412 });
+        let conflict;
+        try { await api.save(reference, snapshot, [{ name: 'question', value: 'Conflict' }]); } catch (error) { conflict = error; }
+        assert(conflict?.message.includes('edits are retained'), 'conflict explicit without automatic overwrite');
+      });
+
+      await test('save and discard icons preserve editing, while usage success is quiet and failures remain visible', async () => {
+        const doc = new DOMParser().parseFromString('<body></body>', 'text/html');
+        const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+        const snapshot = () => ({
+          variation: 'master', etag: '"version"', data: { fields: [
+            { name: 'question', type: 'text', values: ['Original'] },
+          ] },
+        });
+        let failUsage = false;
+        let saved = 0;
+        const api = {
+          recordUsage: async () => { if (failUsage) throw new Error('Metadata permission denied'); },
+          read: async () => snapshot(),
+          variations: async () => [],
+          save: async (reference, original, changes) => ({
+            ...original, data: { fields: [{ ...original.data.fields[0], values: [changes[0].value] }] },
+          }),
+        };
+        const editor = createFragmentEditor(doc, { id, path }, api, () => { saved += 1; });
+        doc.body.append(editor.element);
+        editor.open();
+        await tick();
+        const save = doc.querySelector('button[aria-label="Save to AEM"]');
+        const discard = doc.querySelector('button[aria-label="Discard edits and reload"]');
+        assert(save.querySelector('svg[aria-hidden="true"]') && discard.querySelector('svg[aria-hidden="true"]'), 'save and discard use decorative SVG icons');
+        assert(!save.textContent && !discard.textContent && save.title && discard.title, 'icon-only controls retain accessible names and tooltips');
+        assert(!editor.element.textContent.includes('Only this fragment will be published') && !doc.querySelector('.fragment-publish'), 'publish controls and instructions removed');
+        assert(!editor.element.textContent.includes('This DA page is recorded'), 'usage success label removed');
+        const change = value => {
+          const input = doc.querySelector('input');
+          input.value = value;
+          input.dispatchEvent(new Event('input'));
+        };
+        change('Discard this draft');
+        assert(!save.disabled, 'editing still enables save');
+        discard.click();
+        await tick();
+        assert(doc.querySelector('input').value === 'Original' && doc.querySelector('button[type="submit"]').disabled, 'discard icon reloads authoritative fields without saving');
+        change('Saved through icon form');
+        doc.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true }));
+        await tick();
+        assert(saved === 1 && doc.querySelector('input').value === 'Saved through icon form', 'icon form retains explicit save behavior');
+        editor.disconnect();
+        failUsage = true;
+        const failed = createFragmentEditor(doc, { id, path }, api, () => {});
+        doc.body.replaceChildren(failed.element);
+        failed.open();
+        await tick();
+        const retry = [...doc.querySelectorAll('button')].find(button => button.textContent === 'Retry page usage');
+        assert(!retry.hidden && failed.element.textContent.includes('Metadata permission denied'), 'usage error and retry remain visible');
+        failUsage = false;
+        retry.click();
+        await tick();
+        assert(retry.hidden && !failed.element.textContent.includes('Metadata permission denied'), 'successful retry clears previous usage error quietly');
+        failed.disconnect();
+      });
+
+      await test('variation listing reads every page and rejects repeating cursors', async () => {
+        const api = createFragmentManagement(() => accessToken);
+        const urls = [];
+        window.fetch = async url => {
+          urls.push(url);
+          return new Response(JSON.stringify(url.includes('cursor=next')
+            ? { items: [{ name: 'second', title: 'Second' }] }
+            : { items: [{ name: 'first', title: 'First' }], cursor: 'next' }));
+        };
+        const variations = await api.variations({ id, path });
+        assert(variations.length === 2 && urls.length === 2 && urls[1].includes('cursor=next'), 'all existing variations available');
+        window.fetch = async () => new Response(JSON.stringify({ items: [], cursor: 'repeat' }));
+        let failure;
+        try { await api.variations({ id, path }); } catch (error) { failure = error; }
+        assert(failure?.message.includes('pagination'), 'bad cursor cannot loop forever');
+      });
+
+      await test('usage metadata appends the DA page once and preserves concurrent and unrelated references', async () => {
+        const page = 'https://da.live/canvas#/markszulc/frescopa26/drafts/fragmenttest';
+        const otherPage = 'https://da.live/canvas#/markszulc/frescopa26/other';
+        const api = createFragmentManagement(() => accessToken, page);
+        let pages = [otherPage];
+        let patches = 0;
+        let version = 1;
+        window.fetch = async (url, options) => {
+          if (url.endsWith('/csrf/token.json')) return new Response(JSON.stringify({ token: 'csrf-token' }));
+          assert(url.endsWith(`/fragments/${id}/metadata`), 'usage stored as metadata, not outbound references');
+          if (options.method === 'PATCH') {
+            patches += 1;
+            if (patches === 1) {
+              pages.push(`${otherPage}-concurrent`);
+              version += 1;
+              return new Response('{}', { status: 412 });
+            }
+            assert(options.headers['If-Match'] === `"metadata-${version}"`, 'retry uses fresh metadata ETag');
+            const patch = JSON.parse(options.body);
+            assert(patch.length === 1 && patch[0].path === '/frescopa:usedOnPages', 'unrelated metadata untouched');
+            pages = patch[0].value;
+          }
+          return new Response(JSON.stringify({ schemaId: 'default', fields: [
+            { name: 'frescopa:usedOnPages', type: 'array', value: pages },
+            { name: 'dc:title', value: 'Keep title' },
+          ] }), { headers: { ETag: `"metadata-${version}"` } });
+        };
+        await api.recordUsage({ id, path });
+        assert(pages.includes(page) && pages.includes(otherPage) && pages.includes(`${otherPage}-concurrent`), 'concurrent additions preserved');
+        await api.recordUsage({ id, path });
+        assert(patches === 2 && pages.filter(value => value === page).length === 1, 'repeat page visits cause no duplicate or write');
+        window.fetch = async () => new Response(JSON.stringify({ schemaId: 'default', fields: [] }));
+        let failure;
+        try { await api.recordUsage({ id, path }); } catch (error) { failure = error; }
+        assert(failure?.message.includes('expose ETag'), 'unexposed ETag fails visibly instead of unguarded write');
+      });
+
+      await test('inline editor retains variation drafts and errors, and does not change the page variation', async () => {
+        const doc = new DOMParser().parseFromString('<body></body>', 'text/html');
+        const calls = [];
+        const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+        const snapshot = variation => ({
+          variation, etag: '"version"', data: { fields: [
+            { name: 'question', type: 'text', values: [`${variation} question`] },
+            { name: 'answer', type: 'long-text', values: ['An answer'] },
+          ] },
+        });
+        let conflict = true;
+        let saved = 0;
+        const api = {
+          recordUsage: async () => { calls.push('usage'); },
+          variations: async () => [{ name: 'short', title: 'Short' }],
+          read: async (reference, variation) => { calls.push(variation); return snapshot(variation); },
+          save: async (reference, original, changes) => {
+            if (conflict) throw new Error('Concurrent edit; edits retained.');
+            return { ...original, data: { fields: original.data.fields.map(field => ({
+              ...field, values: [changes.find(change => change.name === field.name).value],
+            })) } };
+          },
+        };
+        const editor = createFragmentEditor(doc, { id, path }, api, () => { saved += 1; });
+        doc.body.append(editor.element);
+        editor.open();
+        await tick();
+        const change = value => {
+          const input = doc.querySelector('input[name="question"]');
+          input.value = value;
+          input.dispatchEvent(new Event('input'));
+        };
+        change('Unsaved main');
+        doc.querySelector('select').value = 'short';
+        doc.querySelector('select').dispatchEvent(new Event('change'));
+        await tick();
+        assert(doc.querySelector('input').value === 'short question', 'selected variation fields displayed');
+        change('Unsaved variation');
+        doc.querySelector('select').value = 'master';
+        doc.querySelector('select').dispatchEvent(new Event('change'));
+        await tick();
+        assert(doc.querySelector('input').value === 'Unsaved main', 'main draft retained across switches');
+        doc.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true }));
+        await tick();
+        assert(doc.querySelector('input').value === 'Unsaved main' && editor.element.textContent.includes('Concurrent edit'), 'save failure keeps edits and shows error');
+        conflict = false;
+        doc.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true }));
+        await tick();
+        assert(saved === 1 && editor.element.textContent.includes('Saved to AEM author'), 'explicit save acknowledged');
+        assert(calls.join(',') === 'usage,master,short', 'variation browsing only reads; usage recorded once');
+        assert(doc.querySelector('button[type="submit"]').disabled, 'saved draft no longer dirty');
+        editor.disconnect();
+        const readOnly = createFragmentEditor(doc, { id, path }, {
+          ...api, read: async () => ({ ...snapshot('master'), etag: null }),
+        }, () => { throw new Error('Read-only editor cannot save'); });
+        doc.body.replaceChildren(readOnly.element);
+        readOnly.open();
+        await tick();
+        const readOnlyInput = doc.querySelector('input');
+        const notice = doc.querySelector('.fragment-readonly');
+        assert(readOnlyInput.readOnly && !readOnlyInput.disabled, 'unexposed ETag allows focusing and copying, but not editing');
+        assert(!notice.hidden && notice.textContent.includes('Access-Control-Expose-Headers: ETag'), 'configuration requirement visible above fields');
+        assert(Boolean(notice.compareDocumentPosition(readOnlyInput) & Node.DOCUMENT_POSITION_FOLLOWING), 'read-only explanation precedes inputs');
+        assert(readOnlyInput.getAttribute('aria-describedby') === notice.id, 'read-only explanation associated with fields');
+        assert(doc.querySelector('button[type="submit"]').disabled, 'missing ETag still prevents unsafe saves');
+        readOnly.disconnect();
+      });
+
+      await test('panel preserves inline drafts across inventory and publication updates and records usage once', async () => {
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus, enableAuthoring, disconnect } = createPanel(doc);
+        const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+        let usages = 0;
+        const api = {
+          recordUsage: async () => { usages += 1; },
+          variations: async () => [],
+          read: async () => ({ variation: 'master', etag: '"version"', data: { fields: [
+            { name: 'question', type: 'text', values: ['Original'] },
+          ] } }),
+          save: async (reference, snapshot, changes) => ({ ...snapshot, data: { fields: [
+            { name: 'question', type: 'text', values: [changes[0].value] },
+          ] } }),
+        };
+        enableAuthoring(api, () => {});
+        showStatus('', { state: 'inventory', paths: [path] });
+        showStatus('', { state: 'connected', paths: [path], items: [{ ...items[0], _path: path }] });
+        await tick();
+        assert(usages === 1, 'usage recorded even before opening fields');
+        doc.querySelector('.fragment-toggle').click();
+        await tick();
+        const input = doc.querySelector('.fragment-editor input');
+        input.value = 'Keep draft';
+        input.dispatchEvent(new Event('input'));
+        showStatus('', { state: 'publication', items: [{ _path: path, publicationStatus: 'PUBLISHED' }] });
+        showStatus('', { state: 'loading', paths: [path] });
+        showStatus('', { state: 'connected', paths: [path], items: [{ ...items[0], _path: path }] });
+        assert(doc.querySelector('.fragment-editor input') === input && input.value === 'Keep draft', 'background updates preserve editor and dirty values');
+        doc.querySelector('.fragment-editor form').dispatchEvent(new Event('submit', { cancelable: true }));
+        await tick();
+        assert(doc.querySelector('.fragment-name').textContent === 'Keep draft', 'saved title updates current fragment after background object replacement');
+        assert(usages === 1, 'background rerenders do not duplicate usage requests');
+        disconnect();
+      });
+
+      await test('fragment selection highlights only referencing blocks, scrolls and restores outlines', async (disconnect) => {
+        const first = fixture('<div></div>');
+        const second = fixture('<div></div>');
+        const shared = fixture('<div></div>');
+        first.style.setProperty('outline', '1px dashed red', 'important');
+        first.style.setProperty('transition', 'opacity 2s linear', 'important');
+        registerAuthorFragments(first, [path]);
+        registerAuthorFragments(second, [secondPath]);
+        registerAuthorFragments(shared, [path, secondPath]);
+        const scrolled = [];
+        first.scrollIntoView = (options) => scrolled.push({ element: first, options });
+        second.scrollIntoView = (options) => scrolled.push({ element: second, options });
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        let selections = 0;
+        let highlighted;
+        const { showStatus } = createPanel(doc, (path) => {
+          selections += 1;
+          highlighted = highlightAuthorFragment(path);
+          return highlighted;
+        });
+        showStatus('', { state: 'inventory', paths: [path, secondPath] });
+        showStatus('Connected', {
+          state: 'connected', paths: [path, secondPath],
+          items: [{ ...items[0], _path: path }, { ...items[1], _path: secondPath }],
+        });
+        const activate = async (target) => {
+          target.click();
+          await highlighted;
+        };
+        const rows = doc.querySelectorAll('.fragment-row');
+        assert(rows[0].querySelector('.fragment-toggle').type === 'button' && rows[0].querySelector('.fragment-name').tagName === 'STRONG', 'native keyboard-accessible control with plain title');
+        const message = doc.querySelector('#highlight-status');
+        message.textContent = 'Previous highlight error';
+        message.hidden = false;
+        await activate(rows[0].querySelector('.fragment-path'));
+        assert(message.hidden && !message.textContent, 'successful highlighting clears errors without a confirmation label');
+        assert(first.style.outline === 'rgb(59, 99, 251) solid 2px' && shared.style.outline === first.style.outline, 'all matching blocks outlined');
+        assert(!second.style.outline, 'unrelated block unchanged');
+        assert(scrolled.length === 1 && scrolled[0].element === first && scrolled[0].options.block === 'center', 'first reference scrolled into view');
+        const edit = doc.querySelector('#fragments a');
+        edit.addEventListener('click', event => event.preventDefault());
+        edit.click();
+        assert(selections === 1, 'Edit does not trigger block selection');
+        await activate(rows[1].querySelector('.fragment-path'));
+        assert(first.style.outline === 'red dashed 1px' && first.style.getPropertyPriority('outline') === 'important', 'previous inline outline and priority restored');
+        assert(second.style.outline === shared.style.outline && second.style.outline.includes('59, 99, 251'), 'selection moves to the other references');
+        assert(scrolled.length === 2 && scrolled[1].element === second, 'new first reference scrolled');
+        await activate(rows[1].querySelector('.fragment-toggle'));
+        await activate(rows[1].querySelector('.fragment-toggle'));
+        const replacement = fixture('<div></div>');
+        registerAuthorFragments(replacement, [secondPath]);
+        second.remove();
+        shared.remove();
+        await new Promise(resolve => setTimeout(resolve, 0));
+        assert(replacement.style.outline.includes('59, 99, 251') && !second.style.outline && !shared.style.outline, 'live replacement with the same path retains highlight without stale outlines');
+        await new Promise(resolve => setTimeout(resolve, 1850));
+        assert(replacement.style.outline.includes('59, 99, 251'), 'highlight remains visible before two seconds');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        assert(replacement.style.getPropertyValue('outline-color') === 'transparent', 'highlight begins fading after two seconds');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        assert(!replacement.style.outline && !replacement.style.transition, 'highlight and transition restored by three seconds');
+        assert(first.style.transition === 'opacity 2s linear' && first.style.getPropertyPriority('transition') === 'important', 'original transition and priority preserved');
+        const afterExpiry = fixture('<div></div>');
+        registerAuthorFragments(afterExpiry, [secondPath]);
+        await new Promise(resolve => setTimeout(resolve, 0));
+        assert(!afterExpiry.style.outline, 'inventory mutation cannot resurrect expired highlighting');
+        await highlightAuthorFragment(secondPath);
+        await new Promise((resolve, reject) => {
+          const observer = new MutationObserver(() => {
+            if (replacement.style.outline) return;
+            clearTimeout(timer);
+            observer.disconnect();
+            resolve();
+          });
+          const timer = setTimeout(() => {
+            observer.disconnect();
+            reject(new Error('Highlight remained after disconnect'));
+          }, 2000);
+          observer.observe(replacement, { attributes: true, attributeFilter: ['style'] });
+          disconnect();
+        });
+        assert(!replacement.style.outline, 'disconnecting the panel clears highlighting');
+      });
+
+      await test('highlight failures are visible and requests stay scoped to the current page', async () => {
+        const block = fixture('<div></div>');
+        registerAuthorFragments(block, [path]);
+        window.fetch = () => { throw new Error('Highlight must not fetch author content'); };
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const { showStatus } = createPanel(doc, value => highlightAuthorFragment(value));
+        showStatus('', { state: 'inventory', paths: [secondPath] });
+        const message = doc.querySelector('#highlight-status');
+        await new Promise((resolve, reject) => {
+          const observer = new MutationObserver(() => {
+            clearTimeout(timer);
+            observer.disconnect();
+            resolve();
+          });
+          const timer = setTimeout(() => {
+            observer.disconnect();
+            reject(new Error('Missing highlight error'));
+          }, 2000);
+          observer.observe(message, { attributes: true, attributeFilter: ['hidden'] });
+          doc.querySelector('.fragment-row').click();
+        });
+        assert(!message.hidden && message.textContent.includes('no longer referenced'), 'stale reference error outside collapsed connection details');
+        assert(!doc.querySelector('.author-card').open && !doc.querySelector('.author-card').contains(message), 'highlight error visible without troubleshooting expansion');
+        for (const [value, pageUrl, expected] of [
+          ['/content/dam/../private', window.location.href, 'Expected FAQ'],
+          [path, new URL('/unrelated-page', window.location.href).href, 'Open Layout or Split view'],
+        ]) {
+          let failure;
+          try {
+            await highlightAuthorFragment(value, pageUrl);
+          } catch (error) {
+            failure = error;
+          }
+          assert(failure?.message.includes(expected), 'invalid or disconnected highlight fails explicitly');
+          assert(!block.style.outline, 'invalid or other-page request cannot highlight this page');
+        }
+      });
+
+      await test('inventory includes all blocks, deduplicates paths and updates removals', async () => {
+        const first = fixture('<div></div>');
+        const second = fixture('<div></div>');
+        registerAuthorFragments(first, [path, secondPath]);
+        registerAuthorFragments(second, [path]);
+        const channel = createPreviewChannel(window.location.href);
+        const nextInventory = (expected) => new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error('Missing inventory response')), 2000);
+          channel.onmessage = ({ data }) => {
+            if (data.action !== 'inventory' || !data.response) return;
+            if (JSON.stringify(data.paths) !== JSON.stringify(expected)) return;
+            clearTimeout(timer);
+            resolve(data.paths);
+          };
+        });
+        try {
+          const initial = nextInventory([path, secondPath]);
+          channel.postMessage({ type: 'da:content-fragment', action: 'inventory' });
+          assert(JSON.stringify(await initial) === JSON.stringify([path, secondPath]), 'all unique page paths');
+          const removed = nextInventory([path]);
+          first.remove();
+          assert(JSON.stringify(await removed) === JSON.stringify([path]), 'only remaining references');
+        } finally {
+          channel.close();
+        }
+      });
+
+      await test('publication status comes from authenticated fragment metadata, with explicit per-fragment failures', async () => {
+        for (const status of ['NEW', 'DRAFT', 'PUBLISHED', 'MODIFIED', 'UNPUBLISHED']) {
+          window.fetch = async (url, options) => {
+            assert(url === `https://author-p137825-e1511252.adobeaemcloud.com/adobe/sites/cf/fragments/${id}`, 'metadata endpoint uses UUID on fixed author');
+            assert(options.headers.Authorization === 'Bearer test-ims-token' && options.credentials === 'omit' && options.cache === 'no-store', 'fresh metadata uses bearer without cookies');
+            return { ok: true, json: async () => ({ id, path, status }) };
+          };
+          const [result] = await fetchAuthorFragmentStatuses([{ _path: path, _id: id }], accessToken);
+          assert(result.publicationStatus === status && !result.publicationError, 'actual publication state retained');
+        }
+        for (const response of [
+          async () => ({ ok: false, status: 403 }),
+          async () => ({ ok: true, json: async () => ({ id, path: secondPath, status: 'PUBLISHED' }) }),
+          async () => ({ ok: true, json: async () => ({ id, path, status: 'unknown-future-status' }) }),
+          async () => { throw new Error('Network failed'); },
+        ]) {
+          window.fetch = response;
+          const [result] = await fetchAuthorFragmentStatuses([{ _path: path, _id: id }], accessToken);
+          assert(result.publicationStatus === 'UNKNOWN' && result.publicationError, 'metadata failure never claims published or unpublished');
+        }
+        window.fetch = () => { throw new Error('Unexpected request'); };
+        const [invalid] = await fetchAuthorFragmentStatuses([{ _path: path, _id: '../private' }], accessToken);
+        assert(invalid.publicationError === 'Invalid Content Fragment UUID.', 'invalid UUID rejected before request');
+      });
+
+      await test('selected Content Fragment placement preserves paths and uses guarded SDK replacement', async () => {
+        const html = `<body><main><div><h1>Keep heading</h1><div class="cards" data-block-index="1"><div><div>Keep cards</div></div></div><div class="content-fragment" data-block-index="50"><div><div>${path}<br>${secondPath}</div></div></div></div></main></body>`;
+        const snapshot = { html, selection: { blockIndex: 1 }, editable: true };
+        let writes = 0;
+        const actions = {
+          sendText: () => { throw new Error('Selected block must use guarded replacement'); },
+          sendHTML: async (replacement, options) => {
+            writes += 1;
+            const doc = new DOMParser().parseFromString(replacement, 'text/html');
+            assert(doc.body.children.length === 1 && doc.body.firstElementChild.className === 'content-fragment', 'only selected fragment block sent');
+            assert([...doc.querySelectorAll('.content-fragment > div > div')].map(cell => cell.textContent).join(',') === [path, secondPath].join(','), 'existing line-break paths retained and new paths deduplicated');
+            assert(!doc.querySelector('[data-block-index]'), 'instrumentation removed from replacement');
+            assert(options.replace && options.expected.html === html && options.expected.blockIndex === 1, 'host checks exact document and selection');
+            return { ok: true };
+          },
+        };
+        assert((await placeFragmentPaths(actions, snapshot, [secondPath, path])).startsWith('Added'), 'confirmed replacement reported');
+        assert(writes === 1, 'one atomic block edit');
+        for (const invalid of [
+          { ...snapshot, editable: false },
+          { ...snapshot, selection: { blockIndex: 0 } },
+          { ...snapshot, html: html.replace(path, 'Authored question and answer') },
+          { ...snapshot, html: html.replace(`<div><div>${path}<br>${secondPath}</div></div>`, '<div><div>Question</div><div>Answer</div></div>') },
+        ]) {
+          let failure;
+          try { await placeFragmentPaths(actions, invalid, [secondPath]); } catch (error) { failure = error; }
+          assert(failure, 'incompatible or read-only target rejected explicitly');
+        }
+        assert(writes === 1, 'invalid targets cause no edits');
+        for (const error of ['WRONG_SELECTION', 'STALE_LIVE', 'unsupported']) {
+          let failure;
+          try {
+            await placeFragmentPaths({ sendHTML: async () => ({ ok: false, error }) }, snapshot, [secondPath]);
+          } catch (caught) { failure = caught; }
+          assert(failure?.message.includes(error), 'rejected host write surfaced, never pasted elsewhere');
+        }
+        let pasted;
+        const message = await placeFragmentPaths({ sendText: (text) => { pasted = text; } }, {
+          ...snapshot, selection: { blockIndex: null },
+        }, [secondPath]);
+        assert(pasted === secondPath && message.startsWith('Sent'), 'without a block sends plain path, not a new block or picker markup');
+      });
+
+      await test('Content Advisor uses the built-in fragment experience and places only confirmed main-variation paths', async () => {
+        const doc = new DOMParser().parseFromString(panelMarkup, 'text/html');
+        const originalSelectors = window.PureJSSelectors;
+        const script = document.createElement('script');
+        script.type = 'application/json';
+        script.src = 'https://experience.adobe.com/solutions/CQ-assets-selectors/static-assets/resources/assets-selectors.js';
+        document.head.append(script);
+        let props;
+        let pasted;
+        let unsubscribed = false;
+        let closedDialogs = 0;
+        const imsOrg = 'A123456@AdobeOrg';
+        window.fetch = async (url, options) => {
+          assert(url === 'https://aem-discovery.adobe.io/repositories', 'Adobe repository discovery endpoint');
+          assert(options.headers.Authorization === `Bearer ${accessToken}` && options.headers['x-api-key'] === 'exc_app', 'discovery uses current DA sign-in and native Adobe client');
+          assert(options.credentials === 'omit', 'no discovery cookies');
+          return { ok: true, json: async () => ({ children: [
+            { _embedded: { 'http://ns.adobe.com/adobecloud/rel/primary': { 'repo:repositoryId': 'other-author', 'repo:owner': { id: 'B765432@AdobeOrg', type: 'org' } } } },
+            { _embedded: { 'http://ns.adobe.com/adobecloud/rel/primary': { 'repo:repositoryId': 'author-p137825-e1511252.adobeaemcloud.com', 'repo:owner': { id: imsOrg, type: 'org' } } } },
+          ] }) };
+        };
+        const actions = {
+          subscribeLiveDocument: (callback) => {
+            callback({ html: '<body><main><div><p>Cursor</p></div></main></body>', selection: { blockIndex: null }, editable: true });
+            return () => { unsubscribed = true; };
+          },
+          sendText: (text) => { pasted = text; },
+          closeLibrary: () => { closedDialogs += 1; },
+        };
+        window.PureJSSelectors = { renderContentAdvisor: (container, options) => { props = options; } };
+        const disconnect = connectContentAdvisor(doc, { actions }, () => accessToken);
+        try {
+          const button = doc.querySelector('#browse-fragments');
+          button.click();
+          await new Promise(resolve => setTimeout(resolve, 0));
+          assert(props.featureSet.includes('content-fragments') && props.defaultSelectedFeature === 'content-fragments', 'Adobe fragment experience enabled and selected, not a custom picker');
+          assert(props.imsToken === accessToken && props.contentFragmentSelectorProps.imsToken === accessToken, 'existing DA token supplied to both Adobe experiences');
+          assert(props.imsOrg === imsOrg && props.contentFragmentSelectorProps.orgId === imsOrg, 'actual owning organization passed to both pickers, not the first accessible organization');
+          assert(props.repositoryId === 'author-p137825-e1511252.adobeaemcloud.com' && props.contentFragmentSelectorProps.repoId === props.repositoryId, 'fixed author repository');
+          props.handleSelection([{ path }]);
+          assert(!pasted && doc.querySelector('#insert-status').textContent.includes('not media assets'), 'media selection cannot insert a fragment path');
+          await props.contentFragmentSelectorProps.onSubmit({ contentFragments: [{ path, variations: ['mobile'] }] });
+          assert(!pasted && doc.querySelector('#insert-status').textContent.includes('main-variation'), 'unsupported variations not silently inserted as master');
+          await props.contentFragmentSelectorProps.onSubmit({ contentFragments: [{ path }], repoId: 'other-author' });
+          assert(!pasted && doc.querySelector('#insert-status').textContent.includes('configured AEM author'), 'wrong repository cannot insert conflicting paths');
+          const insert = doc.querySelector('#insert-fragments');
+          assert(insert.disabled && !doc.querySelector('#advisor-actions').hidden, 'persistent insert action visible but disabled without selection');
+          props.contentFragmentSelectorProps.onSelectionChange({ contentFragments: [{ path, variations: [] }], repoId: props.repositoryId });
+          assert(!insert.disabled && insert.textContent.includes('(1)') && !pasted, 'native selection enables insertion without writing before confirmation');
+          props.contentFragmentSelectorProps.onSelectionChange({ contentFragments: [] });
+          assert(insert.disabled, 'clearing selection disables insertion');
+          props.contentFragmentSelectorProps.onSelectionChange({ contentFragments: [{ path, variations: [] }], repoId: props.repositoryId });
+          insert.click();
+          await new Promise(resolve => setTimeout(resolve, 0));
+          assert(pasted === path && closedDialogs === 1 && doc.querySelector('#content-advisor').hidden, 'visible insert action places paths and closes the Workspace dialog');
+          accessToken = 'refreshed-ims-token';
+          button.click();
+          await new Promise(resolve => setTimeout(resolve, 0));
+          assert(props.imsToken === accessToken && !doc.querySelector('#content-advisor').hidden, 'reopening uses current token');
+          doc.querySelector('#close-advisor').click();
+          assert(doc.querySelector('#content-advisor').hidden && closedDialogs === 2, 'Cancel closes the native dialog');
+        } finally {
+          disconnect();
+          window.PureJSSelectors = originalSelectors;
+          script.remove();
+        }
+        assert(unsubscribed, 'live document subscription released');
+      });
+
+      await test('missing or invalid repository organization is reported instead of guessing or hiding the notice', async () => {
+        for (const response of [
+          { ok: false, status: 403 },
+          { ok: true, json: async () => ({ children: [] }) },
+          { ok: true, json: async () => ({}) },
+          { ok: true, json: async () => ({ children: [
+            { _embedded: { 'http://ns.adobe.com/adobecloud/rel/primary': { 'repo:repositoryId': 'author-p137825-e1511252.adobeaemcloud.com', 'repo:owner': { id: 'not-an-ims-org', type: 'org' } } } },
+          ] }) },
+        ]) {
+          window.fetch = async () => response;
+          let failure;
+          try { await fetchAdvisorOrganization(accessToken); } catch (error) { failure = error; }
+          assert(failure?.message, 'discovery failure surfaced explicitly');
+        }
+      });
+
+      await test('author reads use authenticated GET lookups without GraphQL POST or CSRF, preserving authored order', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        const block = fixture(`<div><div>${path}<br>${secondPath}<br>${path}</div></div>`);
+        let requests = 0;
+        window.fetch = withPublished(async (url, options) => {
+          requests += 1;
+          assert(options.headers.Authorization === 'Bearer test-ims-token', 'IMS bearer on every lookup');
+          assert(options.credentials === 'omit', 'no cross-site session cookies');
+          const request = new URL(url);
+          assert(request.origin + request.pathname === 'https://author-p137825-e1511252.adobeaemcloud.com/adobe/sites/cf/fragments', 'supported management lookup endpoint');
+          assert(options.method === 'GET' && !options.body && !options.headers['CSRF-Token'], 'reading needs no POST or CSRF request');
+          assert(options.cache === 'no-store', 'fresh author content');
+          const requested = request.searchParams.get('path');
+          assert([path, secondPath].includes(requested) && request.searchParams.get('limit') === '1', 'exact requested path, not an unbounded listing');
+          if (requested === path) await new Promise(resolve => setTimeout(resolve, 25));
+          return { ok: true, json: async () => ({ items: [
+            authorItem(items[requested === path ? 0 : 1], requested),
+            authorItem(items[0], '/content/dam/unrequested'),
+          ] }) };
+        });
+        await Promise.all([decorate(block), decorate(block)]);
+        await authorShown(block);
+        assert(requests === 2, 'one GET per unique path, no token or GraphQL request');
+        assert(JSON.stringify([...block.querySelectorAll('.faq-label')].map((el) => el.textContent)) === JSON.stringify(items.map((item) => item.question)), 'requested results in authored order');
+      });
+
+      await test('management lookups preserve plain text, normalize HTML and distinguish missing fragments', async () => {
+        const plain = '  Keep spaces\nand line breaks.  ';
+        const html = '<p>One &amp; <strong>two</strong></p><p>Three<br>four</p><script>not content<\/script>';
+        for (const [mimeType, value, expected] of [
+          ['text/plain', plain, plain],
+          ['text/html', html, 'One & two\nThree\nfour'],
+        ]) {
+          const fragment = authorItem(items[0], path);
+          fragment.fields[1] = { name: 'answer', type: 'long-text', mimeType, values: [value] };
+          window.fetch = async () => ({ ok: true, json: async () => ({ items: [fragment] }) });
+          const [result] = await fetchAuthorFaqs([path], accessToken);
+          assert(result.answer.plaintext === expected, 'expected plaintext shape without executing markup');
+        }
+        for (const entries of [[], [authorItem(items[0], secondPath)]]) {
+          window.fetch = async () => ({ ok: true, json: async () => ({ items: entries }) });
+          assert((await fetchAuthorFaqs([path], accessToken)).length === 0, 'missing exact path never displays another fragment');
+        }
+        for (const fields of [
+          [],
+          [{ name: 'question', type: 'text', values: ['Question'] }, { name: 'answer', type: 'long-text', values: [null] }],
+          [{ name: 'question', type: 'text', values: ['Question'] }, { name: 'answer', type: 'long-text', mimeType: 'application/json', values: ['{}'] }],
+        ]) {
+          window.fetch = async () => ({ ok: true, json: async () => ({ items: [{ ...authorItem(items[0], path), fields }] }) });
+          let failure;
+          try { await fetchAuthorFaqs([path], accessToken); } catch (error) { failure = error; }
+          assert(failure?.message === 'Invalid author FAQ response.', 'incompatible model fields fail explicitly');
+        }
+      });
+
+      await test('author results retain UUIDs and reject missing or malformed UUIDs', async () => {
+        for (const uuid of [id, undefined, 'not-a-uuid']) {
+          window.fetch = async () => ({ ok: true, json: async () => ({
+            items: [authorItem({ ...items[0], _id: uuid }, path)],
+          }) });
+          let result;
+          let failure;
+          try {
+            result = await fetchAuthorFaqs([path], accessToken);
+          } catch (error) {
+            failure = error;
+          }
+          if (uuid === id) assert(result?.[0]._id === id && !failure, 'UUID retained in sanitized result');
+          else assert(failure?.message === 'Invalid author FAQ response.', 'invalid UUID reported explicitly');
+        }
+      });
+
+      await test('refreshed token is used without sending credentials over the preview channel', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        const observer = createPreviewChannel(window.location.href);
+        const messages = [];
+        observer.onmessage = ({ data }) => messages.push(JSON.stringify(data));
+        try {
+          for (const token of ['test-ims-token', 'refreshed-ims-token']) {
+            accessToken = token;
+            window.fetch = withPublished(async (url, options) => {
+              assert(options.headers.Authorization === `Bearer ${token}`, 'current token on every request');
+              return { ok: true, json: async () => ({ items: [
+                { ...authorItem(items[0], path), token: 'must-not-leak' },
+              ] }) };
+            });
+            const block = fixture(`<div><div>${path}</div></div>`);
+            await decorate(block);
+            await authorShown(block);
+            assert(block.querySelectorAll('details').length === 1, 'author result rendered');
+          }
+          assert(messages.length > 0, 'observed real channel messages');
+          for (const secret of ['test-ims-token', 'refreshed-ims-token', 'test-csrf-token', 'must-not-leak']) {
+            assert(messages.every((message) => !message.includes(secret)), 'credentials absent from channel');
+          }
+        } finally {
+          observer.close();
+        }
+      });
+
+      await test('missing IMS token keeps published content, and retry recovers when publish also fails', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        accessToken = '';
+        let requests = 0;
+        window.fetch = withPublished(async () => {
+          requests += 1;
+          throw new Error('Unexpected request');
+        });
+        const block = fixture(`<div><div>${path}</div></div>`);
+        await decorate(block);
+        await waitFor(() => block.querySelector('.faq-source')?.title.includes('Sign in to DA'));
+        assert(requests === 0, 'no anonymous author request');
+        assert(block.querySelector('.faq-label')?.textContent === 'Published question?', 'published content stays visible');
+        const unavailable = fixture(`<div><div>${path}</div></div>`);
+        window.fetch = withPublished(async () => {
+          throw new Error('Unexpected request');
+        }, async () => ({ ok: false, status: 502 }));
+        await decorate(unavailable);
+        await authorShown(unavailable);
+        assert(unavailable.textContent.includes('Sign in to DA'), 'actionable guidance when nothing can be shown');
+        assert(unavailable.querySelector('button')?.textContent === 'Retry author connection', 'retry offered');
+        accessToken = 'test-ims-token';
+        window.fetch = withPublished(async () => ({
+          ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
+        }));
+        unavailable.querySelector('button').click();
+        await waitFor(() => unavailable.dataset.faqSource === 'author', 3000);
+        assert(unavailable.querySelectorAll('details').length === 1 && !unavailable.querySelector('.faq-source'), 'retry restored paths and rendered author FAQs');
+      });
+
+      await test('authoring shows published content immediately with a subtle label, then swaps to author when the panel opens', async (disconnect) => {
+        disconnect();
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        let authorRequests = 0;
+        window.fetch = withPublished(async () => {
+          authorRequests += 1;
+          return { ok: true, json: async () => ({ items: [authorItem(items[0], path)] }) };
+        });
+        const block = fixture(`<div><div>${path}</div></div>`);
+        const started = performance.now();
+        await decorate(block);
+        assert(performance.now() - started < 1000, 'decorate never waits for the panel');
+        await settled(block);
+        assert(block.dataset.faqSource === 'published' && authorRequests === 0, 'published source without the panel');
+        assert(block.querySelector('.faq-label')?.textContent === 'Published question?', 'published FAQs rendered');
+        const label = block.querySelector('.faq-source');
+        assert(label?.textContent === 'Previewing Published Content Fragments' && label.title.includes('Content Fragment panel'), 'subtle published label explains the source');
+        await decorate(block);
+        assert(block.querySelectorAll('.faq-source').length === 1, 're-decoration is idempotent');
+        const closePanel = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
+        try {
+          await waitFor(() => block.dataset.faqSource === 'author');
+          assert(block.querySelector('.faq-label')?.textContent === items[0].question, 'author content replaces published');
+          assert(!block.querySelector('.faq-source') && authorRequests === 1, 'label removed once author content is shown');
+        } finally {
+          closePanel();
+        }
+        window.fetch = withPublished(async () => ({ ok: true, json: async () => ({ items: [] }) }), async () => ({
+          ok: true, json: async () => ({ items: [] }),
+        }));
+        const unpublished = fixture(`<div><div>${secondPath}</div></div>`);
+        await decorate(unpublished);
+        await settled(unpublished);
+        assert(unpublished.textContent.includes('not published yet') && unpublished.querySelector('.faq-source'), 'unpublished fragments explained without an error');
+        unpublished.remove();
+        await new Promise((resolve) => setTimeout(resolve, 1100));
+        assert(!unpublished.querySelector('button'), 'removed blocks stop waiting silently');
+      });
+
+      await test('author results win even when they arrive before published content', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://da.live/edit' });
+        let releasePublished;
+        window.fetch = withPublished(async () => ({
+          ok: true, json: async () => ({ items: [authorItem(items[0], path)] }),
+        }), () => new Promise((resolve) => {
+          releasePublished = () => resolve({ ok: true, json: async () => ({ items: publishedItems }) });
+        }));
+        const block = fixture(`<div><div>${path}</div></div>`);
+        await decorate(block);
+        await waitFor(() => block.dataset.faqSource === 'author');
+        releasePublished();
+        await settled(block);
+        assert(block.dataset.faqSource === 'author' && block.querySelector('.faq-label')?.textContent === items[0].question, 'late published response ignored');
+      });
+
+      await test('broker rejects invalid paths and does not answer other pages', async () => {
+        let requests = 0;
+        window.fetch = async () => {
+          requests += 1;
+          throw new Error('Unexpected request');
+        };
+        const channel = createPreviewChannel(window.location.href);
+        const otherPage = createPreviewChannel(new URL('/unrelated-page', window.location.href).href);
+        let otherPageReplied = false;
+        otherPage.onmessage = () => { otherPageReplied = true; };
+        try {
+          const response = new Promise((resolve) => {
+            channel.onmessage = ({ data }) => {
+              if (data.requestId === 'invalid-path-test' && data.response) resolve(data);
+            };
+          });
+          channel.postMessage({
+            type: 'da:content-fragment', action: 'fetch', requestId: 'invalid-path-test',
+            paths: ['/content/dam/../private'],
+          });
+          assert(typeof (await response).error === 'string', 'invalid path rejected explicitly');
+          otherPage.postMessage({
+            type: 'da:content-fragment', action: 'fetch', requestId: 'other-page-test', paths: [path],
+          });
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          assert(!otherPageReplied, 'unrelated page receives no response');
+          assert(requests === 0, 'no author fetch for invalid or unrelated requests');
+        } finally {
+          channel.close();
+          otherPage.close();
+        }
+      });
+
+      await test('CSRF failures remain explicit for fragment mutations', async () => {
+        const responses = [
+          async () => ({ ok: false, status: 403 }),
+          async () => ({ ok: true, json: async () => ({}) }),
+          async () => ({ ok: true, json: async () => ({ token: ' ' }) }),
+          async () => ({ ok: true, json: async () => ({ token: 123 }) }),
+          async () => { throw new Error('Network failed'); },
+        ];
+        for (const response of responses) {
+          let requests = 0;
+          window.fetch = async (url) => {
+            requests += 1;
+            assert(String(url).endsWith('/libs/granite/csrf/token.json'), 'only CSRF endpoint requested');
+            return response();
+          };
+          let failure;
+          try { await fetchAuthorCsrfToken(accessToken); } catch (error) { failure = error; }
+          assert(requests === 1 && failure?.message, 'mutation token failure explicit');
+        }
+      });
+
+      await test('author failures keep published content visible and explain the error', async () => {
+        Object.defineProperty(document, 'referrer', { configurable: true, value: 'https://experience.adobe.com/' });
+        const responses = [
+          async () => ({ ok: true, json: async () => ({ items: 'invalid' }) }),
+          async () => ({ ok: true, json: async () => ({ items: [{ ...authorItem(items[0], path), fields: {} }] }) }),
+          async () => ({ ok: false, status: 401 }),
+          async () => ({ ok: false, status: 403 }),
+          async () => { throw new Error('Network failed'); },
+        ];
+        for (const response of responses) {
+          let requests = 0;
+          window.fetch = withPublished(async () => {
+            requests += 1;
+            return response();
+          });
+          const block = fixture(`<div><div>${path}</div></div>`);
+          await decorate(block);
+          await waitFor(() => block.querySelector('.faq-source')?.title.includes('could not be loaded'));
+          assert(requests === 1, 'one author attempt');
+          assert(block.dataset.faqSource === 'published' && block.querySelector('.faq-label')?.textContent === 'Published question?', 'published content kept');
+          assert(!block.dataset.faqState, 'loading state cleared');
+        }
+      });
+
+      await test('paragraphs, line breaks, links and duplicate paths', async () => {
+        const block = fixture(`<div><div><p>${path}</p>${secondPath}<br><a href="${path}">${path}</a></div></div>`);
+        let requests = 0;
+        window.fetch = async (url) => {
+          requests += 1;
+          const request = new URL(url);
+          assert(request.origin + request.pathname === 'https://www.frescopa.coffee/faq-data-by-path', 'endpoint');
+          assert(JSON.stringify(request.searchParams.getAll('path')) === JSON.stringify([path, secondPath]), 'repeated path parameters');
+          return { ok: true, json: async () => ({ items }) };
+        };
+        await Promise.all([decorate(block), decorate(block)]);
+        assert(requests === 1, 'one in-flight request');
+        const faqs = block.querySelectorAll('details');
+        assert(faqs.length === 2 && faqs[0].open && !faqs[1].open, 'initial open state');
+        assert(faqs[0].name === faqs[1].name, 'single-open group');
+        assert(block.querySelectorAll('.faq-chevron svg').length === 2, 'chevrons');
+        assert(faqs[1].querySelector('.faq-body').textContent === items[1].answer.plaintext, 'plaintext preserved');
+        assert(!faqs[1].querySelector('b'), 'no HTML injection');
+        faqs[1].querySelector('summary').click();
+        assert(faqs[1].open && !faqs[0].open, 'native accordion interaction');
+        await decorate(block);
+        assert(requests === 1, 'decoration is idempotent');
+      });
+
+      await test('separate authored rows', async () => {
+        const block = fixture(`<div><div>${path}</div></div><div><div>${secondPath}</div></div>`);
+        window.fetch = async (url) => {
+          assert(new URL(url).searchParams.getAll('path').length === 2, 'both rows requested');
+          return { ok: true, json: async () => ({ items }) };
+        };
+        await decorate(block);
+        assert(block.querySelectorAll('details').length === 2, 'rendered');
+      });
+
+      await test('empty and invalid authoring does not fetch', async () => {
+        window.fetch = () => { throw new Error('Unexpected fetch'); };
+        for (const html of ['', '<div><div>not a fragment path</div></div>']) {
+          const block = fixture(html);
+          await decorate(block);
+          assert(block.querySelector('.faq-message')?.textContent.startsWith('Add FAQ'), 'author guidance');
+        }
+      });
+
+      await test('empty, malformed, HTTP and network responses', async () => {
+        const responses = [
+          async () => ({ ok: true, json: async () => ({ items: [] }) }),
+          async () => ({ ok: true, json: async () => ({ items: null }) }),
+          async () => ({ ok: true, json: async () => ({ items: [{}] }) }),
+          async () => ({ ok: false, status: 500 }),
+          async () => { throw new Error('Network failed'); },
+        ];
+        for (const [index, response] of responses.entries()) {
+          window.fetch = response;
+          const block = fixture(`<div><div>${path}</div></div>`);
+          await decorate(block);
+          assert(block.querySelector('.faq-message')?.textContent.startsWith(index ? 'Could not' : 'No FAQs'), 'explicit result message');
+          assert(!block.dataset.faqState, 'loading state cleared');
+        }
+      });
+
+      await test('pre-rendered answers preserve formatting and groups stay independent', async () => {
+        window.fetch = () => { throw new Error('Unexpected fetch'); };
+        const html = '<div><div>Question?</div><div><p><strong>Formatted answer</strong></p></div></div>';
+        const first = fixture(html);
+        const second = fixture(html, 'faq-list-by-sku');
+        await decorate(first);
+        await decorateSku(second);
+        assert(first.querySelector('.faq-body strong'), 'answer formatting');
+        assert(first.querySelector('details').name !== second.querySelector('details').name, 'independent groups');
+        assert(first.querySelector('details').open && second.querySelector('details').open, 'both initially open');
+      });
+
+      await test('SKU fetching still uses the shared renderer', async () => {
+        window.fetch = async (url) => {
+          assert(new URL(url).searchParams.get('sku') === 'CSM6001', 'SKU parameter');
+          return { ok: true, json: async () => ({ items }) };
+        };
+        const block = fixture('<div><div>SKU</div><div>CSM6001</div></div>', 'faq-list-by-sku');
+        await decorateSku(block);
+        assert(block.querySelectorAll('.faq-item').length === 2, 'SKU FAQs rendered');
+      });
+
+      document.body.dataset.testStatus = results.textContent.includes('FAIL') ? 'failed' : 'passed';
+    </script>
+  </body>
+</html>

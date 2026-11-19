@@ -1,0 +1,600 @@
+.experimentation {
+  --panel-border: #dedede;
+  --panel-muted: #626262;
+  --panel-accent: #0265dc;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  height: var(--panel-height, 100dvh);
+  background: #fff;
+  color: #242424;
+  font: 14px/1.45 adobe-clean, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+}
+
+.experimentation *,
+.experimentation *::before,
+.experimentation *::after {
+  box-sizing: border-box;
+}
+
+.experimentation h1,
+.experimentation h2,
+.experimentation h3,
+.experimentation p {
+  margin: 0;
+}
+
+.experimentation h1,
+.experimentation h2 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.experimentation h3 {
+  font-size: 14px;
+}
+
+.experimentation p + p {
+  margin-top: 12px;
+}
+
+.experimentation a {
+  color: var(--panel-accent);
+  text-underline-offset: 3px;
+}
+
+.experimentation button,
+.experimentation input,
+.experimentation select,
+.experimentation textarea {
+  max-width: 100%;
+  min-height: 36px;
+  font: inherit;
+}
+
+.experimentation button,
+.experimentation .empty-actions a {
+  padding: 5px 13px;
+  border: 1px solid #ccc;
+  border-radius: 18px;
+  background: #fff;
+  color: #242424;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.experimentation button.primary {
+  border-color: #242424;
+  background: #242424;
+  color: #fff;
+}
+
+.experimentation button:disabled {
+  border-color: #e4e4e4;
+  background: #f2f2f2;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.experimentation button.activate {
+  border-color: #d0e3ff;
+  background: #e4efff;
+  color: #496d9d;
+}
+
+.experimentation :focus-visible {
+  outline: 2px solid var(--panel-accent);
+  outline-offset: 2px;
+}
+
+.experimentation .topbar,
+.experimentation .topbar-actions,
+.experimentation .section-heading,
+.experimentation .summary-actions,
+.experimentation .variant-main,
+.experimentation .variant-actions,
+.experimentation .empty-actions,
+.experimentation .inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.experimentation .topbar {
+  flex: 0 0 54px;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-bottom: 1px solid #eee;
+}
+
+.experimentation .icon-button,
+.experimentation button.text-button,
+.experimentation button.back,
+.experimentation .variant-actions button,
+.experimentation .row-select,
+.experimentation .tabs button,
+.experimentation .add-row button {
+  padding: 3px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: 400;
+}
+
+.experimentation .icon-button {
+  min-width: 28px;
+  padding: 2px 6px;
+  font-size: 18px;
+}
+
+.experimentation .page-context {
+  position: relative;
+  font-size: 11px;
+}
+
+.experimentation .page-context summary {
+  cursor: pointer;
+}
+
+.experimentation .page-context p {
+  position: absolute;
+  z-index: 1;
+  top: 28px;
+  right: 0;
+  width: 220px;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  background: #fff;
+  overflow-wrap: anywhere;
+}
+
+.experimentation .panel-body {
+  flex: 1;
+  min-height: 0;
+  padding: 20px;
+  overflow: auto;
+}
+
+.experimentation fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.experimentation .empty-state {
+  padding-top: clamp(70px, 16vh, 145px);
+  text-align: center;
+}
+
+.experimentation .empty-symbol {
+  display: grid;
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 30px;
+  border: 2px solid #aaa;
+  border-radius: 50%;
+  color: #888;
+  font-size: 24px;
+  place-items: center;
+}
+
+.experimentation .empty-state h2 {
+  font-size: 20px;
+}
+
+.experimentation .empty-state p {
+  margin: 10px 0 22px;
+  color: #555;
+}
+
+.experimentation .empty-actions {
+  justify-content: center;
+}
+
+.experimentation .empty-actions a {
+  text-decoration: none;
+}
+
+.experimentation .page-count {
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+
+.experimentation .summary-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 80px;
+  padding: 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+
+.experimentation .summary-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.experimentation .summary-symbol {
+  color: #777;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.experimentation .status-dot {
+  display: block;
+  margin-top: 8px;
+  color: var(--panel-muted);
+  font-size: 12px;
+}
+
+.experimentation .status-dot::before {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #999;
+  content: "";
+}
+
+.experimentation .experiment-heading {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--panel-border);
+}
+
+.experimentation .experiment-heading h2 {
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+
+.experimentation .status-pill {
+  color: var(--panel-muted);
+  font-size: 12px;
+}
+
+.experimentation .activation-note {
+  margin-top: 6px;
+}
+
+.experimentation .facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 16px;
+  margin: 22px 0;
+  font-size: 12px;
+}
+
+.experimentation dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.experimentation .tabs {
+  display: flex;
+  gap: 20px;
+  margin: 10px 0 16px;
+  border-bottom: 1px solid #ccc;
+}
+
+.experimentation .tabs button {
+  padding-bottom: 10px;
+  font-size: 12px;
+}
+
+.experimentation .tabs [aria-selected="true"] {
+  border-bottom: 2px solid #242424;
+}
+
+.experimentation .results-empty {
+  padding: 45px 20px;
+  border-radius: 6px;
+  background: #f7f7f7;
+  text-align: center;
+}
+
+.experimentation .results-empty p {
+  margin-top: 10px;
+  color: var(--panel-muted);
+}
+
+.experimentation .variant-group {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  list-style: none;
+}
+
+.experimentation .variant-row {
+  padding: 9px 13px;
+  border-bottom: 1px solid #ddd;
+}
+
+.experimentation .variant-row:last-child {
+  border-bottom: 0;
+}
+
+.experimentation .variant-row.selected {
+  outline: 1px solid #6699f5;
+  outline-offset: -1px;
+  background: #eaf2ff;
+}
+
+.experimentation .variant-main {
+  justify-content: space-between;
+}
+
+.experimentation .variant-split {
+  margin-left: auto;
+  color: var(--panel-muted);
+  font-size: 12px;
+}
+
+.experimentation .variant-actions {
+  gap: 18px;
+  font-size: 11px;
+}
+
+.experimentation .variant-actions button {
+  color: var(--panel-accent);
+  font-size: 11px;
+}
+
+.experimentation .add-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 13px;
+}
+
+.experimentation .back {
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.experimentation .back::before {
+  margin-right: 6px;
+  content: "\21b6";
+}
+
+.experimentation .config-title {
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--panel-border);
+  font-size: 14px;
+}
+
+.experimentation label {
+  display: block;
+  margin: 18px 0 6px;
+  font-size: 12px;
+}
+
+.experimentation input,
+.experimentation select,
+.experimentation textarea {
+  width: 100%;
+  padding: 6px 9px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  background: #fff;
+  color: #242424;
+}
+
+.experimentation select:disabled {
+  opacity: 1;
+  -webkit-text-fill-color: #242424;
+}
+
+.experimentation .variants-section {
+  margin-top: 26px;
+  padding: 14px 0;
+  border-top: 1px solid var(--panel-border);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.experimentation .section-heading {
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.experimentation .section-heading h3,
+.experimentation .section-heading button {
+  font-size: 12px;
+}
+
+.experimentation .date-fields {
+  margin-bottom: 20px;
+}
+
+.experimentation .panel-footer {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border-top: 1px solid #eee;
+  background: #fff;
+}
+
+.experimentation .footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-top: 5px;
+}
+
+.experimentation .footer-actions button {
+  font-size: 12px;
+}
+
+.experimentation .hint,
+.experimentation .optional,
+.experimentation .action-reason,
+.experimentation #save-state {
+  color: var(--panel-muted);
+  font-size: 11px;
+}
+
+.experimentation .hint,
+.experimentation .action-reason {
+  margin-top: 7px;
+}
+
+.experimentation .message {
+  margin-bottom: 14px;
+  padding: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  background: #f7f7f7;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.experimentation .error {
+  border-color: #c9252d;
+  background: #fff1f0;
+}
+
+.experimentation dialog {
+  width: min(360px, calc(100vw - 24px));
+  max-height: calc(var(--panel-height, 100dvh) - 24px);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #242424;
+  box-shadow: 0 8px 28px #0002;
+  font: inherit;
+}
+
+.experimentation dialog::backdrop {
+  background: #0003;
+}
+
+.experimentation .secondary-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(var(--panel-height, 100dvh) - 24px);
+}
+
+.experimentation .dialog-heading {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.experimentation .secondary-shell > fieldset {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.experimentation .dialog-content {
+  padding: 16px;
+  overflow: auto;
+  font-size: 12px;
+}
+
+.experimentation .dialog-content li {
+  margin-bottom: 9px;
+}
+
+.experimentation .dialog-content details {
+  margin-top: 14px;
+}
+
+.experimentation .dialog-footer {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--panel-border);
+}
+
+.experimentation .dialog-footer button {
+  font-size: 12px;
+}
+
+.experimentation .pending-label {
+  font-weight: 600;
+}
+
+.experimentation .inline-actions {
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.experimentation .preview-primary {
+  margin: 18px 0;
+}
+
+.experimentation .preview-primary a {
+  display: block;
+  padding: 8px;
+  border: 1px solid var(--panel-accent);
+  border-radius: 18px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.experimentation .preview-alternatives {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+  font-size: 11px;
+}
+
+.experimentation .diff-scroll {
+  overflow-x: auto;
+}
+
+.experimentation table {
+  width: 100%;
+  margin: 12px 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-align: left;
+}
+
+.experimentation th,
+.experimentation td {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--panel-border);
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+
+.experimentation pre {
+  max-height: 200px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+
+.experimentation .variant-actions button:disabled,
+.experimentation .add-row button:disabled {
+  color: #777;
+}

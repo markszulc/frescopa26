@@ -1,0 +1,11 @@
+{
+  "hero": {
+    "Experiment": "atelier-hero",
+    "Experiment Variants": "https://demo.example/hero-variant",
+    "Experiment Split": "50",
+    "Experiment Status": "Inactive"
+  },
+  "products": {
+    "style": "feed"
+  }
+}

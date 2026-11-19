@@ -1,0 +1,61 @@
+/* blocks/faq-list-by-sku/faq-list-by-sku.css
+   Standalone styles, matching the look of the accordion block. */
+
+:is(.faq-list-by-sku, .content-fragment) .faq-items {
+  max-width: var(--content-narrow);
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-item {
+  border-bottom: 1px solid var(--line);
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: var(--fs-body-lg);
+  color: var(--burgundy);
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-summary:hover .faq-label {
+  color: var(--terracotta-deep);
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-chevron {
+  flex-shrink: 0;
+  display: inline-flex;
+  color: var(--terracotta);
+  transition: transform 0.25s var(--ease-quint);
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-item[open] .faq-chevron {
+  transform: rotate(180deg);
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-body {
+  padding: 0 0 1.4rem;
+}
+
+:is(.faq-list-by-sku, .content-fragment) .faq-body p,
+:is(.faq-list-by-sku, .content-fragment) .faq-message {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: var(--lh-body);
+  max-width: 60ch;
+}
