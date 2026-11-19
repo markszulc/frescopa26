@@ -6,6 +6,9 @@
 export default {
   experiment: 'homepage-cohorts',
 
+  // the cohort sections live on the homepage itself (no separate /new page)
+  pocPath: '/',
+
   // interests, from campaign tags and from pages visited (first match wins)
   intents: [
     ['offer', 'offer|bundle|finance|student|campus'],

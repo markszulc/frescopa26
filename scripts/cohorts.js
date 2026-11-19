@@ -362,7 +362,9 @@ export function runCohorts(main, rules, {
   const { body } = document;
   const inExperiment = body.classList.contains(`experiment-${exp}`);
   if (!runsCohorts(rules, getMetadata)) return null;
-  const arm = inExperiment ? (body.dataset.variant || 'control') : 'poc';
+  // ?cohort=original: the original sections, as the control arm sees them (demo, no experiment)
+  const original = new URLSearchParams(window.location.search).get('cohort') === 'original';
+  const arm = inExperiment ? (body.dataset.variant || 'control') : (original && 'control') || 'poc';
   let ctx;
   try {
     // force = { rule, experience, intent, keys }: an editor preview showing a picked variation

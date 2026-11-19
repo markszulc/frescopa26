@@ -21,3 +21,4 @@ test('a signed-in browser is an owner', () => assert.equal(rule({ memory: { sign
 test('organic search is a shopper', () => assert.equal(rule({ source: 'search' }), 'organic-search'));
 test('a first visit on a phone goes local', () => assert.equal(experience({ device: 'mobile', memory: { visits: 1 } }), 'local'));
 test('every rule names an experience that exists', () => rules.rules.forEach((r) => assert.ok(rules.experiences[r.experience], r.id)));
+test('the switcher stays on the homepage', () => assert.equal(rules.pocPath, '/'));
