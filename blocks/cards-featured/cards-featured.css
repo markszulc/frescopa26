@@ -77,10 +77,10 @@
 /* Category label */
 .cards-featured .cards-featured-category {
   font-family: var(--font-body);
-  font-size: 0.68rem;                    /* 10.88px */
+  font-size: var(--fs-label);                    /* 10.88px */
   font-weight: 400;
-  letter-spacing: 0.0816rem;             /* ~1.31px */
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);             /* ~1.31px */
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 

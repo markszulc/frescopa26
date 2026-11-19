@@ -117,10 +117,11 @@
 /* Eyebrow, title, rating */
 .product-details__eyebrow {
   margin: 0 0 0.6rem;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: var(--eyebrow-font);
+  font-weight: var(--eyebrow-weight);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 

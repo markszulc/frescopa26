@@ -77,9 +77,9 @@
   display: block;
   margin-bottom: var(--space-sm);
   font-family: var(--font-body);
-  font-size: var(--fs-eyebrow);
+  font-size: var(--fs-caps);
   font-weight: 600;
-  letter-spacing: var(--tracking-eyebrow);
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -331,11 +331,11 @@
 }
 
 .generative-suggestions .suggestions-header {
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 600;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--accent);
 }
 

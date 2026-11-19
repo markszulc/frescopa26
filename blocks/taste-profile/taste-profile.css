@@ -51,10 +51,10 @@
 
 .taste-profile-copy .taste-profile-pt-label {
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-label);
   font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -77,12 +77,12 @@
   .taste-profile-copy :is(p, :has(p)) ~ * p
 )) {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 

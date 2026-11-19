@@ -24,11 +24,11 @@
   .mood-calendar-copy :is(p, :has(p)) ~ * p
 )) {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -36,7 +36,7 @@
 .mood-calendar-copy > div > p:last-child,
 .mood-calendar-copy .prosemirror-editor:last-child p:last-child {
   margin: 1.6rem 0 0;
-  font-size: var(--fs-eyebrow);
+  font-size: var(--fs-caps);
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;

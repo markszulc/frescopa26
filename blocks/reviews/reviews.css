@@ -13,10 +13,11 @@
 }
 
 .reviews .reviews-eyebrow {
-  font-family: var(--font-mono, monospace);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
+  font-family: var(--eyebrow-font);
+  font-weight: var(--eyebrow-weight);
+  text-transform: var(--label-case);
+  letter-spacing: var(--tracking-eyebrow);
+  font-size: var(--fs-eyebrow);
   color: var(--terracotta);
   margin-bottom: 0.6rem;
 }

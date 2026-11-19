@@ -47,12 +47,12 @@
 /* small label */
 .stats-row .stats-row-label {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: var(--fs-label);
   font-weight: 400;
   line-height: 1.62;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   color: var(--ink-soft);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
 }
 
 .stats-row .stats-row-label p {

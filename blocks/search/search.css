@@ -104,10 +104,11 @@
 
 .search-group-title {
   margin: 0 0 var(--space-sm);
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
+  font-weight: var(--eyebrow-weight);
   font-size: var(--fs-eyebrow);
   letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--ink-soft);
 }
 

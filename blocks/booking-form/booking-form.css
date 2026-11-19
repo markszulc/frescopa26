@@ -43,24 +43,24 @@
   align-items: center;
   gap: 0.5em;
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   line-height: 1.62;
   letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
 /* eyebrow (first paragraph) */
 .booking-form .booking-form-copy > p:first-child {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 400;
+  font-family: var(--eyebrow-font);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--eyebrow-weight);
   line-height: 1.6;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -74,7 +74,7 @@
   font-weight: 500;
   line-height: 1.62;
   letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 

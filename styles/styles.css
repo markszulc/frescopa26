@@ -606,7 +606,7 @@ main .section.dark .default-content-wrapper p:has(a) a:last-child:hover {
 /* Feed section head: eyebrow (terracotta rule), heading, and an intro
    paragraph laid out to match the source. */
 main .section.feed .default-content-wrapper {
-  margin-bottom: 3.2rem;
+  margin-bottom: 2.25rem;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
@@ -615,12 +615,12 @@ main .section.feed .default-content-wrapper :where(
   .prosemirror-editor:first-child p:first-child
 ) {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -728,12 +728,12 @@ main .section.alt > .default-content-wrapper:first-child > p:first-child,
 /* stylelint-disable-next-line no-descending-specificity */
 main .section:has(.account-signin) .default-content-wrapper > p:first-child {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -778,12 +778,12 @@ main .section:has(.cards-machine) .section-head-copy > p:first-child,
 /* stylelint-disable-next-line no-descending-specificity */
 main .section:has(.cards-coffee, .product-list-page) .default-content-wrapper > p:first-child {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -837,10 +837,10 @@ main .section-head-note {
 main .section-head-note-label {
   display: block;
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: var(--fs-label);
   font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--ink-soft);
 }
 
@@ -1003,12 +1003,12 @@ main .section:has(.article-byline) .cards-article-wrapper ~ .default-content-wra
 
 main .section:has(.article-byline) .default-content-wrapper > p:first-child {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--ink-soft);
 }
 
@@ -1204,12 +1204,12 @@ main .section.voices .default-content-wrapper .prosemirror-editor:first-child p:
   align-items: center;
   gap: 0.75rem;
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -1257,10 +1257,10 @@ main .section.voices .default-content-wrapper > blockquote > p:last-child,
 main .section.voices .default-content-wrapper .prosemirror-editor blockquote > p:last-child {
   margin: 1.1rem 0 0;
   font-family: var(--font-body);
-  font-size: 0.76rem;
+  font-size: var(--fs-label);
   font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -1287,12 +1287,12 @@ main .section:not(.dark, .feed, .voices, :has(.cards-coffee, .product-list-page)
 main .section:not(.dark, .feed, .voices, :has(.cards-coffee, .product-list-page), :has(.article-byline))
   .default-content-wrapper .prosemirror-editor:first-child p:first-child {
   margin: 0 0 0.6rem;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -1301,11 +1301,11 @@ main .section:not(.dark, .feed, .voices, :has(.cards-coffee, .product-list-page)
 main .section:not(.dark, .feed, .voices, :has(.cards-coffee, .product-list-page), :has(.article-byline))
   .default-content-wrapper .prosemirror-editor:first-child p:first-child {
   margin: 0 0 0.6rem;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
   line-height: 1.6;
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }

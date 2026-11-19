@@ -4,10 +4,11 @@
 }
 
 .spec-table .spec-table-head p:first-child {
-  font-family: var(--font-mono, monospace);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.72rem;
+  font-family: var(--eyebrow-font);
+  font-weight: var(--eyebrow-weight);
+  text-transform: var(--label-case);
+  letter-spacing: var(--tracking-eyebrow);
+  font-size: var(--fs-eyebrow);
   color: var(--terracotta);
   margin-bottom: 0.6rem;
 }
@@ -38,10 +39,10 @@
 /* Group heading: small uppercase terracotta eyebrow, matching the source. */
 .spec-table .spec-table-card h3 {
   font-family: var(--body-font-family);
-  font-size: 0.72rem;
+  font-size: var(--fs-label);
   font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--terracotta);
   margin: 0 0 0.4rem;
 }
