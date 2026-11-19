@@ -5,6 +5,12 @@
   margin: 32px auto;
 }
 
+/* in a full-width section, the embed fills the content column */
+.full-width .embed {
+  max-width: unset;
+  margin-inline: 0;
+}
+
 .embed > div {
   display: flex;
   justify-content: center;
