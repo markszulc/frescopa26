@@ -5,7 +5,9 @@
 export default {
   title: 'Fréscopa',
   sites: [
-    { id: 'frescopa', name: 'Fréscopa', label: 'frescopa.coffee', host: 'www.frescopa.coffee', domain: 'frescopa.coffee', home: '^/$', target: true, homePath: '/' },
+    {
+      id: 'frescopa', name: 'Fréscopa', label: 'frescopa.coffee', host: 'www.frescopa.coffee', domain: 'frescopa.coffee', home: '^/$', target: true, homePath: '/',
+    },
   ],
   needs: [
     ['client', '/customer|/account|/log-?in'],
@@ -18,14 +20,24 @@ export default {
     client: 'Account', cart: 'Cart and checkout', insights: 'Journal', solutions: 'Machines, coffee, cafés and care', legal: 'Notices', home: 'Homepage, no next step', other: 'Other pages',
   },
   audiences: [
-    { id: 'solutions', label: 'Shoppers and owners', on: 'Product and care pages', keep: '-', gain: '' },
-    { id: 'insights', label: 'Readers', on: 'Journal', keep: '-', gain: '' },
-    { id: 'other', label: 'Everything else', on: '-', keep: '-', gain: '' },
+    {
+      id: 'solutions', label: 'Shoppers and owners', on: 'Product and care pages', keep: '-', gain: '',
+    },
+    {
+      id: 'insights', label: 'Readers', on: 'Journal', keep: '-', gain: '',
+    },
+    {
+      id: 'other', label: 'Everything else', on: '-', keep: '-', gain: '',
+    },
   ],
   layers: [
     { id: 'all', label: 'All traffic', sub: 'Every visit' },
-    { id: 'seo', label: 'SEO', sub: 'Visits from search engines', channels: ['search'] },
-    { id: 'geo', label: 'GEO', sub: 'Visits from AI assistants and answer engines', channels: ['ai'] },
+    {
+      id: 'seo', label: 'SEO', sub: 'Visits from search engines', channels: ['search'],
+    },
+    {
+      id: 'geo', label: 'GEO', sub: 'Visits from AI assistants and answer engines', channels: ['ai'],
+    },
   ],
   minSample: 30,
   minLayerSample: 300,
