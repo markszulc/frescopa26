@@ -50,9 +50,10 @@ main .section > :is(
   align-items: center;
   gap: 0.7em;
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
+  font-family: var(--eyebrow-font);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 

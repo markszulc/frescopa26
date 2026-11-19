@@ -72,11 +72,11 @@
 }
 
 .cards-machine .cards-machine-eyebrow {
-  font-family: var(--font-body);
-  font-size: 0.68rem;
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: var(--eyebrow-font);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -155,10 +155,10 @@
   display: block;
   margin: 0 0 1rem;
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: var(--fs-label);
   font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--ink-soft);
 }
 

@@ -42,12 +42,12 @@
   align-items: center;
   gap: 0.5em;
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--eyebrow-font);
   font-size: var(--fs-eyebrow);
-  font-weight: 500;
+  font-weight: var(--eyebrow-weight);
   line-height: 1.62;
   letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
@@ -258,11 +258,11 @@
 
 .columns-location .columns-location-eyebrow {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: var(--eyebrow-font);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 

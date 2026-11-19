@@ -43,11 +43,11 @@
   background-color: oklch(97% 0.01 82deg / 92%);
   color: var(--burgundy);
   font-family: var(--font-body);
-  font-size: 0.66rem;
+  font-size: var(--fs-label);
   font-weight: 500;
   line-height: 1.6;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
 }
 
 /* Body */

@@ -17,9 +17,9 @@
 .product-list-page .search__result-info {
   grid-area: result-info;
   align-self: center;
-  font-size: var(--fs-eyebrow);
+  font-size: var(--fs-caps);
   font-weight: 500;
-  letter-spacing: var(--tracking-eyebrow);
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -241,11 +241,11 @@
 
 .product-list-page .plp-card-category {
   font-family: var(--font-body);
-  font-size: 0.66rem;
+  font-size: var(--fs-label);
   font-weight: 400;
   line-height: var(--lh-body);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-transform: var(--label-case);
   color: var(--terracotta);
 }
 
