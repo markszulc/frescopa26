@@ -19,12 +19,13 @@
 
 /* Block root: positioning context + clipping for the absolute image/scrim */
 .hero.block {
+  box-sizing: border-box; /* the height cap includes the padding */
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  min-height: 520px;
+  min-height: min(520px, 75svh);
   margin: 0;
   padding: calc(var(--nav-height) + 2.5rem) 0 3rem;
   color: var(--cream);
@@ -92,7 +93,7 @@
 /* stylelint-disable-next-line no-descending-specificity */
 .hero.block > div:last-child > div {
   display: block;
-  max-width: 620px;
+  max-width: 760px;
 }
 
 /* Lead paragraph(s) */
@@ -132,7 +133,7 @@
 }
 
 .hero.block h1 {
-  font-size: var(--fs-h1);
+  font-size: min(var(--fs-h1), 7.5svh);
 }
 
 .hero.block h2 {
@@ -243,8 +244,8 @@
 /* Desktop */
 @media (width >= 900px) {
   .hero.block {
-    min-height: 828px;
-    padding: calc(var(--nav-height) + 6rem) 0 3.4rem;
+    min-height: min(828px, 75svh);
+    padding: calc(var(--nav-height) + 2.5rem) 0 3rem;
   }
 
   .hero.block > div:last-child {
