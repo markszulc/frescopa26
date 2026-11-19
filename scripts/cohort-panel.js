@@ -141,8 +141,15 @@ function signalsHTML(rules, ctx) {
 function originalHref(rules) {
   const keep = new URLSearchParams(window.location.search);
   ['demo', 'experiment'].forEach((k) => keep.delete(k));
+  const exp = rules.experiment || 'homepage-cohorts';
+  if (!document.body.classList.contains(`experiment-${exp}`)) {
+    // cohorts run on the page itself (no experiment): force the original sections
+    keep.delete('cohort');
+    const rest = keep.toString() ? `&${keep}` : '';
+    return `${rules.pocPath || '/new'}?cohort=original&demo${rest}`;
+  }
   const qs = keep.toString() ? `&${keep}` : '';
-  return `/?experiment=${rules.experiment || 'homepage-cohorts'}/control&demo${qs}`;
+  return `/?experiment=${exp}/control&demo${qs}`;
 }
 
 function sheetHTML(rules, ctx, current) {
