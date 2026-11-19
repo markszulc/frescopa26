@@ -90,6 +90,8 @@ export function parsePage(doc) {
     const content = s.cloneNode(true);
     [...content.children].filter((c) => ['metadata', 'section metadata'].includes(blockOf(c).name)
       && (c.tagName === 'TABLE' || c.classList.length)).forEach((c) => c.remove());
+    // a line break inside a heading separates words: "Every<br>morning" reads "Every morning"
+    content.querySelectorAll('br').forEach((br) => br.replaceWith(' '));
     const h = content.querySelector('h1, h2, h3, h4');
     // icons are :name: in the editor and <span class="icon"> once published
     const firstText = text([...content.querySelectorAll('p, li')].find((p) => text(p).length > 3))
