@@ -136,9 +136,50 @@ test('preserves pagination when an entire page is filtered out', async () => {
   assert.equal(calls[0].options.signal, controller.signal);
   assert.deepEqual(JSON.parse(calls[0].options.body), {
     contentSource: { name: 'frescopa', type: 'ACQUISITION' },
-    query: { type: 'vector', text: 'coffee', options: {} },
-    queryOptions: { pagination: { limit: 8, cursor: 'previous' } },
+    query: {
+      type: 'composite',
+      operator: 'OR',
+      queries: [
+        { type: 'vector', text: 'coffee', options: { numCandidates: 50, boost: 1 } },
+        {
+          type: 'fulltext',
+          text: 'coffee',
+          options: { boost: 1, operator: 'AND', matchStrategy: 'COMBINED_FIELDS' },
+        },
+      ],
+    },
+    queryOptions: {
+      resultFields: {
+        includes: [
+          'text',
+          'source',
+          'title',
+          'name',
+          'metadata.url',
+          'metadata.source',
+          'metadata.title',
+          'metadata.description',
+          'metadata.image',
+          'metadata.language',
+          'metadata.locale',
+          'metadata.canonicalUrl',
+          'metadata.canonical_url',
+          'metadata.canonical',
+          'metadata.meta.image',
+          'metadata.meta.canonical',
+        ],
+      },
+      pagination: { limit: 8, cursor: 'previous' },
+    },
   });
+});
+
+test('weights the full-text query down for longer natural-language queries', async () => {
+  payload = { results: [], cursor: null };
+  await fetchSearchResults('/proxy', 'frescopa', 'ACQUISITION', 'best coffee for espresso', 10, null);
+  const { query } = JSON.parse(calls[0].options.body);
+  assert.equal(query.queries[1].options.boost, 1 / (5 * 4));
+  assert.equal(JSON.parse(calls[0].options.body).queryOptions.pagination.cursor, undefined);
 });
 
 test('retains a generative answer only when every source matches', async () => {

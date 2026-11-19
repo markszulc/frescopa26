@@ -155,6 +155,52 @@ export function renderMarkdownSummary(text) {
   return html;
 }
 
+// Candidate pool of the vector query. Also caps how many results can be paged through
+// for queries the full-text query does not match, so keep it well above the page size.
+const VECTOR_NUM_CANDIDATES = 50;
+// Only the result fields the callers read (paths are relative to each result's "data"),
+// including those used by resolveSearchResult and the language filter.
+const RESULT_FIELDS = [
+  'text',
+  'source',
+  'title',
+  'name',
+  'metadata.url',
+  'metadata.source',
+  'metadata.title',
+  'metadata.description',
+  'metadata.image',
+  'metadata.language',
+  'metadata.locale',
+  'metadata.canonicalUrl',
+  'metadata.canonical_url',
+  'metadata.canonical',
+  'metadata.meta.image',
+  'metadata.meta.canonical',
+];
+
+// Longer, natural-language queries are better served by the semantic vector match than by
+// literal term matching, so the full-text boost shrinks with the number of words.
+function fulltextBoost(query) {
+  const tokens = query.trim().split(/\s+/).length;
+  return tokens > 1 ? 1 / (5 * tokens) : 1;
+}
+
+function buildSearchQuery(text) {
+  return {
+    type: 'composite',
+    operator: 'OR',
+    queries: [
+      { type: 'vector', text, options: { numCandidates: VECTOR_NUM_CANDIDATES, boost: 1 } },
+      {
+        type: 'fulltext',
+        text,
+        options: { boost: fulltextBoost(text), operator: 'AND', matchStrategy: 'COMBINED_FIELDS' },
+      },
+    ],
+  };
+}
+
 export async function fetchSearchResults(
   baseUrl,
   contentSource,
@@ -170,8 +216,9 @@ export async function fetchSearchResults(
     signal,
     body: JSON.stringify({
       contentSource: { name: contentSource, type: contentSourceType },
-      query: { type: 'vector', text: query, options: {} },
+      query: buildSearchQuery(query),
       queryOptions: {
+        resultFields: { includes: RESULT_FIELDS },
         pagination: {
           limit,
           ...(cursor ? { cursor } : {}),
