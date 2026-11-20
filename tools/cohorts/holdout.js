@@ -198,31 +198,6 @@ function chart(r, color) {
   );
 }
 
-function card(r, rules) {
-  const color = groupColor(rules, r.experience || 'default');
-  const v = verdictOf(r.id, { significant: r.significant, lift: r.lift }, !r.lowSample, r.support);
-  const d = h('span', 'dot');
-  d.style.setProperty('--c', color);
-  const goal = r.goalLabel || r.goal?.click || (r.goal?.navigate ? 'tap through to any page' : '');
-  const el = h(
-    'article',
-    'hcard',
-    h('header', '', d, h('div', '', h('h3', '', r.label), h('p', 'sub', `${pct(r.share)} of views · goal: ${goal}`))),
-    chart(r, color),
-    h(
-      'dl',
-      'nums',
-      h('div', '', h('dt', '', 'Holdout'), h('dd', '', pct(r.control.goalRate)), h('dd', 'n', `${r.control.bundles} views`)),
-      h('div', '', h('dt', '', 'Cohort'), h('dd', '', pct(r.cohort.goalRate)), h('dd', 'n', `${r.cohort.bundles} views`)),
-      h('div', '', h('dt', '', 'Lift'), h('dd', '', r.lowSample ? '–' : signed(r.lift)), h('dd', 'n', r.lowSample ? '' : `p ${r.p.toFixed(3)}`)),
-    ),
-    r.support ? h('p', 'sub', `Supporting step (${r.support.label}): ${pct(r.support.control)} → ${pct(r.support.cohort)}`) : null,
-    h('p', `verdict ${v.key}`, v.text),
-  );
-  el.style.setProperty('--c', color);
-  return el;
-}
-
 export async function loadReview(cj, rules) {
   try {
     const res = await fetch('/cohorts/review.json', { cache: 'no-store' });
@@ -231,34 +206,198 @@ export async function loadReview(cj, rules) {
   return cj?.rules ? mockReview(cj, rules) : null;
 }
 
-export default function renderHoldout(host, { review, rules }) {
+/* ---------- outcome: what works, what needs attention, what to optimize ---------- */
+
+const Z = 1.96;
+const MDE = 0.2;
+
+/** Lift with a 95% interval (unpooled), on the goal rate. */
+function interval(r) {
+  const nA = r.control.bundles;
+  const nB = r.cohort.bundles;
+  const pA = r.control.goalRate;
+  const pB = r.cohort.goalRate;
+  if (!nA || !nB || !pA) return null;
+  const se = Math.sqrt((pA * (1 - pA)) / nA + (pB * (1 - pB)) / nB);
+  const d = pB - pA;
+  return { lift: d / pA, lo: (d - Z * se) / pA, hi: (d + Z * se) / pA };
+}
+
+/** Weeks more at this traffic to see a 20% lift with 80% power (both arms). */
+function weeksToGo(r) {
+  const weeks = (r.weeks || []).length || 1;
+  const nA = r.control.bundles;
+  const nB = r.cohort.bundles;
+  if (!nA || !nB) return null;
+  const p1 = Math.max(0.02, r.control.goalRate || 0.2);
+  const p2 = Math.min(0.98, p1 * (1 + MDE));
+  const k = nB / nA;
+  const need = ((Z + 0.84) ** 2 * (p1 * (1 - p1) + (p2 * (1 - p2)) / k)) / ((p2 - p1) ** 2);
+  const perWeek = nA / weeks;
+  return Math.max(1, Math.ceil((need - nA) / perWeek));
+}
+
+function bucketOf(r) {
+  if (r.id === 'none') return r.significant && !r.lowSample ? 'attention' : null;
+  if (r.lowSample) return 'waiting';
+  if (r.significant) return r.lift > 0 ? 'working' : 'attention';
+  return 'optimize';
+}
+
+const BUCKETS = {
+  working: {
+    title: 'Working', tone: 'positive', lead: 'Beat the holdout on their goal. Keep them; the next step is a stronger version to test against today\'s.',
+  },
+  attention: {
+    title: 'Needs attention', tone: 'negative', lead: 'Worse than the holdout on their goal. Check what the experience removed or moved down, then fix it or drop the rule.',
+  },
+  optimize: {
+    title: 'Optimize', tone: 'informative', lead: 'Enough visitors, no clear difference yet. The experience may be too close to the original page.',
+  },
+  waiting: {
+    title: 'Waiting for data', tone: 'neutral', lead: 'Too few visitors in one of the arms to judge.',
+  },
+};
+
+function advice(r, bucket) {
+  const weeks = (r.weeks || []).length;
+  if (r.id === 'none') return 'Both arms see the original page, yet they differ: check the split and the tagging before trusting any result.';
+  if (bucket === 'working') return `${signed(r.lift)} on "${r.goalLabel || 'the goal'}" after ${weeks} weeks.`;
+  if (bucket === 'attention') return `${signed(r.lift)} on "${r.goalLabel || 'the goal'}". Compare its page with the original: which section did it lose?`;
+  if (bucket === 'optimize') {
+    if (r.support?.significant && r.support.lift > 0) return `The supporting step is up (${pct(r.support.control)} → ${pct(r.support.cohort)}), the goal not yet: make the step after it clearer.`;
+    return `No clear difference after ${weeks} weeks. Make its first section more different from the original, or fold it into a bigger cohort.`;
+  }
+  const more = weeksToGo(r);
+  return more ? `About ${more} more week${more > 1 ? 's' : ''} at this traffic to see a 20% lift.` : 'No visitors in one arm yet.';
+}
+
+/** The lift and its interval on a shared axis around zero. */
+function forest(r, tone, range) {
+  const w = 220;
+  const ht = 26;
+  const ci = interval(r);
+  const x = (v) => Math.max(2, Math.min(w - 2, ((v + range) / (2 * range)) * w));
+  const kids = [
+    svg('line', {
+      x1: x(0), x2: x(0), y1: 2, y2: ht - 2, class: 'zero',
+    }),
+  ];
+  if (ci && !r.lowSample) {
+    kids.push(
+      svg('line', {
+        x1: x(ci.lo), x2: x(ci.hi), y1: ht / 2, y2: ht / 2, class: `ci ${tone}`,
+      }),
+      svg('circle', {
+        cx: x(ci.lift), cy: ht / 2, r: 5, class: `pt ${tone}`,
+      }),
+    );
+  }
+  return svg('svg', {
+    viewBox: `0 0 ${w} ${ht}`, width: w, height: ht, class: 'forest', role: 'img', 'aria-label': ci ? `Lift ${signed(ci.lift)}, 95% interval ${signed(ci.lo)} to ${signed(ci.hi)}` : 'Not enough data',
+  }, kids);
+}
+
+function row(r, rules, bucket, range, onPick) {
+  const { tone } = BUCKETS[bucket];
+  const color = groupColor(rules, r.experience || 'default');
+  const d = h('span', 'dot');
+  d.style.setProperty('--c', color);
+  const exp = (rules.experiences || {})[r.experience]?.label || (r.experience === 'default' ? 'Original homepage' : r.experience);
+  const toggle = h('button', 'orow-head');
+  toggle.type = 'button';
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.append(
+    h('span', 'oname', d, h('span', '', h('strong', '', r.label), h('span', 'sub', `${exp} · ${pct(r.share)} of views`))),
+    forest(r, tone, range),
+    h('span', `olift ${tone}`, r.lowSample ? '–' : signed(r.lift)),
+    h('span', 'oadvice', advice(r, bucket)),
+    h('span', 'chevron'),
+  );
+  const more = h('div', 'orow-more');
+  more.hidden = true;
+  toggle.addEventListener('click', () => {
+    const open = more.hidden;
+    more.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open && !more.firstChild) {
+      const goal = r.goalLabel || r.goal?.click || (r.goal?.navigate ? 'tap through to any page' : '');
+      const show = h('button', 'button-s', 'Show its page');
+      show.type = 'button';
+      show.addEventListener('click', () => onPick(r.experience || 'default'));
+      const ci = interval(r);
+      more.append(
+        chart(r, color),
+        h(
+          'div',
+          'odetail',
+          h('p', 'sub', `Goal: ${goal}. Lines: goal rate so far, grey the holdout, colour the cohort.`),
+          h(
+            'dl',
+            'nums',
+            h('div', '', h('dt', '', 'Holdout'), h('dd', '', pct(r.control.goalRate)), h('dd', 'n', `${r.control.bundles} views`)),
+            h('div', '', h('dt', '', 'Cohort'), h('dd', '', pct(r.cohort.goalRate)), h('dd', 'n', `${r.cohort.bundles} views`)),
+            h('div', '', h('dt', '', 'Lift'), h('dd', '', r.lowSample ? '–' : signed(r.lift)), h('dd', 'n', ci && !r.lowSample ? `${signed(ci.lo)} to ${signed(ci.hi)} · p ${r.p.toFixed(3)}` : '')),
+          ),
+          r.support ? h('p', 'sub', `Supporting step (${r.support.label}): ${pct(r.support.control)} → ${pct(r.support.cohort)}`) : null,
+          r.experience ? h('p', 'actions', show) : null,
+        ),
+      );
+    }
+  });
+  const el = h('li', `orow t-${tone}`, toggle, more);
+  return el;
+}
+
+export default function renderHoldout(host, { review, rules, onPick = () => {} }) {
   if (!review) {
     host.append(h('p', 'note', 'No review.json and no cohorts.json to build an example from.'));
     return;
   }
   const m = review.meta;
   const aa = review.rules.find((r) => r.id === 'none');
-  const judged = review.rules.filter((r) => r.id !== 'none' && !r.lowSample);
-  const count = (t) => judged.filter((r) => r.verdict.startsWith(t)).length;
-  const head = h(
-    'div',
-    'flow-head',
-    review.mock ? h('p', 'mock', 'Example data. No holdout has run yet: the shares and goal rates are real, the effects are invented, so you can judge the view. Publish review.json at /cohorts/review.json to replace it.') : null,
-    h('h2', '', 'Cohorts against the holdout'),
-    h('p', 'sub', `${m.experiment} · ${m.start} to ${m.end} · holdout ${pct(m.controlShare)}${m.plannedHoldout ? ` (planned ${pct(m.plannedHoldout, 0)})` : ''} · ${m.bundles?.toLocaleString() || '–'} sampled views. Lines: goal rate so far, grey the holdout, colour the cohort.`),
+  const groups = {
+    attention: [], working: [], optimize: [], waiting: [],
+  };
+  review.rules.forEach((r) => { const b = bucketOf(r); if (b) groups[b].push(r); });
+  Object.values(groups).forEach((g) => g.sort((a, b) => (b.share || 0) - (a.share || 0)));
+  // the axis fits the judged cohorts, at most ±60% (a wider interval is cut at the edge)
+  const range = Math.min(0.6, Math.max(0.3, ...review.rules.filter((r) => !r.lowSample).map((r) => {
+    const ci = interval(r);
+    return ci ? Math.max(Math.abs(ci.lo), Math.abs(ci.hi)) : 0;
+  })));
+  const shareOf = (g) => g.reduce((a, r) => a + (r.share || 0), 0);
+
+  const tiles = h('div', 'tiles', ['working', 'attention', 'optimize', 'waiting'].map((b) => {
+    const g = groups[b];
+    const t = h('button', `tile t-${BUCKETS[b].tone}`, h('span', 'tnum', String(g.length)), h('span', 'ttitle', BUCKETS[b].title), h('span', 'tsub', g.length ? `${pct(shareOf(g))} of homepage views` : 'none'));
+    t.type = 'button';
+    t.disabled = !g.length;
+    t.addEventListener('click', () => host.querySelector(`#outcome-${b}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    return t;
+  }));
+  const split = aa ? `Holdout ${pct(m.controlShare)} of views${m.plannedHoldout ? ` (planned ${pct(m.plannedHoldout, 0)})` : ''} · ${aa.verdict.startsWith('A/A ok') ? 'the split checks out (A/A ok)' : aa.verdict}` : '';
+  host.append(
     h(
-      'ul',
-      'summary',
-      h('li', 'good', `${count('Keep')} beat the holdout`),
-      h('li', 'flat', `${count('No clear') + count('Promising')} no clear difference yet`),
-      h('li', 'bad', `${count('Fix')} worse`),
-      h('li', 'wait', `${review.rules.filter((r) => r.id !== 'none' && r.lowSample).length} too small to judge`),
-      aa ? h('li', aa.verdict.startsWith('A/A ok') ? 'good' : 'bad', aa.verdict) : null,
+      'div',
+      'flow-head',
+      review.mock ? h('p', 'mock', 'Example data: no holdout has run yet. The shares and goal rates are real, the effects are invented. Publish /cohorts/review.json to replace it.') : null,
+      h('h2', '', 'Outcome'),
+      h('p', 'sub', `Each cohort against the visitors held back on the original page · ${m.start} to ${m.end} · ${m.bundles?.toLocaleString() || '–'} sampled views. ${split}`),
     ),
+    tiles,
   );
-  const rank = (r) => ({
-    Keep: 0, Fix: 1, Promising: 2, No: 3,
-  })[r.verdict.split(/[ :]/)[0]] ?? 4;
-  const cards = [...review.rules].filter((r) => r.id !== 'none').sort((a, b) => rank(a) - rank(b) || (b.share || 0) - (a.share || 0));
-  host.append(head, h('div', 'hgrid', cards.map((r) => card(r, rules)), aa ? card(aa, rules) : null));
+  ['attention', 'working', 'optimize', 'waiting'].forEach((b) => {
+    const g = groups[b];
+    if (!g.length) return;
+    const sec = h(
+      'section',
+      `ogroup t-${BUCKETS[b].tone}`,
+      h('header', '', h('h3', '', `${BUCKETS[b].title}`, h('span', 'count', String(g.length))), h('p', 'sub', BUCKETS[b].lead)),
+      h('div', 'oaxis', h('span', '', ''), h('span', 'axis', h('span', '', signed(-range)), h('span', '', '0'), h('span', '', signed(range))), h('span', '', 'Lift'), h('span', '', b === 'waiting' ? 'When' : 'What next'), h('span', '', '')),
+      h('ul', 'orows', g.map((r) => row(r, rules, b, range, onPick))),
+    );
+    sec.id = `outcome-${b}`;
+    host.append(sec);
+  });
 }

@@ -14,8 +14,9 @@
  * - Explain reloads the frames with the engine's notes and no presenter dock
  *   (?demo&insights&dock=off).
  *
- * - Views: Pages (the columns), Flow (how the cohorts came about, flow.js) and Holdout (each
- *   cohort against the holdout over time, holdout.js). Flow and Holdout load when opened.
+ * - Views: Experiences (the columns), Cohort data (how the cohorts came about, flow.js) and
+ *   Outcome (what works against the holdout and what needs attention, holdout.js). The last two
+ *   load when opened.
  *
  * Spectrum 2 tokens with fallbacks, as the Cohorts panel; the controls follow the S2 picker,
  * menu, checkbox, action group, switch and close button.
@@ -61,7 +62,7 @@ const state = {
   problems: {},
 };
 if (!DEVICES[state.device]) state.device = 'desktop';
-const VIEWS = { pages: 'Pages', flow: 'Flow', holdout: 'Holdout' };
+const VIEWS = { pages: 'Experiences', flow: 'Cohort data', holdout: 'Outcome' };
 if (!VIEWS[state.view]) state.view = 'pages';
 
 const h = (tag, cls, ...kids) => {
@@ -481,7 +482,7 @@ async function renderReport(stage, view) {
       const { default: renderHoldout, loadReview } = await import('./holdout.js');
       review = review || await loadReview(state.cohortsJson, rules);
       stage.replaceChildren();
-      renderHoldout(stage, { review, rules });
+      renderHoldout(stage, { review, rules, onPick: showExperience });
     }
   } catch (e) {
     stage.replaceChildren(h('p', 'note bad', `Could not show ${VIEWS[view]}: ${e.message}`));
