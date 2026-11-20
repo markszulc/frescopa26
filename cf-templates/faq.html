@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{properties.elements.question.value}}</title>
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div>
+        <h1>{{properties.elements.question.value}}</h1>
+        {{{properties.elements.answer.value}}}
+      </div>
+      <div>
+        <div class="metadata">
+          {{#properties.elements.category.value}}
+          <div>
+            <div>category</div>
+            <div>{{properties.elements.category.value}}</div>
+          </div>
+          {{/properties.elements.category.value}}
+          {{#properties.elements.sku.value}}
+          <div>
+            <div>sku</div>
+            <div>{{properties.elements.sku.value}}</div>
+          </div>
+          {{/properties.elements.sku.value}}
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>
