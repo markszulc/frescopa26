@@ -1,0 +1,340 @@
+.coffee-recipe-container {
+  background: #f9f6f0;
+  padding: 32px 0 72px;
+}
+
+main .coffee-recipe-container > div {
+  max-width: 1040px;
+}
+
+.coffee-recipe {
+  --cr-ink: #3a2a24;
+  --cr-muted: #6f5d54;
+  --cr-accent: #6b1f16;
+  --cr-bar: #c06c47;
+  --cr-card: #f4ece3;
+  --cr-line: #dccfc3;
+  --cr-track: #e8dfd3;
+  --cr-peach: #f4dfc3;
+
+  color: var(--cr-ink);
+  font-family: var(--body-font-family, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif);
+  line-height: 1.5;
+}
+
+.coffee-recipe .cr-wrap {
+  display: grid;
+  gap: 36px;
+}
+
+/* header */
+.coffee-recipe .cr-header {
+  display: grid;
+  gap: 24px;
+}
+
+.coffee-recipe .cr-eyebrow {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9a3f22;
+}
+
+.coffee-recipe h1 {
+  margin: 0.15em 0 0.2em;
+  font-size: clamp(2.25rem, 6vw, 3.75rem);
+  line-height: 1.05;
+  font-weight: 800;
+  color: var(--cr-accent);
+}
+
+.coffee-recipe .cr-lede {
+  margin: 0;
+  max-width: 34em;
+  font-size: 1.15rem;
+  color: var(--cr-muted);
+}
+
+.coffee-recipe .cr-photo picture,
+.coffee-recipe .cr-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 28px;
+}
+
+/* layout */
+.coffee-recipe .cr-grid,
+.coffee-recipe .cr-body {
+  display: grid;
+  gap: 32px;
+}
+
+.coffee-recipe .cr-col {
+  display: grid;
+  gap: 32px;
+  align-content: start;
+}
+
+/* labels */
+.coffee-recipe .cr-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.coffee-recipe .cr-label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cr-muted);
+}
+
+.coffee-recipe .cr-value {
+  font-weight: 600;
+}
+
+/* predicted cup */
+.coffee-recipe .cr-cup {
+  padding: 22px 24px 14px;
+  border-radius: 28px;
+  background: var(--cr-card);
+}
+
+.coffee-recipe .cr-cup .cr-label {
+  color: #9a3f22;
+  margin-bottom: 14px;
+}
+
+.coffee-recipe .cr-bar-row {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 0 0 14px;
+}
+
+.coffee-recipe .cr-track {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--cr-track);
+  overflow: hidden;
+}
+
+.coffee-recipe .cr-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cr-bar);
+}
+
+/* beans */
+.coffee-recipe .cr-bean {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1.5px solid #b98a7e;
+  border-radius: 20px;
+  background: var(--cr-card);
+}
+
+.coffee-recipe .cr-bean-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--cr-accent);
+  color: #f9f6f0;
+}
+
+.coffee-recipe .cr-bean-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.coffee-recipe .cr-bean-text {
+  display: grid;
+}
+
+.coffee-recipe .cr-bean-text strong {
+  font-size: 1.2rem;
+}
+
+.coffee-recipe .cr-bean-text span {
+  color: var(--cr-muted);
+}
+
+.coffee-recipe .cr-check {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--cr-accent);
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.coffee-recipe .cr-check::after {
+  content: '\2713';
+}
+
+/* size selector */
+.coffee-recipe .cr-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 4px;
+  border-radius: 999px;
+  background: #e9e5df;
+}
+
+.coffee-recipe .cr-seg span {
+  padding: 10px 0;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.coffee-recipe .cr-seg .is-active {
+  background: #fff;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 18%);
+}
+
+/* sliders */
+.coffee-recipe .cr-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.coffee-recipe .cr-slider .cr-track {
+  flex: 1;
+}
+
+.coffee-recipe .cr-thumb {
+  position: absolute;
+  top: 50%;
+  width: 44px;
+  height: 28px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 28%);
+  transform: translate(-50%, -50%);
+}
+
+.coffee-recipe .cr-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  color: var(--cr-muted);
+}
+
+/* ingredients + instructions */
+.coffee-recipe .cr-heading {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cr-accent);
+}
+
+.coffee-recipe .cr-ingredients ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coffee-recipe .cr-ingredients li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--cr-line);
+}
+
+.coffee-recipe .cr-steps ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.coffee-recipe .cr-steps li {
+  position: relative;
+  margin: 0 0 18px;
+  padding-left: 48px;
+  counter-increment: step;
+}
+
+.coffee-recipe .cr-steps li::before {
+  content: counter(step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cr-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* details */
+.coffee-recipe .cr-details {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 18px 24px;
+  padding: 22px 24px;
+  border-radius: 28px;
+  background: var(--cr-card);
+}
+
+.coffee-recipe .cr-details dt {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cr-muted);
+}
+
+.coffee-recipe .cr-details dd {
+  margin: 2px 0 0;
+  font-weight: 500;
+}
+
+@media (min-width: 900px) {
+  .coffee-recipe .cr-wrap {
+    gap: 48px;
+  }
+
+  .coffee-recipe .cr-header.has-image {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .coffee-recipe .cr-grid {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .coffee-recipe .cr-body {
+    grid-template-columns: 1fr 1.4fr;
+    gap: 56px;
+    align-items: start;
+  }
+}
