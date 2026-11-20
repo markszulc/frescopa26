@@ -20,8 +20,8 @@ const DIET_SCHEMA = {
   'gluten-free': 'GlutenFreeDiet',
 };
 
-const el = (tag, cls, txt) => {
-  const e = document.createElement(tag);
+const el = (tagName, cls, txt) => {
+  const e = document.createElement(tagName);
   if (cls) e.className = cls;
   if (txt !== undefined) e.textContent = txt;
   return e;
