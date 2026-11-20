@@ -145,12 +145,15 @@ export default function decorate(block) {
   const page = el('div', 'cr-page');
 
   // ---------- hero ----------
-  const hero = el('header', 'cr-hero');
+  // a div, not <header>: site-wide header rules would otherwise squash the hero
+  const hero = el('div', 'cr-hero');
   const heroInner = el('div', 'cr-inner');
   const heroGrid = el('div', 'cr-hero-grid');
   const copy = el('div', 'cr-hero-copy');
 
-  const crumbs = el('nav', 'cr-crumbs cr-label');
+  // a div with a role, not <nav>: site-wide "header nav" and "nav" rules would otherwise apply
+  const crumbs = el('div', 'cr-crumbs cr-label');
+  crumbs.setAttribute('role', 'navigation');
   crumbs.setAttribute('aria-label', 'Breadcrumb');
   if (RECIPES_URL) {
     const a = el('a', '', 'Recipes');

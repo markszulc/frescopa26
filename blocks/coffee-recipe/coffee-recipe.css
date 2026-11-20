@@ -366,6 +366,7 @@ main > .section.coffee-recipe-container > .coffee-recipe-wrapper {
 .coffee-recipe .cr-pill-btn {
   width: 38px;
   height: 34px;
+  padding: 0;
   border: 1px solid var(--cr-line);
   border-radius: var(--cr-pill);
   background: transparent;
