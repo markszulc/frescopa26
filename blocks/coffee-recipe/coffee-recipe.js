@@ -1,14 +1,24 @@
+/*
+ * coffee-recipe block
+ * Rebuilds the rows that the json2html template writes into the Frescopa
+ * recipe layout, and adds Recipe JSON-LD to the page head.
+ */
+
+// Set these to real pages on the site. Empty means the link is left out.
+const RECIPES_URL = ''; // breadcrumb link, for example '/recipes/'
+const SHOP_URL = ''; // "Shop this bean" button, for example '/coffee/'
+
 const MAX_SCORE = 10;
-const STRENGTH_POS = {
-  gentle: 12, mild: 25, light: 25, balanced: 55, medium: 55, strong: 80, bold: 88,
+const CUP_OPTIONS = [1, 2, 4];
+const COUNTRIES = {
+  co: 'Colombia', br: 'Brazil', et: 'Ethiopia', ke: 'Kenya', gt: 'Guatemala', pe: 'Peru',
 };
-const SIZES = ['small', 'regular', 'large'];
+const QUANTITY = /^(\d+(?:\.\d+)?)\s*(g|ml|kg|l)?\s+(.*)$/i;
 const DIET_SCHEMA = {
   vegan: 'VeganDiet',
   vegetarian: 'VegetarianDiet',
   'gluten-free': 'GlutenFreeDiet',
 };
-const BEAN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="6" ry="9" transform="rotate(35 12 12)" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 16.5c3-1.5 4-5.5 7-9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 
 const el = (tag, cls, txt) => {
   const e = document.createElement(tag);
@@ -17,25 +27,25 @@ const el = (tag, cls, txt) => {
   return e;
 };
 
-const clamp = (n) => Math.max(0, Math.min(100, n));
+const cap = (s) => {
+  const v = String(s || '');
+  return v.charAt(0).toUpperCase() + v.slice(1);
+};
 
-// "frescopa:flavor/sweet/brown-sugar" becomes "Brown sugar"
-function pretty(value) {
-  const last = String(value).split('/').pop().replace(/-/g, ' ').trim();
-  return last.charAt(0).toUpperCase() + last.slice(1);
+// "frescopa:flavor/sweet/brown-sugar" becomes "Brown sugar", "co" becomes "Colombia"
+function tag(id) {
+  const last = String(id || '').split('/').pop();
+  return COUNTRIES[last] || cap(last.replace(/-/g, ' ').trim());
 }
 
-// "PT5M" becomes "5 min"
+// "PT1H5M" becomes "1 h 5 min"
 function duration(iso) {
   const m = /^PT(?:(\d+)H)?(?:(\d+)M)?$/.exec(iso || '');
-  if (!m) return iso || '';
-  const parts = [];
-  if (m[1]) parts.push(`${m[1]} h`);
-  if (m[2]) parts.push(`${m[2]} min`);
-  return parts.join(' ') || iso;
+  if (!m) return '';
+  return [m[1] ? `${m[1]} h` : '', m[2] ? `${m[2]} min` : ''].filter(Boolean).join(' ');
 }
 
-function values(cell) {
+function listValues(cell) {
   if (!cell) return [];
   const items = [...cell.querySelectorAll('li')]
     .map((li) => li.textContent.trim())
@@ -43,27 +53,6 @@ function values(cell) {
   if (items.length) return items;
   const t = cell.textContent.trim();
   return t ? [t] : [];
-}
-
-function labelRow(label, value) {
-  const row = el('div', 'cr-label-row');
-  row.append(el('h2', 'cr-label', label));
-  if (value) row.append(el('span', 'cr-value', value));
-  return row;
-}
-
-function slider(pct, description) {
-  const s = el('div', 'cr-slider');
-  s.setAttribute('role', 'img');
-  s.setAttribute('aria-label', description);
-  const track = el('div', 'cr-track');
-  const fill = el('span', 'cr-fill');
-  fill.style.width = `${pct}%`;
-  track.append(fill);
-  const thumb = el('span', 'cr-thumb');
-  thumb.style.left = `${pct}%`;
-  s.append(track, thumb);
-  return s;
 }
 
 function addJsonLd(d) {
@@ -94,6 +83,7 @@ function addJsonLd(d) {
 }
 
 export default function decorate(block) {
+  // read the label and value cells into a lookup
   const rows = {};
   [...block.children].forEach((row) => {
     const [label, value] = row.children;
@@ -104,194 +94,366 @@ export default function decorate(block) {
     const n = parseFloat(one(k));
     return Number.isNaN(n) ? null : n;
   };
+  const tags = (k) => listValues(rows[k]).map(tag);
 
-  const wrap = el('div', 'cr-wrap');
+  const name = rows.header && rows.header.querySelector('h1');
+  const picture = rows.header && rows.header.querySelector('picture');
+  const description = rows.header
+    && [...rows.header.querySelectorAll('p')]
+      .find((p) => !p.querySelector('picture') && p.textContent.trim());
 
-  // header: eyebrow, title, description, optional photo
-  const hcell = rows.header;
-  const title = hcell ? hcell.querySelector('h1') : null;
-  const picture = hcell ? hcell.querySelector('picture') : null;
-  const description = hcell
-    ? [...hcell.querySelectorAll('p')].find((p) => !p.querySelector('picture') && p.textContent.trim())
-    : null;
-  const header = el('header', 'cr-header');
-  const intro = el('div', 'cr-intro');
-  if (one('style')) intro.append(el('p', 'cr-eyebrow', pretty(one('style'))));
-  if (title) intro.append(title);
-  if (description) {
-    description.className = 'cr-lede';
-    intro.append(description);
-  }
-  header.append(intro);
-  if (picture) {
-    const photo = el('div', 'cr-photo');
-    photo.append(picture);
-    header.append(photo);
-    header.classList.add('has-image');
-  }
-  wrap.append(header);
-
-  // left column: predicted cup and beans
-  const left = el('div', 'cr-col');
-  const cup = [['Body', num('body')], ['Sweetness', num('sweetness')], ['Acidity', num('acidity')]]
-    .filter(([, v]) => v !== null);
-  if (cup.length) {
-    const card = el('section', 'cr-cup');
-    card.append(el('h2', 'cr-label', 'Predicted cup'));
-    cup.forEach(([label, v]) => {
-      const row = el('div', 'cr-bar-row');
-      row.append(el('span', '', label));
-      const track = el('div', 'cr-track');
-      track.setAttribute('role', 'meter');
-      track.setAttribute('aria-label', label);
-      track.setAttribute('aria-valuemin', '0');
-      track.setAttribute('aria-valuemax', String(MAX_SCORE));
-      track.setAttribute('aria-valuenow', String(v));
-      const fill = el('span', 'cr-fill');
-      fill.style.width = `${clamp((v / MAX_SCORE) * 100)}%`;
-      track.append(fill);
-      row.append(track);
-      card.append(row);
-    });
-    left.append(card);
-  }
-  if (one('bean')) {
-    const sec = el('section');
-    sec.append(labelRow('Beans'));
-    const bean = el('div', 'cr-bean');
-    const icon = el('span', 'cr-bean-icon');
-    icon.innerHTML = BEAN_ICON;
-    const text = el('div', 'cr-bean-text');
-    text.append(el('strong', '', one('bean')));
-    if (one('bean notes')) text.append(el('span', '', one('bean notes')));
-    const check = el('span', 'cr-check');
-    check.setAttribute('aria-hidden', 'true');
-    bean.append(icon, text, check);
-    sec.append(bean);
-    left.append(sec);
-  }
-
-  // right column: size, strength, brew temperature, milk
-  const right = el('div', 'cr-col');
-  const yieldMl = num('yield');
-  const rawSize = one('size').toLowerCase();
-  const sizeKey = rawSize === 'medium' ? 'regular' : rawSize;
-  if (yieldMl !== null || SIZES.includes(sizeKey)) {
-    const sec = el('section');
-    sec.append(labelRow('Size', yieldMl !== null ? `${yieldMl} ml` : ''));
-    if (SIZES.includes(sizeKey)) {
-      const seg = el('div', 'cr-seg');
-      seg.setAttribute('role', 'img');
-      seg.setAttribute('aria-label', `Size: ${pretty(sizeKey)}`);
-      SIZES.forEach((s) => seg.append(el('span', s === sizeKey ? 'is-active' : '', pretty(s))));
-      sec.append(seg);
-    }
-    right.append(sec);
-  }
+  const style = cap(one('style'));
   const strength = one('strength');
+  const size = one('size');
   const dose = num('dose');
-  if (strength || dose !== null) {
-    const sec = el('section');
-    const summary = [strength ? pretty(strength) : '', dose !== null ? `${dose} g` : '']
-      .filter(Boolean).join(' \u00B7 ');
-    sec.append(labelRow('Strength', summary));
-    const pos = STRENGTH_POS[strength.toLowerCase()];
-    sec.append(slider(pos === undefined ? 50 : pos, `Strength: ${summary}`));
-    const ends = el('div', 'cr-ends');
-    ends.append(el('span', '', 'Gentle'), el('span', '', 'Bold'));
-    sec.append(ends);
-    right.append(sec);
-  }
   const brewTemp = num('brew temperature');
-  if (brewTemp !== null) {
-    const sec = el('section');
-    sec.append(labelRow('Brew temperature', `${brewTemp}\u00B0C`));
-    sec.append(slider(clamp(((brewTemp - 80) / 20) * 100), `Brew temperature: ${brewTemp}\u00B0C`));
-    right.append(sec);
-  }
   const milk = one('milk');
   const milkTemp = num('milk temperature');
-  if (milk || milkTemp !== null) {
-    const sec = el('section');
-    const summary = [milk ? pretty(milk) : '', milkTemp !== null ? `${milkTemp}\u00B0C` : '']
-      .filter(Boolean).join(' \u00B7 ');
-    sec.append(labelRow('Milk', summary));
-    right.append(sec);
-  }
-
-  const grid = el('div', 'cr-grid');
-  grid.append(left, right);
-  wrap.append(grid);
-
-  // ingredients and instructions
-  const ingredients = values(rows.ingredients);
+  const yieldMl = num('yield');
+  const calories = num('calories');
+  const temperature = tags('temperature');
+  const ingredients = listValues(rows.ingredients);
   const steps = rows.instructions
-    ? [...rows.instructions.querySelectorAll('li')].map((li) => li.textContent.trim()).filter(Boolean)
+    ? [...rows.instructions.querySelectorAll('li')]
+      .map((li) => li.textContent.trim()).filter(Boolean)
     : [];
-  if (ingredients.length || rows.instructions) {
-    const body = el('div', 'cr-body');
-    if (ingredients.length) {
-      const sec = el('section', 'cr-ingredients');
-      sec.append(el('h2', 'cr-heading', 'Ingredients'));
-      const ul = el('ul');
-      ingredients.forEach((i) => ul.append(el('li', '', i)));
-      sec.append(ul);
-      body.append(sec);
-    }
-    if (rows.instructions && rows.instructions.textContent.trim()) {
-      const sec = el('section', 'cr-steps');
-      sec.append(el('h2', 'cr-heading', 'Instructions'));
-      [...rows.instructions.childNodes].forEach((n) => sec.append(n));
-      body.append(sec);
-    }
-    wrap.append(body);
+  if (!steps.length && rows.instructions && rows.instructions.textContent.trim()) {
+    steps.push(rows.instructions.textContent.trim());
   }
 
-  // remaining facts
-  const facts = [
-    ['Prep time', 'prep time', duration],
-    ['Total time', 'total time', duration],
-    ['Calories', 'calories', (v) => `${v} kcal`],
-    ['Difficulty', 'difficulty', pretty],
-    ['Diet', 'diet', pretty],
-    ['Flavor', 'flavor', pretty],
-    ['Roast', 'roast', pretty],
-    ['Origin', 'origin', pretty],
-    ['Varietal', 'varietal', pretty],
-    ['Coffee base', 'coffee base', pretty],
-    ['Technique', 'technique', pretty],
-    ['Served', 'temperature', pretty],
-    ['Occasion', 'occasion', pretty],
-    ['Glassware', 'glassware', pretty],
-    ['Spirit', 'spirit', pretty],
-  ];
-  const dl = el('dl', 'cr-details');
-  facts.forEach(([label, key, format]) => {
-    const vals = values(rows[key]).map(format);
-    if (!vals.length) return;
-    const wrapper = el('div');
-    wrapper.append(el('dt', '', label), el('dd', '', vals.join(', ')));
-    dl.append(wrapper);
+  // send and save state is shared by the hero and the callout buttons
+  const sendButtons = [];
+  const status = el('p', 'cr-sr-only');
+  status.setAttribute('role', 'status');
+  let sentTimer;
+  const setSent = (sent) => {
+    sendButtons.forEach((b) => { b.textContent = sent ? 'Sent. Your Atelier is ready.' : 'Send to my Atelier'; });
+    status.textContent = sent ? 'Recipe sent to your Atelier.' : '';
+  };
+  const makeSendButton = (cls) => {
+    const b = el('button', `cr-btn ${cls}`, 'Send to my Atelier');
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      setSent(true);
+      clearTimeout(sentTimer);
+      sentTimer = setTimeout(() => setSent(false), 3200);
+    });
+    sendButtons.push(b);
+    return b;
+  };
+
+  const page = el('div', 'cr-page');
+
+  // ---------- hero ----------
+  const hero = el('header', 'cr-hero');
+  const heroInner = el('div', 'cr-inner');
+  const heroGrid = el('div', 'cr-hero-grid');
+  const copy = el('div', 'cr-hero-copy');
+
+  const crumbs = el('nav', 'cr-crumbs cr-label');
+  crumbs.setAttribute('aria-label', 'Breadcrumb');
+  if (RECIPES_URL) {
+    const a = el('a', '', 'Recipes');
+    a.href = RECIPES_URL;
+    crumbs.append(a);
+  } else {
+    crumbs.append(el('span', '', 'Recipes'));
+  }
+  if (style) {
+    const sep = el('span', '', '/');
+    sep.setAttribute('aria-hidden', 'true');
+    crumbs.append(sep, el('span', 'is-current', style));
+  }
+  copy.append(crumbs);
+
+  if (name) {
+    name.className = 'cr-title';
+    copy.append(name);
+  }
+  if (description) {
+    description.className = 'cr-lede';
+    copy.append(description);
+  }
+
+  const meta = [
+    ['Prep', duration(one('prep time'))],
+    ['Total', duration(one('total time'))],
+    ['Difficulty', tags('difficulty').join(', ')],
+    ['Strength', cap(strength)],
+    ['Size', cap(size)],
+  ].filter(([, v]) => v);
+  if (meta.length) {
+    const dl = el('dl', 'cr-meta');
+    meta.forEach(([label, value]) => {
+      const d = el('div');
+      d.append(el('dt', 'cr-label', label), el('dd', '', value));
+      dl.append(d);
+    });
+    copy.append(dl);
+  }
+
+  const diet = tags('diet');
+  if (diet.length) {
+    const ul = el('ul', 'cr-diet');
+    ul.setAttribute('aria-label', 'Dietary');
+    diet.forEach((t) => ul.append(el('li', '', t)));
+    copy.append(ul);
+  }
+
+  const actions = el('div', 'cr-actions');
+  const save = el('button', 'cr-btn cr-btn-outline', 'Save recipe');
+  save.type = 'button';
+  save.setAttribute('aria-pressed', 'false');
+  save.addEventListener('click', () => {
+    const saved = save.getAttribute('aria-pressed') !== 'true';
+    save.setAttribute('aria-pressed', String(saved));
+    save.textContent = saved ? 'Saved' : 'Save recipe';
   });
-  if (dl.children.length) wrap.append(dl);
+  actions.append(makeSendButton('cr-btn-primary'), save, status);
+  copy.append(actions);
+  heroGrid.append(copy);
+
+  if (picture) {
+    const media = el('div', 'cr-hero-media');
+    const photo = el('div', 'cr-photo');
+    photo.append(picture);
+    media.append(photo);
+    const badges = [/decaf/i.test(one('bean')) ? 'Decaf' : '', temperature[0] || ''].filter(Boolean);
+    if (badges.length) {
+      const wrap = el('div', 'cr-badges');
+      badges.forEach((b) => wrap.append(el('span', '', b)));
+      media.append(wrap);
+    }
+    heroGrid.append(media);
+    heroGrid.classList.add('has-media');
+  }
+  heroInner.append(heroGrid);
+  hero.append(heroInner);
+  page.append(hero);
+
+  // ---------- brew settings strip ----------
+  const settings = [
+    ['Coffee dose', dose !== null ? `${dose} g` : ''],
+    ['Brew temp', brewTemp !== null ? `${brewTemp}\u00B0C` : ''],
+    ['Milk', cap(milk)],
+    ['Milk temp', milkTemp !== null ? `${milkTemp}\u00B0C` : ''],
+    ['Yield', yieldMl !== null ? `${yieldMl} ml` : ''],
+    ['Base', tags('coffee base').join(', ')],
+  ].filter(([, v]) => v);
+  if (settings.length) {
+    const strip = el('section', 'cr-settings');
+    strip.setAttribute('aria-label', 'Brew settings');
+    const inner = el('div', 'cr-inner');
+    const dl = el('dl');
+    settings.forEach(([label, value]) => {
+      const d = el('div');
+      d.append(el('dt', 'cr-label', label), el('dd', '', value));
+      dl.append(d);
+    });
+    inner.append(dl);
+    strip.append(inner);
+    page.append(strip);
+  }
+
+  // ---------- method column ----------
+  const main = el('div', 'cr-main');
+  const mainInner = el('div', 'cr-inner');
+  const grid = el('div', 'cr-main-grid');
+  const method = el('div', 'cr-method');
+
+  if (ingredients.length) {
+    const sec = el('section', 'cr-section');
+    sec.setAttribute('aria-labelledby', 'cr-ing-h');
+    const head = el('div', 'cr-ing-head');
+    const h = el('h2', 'cr-heading', 'Ingredients');
+    h.id = 'cr-ing-h';
+    const cups = el('div', 'cr-cups');
+    cups.setAttribute('role', 'group');
+    cups.setAttribute('aria-label', 'Number of cups');
+    cups.append(el('span', 'cr-label', 'Cups'));
+
+    const list = el('ul', 'cr-ingredients');
+    const items = ingredients.map((line) => {
+      const m = QUANTITY.exec(line);
+      const li = el('li');
+      const label = el('label');
+      const box = el('input', 'cr-check');
+      box.type = 'checkbox';
+      const text = el('span', 'cr-ing-text');
+      let qty = null;
+      if (m) {
+        qty = el('strong');
+        text.append(qty, ` ${m[3]}`);
+      } else {
+        text.append(line);
+      }
+      label.append(box, text);
+      li.append(label);
+      list.append(li);
+      return { qty, amount: m ? parseFloat(m[1]) : 0, unit: m && m[2] ? ` ${m[2]}` : '' };
+    });
+    const scale = (n) => items.forEach((i) => {
+      if (i.qty) i.qty.textContent = `${Math.round(i.amount * n * 10) / 10}${i.unit}`;
+    });
+    CUP_OPTIONS.forEach((n) => {
+      const b = el('button', 'cr-pill-btn', String(n));
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(n === 1));
+      b.addEventListener('click', () => {
+        scale(n);
+        cups.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      });
+      cups.append(b);
+    });
+    scale(1);
+
+    head.append(h, cups);
+    sec.append(head, list);
+    method.append(sec);
+  }
+
+  if (steps.length) {
+    const sec = el('section', 'cr-section');
+    sec.setAttribute('aria-labelledby', 'cr-method-h');
+    const h = el('h2', 'cr-heading', 'Method');
+    h.id = 'cr-method-h';
+    const ol = el('ol', 'cr-steps');
+    steps.forEach((text, i) => {
+      const li = el('li', 'cr-step');
+      const n = el('span', 'cr-step-n', String(i + 1));
+      n.setAttribute('aria-hidden', 'true');
+      const body = el('div');
+      body.append(el('p', 'cr-label', `Step ${i + 1}`), el('p', 'cr-step-text', text));
+      li.append(n, body);
+      ol.append(li);
+    });
+    sec.append(h, ol);
+    method.append(sec);
+  }
+
+  const callout = el('section', 'cr-section cr-callout');
+  callout.setAttribute('aria-label', 'Make it on your Atelier');
+  const calloutInner = el('div', 'cr-callout-inner');
+  const calloutCopy = el('div', 'cr-callout-copy');
+  calloutCopy.append(
+    el('p', 'cr-label', 'Own an Atelier?'),
+    el('h3', '', 'Let it make this one for you.'),
+    el('p', '', 'Send the recipe and it sets the dose, brew temperature and milk for you, then nudges it towards your flavour DNA.'),
+  );
+  calloutInner.append(calloutCopy, makeSendButton('cr-btn-light'));
+  callout.append(calloutInner);
+  method.append(callout);
+  grid.append(method);
+
+  // ---------- sidebar ----------
+  const aside = el('aside', 'cr-aside');
+
+  const scores = [['Body', num('body')], ['Sweetness', num('sweetness')], ['Acidity', num('acidity')]]
+    .filter(([, v]) => v !== null);
+  if (scores.length) {
+    const sweetness = num('sweetness');
+    const acidity = num('acidity');
+    const summary = sweetness !== null && acidity !== null && sweetness >= 6 && acidity <= 3
+      ? 'Soft, sweet and low in acidity. An easy cup.'
+      : 'Balanced and bright.';
+    const card = el('section', 'cr-card cr-card-soft');
+    card.setAttribute('aria-labelledby', 'cr-cup-h');
+    const sh = el('h2', 'cr-cup-summary', summary);
+    sh.id = 'cr-cup-h';
+    const bars = el('div', 'cr-bars');
+    scores.forEach(([label, v]) => {
+      const row = el('div');
+      const head = el('div', 'cr-bar-head');
+      head.append(el('span', '', label), el('span', '', `${v} / ${MAX_SCORE}`));
+      const track = el('div', 'cr-track');
+      track.setAttribute('role', 'img');
+      track.setAttribute('aria-label', `${label} ${v} out of ${MAX_SCORE}`);
+      const fill = el('span', `cr-fill${label === 'Acidity' ? ' is-acidity' : ''}`);
+      fill.style.width = `${Math.max(0, Math.min(100, (v / MAX_SCORE) * 100))}%`;
+      track.append(fill);
+      row.append(head, track);
+      bars.append(row);
+    });
+    card.append(el('p', 'cr-eyebrow', 'Predicted cup'), sh, bars);
+    aside.append(card);
+  }
+
+  const bean = one('bean');
+  if (bean) {
+    const card = el('section', 'cr-card cr-card-raised');
+    card.setAttribute('aria-labelledby', 'cr-bean-h');
+    const bh = el('h2', 'cr-bean-name', bean);
+    bh.id = 'cr-bean-h';
+    card.append(el('p', 'cr-eyebrow', 'The bean'), bh);
+    if (one('bean notes')) card.append(el('p', 'cr-bean-notes', one('bean notes')));
+
+    const facts = [
+      ['Origin', tags('origin').join(', ')],
+      ['Varietal', tags('varietal').join(', ')],
+      ['Roast', tags('roast').join(', ')],
+      ['Technique', tags('technique').join(', ')],
+    ].filter(([, v]) => v);
+    if (facts.length) {
+      const dl = el('dl', 'cr-facts');
+      facts.forEach(([label, value]) => {
+        const d = el('div');
+        d.append(el('dt', '', label), el('dd', '', value));
+        dl.append(d);
+      });
+      card.append(dl);
+    }
+
+    const flavours = tags('flavor');
+    if (flavours.length) {
+      card.append(el('p', 'cr-label is-spaced', 'Flavour notes'));
+      const ul = el('ul', 'cr-chips');
+      flavours.forEach((f) => ul.append(el('li', '', f)));
+      card.append(ul);
+    }
+    if (SHOP_URL) {
+      const a = el('a', 'cr-link', 'Shop this bean ');
+      a.href = SHOP_URL;
+      const arrow = el('span', '', '\u2192');
+      arrow.setAttribute('aria-hidden', 'true');
+      a.append(arrow);
+      card.append(a);
+    }
+    aside.append(card);
+  }
+
+  const perCup = [
+    calories !== null ? `${calories} kcal` : '',
+    yieldMl !== null ? `${yieldMl} ml` : '',
+    temperature.join(', '),
+  ].filter(Boolean);
+  if (perCup.length) {
+    const sec = el('section', 'cr-per-cup');
+    sec.append(el('h2', 'cr-label', 'Per cup'), el('p', 'cr-per-cup-value', perCup.join(' \u00B7 ')));
+    aside.append(sec);
+  }
+
+  grid.append(aside);
+  mainInner.append(grid);
+  main.append(mainInner);
+  page.append(main);
 
   addJsonLd({
-    name: title ? title.textContent.trim() : '',
+    name: name ? name.textContent.trim() : '',
     description: description ? description.textContent.trim() : '',
     image: picture && picture.querySelector('img') ? picture.querySelector('img').src : '',
-    category: one('style') ? pretty(one('style')) : '',
+    category: style,
     prepTime: one('prep time'),
     totalTime: one('total time'),
     yieldMl,
     ingredients,
     steps,
-    keywords: values(rows.flavor).map(pretty),
-    diets: values(rows.diet)
+    keywords: tags('flavor'),
+    diets: listValues(rows.diet)
       .map((v) => DIET_SCHEMA[String(v).split('/').pop()])
       .filter(Boolean)
       .map((t) => `https://schema.org/${t}`),
-    calories: num('calories'),
+    calories,
   });
 
-  block.replaceChildren(wrap);
+  block.replaceChildren(page);
 }
