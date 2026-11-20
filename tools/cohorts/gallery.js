@@ -443,7 +443,8 @@ function renderTop() {
   const top = h(
     'header',
     'top',
-    h('h1', '', 'Cohort gallery'),
+    // the dialog's title already says Cohort gallery: the heading is for screen readers only
+    h('h1', 'sr-only', 'Cohort gallery'),
     renderViews(),
     pages && renderPicker(),
     pages && renderDevices(),

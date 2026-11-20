@@ -88,10 +88,12 @@ body {
   background: var(--bg);
 }
 
-.top h1 {
-  margin: 0 var(--s2) 0 0;
-  font-size: var(--swc-font-size-200, 16px);
-  font-weight: 700;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
   white-space: nowrap;
 }
 
