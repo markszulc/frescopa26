@@ -81,9 +81,14 @@ body {
 
 .top {
   display: flex;
+  flex: none;
   align-items: center;
   gap: var(--s3);
-  padding: var(--s2) var(--s4);
+
+  /* the same height in every view: the Experiences controls are 32px, the other views have none */
+  box-sizing: border-box;
+  height: calc(var(--h-m) + 2 * var(--s2) + 1px);
+  padding: 0 var(--s4);
   border-bottom: 1px solid var(--line);
   background: var(--bg);
 }
