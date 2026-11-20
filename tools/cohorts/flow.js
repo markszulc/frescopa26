@@ -1,30 +1,37 @@
 /*
  * Gallery view "Flow": how the cohorts came about, from cohorts.json (size.js output).
  *
- * - A Sankey: entry source → device → rule (first match wins) → homepage experience. Flows are
- *   coloured by the kind of signal that decides them, the experiences by their group colour (the
- *   same colour as their column in Pages). Hovering a rule or an experience lights up its path;
- *   clicking an experience opens its page in Pages.
- * - Week by week: each experience's share of homepage views per full week, and what to look at
- *   again (a rule that grows or shrinks 2x, a small rule that stands out, low samples, what no
- *   rule catches).
+ * - An interactive Sankey: entry source → device → rule (first match wins) → homepage
+ *   experience, laid out at the width it gets. Hover anything for its numbers; click (or Enter
+ *   on) a node to select it: its flows stay lit and the panel beside the chart explains it (where
+ *   the views go, the rule's signal and behaviour today, its weekly share, its holdout result,
+ *   the experience's rules, a button to see its page). Esc or a click on the background clears.
+ * - Flows are coloured by experience (the colour of its column in Pages) or by the signal that
+ *   decides them (Spectrum 2 visual colours).
+ * - Week by week: each experience's share per full week, and what to look at again.
  */
 /* eslint-disable max-len */
 import { groupColor } from './model.js';
 
 const SIG = {
-  link: { label: 'Where they came from', color: '#4b75d6' },
-  agent: { label: 'Personal AI agent', color: '#8a5cd6' },
-  memory: { label: 'Visit memory', color: '#17a08a' },
-  device: { label: 'Device', color: '#e8693c' },
-  none: { label: 'No signal', color: '#9a9a9a' },
+  link: { label: 'Where they came from', color: 'var(--swc-blue-visual-color, #4b75ff)' },
+  agent: { label: 'Personal AI agent', color: 'var(--swc-purple-visual-color, #9d5ae5)' },
+  memory: { label: 'Visit memory', color: 'var(--swc-seafoam-visual-color, #0f977f)' },
+  device: { label: 'Device', color: 'var(--swc-orange-visual-color, #e86a00)' },
+  none: { label: 'No signal', color: 'var(--swc-gray-visual-color, #8f8f8f)' },
 };
+const NEUTRAL = 'var(--swc-gray-visual-color, #8f8f8f)';
 const NS = 'http://www.w3.org/2000/svg';
-const W = 1180;
-const COLX = [0, 290, 560, 900];
-const BAR = 12;
+const BAR = 10;
 const PAD = 7;
-const TOP = 34;
+const TOP = 30;
+const HEIGHT = 560;
+const CHAR = 6.4;
+
+/* kept while the gallery is open: switching views or resizing keeps the selection */
+const ui = { selected: null, colorBy: 'experience', review: null };
+let RULES = null;
+const colorOf = (id) => groupColor(RULES, id);
 
 const svg = (tag, attrs = {}, ...kids) => {
   const el = document.createElementNS(NS, tag);
@@ -38,146 +45,353 @@ const h = (tag, cls, ...kids) => {
   kids.flat().forEach((k) => { if (k != null && k !== false) el.append(k); });
   return el;
 };
-const pct = (x, d) => (x == null ? '–' : `${(x * 100).toFixed(d ?? (x < 0.1 ? 1 : 0))}%`);
-const expId = (nodeId) => nodeId.replace(/^x:/, '');
+const pct = (x, d) => (x == null || Number.isNaN(x) ? '–' : `${(x * 100).toFixed(d ?? (x < 0.1 ? 1 : 0))}%`);
+const times = (x) => (x == null ? '–' : `${x.toFixed(x < 10 ? 1 : 0)}x`);
+const plain = (label) => label.replace(/^\d+ · /, '');
+const clip = (s, px) => {
+  const n = Math.max(6, Math.floor(px / CHAR));
+  return s.length > n ? `${s.slice(0, n - 1)}…` : s;
+};
+const swatch = (color, cls = 'sw') => {
+  const el = h('span', cls);
+  el.style.setProperty('--c', color);
+  return el;
+};
 
-/** Lay out the Sankey: node boxes per column, then each link's band at both ends. */
-function layout(data, height) {
-  const total = data.meta.views;
+/* ---------- model ---------- */
+
+function model(data, rules) {
+  const ruleExp = Object.fromEntries((rules.rules || []).map((r) => [r.id, r.experience]));
+  ruleExp.none = 'default';
   const node = {};
   data.columns.forEach((c, ci) => c.nodes.forEach((n) => {
     node[n.id] = {
-      ...n, ci, out: [], in: [],
+      ...n, ci, out: [], in: [], kind: ['entry', 'device', 'rule', 'exp'][ci],
     };
   }));
-  const avail = Math.min(...data.columns.map((c) => height - TOP - (c.nodes.length - 1) * PAD));
-  const k = avail / total;
+  const links = data.links.filter((l) => node[l.s] && node[l.t]).map((l, i) => ({ ...l, i }));
+  links.forEach((l) => { node[l.s].out.push(l); node[l.t].in.push(l); });
+  const ruleOf = Object.fromEntries((data.rules || []).map((r) => [r.id, r]));
+  const expOf = Object.fromEntries((data.experiences || []).map((x) => [x.id, x]));
+  const full = data.meta.fullWeeks || (data.today?.weeks || []).length;
+  const allWeeks = (data.today?.weeks || []).slice(0, full);
+  const weekShare = (weeks) => allWeeks.map((v, i) => (v ? ((weeks || [])[i] || 0) / v : 0));
+  return {
+    node, links, ruleExp, ruleOf, expOf, total: data.meta.views, weekShare,
+  };
+}
+
+/** The rules a node stands for: its own for a rule, its rules for an experience. */
+function rulesOf(m, n) {
+  if (n.kind === 'rule') return [n.id.slice(2)];
+  if (n.kind === 'exp') return Object.entries(m.ruleExp).filter(([, x]) => x === n.id.slice(2)).map(([r]) => r);
+  return null;
+}
+
+/** Links lit for a node: the whole path of its rules, or its own flows for a source or device. */
+function litBy(m, n) {
+  const ids = rulesOf(m, n);
+  if (ids) return new Set(m.links.filter((l) => (l.rules || []).some((r) => ids.includes(r))).map((l) => l.i));
+  return new Set([...n.in, ...n.out].map((l) => l.i));
+}
+
+function linkColor(m, l) {
+  if (ui.colorBy === 'signal') return (SIG[l.signal] || SIG.none).color;
+  const xs = new Set((l.rules || []).map((r) => m.ruleExp[r] || 'default'));
+  return xs.size === 1 ? colorOf([...xs][0]) : NEUTRAL;
+}
+
+function nodeColor(m, n) {
+  if (n.kind === 'exp') return colorOf(n.id.slice(2));
+  if (n.kind === 'rule') return ui.colorBy === 'signal' ? (SIG[n.signal] || SIG.none).color : colorOf(m.ruleExp[n.id.slice(2)] || 'default');
+  return 'var(--ink-2)';
+}
+
+/* ---------- layout at the width it gets ---------- */
+
+function layout(m, data, width) {
+  const labelR = Math.min(260, Math.max(170, width * 0.24));
+  const span = width - labelR - BAR;
+  const colX = [0, span * 0.3, span * 0.6, span];
+  const avail = Math.min(...data.columns.map((c) => HEIGHT - TOP - (c.nodes.length - 1) * PAD));
+  const k = avail / m.total;
   data.columns.forEach((c) => {
     let y = TOP;
     c.nodes.forEach((n0) => {
-      const n = node[n0.id];
-      n.x = COLX[n.ci];
+      const n = m.node[n0.id];
+      n.x = colX[n.ci];
       n.y = y;
       n.h = Math.max(2, n.views * k);
+      n.room = n.ci < 3 ? colX[n.ci + 1] - colX[n.ci] - BAR - 14 : labelR - 8;
       y += n.h + PAD;
     });
   });
-  const links = data.links.filter((l) => node[l.s] && node[l.t]).map((l) => ({ ...l, w: Math.max(1, l.views * k) }));
-  links.forEach((l) => { node[l.s].out.push(l); node[l.t].in.push(l); });
-  Object.values(node).forEach((n) => {
+  m.links.forEach((l) => { l.w = Math.max(1, l.views * k); });
+  Object.values(m.node).forEach((n) => {
     let { y } = n;
-    n.out.sort((a, b) => node[a.t].y - node[b.t].y).forEach((l) => { l.sy = y; y += l.w; });
+    n.out.sort((a, b) => m.node[a.t].y - m.node[b.t].y).forEach((l) => { l.sy = y; y += l.w; });
     y = n.y;
-    n.in.sort((a, b) => node[a.s].y - node[b.s].y).forEach((l) => { l.ty = y; y += l.w; });
+    n.in.sort((a, b) => m.node[a.s].y - m.node[b.s].y).forEach((l) => { l.ty = y; y += l.w; });
   });
-  return { node, links, total };
+  return colX;
 }
 
-function band(l, node) {
-  const x0 = node[l.s].x + BAR;
-  const x1 = node[l.t].x;
-  const m = (x0 + x1) / 2;
-  const { sy, ty, w } = l; // eslint-disable-line object-curly-newline
-  return `M${x0},${sy}C${m},${sy} ${m},${ty} ${x1},${ty}L${x1},${ty + w}C${m},${ty + w} ${m},${sy + w} ${x0},${sy + w}Z`;
+function band(m, l) {
+  const x0 = m.node[l.s].x + BAR;
+  const x1 = m.node[l.t].x;
+  const c = (x0 + x1) / 2;
+  const {
+    sy, ty, w,
+  } = l;
+  return `M${x0},${sy}C${c},${sy} ${c},${ty} ${x1},${ty}L${x1},${ty + w}C${c},${ty + w} ${c},${sy + w} ${x0},${sy + w}Z`;
 }
 
-function sankey(data, rules, onPick) {
-  const height = 600;
-  const { node, links, total } = layout(data, height);
-  const ruleExp = Object.fromEntries((rules.rules || []).map((r) => [r.id, r.experience]));
-  ruleExp.none = 'default';
+/* ---------- the chart ---------- */
+
+function mark(root, lit, cls) {
+  root.querySelectorAll('.flows path').forEach((p) => p.classList.toggle(cls, lit.has(Number(p.dataset.i))));
+}
+
+function chart(m, data, width, tip, select) {
+  const colX = layout(m, data, width);
   const root = svg('svg', {
-    viewBox: `-4 0 ${W + 8} ${height + 8}`, class: 'sankey', role: 'img', 'aria-label': 'How homepage views become cohorts',
+    viewBox: `0 0 ${width} ${HEIGHT + 4}`, width, height: HEIGHT + 4, class: 'sankey', role: 'group', 'aria-label': 'How homepage views become cohorts',
   });
-  data.columns.forEach((c, ci) => root.append(svg('text', { x: COLX[ci], y: 14, class: 'head' }, c.head)));
+  data.columns.forEach((c, ci) => root.append(svg('text', { x: colX[ci], y: 12, class: 'head' }, c.head.split(' · ')[0])));
   const flows = svg('g', { class: 'flows' });
-  links.forEach((l) => {
-    const p = svg('path', {
-      d: band(l, node), fill: (SIG[l.signal] || SIG.none).color, 'data-rules': (l.rules || []).join(' '),
-    });
-    p.append(svg('title', {}, `${node[l.s].label} → ${node[l.t].label}: ${pct(l.views / total, 1)} of views`));
+  m.links.forEach((l) => {
+    const p = svg('path', { d: band(m, l), 'data-i': l.i });
+    p.style.fill = linkColor(m, l);
+    p.addEventListener('mousemove', (ev) => tip(ev, `${plain(m.node[l.s].label)} → ${plain(m.node[l.t].label)}`, `${pct(l.views / m.total, 1)} of homepage views`));
+    p.addEventListener('mouseleave', () => tip(null));
     flows.append(p);
   });
   root.append(flows);
   const nodes = svg('g', { class: 'nodes' });
-  Object.values(node).forEach((n) => {
-    const isExp = n.id.startsWith('x:');
-    const fill = isExp ? groupColor(rules, expId(n.id)) : (n.signal && SIG[n.signal]?.color) || 'var(--ink-2)';
-    const lines = [n.label.replace(/^\d+ · /, ''), pct(n.views / total)];
+  Object.values(m.node).forEach((n) => {
+    const num = n.kind === 'rule' ? (n.label.match(/^\d+/)?.[0] || '') : '';
+    const name = plain(n.label);
+    const share = pct(n.views / m.total);
+    const bar = svg('rect', {
+      class: 'bar', x: n.x, y: n.y, width: BAR, height: n.h, rx: 2,
+    });
+    bar.style.fill = nodeColor(m, n);
     const g = svg(
       'g',
-      { class: `node c${n.ci}${isExp ? ' exp' : ''}`, 'data-id': n.id, tabindex: n.ci >= 2 ? 0 : null },
+      {
+        class: `node ${n.kind}`, 'data-id': n.id, tabindex: 0, role: 'button', 'aria-label': `${name}, ${share} of views`,
+      },
+      // the label line is clickable too, without covering the flows under a tall bar
       svg('rect', {
-        x: n.x, y: n.y, width: BAR, height: n.h, fill, rx: 2,
+        class: 'hit', x: n.x + BAR, y: n.y + n.h / 2 - 9, width: 6 + Math.min(n.room, (name.length + 8) * CHAR), height: 18,
       }),
+      bar,
       svg(
         'text',
         { x: n.x + BAR + 6, y: n.y + n.h / 2, dy: '0.35em' },
-        svg('tspan', { class: 'nl' }, n.ci === 2 ? `${n.label.match(/^\d+/)?.[0] || ''} ${lines[0]}`.trim() : lines[0]),
-        svg('tspan', { class: 'nv', dx: 6 }, lines[1]),
+        num ? svg('tspan', { class: 'nn' }, `${num} `) : null,
+        svg('tspan', { class: 'nl' }, clip(name, n.room - share.length * CHAR - 14)),
+        svg('tspan', { class: 'nv', dx: 5 }, share),
       ),
     );
-    if (n.ci >= 2) {
-      const ids = n.ci === 2
-        ? [n.id.replace(/^r:/, '')]
-        : Object.entries(ruleExp).filter(([, x]) => x === expId(n.id)).map(([r]) => r);
-      const on = () => root.classList.add('focus') || flows.querySelectorAll('path').forEach((p) => {
-        p.classList.toggle('on', p.dataset.rules.split(' ').some((r) => ids.includes(r)));
-      });
-      const off = () => root.classList.remove('focus');
-      g.addEventListener('mouseenter', on);
-      g.addEventListener('mouseleave', off);
-      g.addEventListener('focus', on);
-      g.addEventListener('blur', off);
-      if (isExp) {
-        g.classList.add('link');
-        g.append(svg('title', {}, `Show the page for ${n.label}`));
-        g.addEventListener('click', () => onPick(expId(n.id)));
-        g.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') onPick(expId(n.id)); });
-      }
-    }
+    g.addEventListener('mousemove', (ev) => tip(ev, name, `${share} of homepage views · click for details`));
+    g.addEventListener('mouseenter', () => { root.classList.add('peek'); mark(root, litBy(m, n), 'peek-on'); });
+    g.addEventListener('mouseleave', () => { root.classList.remove('peek'); tip(null); });
+    g.addEventListener('click', (ev) => { ev.stopPropagation(); select(ui.selected === n.id ? null : n.id); });
+    g.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(ui.selected === n.id ? null : n.id); }
+    });
     nodes.append(g);
   });
   root.append(nodes);
+  root.addEventListener('click', () => select(null));
   return root;
 }
 
-function spark(values, color, max) {
-  const w = 120;
-  const ht = 28;
+function applySelection(m, root) {
+  const n = ui.selected && m.node[ui.selected];
+  root.classList.toggle('focus', !!n);
+  root.querySelectorAll('.node').forEach((g) => g.classList.toggle('selected', g.dataset.id === ui.selected));
+  if (n) mark(root, litBy(m, n), 'on');
+}
+
+/* ---------- details panel ---------- */
+
+function spark(values, color, w = 120, ht = 28) {
   const n = values.length;
-  if (n < 2) return svg('svg', { width: w, height: ht });
+  if (n < 2) return null;
+  const max = Math.max(...values, 0.0001);
   const x = (i) => (i / (n - 1)) * (w - 6) + 3;
   const y = (v) => ht - 3 - (v / max) * (ht - 6);
   const d = values.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
-  return svg(
-    'svg',
-    {
-      width: w, height: ht, class: 'spark', 'aria-hidden': 'true',
-    },
-    svg('path', {
-      d, stroke: color, fill: 'none', 'stroke-width': 2,
-    }),
-    svg('circle', {
-      cx: x(n - 1), cy: y(values[n - 1]), r: 3, fill: color,
-    }),
+  const path = svg('path', { d, fill: 'none', 'stroke-width': 2 });
+  path.style.stroke = color;
+  const end = svg('circle', { cx: x(n - 1), cy: y(values[n - 1]), r: 3 });
+  end.style.fill = color;
+  return svg('svg', {
+    width: w, height: ht, class: 'spark', 'aria-hidden': 'true',
+  }, path, end);
+}
+
+function bars(rows, total) {
+  const max = Math.max(...rows.map((r) => r.views), 1);
+  return h('ul', 'bars', rows.map((r) => {
+    const fill = h('span', 'fill');
+    fill.style.width = `${(r.views / max) * 100}%`;
+    fill.style.background = r.color || 'var(--ink-2)';
+    const li = h('li', r.onClick ? 'pick' : '', h('span', 'blabel', r.label), h('span', 'btrack', fill), h('span', 'bval', pct(r.views / total)));
+    if (r.onClick) {
+      li.tabIndex = 0;
+      li.setAttribute('role', 'button');
+      li.addEventListener('click', r.onClick);
+      li.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') r.onClick(); });
+    }
+    return li;
+  }));
+}
+
+const stat = (label, value, note) => h('div', 'stat', h('dt', '', label), h('dd', '', value), note ? h('dd', 'note-s', note) : null);
+
+function verdictBadge(row) {
+  const v = row.verdict || '';
+  let key = 'neutral';
+  if (/^Keep|A\/A ok/.test(v)) key = 'positive';
+  else if (/^Fix|failed/i.test(v)) key = 'negative';
+  else if (/^Promising/.test(v)) key = 'informative';
+  return h('span', `badge-s ${key}`, v.split(':')[0]);
+}
+
+function textLink(text, onClick) {
+  const b = h('button', 'text-link', text);
+  b.type = 'button';
+  b.addEventListener('click', (ev) => { ev.stopPropagation(); onClick(); });
+  return b;
+}
+
+function pageButton(x, onPick) {
+  const b = h('button', 'button-s', 'Show its page');
+  b.type = 'button';
+  b.addEventListener('click', () => onPick(x));
+  return h('p', 'actions', b);
+}
+
+function holdoutBlock(ids) {
+  const rows = (ui.review?.rules || []).filter((r) => ids.includes(r.id));
+  if (!rows.length) return null;
+  return h(
+    'div',
+    'holdout-mini',
+    h('h4', '', ui.review.mock ? 'Against the holdout (example data)' : 'Against the holdout'),
+    h('ul', 'hrows', rows.map((r) => h(
+      'li',
+      '',
+      h('span', 'blabel', r.label),
+      h('span', 'bval', r.lowSample ? '–' : `${r.lift >= 0 ? '+' : '−'}${Math.abs(r.lift * 100).toFixed(0)}%`),
+      verdictBadge(r),
+    ))),
   );
 }
 
-/** Weekly share per experience, from the rules' full weeks over all views of that week. */
-function weekly(data, rules) {
-  const full = data.meta.fullWeeks || (data.today.weeks || []).length;
-  const all = (data.today.weeks || []).slice(0, full);
-  const ruleExp = Object.fromEntries((rules.rules || []).map((r) => [r.id, r.experience]));
+const sumWeeks = (m, ids) => ids.reduce((acc, id) => (m.ruleOf[id]?.weeks || []).map((v, i) => (acc[i] || 0) + v), []);
+
+function panel(m, data, select, onPick) {
+  const el = h('aside', 'details');
+  // DOM append writes null as text: skip the parts that are not there
+  const add = el.append.bind(el);
+  el.append = (...kids) => add(...kids.filter((k) => k != null && k !== false && k !== ''));
+  el.setAttribute('aria-live', 'polite');
+  const n = ui.selected && m.node[ui.selected];
+  if (!n) {
+    el.append(
+      h('p', 'eyebrow', 'Details'),
+      h('h3', '', 'Pick a part of the flow'),
+      h('p', 'sub', 'Click a rule or an experience to follow its visitors and see what they do today. Sources and devices show where their views go.'),
+      h('h4', '', 'Experiences'),
+      bars((data.columns[3]?.nodes || []).map((x) => ({
+        label: plain(x.label), views: x.views, color: colorOf(x.id.slice(2)), onClick: () => select(x.id),
+      })), m.total),
+    );
+    return el;
+  }
+  const name = plain(n.label);
+  const close = h('button', 'icon-btn close', '');
+  close.type = 'button';
+  close.setAttribute('aria-label', 'Clear the selection');
+  close.addEventListener('click', () => select(null));
+  const kindLabel = {
+    entry: 'Entry source', device: 'Device', rule: `Rule ${n.label.match(/^\d+/)?.[0] || ''} · first match wins`, exp: 'Homepage experience',
+  }[n.kind];
+  el.append(h('header', '', swatch(nodeColor(m, n), 'dot'), h('div', '', h('p', 'eyebrow', kindLabel), h('h3', '', name)), close));
+
+  if (n.kind === 'entry' || n.kind === 'device') {
+    el.append(
+      h('dl', 'stats', h('div', 'stat', h('dt', '', 'Homepage views'), h('dd', '', pct(n.views / m.total)))),
+      h('h4', '', n.kind === 'entry' ? 'Then on' : 'Rules that fire'),
+      bars(n.out.map((l) => ({
+        label: plain(m.node[l.t].label), views: l.views, color: nodeColor(m, m.node[l.t]), onClick: () => select(l.t),
+      })), m.total),
+    );
+    if (n.kind === 'device') {
+      el.append(h('h4', '', 'Coming from'), bars(n.in.map((l) => ({ label: plain(m.node[l.s].label), views: l.views, onClick: () => select(l.s) })), m.total));
+    }
+    return el;
+  }
+
+  if (n.kind === 'rule') {
+    const id = n.id.slice(2);
+    const r = m.ruleOf[id] || {};
+    const x = m.ruleExp[id] || 'default';
+    const t = r.today || {};
+    const xNode = m.node[`x:${x}`];
+    const flags = [
+      r.modelled && 'Estimated: depends on visit memory, which Optel cannot see.',
+      r.firstVisitAssumed && 'Upper bound: Optel cannot see first visits, so every view counts as one.',
+      r.lowSample && 'Few sampled views: read with care.',
+      r.standsOut && 'Small but stands out: more engaged or growing fast.',
+    ].filter(Boolean);
+    el.append(
+      h('p', 'sub', `${(SIG[n.signal] || SIG.none).label} · leads to `, xNode ? textLink(plain(xNode.label), () => select(xNode.id)) : x),
+      h(
+        'dl',
+        'stats',
+        stat('Homepage views', pct(n.views / m.total), r.growth != null ? `${times(r.growth)} over the period` : null),
+        stat('Reach the goal', pct(t.goalRate), t.supportRate != null ? `${pct(t.supportRate)} take the supporting step` : null),
+        stat('Do nothing', pct(t.didNothing), t.vsAll?.didNothing != null ? `${times(t.vsAll.didNothing)} all visitors` : null),
+      ),
+      flags.length ? h('ul', 'flags', flags.map((f) => h('li', '', f))) : null,
+      r.weeks ? h('div', 'trend', h('h4', '', 'Share by week'), spark(m.weekShare(r.weeks), nodeColor(m, n), 260, 44)) : null,
+    );
+    if (t.topClicks?.length) {
+      el.append(h('h4', '', 'What they click today'), h('ol', 'clicks', t.topClicks.slice(0, 5).map((c) => h('li', '', h('span', 'blabel', c.link ? c.click : `${c.click.split(' ').pop()} (on the page)`), h('span', 'bval', pct(c.share))))));
+    }
+    el.append(holdoutBlock([id]), pageButton(x, onPick));
+    return el;
+  }
+
+  const x = n.id.slice(2);
+  const ids = rulesOf(m, n);
+  const weeks = sumWeeks(m, ids);
+  el.append(
+    h('dl', 'stats', stat('Homepage views', pct(n.views / m.total)), stat('Rules', String(n.in.length))),
+    h('h4', '', 'Rules that lead here'),
+    bars(n.in.map((l) => ({
+      label: plain(m.node[l.s].label), views: l.views, color: nodeColor(m, m.node[l.s]), onClick: () => select(l.s),
+    })), m.total),
+    weeks.length ? h('div', 'trend', h('h4', '', 'Share by week'), spark(m.weekShare(weeks), nodeColor(m, n), 260, 44)) : null,
+  );
+  el.append(holdoutBlock(ids), pageButton(x, onPick));
+  return el;
+}
+
+/* ---------- week by week, look at again ---------- */
+
+function weekly(m, data) {
   return (data.experiences || []).map((x) => {
-    const rs = (data.rules || []).filter((r) => (x.id === 'default' ? !ruleExp[r.id] || r.id === 'none' : ruleExp[r.id] === x.id));
-    const views = all.map((_, i) => rs.reduce((a, r) => a + ((r.weeks || [])[i] || 0), 0));
-    const shares = views.map((v, i) => (all[i] ? v / all[i] : 0));
+    const ids = Object.entries(m.ruleExp).filter(([, e]) => e === x.id).map(([r]) => r);
+    const shares = m.weekShare(sumWeeks(m, ids));
     const first = shares[0];
     const last = shares[shares.length - 1];
-    return {
-      ...x, shares, change: first ? last / first : null, rules: rs,
-    };
+    return { ...x, shares, change: first ? last / first : null };
   });
 }
 
@@ -185,68 +399,162 @@ function lookAgain(data, rows) {
   const out = [];
   (data.rules || []).forEach((r) => {
     if (r.standsOut) out.push(`"${r.label}" is small (${pct(r.share, 1)}) but stands out: more engaged or growing fast. Worth its own look.`);
-    if (r.growth != null && r.growth >= 2) out.push(`"${r.label}" doubled over the period (${r.growth.toFixed(1)}x): check its experience still fits a bigger group.`);
-    if (r.growth != null && r.growth <= 0.5) out.push(`"${r.label}" halved over the period (${r.growth.toFixed(1)}x): is the campaign behind it over?`);
+    if (r.growth != null && r.growth >= 2) out.push(`"${r.label}" doubled over the period (${times(r.growth)}): check its experience still fits a bigger group.`);
+    if (r.growth != null && r.growth <= 0.5) out.push(`"${r.label}" halved over the period (${times(r.growth)}): is the campaign behind it over?`);
   });
   const low = (data.rules || []).filter((r) => r.lowSample).map((r) => r.label);
   if (low.length) out.push(`Too few sampled views to judge: ${low.join(', ')}.`);
   const none = rows.find((x) => x.id === 'default');
-  if (none && none.share > 0.25) out.push(`${pct(none.share)} of views match no rule and get the original page. The Holdout view lists where they come from.`);
+  if (none && none.share > 0.25) out.push(`${pct(none.share)} of views match no rule and get the original page.`);
   const modelled = (data.rules || []).filter((r) => r.modelled).map((r) => r.label);
   if (modelled.length) out.push(`Estimated, not measured (visit memory is not in Optel): ${modelled.join(', ')}.`);
   return out;
 }
 
-export default function renderFlow(host, { data, rules, onPick }) {
-  if (!data?.columns) {
-    host.append(h('p', 'note', 'No cohorts.json published at /cohorts/cohorts.json: run size.js and publish it to see how the cohorts came about.'));
-    return;
-  }
-  const m = data.meta;
-  const legend = h('ul', 'legend', Object.values(SIG).map((s) => {
-    const sw = h('span', 'sw');
-    sw.style.background = s.color;
-    return h('li', '', sw, s.label);
-  }));
-  host.append(
-    h(
-      'div',
-      'flow-head',
-      h('h2', '', 'How the cohorts came about'),
-      h('p', 'sub', `${m.domain}${m.path} · ${String(m.start).slice(0, 10)} to ${String(m.end).slice(0, 10)} · ${m.bundles.toLocaleString()} sampled views (about ${m.views.toLocaleString()} views). Hover a rule or an experience to follow it; click an experience to see its page.`),
-      legend,
-    ),
-    h('div', 'sankey-wrap', sankey(data, rules, onPick)),
-  );
-
-  const rows = weekly(data, rules);
-  const max = Math.max(...rows.flatMap((r) => r.shares), 0.01);
-  const full = m.fullWeeks || rows[0]?.shares.length || 0;
+function foot(m, data, select) {
+  const rows = weekly(m, data);
+  const full = data.meta.fullWeeks || rows[0]?.shares.length || 0;
   const table = h('table', 'weeks');
   table.append(h('thead', '', h('tr', '', h('th', '', 'Experience'), h('th', '', `Share by week (${full} full weeks)`), h('th', 'num', 'Now'), h('th', 'num', 'Change'))));
   const body = h('tbody');
   rows.forEach((r) => {
-    const color = groupColor(rules, r.id);
-    const d = h('span', 'dot');
-    d.style.setProperty('--c', color);
+    const color = colorOf(r.id);
     let ch = '–';
     if (r.change != null) ch = r.change >= 1 ? `+${pct(r.change - 1, 0)}` : `−${pct(1 - r.change, 0)}`;
     const tr = h(
       'tr',
-      '',
-      h('td', '', d, ` ${r.label}`),
-      h('td', '', spark(r.shares, color, max)),
+      'pick',
+      h('td', '', swatch(color, 'dot'), ` ${r.label}`),
+      h('td', '', spark(r.shares, color)),
       h('td', 'num', pct(r.shares[r.shares.length - 1])),
       h('td', `num${r.change != null && (r.change >= 1.5 || r.change <= 0.67) ? ' strong' : ''}`, ch),
     );
+    tr.addEventListener('click', () => { select(`x:${r.id}`); window.scrollTo?.(0, 0); tr.closest('.stage')?.scrollTo({ top: 0, behavior: 'smooth' }); });
     body.append(tr);
   });
   table.append(body);
   const notes = lookAgain(data, rows);
-  host.append(h(
+  return h(
     'div',
     'flow-foot',
     h('section', '', h('h3', '', 'Week by week'), table),
     h('section', '', h('h3', '', 'Look at again'), notes.length ? h('ul', 'again', notes.map((t) => h('li', '', t))) : h('p', 'sub', 'Nothing stands out this period.')),
-  ));
+  );
+}
+
+/* ---------- view ---------- */
+
+function actionGroup(label, options, value, onChange) {
+  const g = h('div', 'action-group');
+  g.setAttribute('role', 'radiogroup');
+  g.setAttribute('aria-label', label);
+  Object.entries(options).forEach(([id, text]) => {
+    const b = h('button', 'action', text);
+    b.type = 'button';
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', String(value === id));
+    b.addEventListener('click', () => onChange(id));
+    g.append(b);
+  });
+  return h('div', 'field', h('span', 'field-label', label), g);
+}
+
+function legend(data) {
+  if (ui.colorBy === 'signal') {
+    return h('ul', 'legend', Object.values(SIG).map((s) => h('li', '', swatch(s.color), s.label)));
+  }
+  return h(
+    'ul',
+    'legend',
+    (data.columns[3]?.nodes || []).map((x) => h('li', '', swatch(colorOf(x.id.slice(2))), plain(x.label).split(':')[0])),
+    h('li', '', swatch(NEUTRAL), 'Shared by several'),
+  );
+}
+
+export default async function renderFlow(host, { data, rules, onPick }) {
+  RULES = rules;
+  if (!data?.columns) {
+    host.append(h('p', 'note', 'No cohorts.json published at /cohorts/cohorts.json: run size.js and publish it to see how the cohorts came about.'));
+    return;
+  }
+  const m = model(data, rules);
+  const { meta } = data;
+  const head = h('div', 'flow-head');
+  const chartBox = h('div', 'sankey-wrap');
+  const tipEl = h('div', 'tip');
+  tipEl.hidden = true;
+  chartBox.append(tipEl);
+  let side = h('aside', 'details');
+  let svgEl = null;
+
+  const tip = (ev, title, text) => {
+    if (!ev) { tipEl.hidden = true; return; }
+    tipEl.replaceChildren(h('strong', '', title), h('span', '', text));
+    tipEl.hidden = false;
+    const box = chartBox.getBoundingClientRect();
+    const x = ev.clientX - box.left + 14;
+    const y = ev.clientY - box.top + 14;
+    tipEl.style.left = `${Math.max(0, Math.min(x, box.width - tipEl.offsetWidth - 4))}px`;
+    tipEl.style.top = `${y}px`;
+  };
+
+  const drawPanel = (select) => {
+    const next = panel(m, data, select, onPick);
+    side.replaceWith(next);
+    side = next;
+  };
+  const select = (id) => {
+    ui.selected = id;
+    drawPanel(select);
+    if (svgEl) applySelection(m, svgEl);
+  };
+  const drawChart = () => {
+    const width = Math.max(520, chartBox.clientWidth);
+    const next = chart(m, data, width, tip, select);
+    if (svgEl) svgEl.replaceWith(next); else chartBox.prepend(next);
+    svgEl = next;
+    applySelection(m, svgEl);
+  };
+  const drawHead = () => {
+    head.replaceChildren(
+      h(
+        'div',
+        'title-row',
+        h('div', '', h('h2', '', 'How the cohorts came about'), h('p', 'sub', `${meta.domain}${meta.path} · ${String(meta.start).slice(0, 10)} to ${String(meta.end).slice(0, 10)} · ${meta.bundles.toLocaleString()} sampled views (about ${meta.views.toLocaleString()})`)),
+        actionGroup('Colour flows by', { experience: 'Experience', signal: 'Signal' }, ui.colorBy, (v) => {
+          ui.colorBy = v;
+          drawHead();
+          drawChart();
+          drawPanel(select);
+        }),
+      ),
+      legend(data),
+    );
+  };
+
+  host.append(head, h('div', 'flow-body', chartBox, side), foot(m, data, select));
+  drawHead();
+  drawChart();
+  drawPanel(select);
+
+  const ro = new ResizeObserver(() => {
+    if (svgEl && Math.abs(Number(svgEl.getAttribute('width')) - chartBox.clientWidth) > 8) drawChart();
+  });
+  ro.observe(chartBox);
+  const onKey = (ev) => { if (ev.key === 'Escape' && ui.selected && host.isConnected) select(null); };
+  document.addEventListener('keydown', onKey);
+  const gone = new MutationObserver(() => {
+    if (host.isConnected) return;
+    ro.disconnect();
+    document.removeEventListener('keydown', onKey);
+    gone.disconnect();
+  });
+  gone.observe(document.body, { childList: true, subtree: true });
+
+  // the holdout result per rule, for the panel (real review.json or the labelled example)
+  if (!ui.review) {
+    const { loadReview } = await import('./holdout.js');
+    ui.review = await loadReview(data, rules);
+    if (host.isConnected) drawPanel(select);
+  }
 }
