@@ -1024,7 +1024,6 @@ body {
   gap: 2px;
   padding: var(--s3) var(--s4);
   border: 0;
-  border-left: 4px solid var(--tone);
   border-radius: var(--r-m);
   background: var(--swc-background-layer-1-color, light-dark(#f8f8f8, #1b1b1b));
   color: var(--ink);
@@ -1047,7 +1046,20 @@ body {
   line-height: 1.1;
 }
 
-.ttitle { font-weight: 700; }
+.ttitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.ttitle::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tone);
+  content: '';
+}
 
 .tsub {
   color: var(--ink-2);
