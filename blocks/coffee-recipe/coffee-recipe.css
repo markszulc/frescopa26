@@ -12,7 +12,7 @@ main > .section.coffee-recipe-container {
   margin: 0;
   padding: 0;
   max-width: none;
-  background: var(--paper, oklch(0.97 0.01 82));
+  background: var(--paper, oklch(97% 0.01 82deg));
 }
 
 main > .section.coffee-recipe-container > .coffee-recipe-wrapper {
@@ -22,19 +22,19 @@ main > .section.coffee-recipe-container > .coffee-recipe-wrapper {
 }
 
 .coffee-recipe {
-  --cr-burgundy: var(--burgundy, oklch(0.34 0.093 25));
-  --cr-terracotta: var(--terracotta, oklch(0.605 0.116 44));
-  --cr-terracotta-deep: var(--terracotta-deep, oklch(0.515 0.108 40));
-  --cr-amber: var(--amber, oklch(0.79 0.128 74));
-  --cr-paper: var(--paper, oklch(0.97 0.01 82));
-  --cr-paper-2: var(--paper-2, oklch(0.948 0.015 78));
-  --cr-paper-3: var(--paper-3, oklch(0.918 0.02 74));
-  --cr-line: var(--line, oklch(0.855 0.018 68));
-  --cr-ink: var(--ink, oklch(0.262 0.021 52));
-  --cr-ink-soft: var(--ink-soft, oklch(0.43 0.022 52));
-  --cr-charcoal: var(--charcoal, oklch(0.222 0.016 52));
-  --cr-cream: var(--cream, oklch(0.945 0.016 80));
-  --cr-cream-soft: var(--cream-soft, oklch(0.795 0.021 78));
+  --cr-burgundy: var(--burgundy, oklch(34% 0.093 25deg));
+  --cr-terracotta: var(--terracotta, oklch(60.5% 0.116 44deg));
+  --cr-terracotta-deep: var(--terracotta-deep, oklch(51.5% 0.108 40deg));
+  --cr-amber: var(--amber, oklch(79% 0.128 74deg));
+  --cr-paper: var(--paper, oklch(97% 0.01 82deg));
+  --cr-paper-2: var(--paper-2, oklch(94.8% 0.015 78deg));
+  --cr-paper-3: var(--paper-3, oklch(91.8% 0.02 74deg));
+  --cr-line: var(--line, oklch(85.5% 0.018 68deg));
+  --cr-ink: var(--ink, oklch(26.2% 0.021 52deg));
+  --cr-ink-soft: var(--ink-soft, oklch(43% 0.022 52deg));
+  --cr-charcoal: var(--charcoal, oklch(22.2% 0.016 52deg));
+  --cr-cream: var(--cream, oklch(94.5% 0.016 80deg));
+  --cr-cream-soft: var(--cream-soft, oklch(79.5% 0.021 78deg));
   --cr-display: var(--font-display, 'Schibsted Grotesk', system-ui, -apple-system, sans-serif);
   --cr-body: var(--font-body, 'Hanken Grotesk', system-ui, -apple-system, sans-serif);
   --cr-content: var(--content, 1120px);
@@ -42,9 +42,9 @@ main > .section.coffee-recipe-container > .coffee-recipe-wrapper {
   --cr-r-lg: var(--r-lg, 22px);
   --cr-r-xl: var(--r-xl, 32px);
   --cr-pill: var(--r-pill, 999px);
-  --cr-shadow-sm: var(--shadow-sm, 0 1px 2px oklch(0.3 0.03 50 / 6%), 0 2px 8px oklch(0.3 0.03 50 / 5%));
-  --cr-shadow-md: var(--shadow-md, 0 4px 14px oklch(0.3 0.03 50 / 7%), 0 14px 34px oklch(0.3 0.03 50 / 8%));
-  --cr-shadow-lg: var(--shadow-lg, 0 14px 34px oklch(0.26 0.03 50 / 10%), 0 34px 80px oklch(0.26 0.03 50 / 13%));
+  --cr-shadow-sm: var(--shadow-sm, 0 1px 2px oklch(30% 0.03 50deg / 6%), 0 2px 8px oklch(30% 0.03 50deg / 5%));
+  --cr-shadow-md: var(--shadow-md, 0 4px 14px oklch(30% 0.03 50deg / 7%), 0 14px 34px oklch(30% 0.03 50deg / 8%));
+  --cr-shadow-lg: var(--shadow-lg, 0 14px 34px oklch(26% 0.03 50deg / 10%), 0 34px 80px oklch(26% 0.03 50deg / 13%));
   --cr-ease: var(--ease-quint, cubic-bezier(0.22, 1, 0.36, 1));
 
   font-family: var(--cr-body);
@@ -670,13 +670,13 @@ main > .section.coffee-recipe-container > .coffee-recipe-wrapper {
 }
 
 /* ---------- wider screens ---------- */
-@media (min-width: 860px) {
+@media (width >= 860px) {
   .coffee-recipe .cr-hero-grid.has-media {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 960px) {
+@media (width >= 960px) {
   .coffee-recipe .cr-main-grid {
     grid-template-columns: minmax(0, 1fr) 300px;
   }
