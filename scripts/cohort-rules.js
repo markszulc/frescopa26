@@ -20,6 +20,8 @@ export default {
 
   insights: {
     src: '/cohorts/cohorts.json',
+    // section notes by id: a content-store file that is previewed and never published
+    notes: '/cohorts/insights.json',
     label: 'Optel',
     pages: {
       '/machines/atelier': 'The Atelier', '/machines': 'Machines', '/beverages': 'Beverages', '/cafe': 'Cafés', '/offers': 'Bundles & offers', '/subscriptions': 'Bean subscription', '/customer/login': 'Account', '/support': 'Care & support',
@@ -44,6 +46,33 @@ export default {
     agent: { label: 'Personal agent: plain & orderable', sub: 'Specs and prices as text · labelled actions · nothing hidden' },
   },
 
+  // The relationship: loyalty or new. A way to read the cohorts, not a second decision: the rule
+  // that fires still picks the page. A visitor counts as loyalty when any signal says they
+  // already know us; one weak signal is enough.
+  relationship: {
+    groups: {
+      loyalty: { label: 'Loyalty', sub: 'Owners, subscribers and visitors who came back', goalLabel: 'reorder beans or sign in' },
+      new: { label: 'New or unknown', sub: 'Nothing says they know us: the request is all we have', goalLabel: 'find a machine' },
+    },
+    signals: [
+      {
+        id: 'signed-in', label: 'Signed in on this device before', strength: 'strong', when: { signedIn: true },
+      },
+      {
+        id: 'app', label: 'Came from the Fréscopa app', strength: 'strong', when: { utm: { source: '^frescopa-app$' } },
+      },
+      {
+        id: 'email', label: 'Opened one of our emails', strength: 'medium', when: { any: [{ referrer: ['mail.google.com', 'mail.yahoo.com', 'outlook.live.com'] }, { utm: { medium: '^e-?mail$' } }] },
+      },
+      {
+        id: 'consent-before', label: 'Decided about cookies on an earlier visit', strength: 'medium', when: { consentBefore: true },
+      },
+      {
+        id: 'repeat-visit', label: 'Visited before (on-device)', strength: 'weak', when: { visits: { min: 2 } },
+      },
+    ],
+  },
+
   sources: [
     { id: 'email', label: 'Email (Gmail app, webmail)', referrer: ['mail.google.com', 'mail.yahoo.com', 'outlook.live.com'] },
     { id: 'cashback', label: 'Cashback & coupon sites', referrer: ['capitaloneshopping.com', 'rakuten.com'] },
@@ -52,6 +81,7 @@ export default {
   rules: [
     {
       id: 'personal-agent',
+      group: 'new',
       label: 'A personal AI agent is browsing',
       experience: 'agent',
       intent: 'utm',
@@ -61,6 +91,7 @@ export default {
     },
     {
       id: 'from-email',
+      group: 'loyalty',
       label: 'Opened one of our emails',
       experience: 'owner',
       when: { any: [{ referrer: ['mail.google.com', 'mail.yahoo.com', 'outlook.live.com'] }, { utm: { medium: '^e-?mail$' } }] },
@@ -71,6 +102,7 @@ export default {
     },
     {
       id: 'from-app',
+      group: 'loyalty',
       label: 'Came from the Fréscopa app',
       experience: 'owner',
       when: { utm: { source: '^frescopa-app$' } },
@@ -79,6 +111,7 @@ export default {
     },
     {
       id: 'campus-partner',
+      group: 'new',
       label: 'Followed a campus partner offer',
       experience: 'deal',
       intent: 'utm',
@@ -88,6 +121,7 @@ export default {
     },
     {
       id: 'deal-sites',
+      group: 'new',
       label: 'Came from a cashback or coupon site',
       experience: 'deal',
       when: { referrer: ['capitaloneshopping.com', 'rakuten.com'] },
@@ -98,6 +132,7 @@ export default {
     },
     {
       id: 'ai-referred',
+      group: 'new',
       label: 'Sent by an AI assistant',
       experience: 'shopper',
       when: { source: 'ai' },
@@ -108,6 +143,7 @@ export default {
     },
     {
       id: 'paid-social',
+      group: 'new',
       label: 'Clicked a social ad',
       experience: 'story',
       when: { any: [{ paid: ['facebook', 'pinterest', 'tiktok'] }, { utm: { medium: '^(psoc|paid[_-]?social)$' } }] },
@@ -116,6 +152,7 @@ export default {
     },
     {
       id: 'paid-search',
+      group: 'new',
       label: 'Clicked a search ad',
       experience: 'shopper',
       intent: 'utm',
@@ -127,6 +164,7 @@ export default {
     },
     {
       id: 'signed-in-before',
+      group: 'loyalty',
       label: 'Has used their account before',
       experience: 'owner',
       when: { signedIn: true },
@@ -137,6 +175,7 @@ export default {
     },
     {
       id: 'returning-interest',
+      group: 'loyalty',
       label: 'Back with a product interest',
       experience: 'shopper',
       intent: 'memory',
@@ -148,6 +187,7 @@ export default {
     },
     {
       id: 'organic-search',
+      group: 'new',
       label: 'Searched and landed here',
       experience: 'shopper',
       when: { source: 'search' },
@@ -157,6 +197,7 @@ export default {
     },
     {
       id: 'mobile-first-visit',
+      group: 'new',
       label: 'First visit on a phone',
       experience: 'local',
       when: { device: 'mobile', visits: { max: 1 } },
@@ -182,5 +223,6 @@ export default {
     ['Social ad', { fbclid: 'demo', utm_medium: 'psoc' }],
     ['Returning, looked at beans', {}, { visits: 3, interests: { beans: 3 } }],
     ['First visit on a phone', { cohort: 'mobile-first-visit' }],
+    ['Decided about cookies before (declined)', { consent: 'rejected' }, { visits: 2 }],
   ],
 };
