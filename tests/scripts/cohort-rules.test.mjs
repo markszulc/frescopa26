@@ -22,3 +22,10 @@ test('organic search is a shopper', () => assert.equal(rule({ source: 'search' }
 test('a first visit on a phone goes local', () => assert.equal(experience({ device: 'mobile', memory: { visits: 1 } }), 'local'));
 test('every rule names an experience that exists', () => rules.rules.forEach((r) => assert.ok(rules.experiences[r.experience], r.id)));
 test('the switcher stays on the homepage', () => assert.equal(rules.pocPath, '/'));
+
+const rel = (o) => matchRule(rules, s(o)).relationship;
+test('every rule is in a relationship group', () => rules.rules.forEach((r) => assert.ok(rules.relationship.groups[r.group], r.id)));
+test('no signal is new or unknown', () => assert.equal(rel({}).group, 'new'));
+test('the app is a strong loyalty signal', () => assert.deepEqual([rel({ utm: { source: 'frescopa-app' } }).group, rel({ utm: { source: 'frescopa-app' } }).strength], ['loyalty', 'strong']));
+test('a repeat visit is a weak loyalty signal', () => assert.deepEqual([rel({ memory: { visits: 2 } }).group, rel({ memory: { visits: 2 } }).strength], ['loyalty', 'weak']));
+test('an earlier cookie decision counts, also a rejection', () => assert.equal(rel({ consent: 'rejected', consentBefore: true }).group, 'loyalty'));
