@@ -225,10 +225,6 @@ h4 { font-size: var(--heading-font-size-m); }
 h5 { font-size: var(--heading-font-size-s); }
 h6 { font-size: var(--heading-font-size-xs); }
 
-.default-content-wrapper > h2 {
-  margin-top: 38px;
-}
-
 p,
 dl,
 ol,
