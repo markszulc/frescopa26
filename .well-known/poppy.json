@@ -1,0 +1,24 @@
+{
+  "protocol_version": "1.0",
+  "organization": {
+    "name": "www.frescopa.coffee",
+    "domain": "www.frescopa.coffee"
+  },
+  "agent": {
+    "protocols": [
+      {
+        "type": "poppy",
+        "endpoint": "https://m.adobe.io/personal-agent-gateway/h/www.frescopa.coffee/poppy/agent",
+        "description": "www.frescopa.coffee's guide for personal agents: tell it what the user wants to do or know on www.frescopa.coffee and it answers with where to go on the site. It can't sign in, buy, book or submit forms."
+      }
+    ]
+  },
+  "web": {},
+  "apis": [
+    {
+      "type": "mcp",
+      "url": "https://m.adobe.io/personal-agent-gateway/h/www.frescopa.coffee/poppy/mcp",
+      "description": "www.frescopa.coffee's website for personal agents, as a read-only MCP server: ask search_site what the user wants to do or know on www.frescopa.coffee and it answers with where to go on the site. It can't sign in, buy, book or submit forms."
+    }
+  ]
+}
