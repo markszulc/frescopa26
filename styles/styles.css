@@ -1309,3 +1309,18 @@ main .section:not(.dark, .feed, .voices, :has(.cards-coffee, .product-list-page)
   text-transform: var(--label-case);
   color: var(--terracotta);
 }
+
+/* ---------- personal-agent experience: readable at a glance ----------
+   Small terracotta text and terracotta buttons are under 4.5:1 on the light ground. An agent
+   reading a screenshot gets the deeper shade (a brand token), and the footer links on the dark
+   band are cream and underlined. */
+body[data-experience='agent'] {
+  --terracotta: oklch(51.5% 0.108 40deg);
+  --terracotta-deep: oklch(45% 0.1 38deg);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+body[data-experience='agent'] footer a:any-link {
+  color: var(--cream);
+  text-decoration: underline;
+}
