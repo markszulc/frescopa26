@@ -200,6 +200,11 @@
   margin-inline: auto;
 }
 
+/* An image-less hero that opens the page sits under the overlaid header: clear it. */
+main > .section:first-child .hero.block.no-image {
+  padding-top: calc(var(--nav-height) + var(--section-y));
+}
+
 /* Center the copy and constrain line lengths in the CTA band. */
 .hero.block.no-image :is(p, h1, h2) {
   max-width: none;
@@ -239,6 +244,56 @@
   border-color: var(--cream);
   background-color: oklch(94.5% 0.016 80deg / 12%);
   color: var(--cream);
+}
+
+/* A list of links is a row of labelled actions (the personal-agent hero lists what a visitor
+   can do next): buttons, the first one primary, and no stray bullets. */
+.hero.block ul:has(> li > a:only-child) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero.block.no-image ul:has(> li > a:only-child) {
+  justify-content: center;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block li > a:only-child {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid oklch(94.5% 0.016 80deg / 42%);
+  border-radius: var(--r-pill);
+  padding: 0.85em 1.5em;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  background-color: transparent;
+  color: var(--cream);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block li > a:only-child:hover {
+  border-color: var(--cream);
+  background-color: oklch(94.5% 0.016 80deg / 12%);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block li:first-child > a:only-child {
+  border-color: var(--cream);
+  background-color: var(--cream);
+  color: var(--burgundy);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.hero.block li:first-child > a:only-child:hover {
+  border-color: var(--paper-2);
+  background-color: var(--paper-2);
 }
 
 /* Desktop */

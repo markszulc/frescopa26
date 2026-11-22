@@ -72,9 +72,17 @@ export default function decorate(block) {
       primary.textContent = primaryText;
       priceWrap.append(primary);
       if (secondaryText) {
-        const secondary = document.createElement('span');
-        secondary.className = /save/i.test(secondaryText) ? 'bundle-cards-save' : 'bundle-cards-was';
-        secondary.textContent = secondaryText;
+        const save = /save/i.test(secondaryText);
+        // a struck original price is a <del>, and says so to a screen reader or an agent
+        const secondary = document.createElement(save ? 'span' : 'del');
+        secondary.className = save ? 'bundle-cards-save' : 'bundle-cards-was';
+        if (!save) {
+          const was = document.createElement('span');
+          was.className = 'bundle-cards-sr';
+          was.textContent = 'was ';
+          secondary.append(was);
+        }
+        secondary.append(secondaryText);
         priceWrap.append(secondary);
       }
       card.append(priceWrap);
@@ -83,6 +91,8 @@ export default function decorate(block) {
     cta.className = 'bundle-cards-cta';
     cta.href = linkEl ? (linkEl.getAttribute('href') || '#') : '#';
     cta.textContent = linkEl ? t(linkEl).replace(/\s*→\s*$/, '') || 'Add to cart' : 'Add to cart';
+    // every card's action reads the same; its name says which bundle it is for
+    if (heading) cta.setAttribute('aria-label', `${cta.textContent}: ${t(heading)}`);
     card.append(cta);
 
     grid.append(card);
