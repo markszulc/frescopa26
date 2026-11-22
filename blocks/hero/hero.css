@@ -200,6 +200,11 @@
   margin-inline: auto;
 }
 
+/* An image-less hero that opens the page sits under the overlaid header: clear it. */
+main > .section:first-child .hero.block.no-image {
+  padding-top: calc(var(--nav-height) + var(--section-y));
+}
+
 /* Center the copy and constrain line lengths in the CTA band. */
 .hero.block.no-image :is(p, h1, h2) {
   max-width: none;
