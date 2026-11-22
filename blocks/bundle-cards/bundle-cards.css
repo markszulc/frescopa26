@@ -130,3 +130,13 @@
   border-color: var(--terracotta-deep);
   color: var(--cream);
 }
+
+/* text for screen readers and agents only ("was" before a struck price) */
+.bundle-cards .bundle-cards-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

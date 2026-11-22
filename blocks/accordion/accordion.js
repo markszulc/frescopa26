@@ -39,7 +39,9 @@ export default function decorate(block) {
   const isClaims = summaries.length > 0 && !summaries.some((s) => s.endsWith('?'));
   if (isClaims) block.classList.add('accordion-checks');
 
-  // A shared name makes the native <details> group single-open (exclusive).
+  // A shared name makes the native <details> group single-open (exclusive). A personal AI
+  // agent gets every answer open instead: nothing hidden behind a click.
+  const agent = document.body.dataset.experience === 'agent';
   accordionSeq += 1;
   const groupName = `accordion-${accordionSeq}`;
 
@@ -54,8 +56,8 @@ export default function decorate(block) {
 
     const details = document.createElement('details');
     details.className = 'accordion-item';
-    details.name = groupName;
-    if (i === 0) details.open = true;
+    if (!agent) details.name = groupName;
+    if (i === 0 || agent) details.open = true;
 
     const summary = document.createElement('summary');
     summary.className = 'accordion-summary';

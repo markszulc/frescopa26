@@ -529,6 +529,8 @@ export default async function decorate(block) {
       link.setAttribute('aria-label', label);
       link.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">${icon}</svg>`;
       if (key === 'search') {
+        // opens the search dialog (the href is only the no-script fallback)
+        link.setAttribute('role', 'button');
         link.setAttribute('aria-haspopup', 'dialog');
         link.addEventListener('click', async (e) => {
           e.preventDefault();
