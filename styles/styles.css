@@ -1312,11 +1312,18 @@ main .section:not(.dark, .feed, .voices, :has(.cards-coffee, .product-list-page)
 
 /* ---------- personal-agent experience: readable at a glance ----------
    Small terracotta text and terracotta buttons are under 4.5:1 on the light ground. An agent
-   reading a screenshot gets the deeper shade (a brand token), and the footer links on the dark
-   band are cream and underlined. */
+   reading a screenshot gets the deeper shade (a brand token), content that does not wait for a
+   scroll to appear, and footer links on the dark band in cream, underlined. */
 body[data-experience='agent'] {
   --terracotta: oklch(51.5% 0.108 40deg);
   --terracotta-deep: oklch(45% 0.1 38deg);
+}
+
+/* nothing waits for a scroll: a full-page screenshot shows every section */
+body[data-experience='agent'] main .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
