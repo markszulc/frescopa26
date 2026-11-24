@@ -29,6 +29,15 @@ import {
 import cohortRules from './cohort-rules.js';
 import { runCohorts, rememberVisit, watchSignIn } from './cohorts.js';
 import { previewForce, listenForPicks } from './cohort-preview.js';
+/* eslint-disable import/no-relative-packages, no-unused-vars */
+import {
+  initMartech,
+  updateUserConsent,
+  martechEager,
+  martechLazy,
+  martechDelayed,
+} from '../plugins/martech/src/index.js';
+/* eslint-enable import/no-relative-packages, no-unused-vars */
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -430,6 +439,19 @@ let commerceReady = false;
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
+  const martechLoadedPromise = initMartech(
+    // The WebSDK config
+    {
+      datastreamId: 'df4a2dfe-defe-4861-82a4-02bbab663081',
+      orgId: 'AE161225524F51350A490D4D@AdobeOrg',
+      defaultConsent: 'in',
+    },
+    // The library config
+    {
+      personalization: false,
+    },
+  );
+
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
@@ -461,7 +483,10 @@ async function loadEager(doc) {
       loadErrorPage(418);
     }
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    await Promise.all([
+      martechLoadedPromise.then(martechEager),
+      loadSection(main.querySelector('.section'), waitForFirstImage),
+    ]);
   }
 
   try {
@@ -496,6 +521,7 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
+  await martechLazy();
 
   if (commerceReady) await loadCommerceLazy();
 
@@ -531,7 +557,10 @@ async function loadLazy(doc) {
 function loadDelayed() {
   import('./consent-check.js');
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => {
+    martechDelayed();
+    return import('./delayed.js');
+  }, 3000);
   // load anything that can be postponed to the latest here
   if (new URLSearchParams(window.location.search).has('demo')) {
     loadCSS(`${window.hlx.codeBasePath}/styles/cohort-panel.css`);
