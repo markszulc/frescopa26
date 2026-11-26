@@ -1,6 +1,6 @@
 import { decorateFaqs, toRows } from '../faq-list-by-sku/faq-list-by-sku.js';
 
-const FAQ_ENDPOINT = 'https://www.frescopa.coffee/faq-data-by-path';
+const FAQ_ENDPOINT = 'https://www.frescopacoffee/faq-data-by-path';
 
 export function isAuthoringContext(
   location = window.location,
