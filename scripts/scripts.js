@@ -438,8 +438,13 @@ let commerceReady = false;
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
+// loadPage() can run again (e.g. DA quick-edit reload), but martech must only initialize once
+let martechLoadedPromise;
+let martechLazyLoaded = false;
+let martechDelayedLoaded = false;
+
 async function loadEager(doc) {
-  const martechLoadedPromise = initMartech(
+  martechLoadedPromise ||= initMartech(
     // The WebSDK config
     {
       datastreamId: 'df4a2dfe-defe-4861-82a4-02bbab663081',
@@ -521,7 +526,10 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
-  await martechLazy();
+  if (!martechLazyLoaded) {
+    martechLazyLoaded = true;
+    await martechLazy();
+  }
 
   if (commerceReady) await loadCommerceLazy();
 
@@ -558,7 +566,10 @@ function loadDelayed() {
   import('./consent-check.js');
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
-    martechDelayed();
+    if (!martechDelayedLoaded) {
+      martechDelayedLoaded = true;
+      martechDelayed();
+    }
     return import('./delayed.js');
   }, 3000);
   // load anything that can be postponed to the latest here
