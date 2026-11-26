@@ -149,6 +149,12 @@ export default async function decorate(block) {
   if (block.querySelector(':scope > .faq-items') || block.dataset.faqState
     || block.dataset.faqSource) return;
 
+  if (block.dataset.faqSsr === 'true'
+    && (!block.children.length || block.querySelector(':scope > .faq-message'))) {
+    showFaqs(block, []);
+    return;
+  }
+
   const hasQaRows = [...block.children].every((row) => row.children.length >= 2);
   if (block.children.length && hasQaRows) {
     decorateFaqs(block);

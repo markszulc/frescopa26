@@ -65,7 +65,7 @@
       const withPublished = (handler, published = async () => ({
         ok: true, json: async () => ({ items: publishedItems }),
       })) => async (url, options = {}) => (
-        String(url).startsWith('https://www.frescopa.coffee/') ? published() : handler(url, options)
+        String(url).startsWith('https://www.frescopacoffee.com/') ? published() : handler(url, options)
       );
       const test = async (name, run) => {
         const disconnect = connectAuthorFaqs(window.location.href, () => accessToken, () => {});
@@ -1054,7 +1054,7 @@
         window.fetch = async (url) => {
           requests += 1;
           const request = new URL(url);
-          assert(request.origin + request.pathname === 'https://www.frescopa.coffee/faq-data-by-path', 'endpoint');
+          assert(request.origin + request.pathname === 'https://www.frescopacoffee.com/faq-data-by-path', 'endpoint');
           assert(JSON.stringify(request.searchParams.getAll('path')) === JSON.stringify([path, secondPath]), 'repeated path parameters');
           return { ok: true, json: async () => ({ items }) };
         };
@@ -1089,6 +1089,17 @@
           await decorate(block);
           assert(block.querySelector('.faq-message')?.textContent.startsWith('Add FAQ'), 'author guidance');
         }
+      });
+
+      await test('empty server-rendered results are not missing authoring paths', async () => {
+        let requests = 0;
+        window.fetch = () => { requests += 1; throw new Error('Unexpected fetch'); };
+        const block = fixture('\n  ');
+        block.dataset.faqSsr = 'true';
+        await decorate(block);
+        await decorate(block);
+        assert(block.querySelector('.faq-message')?.textContent === 'No FAQs found for these content fragments.', 'explicit empty result');
+        assert(requests === 0, 'no request without source paths');
       });
 
       await test('empty, malformed, HTTP and network responses', async () => {
