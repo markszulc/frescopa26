@@ -58,7 +58,7 @@ Open the page in DA canvas using Layout or Split view and select **Content
 Fragment** from the tool panel.
 
 Loading never delays page rendering. In Workspace, each block immediately loads
-**published** FAQs from `GET /faq-data-by-path` (the same Edge Function the live
+**published** FAQs from `GET /blocks/content-fragment` (the same Edge Function the live
 site uses) inside a thin, square, 15% grey border fitted to the FAQ list. A small
 **Previewing Published Content Fragments** tab sits on the border's top-right
 edge. The tab's tooltip
@@ -227,8 +227,10 @@ another Experience Cloud host), author access reports connection guidance
 rather than attempting anonymous or cookie-based requests.
 
 In all other contexts, the block calls
-`https://www.frescopa.coffee/faq-data-by-path` using one `path` query parameter per
-fragment. This Edge Function endpoint must allow cross-origin requests from
+`https://www.frescopacoffee.com/blocks/content-fragment` using one `path` query parameter per
+fragment. The route is declared as `dataPath` in the edge repository's
+`src/blocks/content-fragment.js`, matching this EDS block's name.
+This Edge Function endpoint must allow cross-origin requests from
 preview, `*.da.live` and local development origins. Author results are limited to
 requested paths and displayed in authored order; in Workspace, author request
 failures keep published content visible (see above).

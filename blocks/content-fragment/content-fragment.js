@@ -1,6 +1,7 @@
 import { decorateFaqs, toRows } from '../faq-list-by-sku/faq-list-by-sku.js';
 
-const FAQ_ENDPOINT = 'https://www.frescopacoffee.com/faq-data-by-path';
+// JSON route owned by frescopa-edge-functions/src/blocks/content-fragment.js.
+const FAQ_ENDPOINT = 'https://www.frescopacoffee.com/blocks/content-fragment';
 
 export function isAuthoringContext(
   location = window.location,

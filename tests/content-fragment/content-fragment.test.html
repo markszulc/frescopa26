@@ -1054,7 +1054,7 @@
         window.fetch = async (url) => {
           requests += 1;
           const request = new URL(url);
-          assert(request.origin + request.pathname === 'https://www.frescopacoffee.com/faq-data-by-path', 'endpoint');
+          assert(request.origin + request.pathname === 'https://www.frescopacoffee.com/blocks/content-fragment', 'endpoint');
           assert(JSON.stringify(request.searchParams.getAll('path')) === JSON.stringify([path, secondPath]), 'repeated path parameters');
           return { ok: true, json: async () => ({ items }) };
         };
@@ -1133,7 +1133,9 @@
 
       await test('SKU fetching still uses the shared renderer', async () => {
         window.fetch = async (url) => {
-          assert(new URL(url).searchParams.get('sku') === 'CSM6001', 'SKU parameter');
+          const request = new URL(url);
+          assert(request.origin + request.pathname === 'https://www.frescopacoffee.com/blocks/faq-list-by-sku', 'SKU endpoint');
+          assert(request.searchParams.get('sku') === 'CSM6001', 'SKU parameter');
           return { ok: true, json: async () => ({ items }) };
         };
         const block = fixture('<div><div>SKU</div><div>CSM6001</div></div>', 'faq-list-by-sku');

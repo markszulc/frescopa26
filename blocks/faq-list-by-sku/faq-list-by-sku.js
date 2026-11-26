@@ -14,7 +14,8 @@
 // Either way the same decorateFaqs() builds the final DOM, so there's one
 // renderer and the live and preview output can't drift apart.
 
-const FAQ_ENDPOINT = 'https://www.frescopa.coffee/faq-data';
+// JSON route owned by frescopa-edge-functions/src/blocks/faq-list-by-sku.js.
+const FAQ_ENDPOINT = 'https://www.frescopacoffee.com/blocks/faq-list-by-sku';
 const SKU_RE = /^[A-Za-z0-9_-]{1,40}$/;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
